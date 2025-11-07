@@ -51,14 +51,14 @@
             <div class="user-info">
             	<%-- 로그인 상태가 아닐 때 --%>
                 <sec:authorize access="isAnonymous()">
-                	<a href="${pageContext.request.contextPath}/user/login.do" class="btn-login">로그인</a>
+                	<a href="${pageContext.request.contextPath}/member/login" class="btn-login">로그인</a>
                     <a href="${pageContext.request.contextPath}/user/register.do" class="btn-login">회원가입</a>
                 </sec:authorize>
                 <%-- 로그인 상태일 때 --%>
                 <sec:authorize access="isAuthenticated()">
 					<a href="${pageContext.request.contextPath}/user/mypage.do" class="btn-logout">마이페이지</a>
              
-             		<form action="${pageContext.request.contextPath}/user/logout.do" method="POST" style="display: inline;">
+             		<form action="${pageContext.request.contextPath}/member/logout" method="POST" style="display: inline;">
              			<sec:csrfInput/>
              			<button type="submit">로그아웃</button>
              		</form>         

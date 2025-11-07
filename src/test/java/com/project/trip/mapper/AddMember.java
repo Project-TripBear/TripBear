@@ -10,6 +10,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
+import com.project.trip.mypage.mapper.MemberMapper;
+import com.project.trip.mypage.model.UserDTO;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ContextConfiguration(locations={
@@ -22,12 +25,10 @@ public class AddMember {
 	//의존 주입의 타입 > 인터페이스 + 상속 구현한 클래스 2개 이상
 	//1. @Qualifier 사용
 	//2. 딱 1개 클래스만 구현, 나머지는 삭제
-	
 	@Autowired
-	//@Qualifier("bCryptPasswordEncoder")
 	private PasswordEncoder encoder;
-	
 	@Autowired
+	private MemberMapper mapper;
 	
 	@Test
 	public void testEncoder() {
@@ -40,50 +41,19 @@ public class AddMember {
 		
 	}
 	
-	
-	/*public void add() {
-		assertNotNull(mapper);
-		
-		MemberDTO dto = new MemberDTO();
-		
-		dto.setMemberid("dog");
-		dto.setMemberpw(encoder.encode("1111"));
-		dto.setMembername("강아지");
-		dto.setEmail("dog@gmail.com");
-		dto.setGender("m");
-		
-		mapper.add(dto);
-	}
+
 	
 	@Test
-	public void add2() {
+	public void testMapper() {
+		
 		assertNotNull(mapper);
 		
-		MemberDTO dto = new MemberDTO();
+		UserDTO dto = mapper.get("kimminjun");
 		
-		dto.setMemberid("cat");
-		dto.setMemberpw(encoder.encode("1111"));
-		dto.setMembername("고양이");
-		dto.setEmail("cat@gmail.com");
-		dto.setGender("f");
+		System.out.println("dto : " + dto);
 		
-		mapper.add(dto);
 	}
-	
-	@Test
-	public void add3() {
-		assertNotNull(mapper);
-		
-		MemberDTO dto = new MemberDTO();
-		
-		dto.setMemberid("tiger");
-		dto.setMemberpw(encoder.encode("1111"));
-		dto.setMembername("호랑이");
-		dto.setEmail("tiger@gmail.com");
-		dto.setGender("m");
-		
-		mapper.add(dto);
-	}*/
+
 
 }
 

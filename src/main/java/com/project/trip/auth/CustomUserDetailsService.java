@@ -32,6 +32,14 @@ public class CustomUserDetailsService implements UserDetailsService {
 		
 		UserDTO dto = mapper.get(username);
 		
+		System.out.println("테스트 : " +dto);
+		if(dto.getAuth().equals("DELETED") || dto.getAuth().equals("BANNED")) {
+			
+			System.out.println("차단된 아이디");
+			
+			return null;
+		}
+		
 		return dto != null ? new CustomUser(dto) : null;
 	}
 	

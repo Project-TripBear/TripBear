@@ -5,7 +5,7 @@
 <!-- login.jsp -->
 <h2>로그인</h2>
 
-<form method="POST" action="${pageContext.request.contextPath}/login">
+<form method="POST" action="/trip/login">
  <table class="vertical content">
 	<tr>
 		<th>아이디</th>
