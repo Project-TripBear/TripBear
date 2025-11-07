@@ -1,0 +1,26 @@
+POST http://localhost:8080/trip/api/reservation
+Content-Type: application/json
+
+{
+  "reservation": {
+    "userId": 3,
+    "userRouteId": 1,
+    "statusId": 1,
+    "reservationPrice": 210000,
+    "reservationStartDate": "2025-11-10",
+    "reservationEndDate": "2025-11-12"
+  },
+  "accomReservation": {
+    "roomId": 4,
+    "userRouteId": 1,
+    "statusId": 1,
+    "guestCount": 2,
+    "roomTotalPrice": 200000,
+    "checkinDate": "2025-11-10",
+    "checkoutDate": "2025-11-12",
+    "accomNotes": "체크인 조금 늦을 수도 있어요"
+  },
+  "carReservation": null
+}
+
+

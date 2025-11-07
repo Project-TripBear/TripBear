@@ -22,5 +22,7 @@ public class CarReservationDTO {
     private Long userId;           // 회원번호(FK)
     
     private Long reservationId;
+    private String carName;
+
 
 }

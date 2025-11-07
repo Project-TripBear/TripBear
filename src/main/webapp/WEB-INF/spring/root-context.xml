@@ -41,11 +41,11 @@
 	<!--  MyBatis 설정 -->
 	<bean id="sessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="dataSource"/>
-		<property name="mapperLocations" value="classpath:mappers/*.xml"/>
+		<property name="mapperLocations" value="classpath*:mappers/*.xml" />
 		<property name="configLocation" value="classpath:config/mybatis-config.xml"/>
 	</bean>
 
-	<!--  Mapper 인터페이스 자동 스캔 -->
-	<mybatis-spring:scan base-package="com.project.trip.mapper"/>
+	<mybatis-spring:scan base-package="com.project.trip.reservation.mapper"/>
+	
 
 </beans>

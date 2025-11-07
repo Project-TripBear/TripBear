@@ -21,5 +21,7 @@ public class AccomReservationDTO {
     private Long userId;               // 회원번호(FK)
     
     private Long reservationId;
+    private String accomName;
+
 
 }
