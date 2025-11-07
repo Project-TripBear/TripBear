@@ -13,46 +13,48 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.project.trip.board.notice.model.NoticeDTO;
 import com.project.trip.board.notice.service.NoticeService;
 
+import lombok.RequiredArgsConstructor;
+
 @Controller
 @RequestMapping("/notice")
+@RequiredArgsConstructor
 public class NoticeController {
 
-	@Autowired
-	private NoticeService noticeService;
+	private final NoticeService noticeService;
 	
-	@GetMapping("/list.do")
+	@GetMapping("/notice/list")
 	public String list(Model model) {
 		
 		List<NoticeDTO> list = noticeService.getNoticeList();
 		
 		model.addAttribute("list", list);
 		
-		return "notice/list";
+		return "notice.list";
 	}
 	
-	@GetMapping("/view.do")
+	@GetMapping("/notice/view")
 	public String view(@RequestParam("id") String notice_id, Model model) {
 		
 		NoticeDTO notice = noticeService.getNoticeDetail(notice_id);
 		
 		model.addAttribute("notice", notice);
 		
-		return "notice/list";
+		return "notice.view";
 	}
 
-	@GetMapping("/add.do")
+	@GetMapping("/notice/add")
 	public String Add() {
 		
 		
-		return "notice/add";
+		return "notice.add";
 	}
 
-	@PostMapping("/add.do")
+	@PostMapping("/notice/add")
 	public String AddAction(NoticeDTO dto) {
 		
 		int result = noticeService.creatNotice(dto);
 		
-		return "notice/add";
+		return "redirect:/notice/list";
 	}
 	
 }

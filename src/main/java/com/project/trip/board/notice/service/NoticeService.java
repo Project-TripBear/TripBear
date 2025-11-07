@@ -4,21 +4,14 @@ import java.util.List;
 
 import com.project.trip.board.notice.model.NoticeDTO;
 
-public class NoticeService {
+public interface NoticeService {
 
-	public List<NoticeDTO> getNoticeList() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	List<NoticeDTO> getNoticeList();
 
-	public NoticeDTO getNoticeDetail(String notice_id) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	NoticeDTO getNoticeDetail(String notice_id);
 
-	public int creatNotice(NoticeDTO dto) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+	int creatNotice(NoticeDTO dto);
+
+	
 
 }
