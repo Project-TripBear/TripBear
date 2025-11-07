@@ -4,13 +4,20 @@ import java.util.List;
 
 import com.project.trip.board.notice.model.NoticeDTO;
 
+
 public interface NoticeService {
 
 	List<NoticeDTO> getNoticeList();
 
-	NoticeDTO getNoticeDetail(String notice_id);
+	void createNotice(NoticeDTO dto);
 
-	int creatNotice(NoticeDTO dto);
+	NoticeDTO getNoticeForEdit(Long noticePostId);
+
+	void updateNotice(NoticeDTO dto);
+
+	void deleteNotice(Long noticePostId);
+
+	NoticeDTO getNoticeDetail(Long noticePostId);
 
 	
 

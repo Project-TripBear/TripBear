@@ -3,12 +3,14 @@ package com.project.trip.board.notice.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.project.trip.board.notice.model.NoticeDTO;
 import com.project.trip.board.notice.service.NoticeService;
@@ -22,7 +24,7 @@ public class NoticeController {
 
 	private final NoticeService noticeService;
 	
-	@GetMapping("/notice/list")
+	@GetMapping("/list")
 	public String list(Model model) {
 		
 		List<NoticeDTO> list = noticeService.getNoticeList();
@@ -32,29 +34,69 @@ public class NoticeController {
 		return "notice.list";
 	}
 	
-	@GetMapping("/notice/view")
-	public String view(@RequestParam("id") String notice_id, Model model) {
+	@GetMapping("/view")
+	public String view(@RequestParam("id") Long noticePostId, Model model) {
 		
-		NoticeDTO notice = noticeService.getNoticeDetail(notice_id);
+		NoticeDTO notice = noticeService.getNoticeDetail(noticePostId);
 		
 		model.addAttribute("notice", notice);
 		
 		return "notice.view";
 	}
 
-	@GetMapping("/notice/add")
-	public String Add() {
-		
+	@GetMapping("/add")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	public String addForm() {
 		
 		return "notice.add";
 	}
 
-	@PostMapping("/notice/add")
-	public String AddAction(NoticeDTO dto) {
+	@PostMapping("/add")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	public String addAction(NoticeDTO dto, RedirectAttributes rttr) {
 		
-		int result = noticeService.creatNotice(dto);
+		noticeService.createNotice(dto);
+		
+		rttr.addFlashAttribute("message", "공지사항이 등록되었습니다.");
 		
 		return "redirect:/notice/list";
 	}
+	
+	@GetMapping("/edit")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	public String editForm(@RequestParam("id") Long noticePostId, Model model) {
+		
+		NoticeDTO notice = noticeService.getNoticeForEdit(noticePostId);
+		
+		model.addAttribute("notice", notice);
+		
+		return "notice.edit";
+	}
+
+	@PostMapping("/edit")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	public String editAction(NoticeDTO dto, RedirectAttributes rttr) {
+		
+		noticeService.updateNotice(dto);
+		
+		rttr.addFlashAttribute("message", "공지사항이 수정되었습니다.");
+		
+		return "redirect:/notice/view?seq=" + dto.getNoticePostId();
+	}
+	
+	@PostMapping("/delete")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	public String delete(@RequestParam("id") Long noticePostId, RedirectAttributes rttr) {
+		
+		noticeService.deleteNotice(noticePostId);
+		
+		rttr.addFlashAttribute("message", "공지사항이 삭제되었습니다");
+		
+		return "redirect:/notice/list";
+				
+		
+		 
+	}
+	
 	
 }

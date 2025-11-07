@@ -1,5 +1,7 @@
 package com.project.trip.board.notice.model;
 
+import java.util.Date;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -9,11 +11,11 @@ import lombok.ToString;
 @ToString
 public class NoticeDTO {
 	
-	private String noticePostId;
-	private String adminId;
+	private Long noticePostId;
+	private Long adminId;
 	private String noticeHeader;
 	private String noticeContent;
-	private String noticeViewCount;
-	private String noticeRegdate;
+	private Long noticeViewCount;
+	private Date noticeRegdate;
 
 }

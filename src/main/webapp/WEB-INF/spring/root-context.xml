@@ -46,6 +46,6 @@
 	</bean>
 
 	<!--  Mapper 인터페이스 자동 스캔 -->
-	<mybatis-spring:scan base-package="com.project.trip.mapper"/>
+	<mybatis-spring:scan base-package="com.project.trip"/>
 
 </beans>
