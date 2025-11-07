@@ -1,4 +1,4 @@
-package com.project.trip.mapper;
+package com.project.trip.mypage.mapper;
 
 import org.apache.ibatis.annotations.Select;
 

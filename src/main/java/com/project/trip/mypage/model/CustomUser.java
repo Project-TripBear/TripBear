@@ -1,4 +1,4 @@
-package com.project.trip.model;
+package com.project.trip.mypage.model;
 
 import java.util.Collection;
 import java.util.List;

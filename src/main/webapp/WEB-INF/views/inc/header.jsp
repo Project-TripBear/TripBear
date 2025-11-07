@@ -50,12 +50,12 @@
             <%-- main.css 클래스에 맞춰 로그인/로그아웃 상태 UI 수정 --%>
             <div class="user-info">
             	<%-- 로그인 상태가 아닐 때 --%>
-                <sec:authorize access="isAnnoymous()">
+                <sec:authorize access="isAnonymous()">
                 	<a href="${pageContext.request.contextPath}/user/login.do" class="btn-login">로그인</a>
                     <a href="${pageContext.request.contextPath}/user/register.do" class="btn-login">회원가입</a>
                 </sec:authorize>
                 <%-- 로그인 상태일 때 --%>
-                <sec:authorize accoss="isAuthenticated()">
+                <sec:authorize access="isAuthenticated()">
 					<a href="${pageContext.request.contextPath}/user/mypage.do" class="btn-logout">마이페이지</a>
              
              		<form action="${pageContext.request.contextPath}/user/logout.do" method="POST" style="display: inline;">
