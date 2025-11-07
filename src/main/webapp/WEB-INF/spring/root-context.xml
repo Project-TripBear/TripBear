@@ -7,36 +7,45 @@
            https://www.springframework.org/schema/beans/spring-beans.xsd
            http://mybatis.org/schema/mybatis-spring
            https://mybatis.org/schema/mybatis-spring.xsd">
-	<!-- Root Context: defines shared resources visible to all other web components -->
-	
-	<!-- HikariCP -->
+
+	<!--  Root Context: Oracle Cloud 전용 설정 -->
+
+	<!--  HikariCP 설정 -->
 	<bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
-		<!-- <property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"></property>
-		<property name="jdbcUrl" value="jdbc:oracle:thin:@localhost:1521:xe"></property> -->
-		
-		<property name="driverClassName" value="net.sf.log4jdbc.sql.jdbcapi.DriverSpy"></property>
-		<property name="jdbcUrl" value="jdbc:log4jdbc:oracle:thin:@localhost:1521:xe"></property>
-		
-		<property name="username" value="spring"></property>
-		<property name="password" value="java1234"></property>
+
+		<!--  오라클 드라이버 (log4jdbc 제거) -->
+		<property name="driverClassName" value="oracle.jdbc.OracleDriver"/>
+
+		<!--  Wallet 기반 연결 주소 -->
+		<!--  실제 Wallet 경로로 변경 -->
+		<!-- 예시: C:/dev/Wallet_TripBearDB -->
+		<property name="jdbcUrl" 
+		          value="jdbc:oracle:thin:@TripBearDB_high?tns_admin=C:/dev/Wallet_TripBearDB"/>
+
+		<!--  오라클 클라우드 DB 계정 정보 -->
+		<property name="username" value="tripbear"/>
+		<property name="password" value="Java123456789"/>
+
+		<!--  커넥션 풀 성능 옵션 (선택) -->
+		<property name="maximumPoolSize" value="10"/>
+		<property name="connectionTimeout" value="30000"/>
+		<property name="idleTimeout" value="600000"/>
+		<property name="maxLifetime" value="1800000"/>
 	</bean>
-	
+
+	<!--  Hikari DataSource 등록 -->
 	<bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
-		<constructor-arg ref="hikariConfig"></constructor-arg>
+		<constructor-arg ref="hikariConfig"/>
 	</bean>
-		
-		
-	<!-- MyBatis  -->
-	<!-- 환경설정  -->	
+
+	<!--  MyBatis 설정 -->
 	<bean id="sessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
-		<property name="dataSource" ref="dataSource"></property>
-		<property name="mapperLocations" value="classpath:mappers/*.xml"></property>
-		<property name="configLocation" value="classpath:config/mybatis-config.xml"></property>
+		<property name="dataSource" ref="dataSource"/>
+		<property name="mapperLocations" value="classpath:mappers/*.xml"/>
+		<property name="configLocation" value="classpath:config/mybatis-config.xml"/>
 	</bean>
-	
-	<!-- 인터페이스 매퍼의 구혅체(?)가 스프링 빈으로 등록될 수 있도록 스캔 설정 -->
+
+	<!--  Mapper 인터페이스 자동 스캔 -->
 	<mybatis-spring:scan base-package="com.project.trip.mapper"/>
-	
+
 </beans>
-	
-		

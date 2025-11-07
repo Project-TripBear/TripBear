@@ -6,9 +6,9 @@
 <configuration>
 
 	<!--XML Mapper에서 사용중인 클래스의 별칭  -->
-	<typeAliases>
+	<!-- <typeAliases>
 		<typeAlias type="com.test.project.model.UserDTO" alias="udto" />	
 		<typeAlias type="com.test.project.model.BoardDTO" alias="bdto" />	
 	</typeAliases>
-
+ -->
 </configuration>
