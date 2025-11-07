@@ -45,13 +45,13 @@ public class ReservationServiceImpl implements ReservationService {
 	}
 	
 	@Override
-	public IntegratedReservationResponse getIntegratedReservation(Long reservationId) throws Exception {
+	public IntegratedReservation getIntegratedReservation(Long reservationId) throws Exception {
 
 	    ReservationDTO reservation = reservationMapper.findReservationById(reservationId);
 	    AccomReservationDTO accom = reservationMapper.findAccomByReservationId(reservationId);
 	    CarReservationDTO car = reservationMapper.findCarByReservationId(reservationId);
 
-	    return new IntegratedReservationResponse(reservation, accom, car);
+	    return new IntegratedReservation(reservation, accom, car);
 	}
 
 
