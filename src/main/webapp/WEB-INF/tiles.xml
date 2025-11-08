@@ -6,14 +6,23 @@
 	
 <tiles-definitions>
 	
+	
+
+
+<definition name="mypage.*.*" template="/WEB-INF/views/layout/main.jsp">
+    <put-attribute name="header" value="/WEB-INF/views/inc/header.jsp"></put-attribute>
+    <put-attribute name="content" value="/WEB-INF/views/mypage/{1}/{2}.jsp"></put-attribute>
+</definition>
+	
+	
 	<definition name="*.*" template="/WEB-INF/views/layout/main.jsp">
 		<put-attribute name="header" value="/WEB-INF/views/inc/header.jsp"></put-attribute>
-		<put-attribute name="content" value="/WEB-INF/views/content/{1}/{2}.jsp"></put-attribute>
+		<put-attribute name="content" value="/WEB-INF/views/{1}/{2}.jsp"></put-attribute>
 	</definition>
 	
 	<definition name="index" template="/WEB-INF/views/layout/main.jsp">
 		<put-attribute name="header" value="/WEB-INF/views/inc/header.jsp"></put-attribute>
-		<put-attribute name="content" value="/WEB-INF/views/content/index.jsp"></put-attribute>
+		<put-attribute name="content" value="/WEB-INF/views/index.jsp"></put-attribute>
 	</definition>
 	
 </tiles-definitions>

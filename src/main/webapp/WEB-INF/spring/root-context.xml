@@ -43,6 +43,7 @@
 		<property name="configLocation" value="classpath:config/mybatis-config.xml"/>
 	</bean>
 
+<<<<<<< HEAD
 	<mybatis-spring:scan base-package="com.project.trip.allplace.mapper"/>
 	
 	
@@ -54,6 +55,11 @@
         <!-- 위에서 정의한 'dataSource' Bean을 참조합니다. -->
         <property name="dataSource" ref="dataSource"/>
     </bean>
+=======
+	<!--  Mapper 인터페이스 자동 스캔 (각자 Mapper경로 추가)-->
+	<!-- <mybatis-spring:scan base-package="com.project.trip.mapper"/> -->
+	<mybatis-spring:scan base-package="com.project.trip.mypage.mapper"/>
+>>>>>>> 91d01cb990505b2dd009df1c4c6575b26eebbbe9
 
     <!-- 2. @Transactional 어노테이션을 '작동'시키기 위한 설정 -->
     <!-- transaction-manager="transactionManager"는 위에서 정의한 bean의 id와 일치시킵니다. -->

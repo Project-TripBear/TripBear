@@ -68,7 +68,7 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler {
 			//로그인 전 URL 존재
 			response.sendRedirect(savedRequest.getRedirectUrl());
 		} else {
-			response.sendRedirect("/project/"); //***
+			response.sendRedirect("/trip/"); //***
 			
 		}
 	
