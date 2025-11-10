@@ -1,73 +1,144 @@
 package com.project.trip.allplace.service;
 
 import java.net.URI;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.project.trip.allplace.model.TourApiResponseVO;
+import com.project.trip.allplace.model.TourIntroVO;
 import com.project.trip.allplace.model.TourItemVO;
 
-/**
- * Tour API 호출을 실제로 담당하는 구현체 (주방)
- */
 @Service
 public class TourApiServiceImpl implements TourApiService {
 
-    // 1. root-context.xml에 등록한 RestTemplate 빈(Bean)을 주입받습니다.
     @Autowired
     private RestTemplate restTemplate;
 
-    // ※주의※: 이 서비스 키는 GitHub 등에 절대 올리면 안 됩니다!
-    // (보안을 위해 나중에 .properties 파일로 분리하는 것을 강력히 권장합니다)
-    // data.go.kr에서 받은 '디코딩된' 원본 서비스 키를 사용하세요.
-    private final String serviceKey = "YOUR_SERVICE_KEY"; // ◀◀◀ [중요] 여기에 본인 키 입력
+    // (재발급 받은 새 키를 사용해주세요)
+    private final String serviceKey = "4ad9f6404c1b5c50ee33409214a285bd720eab16c791577e2e460245c5f3b7b4"; 
+    
+    // --- 3개의 API 엔드포인트 ---
+    private final String DETAIL_COMMON_URL = "https://apis.data.go.kr/B551011/KorService2/detailCommon2";
+    private final String DETAIL_INTRO_URL = "https://apis.data.go.kr/B551011/KorService2/detailIntro2";
+    private final String SEARCH_KEYWORD_URL = "https://apis.data.go.kr/B551011/KorService2/searchKeyword2";
 
     /**
-     * API 엔드포인트: 공통정보조회 (detailCommon)
-     * (좌표, 주소, 제목, 대표 이미지 등을 한 번에 가져옴)
+     * 1. (공통정보) API 호출
+     * - YN 파라미터가 제거된 최종본
      */
-    private final String DETAIL_COMMON_URL = "http://api.visitkorea.or.kr/openapi/service/rest/KorService/detailCommon";
-
     @Override
     public TourItemVO getPlaceDetail(String contentId) {
-        
-        // 2. Spring의 UriComponentsBuilder를 사용해 URL을 안전하게 조립합니다.
-        // (자동으로 파라미터 인코딩 처리를 해줍니다)
         URI uri = UriComponentsBuilder
                 .fromHttpUrl(DETAIL_COMMON_URL)
                 .queryParam("serviceKey", serviceKey)
-                .queryParam("MobileApp", "TripBear")     // [필수] 앱 이름
-                .queryParam("MobileOS", "ETC")           // [필수] OS 구분
-                .queryParam("contentId", contentId)      // [핵심] 조회할 장소 ID
-                .queryParam("defaultYN", "Y")            // 기본 정보 조회
-                .queryParam("addrinfoYN", "Y")           // 주소 정보 조회
-                .queryParam("mapinfoYN", "Y")            // 좌표 정보 조회
-                .queryParam("firstImageYN", "Y")         // 대표 이미지 조회
-                .queryParam("_type", "json")             // [필수] 응답 형식 JSON
-                .build(true) // [중요] serviceKey가 2중 인코딩되는 것을 방지
+                .queryParam("MobileApp", "TripBear")
+                .queryParam("MobileOS", "ETC")
+                .queryParam("contentId", contentId)
+                .queryParam("_type", "json")
+                .build(true) // (serviceKey는 인코딩되면 안 됨)
                 .toUri();
-
+        
         try {
-            // 3. RestTemplate으로 API(URI)를 호출하고,
-            //    응답(JSON)을 TourApiResponseVO 객체로 자동 변환(파싱)합니다.
             TourApiResponseVO response = restTemplate.getForObject(uri, TourApiResponseVO.class);
 
-            // 4. 중첩된 DTO에서 실제 데이터(TourItemVO)만 추출하여 반환합니다.
-            //    (response -> body -> items -> item)
-            if (response != null && response.getResponse().getBody() != null &&
-                response.getResponse().getBody().getItems() != null) {
+            if (response != null && 
+                response.getResponse() != null &&
+                response.getResponse().getBody() != null &&
+                response.getResponse().getBody().getItems() != null &&
+                response.getResponse().getBody().getItems().getItem() != null &&
+                !response.getResponse().getBody().getItems().getItem().isEmpty()) {
                 
-                return response.getResponse().getBody().getItems().getItem();
+                return response.getResponse().getBody().getItems().getItem().get(0); 
             }
-            return null; // API 결과가 비어있을 경우
+            return null; 
 
         } catch (Exception e) {
-            // API 호출 실패 시 (네트워크 오류, 404, 500, JSON 파싱 실패 등)
-            System.err.println("[TourApiServiceImpl] API 호출 중 오류 발생: " + e.getMessage());
+            System.err.println("[TourApiServiceImpl] '공통정보(Common)' API 호출 중 오류 발생: " + e.getMessage());
             e.printStackTrace();
-            return null; // 실패 시 null 반환
+            return null;
+        }
+    }
+
+    /**
+     * 2. (소개정보) API 호출
+     * - contentId와 contentTypeId 사용
+     */
+    @Override
+    public TourIntroVO getPlaceIntro(String contentId, String contentTypeId) {
+        URI uri = UriComponentsBuilder
+                .fromHttpUrl(DETAIL_INTRO_URL)
+                .queryParam("serviceKey", serviceKey)
+                .queryParam("MobileApp", "TripBear")
+                .queryParam("MobileOS", "ETC")
+                .queryParam("contentId", contentId)
+                .queryParam("contentTypeId", contentTypeId) // (필수 파라미터)
+                .queryParam("_type", "json")
+                .build(true) // (serviceKey는 인코딩되면 안 됨)
+                .toUri();
+        
+        try {
+            TourIntroVO response = restTemplate.getForObject(uri, TourIntroVO.class);
+
+            if (response != null && 
+                response.getResponse() != null &&
+                response.getResponse().getBody() != null &&
+                response.getResponse().getBody().getItems() != null &&
+                response.getResponse().getBody().getItems().getItem() != null &&
+                !response.getResponse().getBody().getItems().getItem().isEmpty()) {
+                
+                return response; 
+            }
+            return null;
+
+        } catch (Exception e) {
+            System.err.println("[TourApiServiceImpl] '소개정보(Intro)' API 호출 중 오류 발생: " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * 3. (키워드검색) API 호출
+     * - arrange 파라미터 추가
+     * - 한글 키워드 인코딩 오류 해결
+     */
+    @Override
+    public TourApiResponseVO searchByKeyword(String keyword, String arrange, String contentTypeId) {
+        URI uri = UriComponentsBuilder
+                .fromHttpUrl(SEARCH_KEYWORD_URL)
+                .queryParam("serviceKey", serviceKey)
+                .queryParam("MobileApp", "TripBear")
+                .queryParam("MobileOS", "ETC")
+                .queryParam("keyword", keyword) 
+                .queryParam("arrange", arrange) // ("A" 대신 파라미터 사용)
+                .queryParam("contentTypeId", contentTypeId)
+                .queryParam("_type", "json")
+                
+                // (한글 인코딩 오류 해결)
+                .build()     
+                .encode()    
+                
+                .toUri();
+        
+        try {
+            TourApiResponseVO response = restTemplate.getForObject(uri, TourApiResponseVO.class);
+
+            if (response != null && 
+                response.getResponse() != null &&
+                response.getResponse().getBody() != null &&
+                response.getResponse().getBody().getItems() != null) {
+                
+                return response;
+            }
+            return null;
+
+        } catch (Exception e) {
+            System.err.println("[TourApiServiceImpl] '키워드 검색(Search)' API 호출 중 오류 발생: " + e.getMessage());
+            e.printStackTrace();
+            return null;
         }
     }
 }

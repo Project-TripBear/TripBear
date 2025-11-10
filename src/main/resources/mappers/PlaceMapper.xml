@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.project.trip.allplace.mapper.PlaceMapper">
+
+    <select id="findPlaceByContentId" 
+            parameterType="string" 
+            resultType="placeDTO">
+        SELECT 
+            place_id        as "placeId",
+            place_api_id    as "placeApiId",
+            place_name      as "name",       
+            place_address   as "address",    
+            place_lat       as "latitude",
+            place_lng       as "longitude",
+            place_type_id   as "placeTypeId",
+            place_location_id as "placeLocationId",
+            place_main_image_url as "placeMainImageUrl"
+        FROM 
+            tblPlace 
+        WHERE 
+            place_api_id = #{placeApiId}
+    </select>
+
+    <insert id="insertPlace" parameterType="placeDTO">
+        <selectKey keyProperty="placeId" resultType="long" order="BEFORE">
+            SELECT SEQPLACE.NEXTVAL FROM DUAL
+        </selectKey>
+        
+        INSERT INTO tblPlace (
+            place_id, 
+            place_api_id, 
+            place_name, 
+            place_address, 
+            place_lat,
+            place_lng,
+            place_type_id,
+            place_location_id,
+            place_main_image_url
+        ) VALUES (
+            #{placeId}, 
+            #{placeApiId}, 
+            #{name}, 
+            #{address}, 
+            #{latitude}, 
+            #{longitude},
+            #{placeTypeId},
+            #{placeLocationId},
+            #{placeMainImageUrl}
+        )
+    </insert>
+    
+    <insert id="insertTouristSpot" parameterType="touristSpotDTO">
+        INSERT INTO tblTouristSpot (
+	        place_id, 
+	        admission_fee, 
+	        opening_hours, 
+	        contact_info, 
+	        parking_info, 
+	        rest_day, 
+	        spot_overinfo
+	    ) values ( 
+	    	#{placeId}, 
+	    	#{admissionFee}, 
+	    	#{openingHours}, 
+	    	#{contactInfo}, 
+	    	#{parkingInfo}, 
+	    	#{restDay}, 
+	    	#{spotOverinfo})
+    </insert>
+
+    <resultMap id="placeDetailResultMap" type="placeDTO">
+        <id     property="placeId"           column="place_id" />
+        <result property="placeApiId"        column="place_api_id" />
+        <result property="name"              column="place_name" />
+        <result property="address"           column="place_address" />
+        <result property="latitude"          column="place_lat" />
+        <result property="longitude"         column="place_lng" />
+        <result property="placeMainImageUrl" column="place_main_image_url" />
+        <result property="placeTypeId"       column="place_type_id" />
+        <result property="placeLocationId"   column="place_location_id" />
+        
+        <association property="touristSpotDetail" javaType="touristSpotDTO">
+            <id     property="placeId"       column="place_id"/>
+            <result property="spotOverinfo"  column="spot_overinfo" />
+            <result property="admissionFee"  column="admission_fee" />
+            <result property="openingHours"  column="opening_hours" />
+            <result property="contactInfo"   column="contact_info" />
+            <result property="parkingInfo"   column="parking_info" />
+            <result property="restDay"       column="rest_day" />
+        </association>
+    </resultMap>
+
+    <select id="getPlaceDetailById" parameterType="long" resultMap="placeDetailResultMap">
+        SELECT
+            p.place_id, p.place_api_id, p.place_name, p.place_address, 
+            p.place_lat, p.place_lng, p.place_main_image_url,
+            p.place_type_id, p.place_location_id,
+            
+            pt.place_type_name,
+            pl.place_location_name,
+            
+            ts.spot_overinfo, ts.admission_fee, ts.opening_hours,
+            ts.contact_info,  
+            ts.parking_info, 
+            ts.rest_day
+            
+        FROM 
+            tblPlace p
+        
+        JOIN tblPlaceType pt     ON p.place_type_id = pt.place_type_id
+        JOIN tblPlaceLocation pl ON p.place_location_id = pl.place_location_id
+        LEFT JOIN tblTouristSpot ts ON p.place_id = ts.place_id
+        
+        WHERE 
+            p.place_id = #{placeId}
+    </select>
+    
+    
+    <select id="findKeywordByName" parameterType="string" resultType="keywordDTO">
+        SELECT * FROM tblKeyword WHERE keyword_name = #{keywordName}
+    </select>
+    
+    <insert id="insertKeyword" parameterType="keywordDTO">
+        <selectKey keyProperty="keywordId" resultType="long" order="BEFORE">
+            SELECT SEQKEYWORD.NEXTVAL FROM DUAL
+        </selectKey>
+        INSERT INTO tblKeyword (keyword_id, keyword_name, keyword_regdate)
+        VALUES (#{keywordId}, #{keywordName}, SYSDATE)
+    </insert>
+    
+    <insert id="insertKeywordLink" parameterType="keywordLinkDTO">
+        INSERT INTO tblKeywordLink (keyword_link_id, place_id, keyword_id)
+        VALUES (SEQKEYWORDLINK.NEXTVAL, #{placeId}, #{keywordId})
+    </insert>
+    
+    <select id="findPlacesByKeywordName" parameterType="string" resultType="placeDTO">
+        SELECT
+            p.place_id        as "placeId",
+            p.place_api_id    as "placeApiId",
+            p.place_name      as "name",
+            p.place_address   as "address",
+            p.place_lat       as "latitude",
+            p.place_lng       as "longitude",
+            p.place_main_image_url as "placeMainImageUrl"
+            /* (검색 목록이므로 이 정도만 가져옴) */
+        FROM 
+            tblPlace p
+        JOIN 
+            tblKeywordLink kl ON p.place_id = kl.place_id
+        JOIN
+            tblKeyword k ON kl.keyword_id = k.keyword_id
+        WHERE 
+            k.keyword_name = #{keywordName}
+        ORDER BY
+            p.place_id DESC
+    </select>
+
+</mapper>

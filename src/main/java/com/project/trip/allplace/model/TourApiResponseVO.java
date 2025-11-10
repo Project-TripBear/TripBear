@@ -1,5 +1,8 @@
 package com.project.trip.allplace.model;
 
+// [추가] List를 사용하기 위해 import
+import java.util.List; 
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.Data;
@@ -10,16 +13,12 @@ import lombok.NoArgsConstructor;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TourApiResponseVO {
 
-    // 1. JSON의 "response" 키
     private Response response;
-
-    // --- 중첩된 JSON 구조를 그대로 본따서 static 내부 클래스를 만듭니다 ---
     
     @Data
     @NoArgsConstructor
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Response {
-        // 2. "body"
         private Body body;
     }
 
@@ -27,7 +26,6 @@ public class TourApiResponseVO {
     @NoArgsConstructor
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Body {
-        // 3. "items"
         private Items items;
     }
 
@@ -35,8 +33,11 @@ public class TourApiResponseVO {
     @NoArgsConstructor
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Items {
-        // 4. "item"
-        // [중요] 상세정보조회 API는 item이 배열(List)이 아닌 단일 객체입니다.
-        private TourItemVO item;
+        
+        // --- [핵심 수정] ---
+        // 단일 객체(TourItemVO)에서 리스트(List<TourItemVO>)로 변경
+        // private TourItemVO item; // (기존)
+        private List<TourItemVO> item; // (수정)
+        // --- [여기까지] ---
     }
 }

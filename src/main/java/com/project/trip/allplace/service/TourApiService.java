@@ -1,10 +1,21 @@
 package com.project.trip.allplace.service;
 
 
+import com.project.trip.allplace.model.TourApiResponseVO;
+import com.project.trip.allplace.model.TourIntroVO;
 import com.project.trip.allplace.model.TourItemVO;
 
 public interface TourApiService {
 
 	public TourItemVO getPlaceDetail(String contentId);
+	
+	public TourIntroVO getPlaceIntro(String contentId, String contentTypeId);
 
+	/**
+	 * 3. (키워드검색) API 호출
+	 * - arrange 파라미터 추가
+	 * - 한글 키워드 인코딩 오류 해결
+	 */
+	TourApiResponseVO searchByKeyword(String keyword, String arrange, String contentTypeId);
+	
 }

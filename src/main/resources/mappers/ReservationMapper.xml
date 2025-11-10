@@ -5,8 +5,7 @@
 
 <mapper namespace="com.project.trip.reservation.mapper.ReservationMapper">
 
-    <!-- 통합예약 INSERT: reservationId를 selectKey로 미리 뽑아 DTO에 주입 -->
-    <insert id="insertReservation" parameterType="reservationdto">
+    <insert id="insertReservation" parameterType="reservationDTO">
         <selectKey keyProperty="reservationId" resultType="long" order="BEFORE">
             SELECT seqReservation.NEXTVAL FROM dual
         </selectKey>
@@ -24,15 +23,13 @@
             #{reservationId},
             #{userId},
             #{userRouteId},
-            NVL(#{statusId}, 1),  <!-- 기본값: 예약요청(1) -->
-            #{reservationPrice},
+            NVL(#{statusId}, 1),  #{reservationPrice},
             TO_DATE(#{reservationStartDate}, 'YYYY-MM-DD'),
             TO_DATE(#{reservationEndDate},   'YYYY-MM-DD')
-        )
+        )	
     </insert>
 
-    <!-- 객실예약 INSERT (필수) -->
-    <insert id="insertAccomReservation" parameterType="accomreservationdto">
+    <insert id="insertAccomReservation" parameterType="accomReservationDTO">
         <selectKey keyProperty="accomReservationId" resultType="long" order="BEFORE">
             SELECT seqAccomReservation.NEXTVAL FROM dual
         </selectKey>
@@ -51,8 +48,7 @@
         ) VALUES (
             #{accomReservationId},
             #{roomId},
-            #{reservationId},        <!-- 통합예약 PK FK -->
-            #{userRouteId},
+            #{reservationId},      #{userRouteId},
             #{statusId},
             #{guestCount},
             #{roomTotalPrice},
@@ -62,8 +58,7 @@
         )
     </insert>
 
-    <!-- 차량예약 INSERT (선택) -->
-    <insert id="insertCarReservation" parameterType="carreservationdto">
+    <insert id="insertCarReservation" parameterType="carReservationDTO">
         <selectKey keyProperty="carReservationId" resultType="long" order="BEFORE">
             SELECT seqCarReservation.NEXTVAL FROM dual
         </selectKey>
@@ -83,8 +78,7 @@
         ) VALUES (
             #{carReservationId},
             #{carId},
-            #{reservationId},        <!-- 통합예약 PK FK -->
-            #{userRouteId},
+            #{reservationId},      #{userRouteId},
             #{statusId},
             TO_DATE(#{pickupDate},   'YYYY-MM-DD'),
             TO_DATE(#{dropoffDate},  'YYYY-MM-DD'),
