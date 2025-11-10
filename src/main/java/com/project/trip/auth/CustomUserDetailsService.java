@@ -5,18 +5,10 @@ import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-
-<<<<<<< HEAD
-import com.project.trip.allplace.mapper.MemberMapper;
-import com.project.trip.model.CustomUser;
-import com.project.trip.model.UserDTO;
-=======
 import com.project.trip.mypage.mapper.MemberMapper;
 import com.project.trip.mypage.model.CustomUser;
 import com.project.trip.mypage.model.UserDTO;
 
-
->>>>>>> dev
 
 
 

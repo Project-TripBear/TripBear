@@ -4,35 +4,8 @@
   "https://mybatis.org/dtd/mybatis-3-config.dtd">
 
 <configuration>
-<<<<<<< HEAD
- 	<typeAliases>
- 		<package name="com.project.trip.board.notice.model"/>
- 		<package name="com.project.trip.reservation.model"/>
-        <package name="com.project.trip.reservation.model"/>
-        <package name="com.project.trip.reservation.model" />
- 	</typeAliases>
-=======
 
-<<<<<<< HEAD
-	<typeAliases>
-		<package name="com.project.trip.reservation.model"/>
-	</typeAliases>
-
-=======
-	<!--XML Mapper에서 사용중인 클래스의 별칭  -->
-<<<<<<< HEAD
-	<!-- <typeAliases>
-		<typeAlias type="com.test.project.model.UserDTO" alias="udto" />	
-		<typeAlias type="com.test.project.model.BoardDTO" alias="bdto" />	
-	</typeAliases>
- -->
- 
- 	<typeAliases>
- 		<package name="com.project.trip.board.routepost.model"/>	
- 	</typeAliases>
-=======
->>>>>>> feature/mypage
- 	<typeAliases>
+<typeAliases>
  		<typeAlias type="com.project.trip.mypage.model.UserDTO" alias="userdto" />	
  		<typeAlias type="com.project.trip.allplace.model.KeywordLinkDTO" alias="keywordlinkdto"/>
  		<typeAlias type="com.project.trip.allplace.model.PlaceDTO" alias="placedto"/>
@@ -41,9 +14,9 @@
  		<typeAlias type="com.project.trip.reservation.model.AccomReservationDTO" alias="accomreservationdto" />
  		<typeAlias type="com.project.trip.reservation.model.ReservationDTO" alias="reservationdto" />
  		<typeAlias type="com.project.trip.reservation.model.CarReservationDTO" alias="carreservationdto" />
+ 		<package name="com.project.trip.board.notice.model"/>
+ 		<package name="com.project.trip.reservation.model"/>
+ 		<package name="com.project.trip.board.routepost.model"/>
  	</typeAliases>
  
-
->>>>>>> dev
->>>>>>> 59657f53e4aac7282f0eeac87715ace7e15a5121
 </configuration>

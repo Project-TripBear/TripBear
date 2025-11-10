@@ -38,7 +38,7 @@
 
 	<bean id="sessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="dataSource"/>
-		<property name="mapperLocations" value="classpath*:mappers/*.xml" />
+		<property name="mapperLocations" value="classpath:mappers/*.xml"/>
 		<property name="configLocation" value="classpath:config/mybatis-config.xml"/>
 	</bean>
 	
@@ -62,13 +62,8 @@
         <property name="dataSource" ref="dataSource"/>
     </bean>
 
-<<<<<<< HEAD
-	<mybatis-spring:scan base-package="com.project.trip.reservation.mapper"/>
-	
-=======
     <!-- 2. @Transactional 어노테이션을 '작동'시키기 위한 설정 -->
     <!-- transaction-manager="transactionManager"는 위에서 정의한 bean의 id와 일치시킵니다. -->
     <tx:annotation-driven transaction-manager="transactionManager"/>
->>>>>>> 59657f53e4aac7282f0eeac87715ace7e15a5121
 
 </beans>

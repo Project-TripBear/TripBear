@@ -63,16 +63,10 @@
                 	<a href="${pageContext.request.contextPath}/member/login.do" class="btn-login">로그인</a>
                     <a href="${pageContext.request.contextPath}/member/register.do" class="btn-login">회원가입</a>
                 </sec:authorize>
-<<<<<<< HEAD
-                <%-- 로그인 상태일 때 --%>
-                <sec:authorize access="isAuthenticated()">
-					<a href="${pageContext.request.contextPath}/user/mypage.do" class="btn-logout">마이페이지</a>
-=======
           
                <%-- 로그인 상태일 때 --%>
                 <sec:authorize access="isAuthenticated()">
 					<a href="${pageContext.request.contextPath}/member/mypage" class="btn-logout">마이페이지</a>
->>>>>>> 59657f53e4aac7282f0eeac87715ace7e15a5121
              
              		<form action="${pageContext.request.contextPath}/member/logout" method="POST" style="display: inline;">
 
@@ -92,9 +86,7 @@
     </div>
 </header>
 
- 
 <%-- 모바일 메뉴 패널 --%>
-<%--
 <div id="mobile-menu" class="mobile-menu-panel">
     <div class="menu-header">
         <div class="logo">
@@ -106,12 +98,8 @@
     </div>
 
     <nav class="mobile-nav-links">
-<<<<<<< HEAD
-        여행정보 드롭다운
-=======
      
          <%-- 여행정보 드롭다운 --%>
->>>>>>> 59657f53e4aac7282f0eeac87715ace7e15a5121
         <div class="mobile-nav-item has-dropdown">
             <a href="#" class="dropdown-toggle">여행정보 <i class="fa-solid fa-chevron-down dropdown-arrow"></i></a>
             <div class="mobile-sub-menu">
@@ -123,15 +111,9 @@
                 <a href="#">시기별 축제/행사</a>
             </div>
         </div>
-<<<<<<< HEAD
-        여행루트 (단일 링크)
-        <a href="${pageContext.request.contextPath}/route/mainroute.do" class="mobile-nav-item">여행루트</a>
-        게시판 드롭다운
-=======
         <%-- 여행루트 (단일 링크) --%>
         <a href="${pageContext.request.contextPath}/route/mainroute" class="mobile-nav-item">여행루트</a>
         <%-- 게시판 드롭다운 --%>
->>>>>>> 59657f53e4aac7282f0eeac87715ace7e15a5121
         <div class="mobile-nav-item has-dropdown">
   
                  <a href="#" class="dropdown-toggle">게시판 <i class="fa-solid fa-chevron-down dropdown-arrow"></i></a>
@@ -144,13 +126,8 @@
                 <a href="${pageContext.request.contextPath}/board/list">여행 용품</a>
             </div>
         </div>
-<<<<<<< HEAD
-        공지사항 (단일 링크)
-        <a href="${pageContext.request.contextPath}/list.do" class="mobile-nav-item">공지사항</a>
-=======
         <%-- 공지사항 (단일 링크) --%>
         <a href="<c:url value='/notice/list'/>" class="mobile-nav-item">공지사항</a>
->>>>>>> 59657f53e4aac7282f0eeac87715ace7e15a5121
     </nav>
     
     <div class="menu-footer">
@@ -165,5 +142,4 @@
             <a href="${pageContext.request.contextPath}/member/login" class="login-link">로그인</a>
         </sec:authorize>
     </div>
-</div> 
---%>
+</div>

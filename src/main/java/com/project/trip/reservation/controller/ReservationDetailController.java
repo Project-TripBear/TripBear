@@ -16,12 +16,12 @@ public class ReservationDetailController {
 	@Autowired
 	private ReservationService reservationService;
 	
-	@GetMapping("/reservation/detail.do")
+	@GetMapping("/detail.do")
 	public ModelAndView detail(HttpServletRequest request) throws Exception {
 
-	    String reservationId = request.getParameter("reservationId");
+	    long reservationId = Long.parseLong(request.getParameter("reservationId"));
 
-	    IntegratedReservation data = reservationService.getIntegratedReservation(Long.parseLong(reservationId));
+	    IntegratedReservation data = reservationService.getIntegratedReservation(reservationId);
 
 	    ModelAndView mav = new ModelAndView("reservation.detail");
 	    mav.addObject("data", data);
