@@ -55,7 +55,7 @@
                     <a href="${pageContext.request.contextPath}/user/register.do" class="btn-login">회원가입</a>
                 </sec:authorize>
                 <%-- 로그인 상태일 때 --%>
-                <sec:authorize accoss="isAuthenticated()">
+                <sec:authorize access="isAuthenticated()">
 					<a href="${pageContext.request.contextPath}/user/mypage.do" class="btn-logout">마이페이지</a>
              
              		<form action="${pageContext.request.contextPath}/user/logout.do" method="POST" style="display: inline;">
@@ -73,7 +73,9 @@
     </div>
 </header>
 
+ 
 <%-- 모바일 메뉴 패널 --%>
+<%--
 <div id="mobile-menu" class="mobile-menu-panel">
     <div class="menu-header">
         <div class="logo">
@@ -85,7 +87,7 @@
     </div>
 
     <nav class="mobile-nav-links">
-        <%-- 여행정보 드롭다운 --%>
+        여행정보 드롭다운
         <div class="mobile-nav-item has-dropdown">
             <a href="#" class="dropdown-toggle">여행정보 <i class="fa-solid fa-chevron-down dropdown-arrow"></i></a>
             <div class="mobile-sub-menu">
@@ -96,9 +98,9 @@
                 <a href="#">시기별 축제/행사</a>
             </div>
         </div>
-        <%-- 여행루트 (단일 링크) --%>
+        여행루트 (단일 링크)
         <a href="${pageContext.request.contextPath}/route/mainroute.do" class="mobile-nav-item">여행루트</a>
-        <%-- 게시판 드롭다운 --%>
+        게시판 드롭다운
         <div class="mobile-nav-item has-dropdown">
             <a href="#" class="dropdown-toggle">게시판 <i class="fa-solid fa-chevron-down dropdown-arrow"></i></a>
             <div class="mobile-sub-menu">
@@ -109,7 +111,7 @@
                 <a href="${pageContext.request.contextPath}/board/list.do">여행 용품</a>
             </div>
         </div>
-        <%-- 공지사항 (단일 링크) --%>
+        공지사항 (단일 링크)
         <a href="${pageContext.request.contextPath}/list.do" class="mobile-nav-item">공지사항</a>
     </nav>
     
@@ -124,4 +126,5 @@
             <a href="${pageContext.request.contextPath}/user/login.do" class="login-link">로그인</a>
         </sec:authorize>
     </div>
-</div>
+</div> 
+--%>

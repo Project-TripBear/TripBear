@@ -22,6 +22,8 @@ public class AccomReservationDTO {
     
     private Long reservationId;
     private String accomName;
+    private String roomName;
+
 
 
 }

@@ -1,8 +1,11 @@
 package com.project.trip.reservation.mapper;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
 
 import com.project.trip.reservation.model.AccomReservationDTO;
+import com.project.trip.reservation.model.AccomRoomCardDTO;
 import com.project.trip.reservation.model.CarReservationDTO;
 import com.project.trip.reservation.model.ReservationDTO;
 
@@ -23,5 +26,7 @@ public interface ReservationMapper {
 	ReservationDTO findReservationById(Long reservationId);
 
 	AccomReservationDTO findAccomByReservationId(Long reservationId);
+	
+	List<AccomRoomCardDTO> selectRoomsByRegion(String region);
     
 }

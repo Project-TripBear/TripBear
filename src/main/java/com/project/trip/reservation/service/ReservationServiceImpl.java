@@ -1,12 +1,15 @@
 package com.project.trip.reservation.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.project.trip.reservation.mapper.ReservationMapper;
 import com.project.trip.reservation.model.AccomReservationDTO;
+import com.project.trip.reservation.model.AccomRoomCardDTO;
 import com.project.trip.reservation.model.CarReservationDTO;
-import com.project.trip.reservation.model.IntegratedReservationResponse;
+import com.project.trip.reservation.model.IntegratedReservation;
 import com.project.trip.reservation.model.ReservationDTO;
 
 import lombok.RequiredArgsConstructor;
@@ -50,9 +53,14 @@ public class ReservationServiceImpl implements ReservationService {
 	    ReservationDTO reservation = reservationMapper.findReservationById(reservationId);
 	    AccomReservationDTO accom = reservationMapper.findAccomByReservationId(reservationId);
 	    CarReservationDTO car = reservationMapper.findCarByReservationId(reservationId);
-
+	    
 	    return new IntegratedReservation(reservation, accom, car);
 	}
+	
+	@Override
+    public List<AccomRoomCardDTO> findRoomsByRegion(String region) throws Exception {
+        return reservationMapper.selectRoomsByRegion(region);
+    }
 
 
 

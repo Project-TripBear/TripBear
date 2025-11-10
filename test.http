@@ -23,4 +23,7 @@ Content-Type: application/json
   "carReservation": null
 }
 
+GET http://localhost:8080/trip/api/reservation/9
+
+
 
