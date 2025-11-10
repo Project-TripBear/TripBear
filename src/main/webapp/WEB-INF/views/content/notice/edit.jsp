@@ -11,16 +11,16 @@
         <form action="<c:url value="/notice/edit"/>" method="POST">
             <sec:csrfInput />
             <%-- 어떤 글을 수정하는지 ID가 반드시 필요합니다. --%>
-            <input type="hidden" name="noticeId" value="${notice.noticeId}">
+            <input type="hidden" name="noticePostId" value="${notice.noticePostId}">
             
             <div class="form-group">
                 <label for="title">제목</label>
-                <input type="text" id="title" name="title" class="form-control" value="${notice.title}" required>
+                <input type="text" id="title" name="title" class="form-control" value="${notice.noticeHeader}" required>
             </div>
             
             <div class="form-group">
                 <label for="content">내용</label>
-                <textarea id="content" name="content" class="form-control" rows="10" required>${notice.content}</textarea>
+                <textarea id="content" name="content" class="form-control" rows="10" required>${notice.noticeContent}</textarea>
             </div>
             
             <div class="form-actions">
