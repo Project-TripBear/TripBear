@@ -2,13 +2,19 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
-       xmlns:tx="http://www.springframework.org/schema/tx"
-       xmlns:context="http://www.springframework.org/schema/context" 
+       xmlns:tx="http://www.springframework.org/schema/tx" 
+       xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="
-           http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
-           http://mybatis.org/schema/mybatis-spring https://mybatis.org/schema/mybatis-spring.xsd
-           http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
-           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+           http://www.springframework.org/schema/beans
+           https://www.springframework.org/schema/beans/spring-beans.xsd
+           http://mybatis.org/schema/mybatis-spring
+           https://mybatis.org/schema/mybatis-spring.xsd
+
+           http://www.springframework.org/schema/tx
+           http://www.springframework.org/schema/tx/spring-tx.xsd
+           http://www.springframework.org/schema/context 
+           http://www.springframework.org/schema/context/spring-context.xsd"> 
+    <context:property-placeholder location="classpath:application.properties" />
 
 	<bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
 
@@ -35,19 +41,18 @@
 		<property name="mapperLocations" value="classpath:mappers/*.xml"/>
 		<property name="configLocation" value="classpath:config/mybatis-config.xml"/>
 	</bean>
-
-	<mybatis-spring:scan base-package="com.project.trip.allplace.mapper"/>
 	
 	<mybatis-spring:scan 
         base-package="com.project.trip.allplace.mapper, 
                       com.project.trip.board.notice.mapper, 
-                      com.project.trip.airoute.mapper"/>
+                      com.project.trip.airoute.mapper,
+		      com.project.trip.mypage.mapper"/>
 	
 	<context:component-scan base-package="com.project.trip">
         <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
     </context:component-scan>
 	
-	
+	<mybatis-spring:scan base-package="com.project.trip"/>
 	
 	<bean id="restTemplate" class="org.springframework.web.client.RestTemplate" />
 	

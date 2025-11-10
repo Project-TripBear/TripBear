@@ -60,15 +60,16 @@
  class="user-info">
             	<%-- 로그인 상태가 아닐 때 --%>
                 <sec:authorize access="isAnonymous()">
-                	<a href="${pageContext.request.contextPath}/user/login" class="btn-login">로그인</a>
-                    <a href="${pageContext.request.contextPath}/user/register" class="btn-login">회원가입</a>
+                	<a href="${pageContext.request.contextPath}/member/login.do" class="btn-login">로그인</a>
+                    <a href="${pageContext.request.contextPath}/member/register.do" class="btn-login">회원가입</a>
                 </sec:authorize>
           
                <%-- 로그인 상태일 때 --%>
                 <sec:authorize access="isAuthenticated()">
-					<a href="${pageContext.request.contextPath}/user/mypage" class="btn-logout">마이페이지</a>
+					<a href="${pageContext.request.contextPath}/member/mypage" class="btn-logout">마이페이지</a>
              
-             		<form action="${pageContext.request.contextPath}/user/logout" method="POST" style="display: inline;">
+             		<form action="${pageContext.request.contextPath}/member/logout" method="POST" style="display: inline;">
+
              			<sec:csrfInput/>
              			<button type="submit">로그아웃</button>
              		</form> 
@@ -134,11 +135,11 @@
         
     
          <sec:authorize access="isAuthenticated()">
-            <a href="${pageContext.request.contextPath}/user/mypage" class="icon-link profile-link" aria-label="내 프로필"><i class="fa-solid fa-user"></i></a>
+            <a href="${pageContext.request.contextPath}/member/mypage" class="icon-link profile-link" aria-label="내 프로필"><i class="fa-solid fa-user"></i></a>
         </sec:authorize>
         
         <sec:authorize access="isAnonymous()">
-            <a href="${pageContext.request.contextPath}/user/login" class="login-link">로그인</a>
+            <a href="${pageContext.request.contextPath}/member/login" class="login-link">로그인</a>
         </sec:authorize>
     </div>
 </div>
