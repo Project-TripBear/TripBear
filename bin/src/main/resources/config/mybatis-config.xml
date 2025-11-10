@@ -11,10 +11,6 @@
 		<typeAlias type="com.test.project.model.BoardDTO" alias="bdto" />	
 	</typeAliases>
  -->
- 
- 	<typeAliases>
- 		<package name="com.project.trip.board.routepost.model"/>	
- 	</typeAliases>
  	<typeAliases>
  		<typeAlias type="com.project.trip.allplace.model.KeywordLinkDTO" alias="keywordlinkdto"/>
  		<typeAlias type="com.project.trip.allplace.model.PlaceDTO" alias="placedto"/>
