@@ -24,6 +24,8 @@
 				</tr>
 			</thead>
 			<tbody>
+				<jsp:useBean id="now" class="java.util.Date"/>
+			
 				<c:if test="${empty list}">
 				<tr>
 					<td colspan="5">게시물이 없습니다.</td>
@@ -37,7 +39,39 @@
 						<a href="<c:url value='/notice/view?id=${notice.noticePostId}'/>">${notice.noticeHeader}</a>
 					</td>
 					<td>관리자</td>
-					<td>${notice.noticeRegdate}</td>
+					<td>
+						<c:set var="regDate" value="${notice.noticeRegdate}" />
+						
+						<c:set var="diffSeconds" value="${(now.time - regDate.time) / 1000}" />
+						<c:set var="diffMinutes" value="${diffSeconds / 60}" />
+						<c:set var="diffHours" value="${diffSeconds / 3600}" />
+						<c:set var="diffDays" value="${diffSeconds / 86400}" />
+						
+						
+						<c:choose>
+							<%-- 규칙 0: 1분 미만일 경우 --%>
+							<c:when test="${diffMinutes < 1}">
+								방금 전
+							</c:when>
+							<%-- 규칙 1: 1시간 미만일 경우 (1분 ~ 59분 전) --%>
+							<c:when test="${diffMinutes < 60}">
+								<fmt:formatNumber value="${diffMinutes}" maxFractionDigits="0"/>분 전
+							</c:when>
+							<%-- 규칙 2: 1일 미만일 경우 (1시간 ~ 23시간 전) --%>
+							<c:when test="${diffHours < 24}">
+								<fmt:formatNumber value="${diffHours}" maxFractionDigits="0"/>시간 전
+							</c:when>
+							<%-- 규칙 3: 3일 이하일 경우 (1일 ~ 3일 전) --%>
+							<c:when test="${diffDays <= 3}">
+								<fmt:formatNumber value="${diffDays}" maxFractionDigits="0"/>일 전
+							</c:when>
+							<%-- 규칙 4: 3일 초과 시 --%>
+							<c:otherwise>
+								<fmt:formatDate value="${regDate}" pattern="yyyy-MM-dd"/>
+							</c:otherwise>
+						</c:choose>	
+					</td>
+					
                     <td>${notice.noticeViewCount}</td>
 				</tr>
 				</c:forEach>
@@ -64,6 +98,3 @@
 			</div>
 		</div>
 	</main>
-
-
-    <script src="${pageContext.request.contextPath}/asset/js/main.js"></script>	

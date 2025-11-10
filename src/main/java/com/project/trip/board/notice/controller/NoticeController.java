@@ -30,7 +30,7 @@ public class NoticeController {
 		
 		model.addAttribute("list", list);
 		
-		return "notice/list";
+		return "notice.list";
 	}
 	
 	@GetMapping("/view")
@@ -40,14 +40,14 @@ public class NoticeController {
 		
 		model.addAttribute("notice", notice);
 		
-		return "notice/view";
+		return "notice.view";
 	}
 
 	@GetMapping("/add")
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public String addForm() {
 		
-		return "notice/add";
+		return "notice.add";
 	}
 
 	@PostMapping("/add")
@@ -69,7 +69,7 @@ public class NoticeController {
 		
 		model.addAttribute("notice", notice);
 		
-		return "notice/edit";
+		return "notice.edit";
 	}
 
 	@PostMapping("/edit")

@@ -5,9 +5,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import com.test.project.mapper.MemberMapper;
-import com.test.project.model.CustomUser;
-import com.test.project.model.UserDTO;
+import com.project.trip.allplace.mapper.MemberMapper;
+import com.project.trip.model.CustomUser;
+import com.project.trip.model.UserDTO;
+
+
 
 //User > CustomUser 사용
 public class CustomUserDetailsService implements UserDetailsService {

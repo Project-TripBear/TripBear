@@ -8,7 +8,7 @@
     <div class="notice-form-container">
         <h2>공지사항 수정</h2>
         
-        <form action="<c:url value="/notice/edit.do"/>" method="POST">
+        <form action="<c:url value="/notice/edit"/>" method="POST">
             <sec:csrfInput />
             <%-- 어떤 글을 수정하는지 ID가 반드시 필요합니다. --%>
             <input type="hidden" name="noticeId" value="${notice.noticeId}">

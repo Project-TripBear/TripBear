@@ -8,7 +8,7 @@
     <div class="notice-form-container">
         <h2>공지사항 작성</h2>
         
-        <form action="<c:url value="/notice/add.do"/>" method="POST">
+        <form action="<c:url value="/notice/add"/>" method="POST">
             <sec:csrfInput />
             
             <div class="form-group">
@@ -18,12 +18,12 @@
             
             <div class="form-group">
                 <label for="content">내용</label>
-                <textarea id="content" name="content" class="form-control" rows="10" required></textarea>
+                <textarea id="content" name="content" class="form-control" rows="10" required></textSarea>
             </div>
             
             <div class="form-actions">
                 <button type="submit" class="btn btn-primary">등록</button>
-                <button type="button" class="btn" onclick="location.href='<c:url value="/notice/list.do"/>';">취소</button>
+                <button type="button" class="btn" onclick="location.href='<c:url value="/notice/list"/>';">취소</button>
             </div>
         </form>
     </div>

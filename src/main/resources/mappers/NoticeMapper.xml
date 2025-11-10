@@ -5,7 +5,7 @@
 
 <mapper namespace="com.project.trip.board.notice.mapper.NoticeMapper">
 
-	<resultMap id="noticeResultMap" type="noticedto" >
+	<resultMap id="noticeResultMap" type="NoticeDTO" >
 		<id property="noticePostId" column="notice_post_id"/>
 		<result property="adminId" column="admin_id"/>
 		<result property="noticeHeader" column="notice_header"/>
@@ -43,7 +43,7 @@
 				where notice_post_id = #{noticePostId}
 	</update>
 	
-	<insert id="insert" parameterType="noticedto">
+	<insert id="insert" parameterType="NoticeDTO">
 		insert into tblNoticePost (
 			notice_post_id, admin_id, notice_header, notice_content, 
 			notice_view_count, notice_regdate
@@ -53,7 +53,7 @@
 			#{adminId}, #{noticeHeader}, #{noticeContent}, 0 ,sysdate)
 	</insert>
 	
-	<update id="update" parameterType="noticedto">
+	<update id="update" parameterType="NoticeDTO">
 		update tblNoticePost
 			set
 				notice_header = #{noticeHeader},

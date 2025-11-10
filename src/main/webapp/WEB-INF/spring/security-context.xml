@@ -23,20 +23,23 @@
 	<bean id="customUserDetailsService" class="com.project.trip.auth.CustomUserDetailsService"></bean>
 	
 	<security:http>
-		
+	
 		<!-- 허가 -->
+		<security:intercept-url pattern="/member/login" access="permitAll" />
+		<security:intercept-url pattern="/resources/**" access="permitAll" />
+		
 		<security:intercept-url pattern="/" access="permitAll" />
 		
-		<security:intercept-url pattern="/board/add" access="hasRole('ROLE_MEMBER')" />
-		<security:intercept-url pattern="/board/edit" access="hasRole('ROLE_MEMBER')" />
-		<security:intercept-url pattern="/board/del" access="hasRole('ROLE_MEMBER')" />
+		<security:intercept-url pattern="/*/add" access="hasRole('ROLE_MEMBER')" />
+		<security:intercept-url pattern="/*/edit" access="hasRole('ROLE_MEMBER')" />
+		<security:intercept-url pattern="/*/del" access="hasRole('ROLE_MEMBER')" />
 		
 		<!-- <security:intercept-url pattern="/member.do" access="hasRole('ROLE_MEMBER')" />
 		<security:intercept-url pattern="/admin.do" access="hasRole('ROLE_ADMIN')" /> -->
 		
 		
 		<!-- 8.1 403 처리(핸들러 사용) -->
-		<security:access-denied-handler ref="customAccessDeniedHandler"  />
+		<security:access-denied-handler ref="customAccessDeniedHandler"/>
 		
 		
 		<!-- 10. 로그아웃 처리 -->

@@ -5,9 +5,9 @@
 
 <configuration>
  	<typeAliases>
- 		<typeAlias type="com.project.trip.board.notice.model.NoticeDTO" alias="noticedto"/>
- 		<typeAlias type="com.project.trip.reservation.model.AccomReservationDTO" alias="accomreservationdto" />
-        <typeAlias type="com.project.trip.reservation.model.ReservationDTO" alias="reservationdto" />
-        <typeAlias type="com.project.trip.reservation.model.CarReservationDTO" alias="carreservationdto" />
+ 		<package name="com.project.trip.board.notice.model"/>
+ 		<package name="com.project.trip.reservation.model"/>
+        <package name="com.project.trip.reservation.model"/>
+        <package name="com.project.trip.reservation.model" />
  	</typeAliases>
 </configuration>
