@@ -13,6 +13,8 @@
 	<!-- 로그인 성공 핸들러  -->
 	<bean id="customLoginSuccessHandler" class="com.project.trip.auth.CustomLoginSuccessHandler"></bean>
 	
+	<!-- 로그인 실패 핸들러 -->
+	<bean id="customLoginFailureHandler" class="com.project.trip.auth.CustomLoginFailureHandler"></bean>
 	
 	<!-- 14.PasswordEncoder 빈 만들기(정식)  
 		- BCryptPasswordEncoder: blowfish 알고리즘
@@ -27,6 +29,7 @@
 		<!-- 허가 -->
 		<security:intercept-url pattern="/" access="permitAll" />
 		
+				
 		<security:intercept-url pattern="/board/add" access="hasRole('ROLE_MEMBER')" />
 		<security:intercept-url pattern="/board/edit" access="hasRole('ROLE_MEMBER')" />
 		<security:intercept-url pattern="/board/del" access="hasRole('ROLE_MEMBER')" />
@@ -43,7 +46,7 @@
 		<security:logout logout-url="/member/logout" invalidate-session="true" logout-success-url="/" delete-cookies=""  />
 		
 		<!-- 11. 로그인 성공 후 처리 핸들러 -->
-		<security:form-login login-page="/member/login" authentication-success-handler-ref="customLoginSuccessHandler" />
+		<security:form-login login-page="/member/login" login-processing-url="/login" authentication-success-handler-ref="customLoginSuccessHandler"  authentication-failure-handler-ref="customLoginFailureHandler"/>
 		
 	</security:http>	
 	

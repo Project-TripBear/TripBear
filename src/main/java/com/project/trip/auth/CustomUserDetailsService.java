@@ -1,13 +1,16 @@
 package com.project.trip.auth;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import com.project.trip.allplace.mapper.MemberMapper;
-import com.project.trip.model.CustomUser;
-import com.project.trip.model.UserDTO;
+import com.project.trip.mypage.mapper.MemberMapper;
+import com.project.trip.mypage.model.CustomUser;
+import com.project.trip.mypage.model.UserDTO;
+
+
 
 
 
@@ -29,8 +32,32 @@ public class CustomUserDetailsService implements UserDetailsService {
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		
 		UserDTO dto = mapper.get(username);
-		
-		return dto != null ? new CustomUser(dto) : null;
+		if (dto == null) {
+	        throw new UsernameNotFoundException("아이디를 찾을 수 없습니다."); // 사용자가 없는 경우
+	    }
+	    
+	    // 차단 상태일 때 DisabledException 발생시키기
+	    if (dto.getAuth().equals("DELETED") || dto.getAuth().equals("BANNED")) {
+	        
+	        String message = dto.getAuth().equals("DELETED") 
+	                       ? "탈퇴 처리된 계정입니다." 
+	                       : "관리자에 의해 차단된 계정입니다.";
+	                       
+	        // 💡 중요: DisabledException을 던져서 Handler가 이 상태를 인지하게 합니다.
+	        throw new DisabledException(message); 
+	    }
+	    
+	    return new CustomUser(dto);
+	    
+//		System.out.println("테스트 : " +dto);
+//		if(dto.getAuth().equals("DELETED") || dto.getAuth().equals("BANNED")) {
+//			
+//			System.out.println("차단된 아이디");
+//			
+//			return null;
+//		}
+//		
+//		return dto != null ? new CustomUser(dto) : null;
 	}
 	
 	
