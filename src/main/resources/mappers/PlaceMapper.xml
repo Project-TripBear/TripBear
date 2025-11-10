@@ -11,8 +11,8 @@
         SELECT 
             place_id        as "placeId",
             place_api_id    as "placeApiId",
-            place_name      as "name",       
-            place_address   as "address",    
+            place_name      as "name",      
+            place_address   as "address",   
             place_lat       as "latitude",
             place_lng       as "longitude",
             place_type_id   as "placeTypeId",
@@ -54,36 +54,36 @@
     
     <insert id="insertTouristSpot" parameterType="touristSpotDTO">
         INSERT INTO tblTouristSpot (
-	        place_id, 
-	        admission_fee, 
-	        opening_hours, 
-	        contact_info, 
-	        parking_info, 
-	        rest_day, 
-	        spot_overinfo
-	    ) values ( 
-	    	#{placeId}, 
-	    	#{admissionFee}, 
-	    	#{openingHours}, 
-	    	#{contactInfo}, 
-	    	#{parkingInfo}, 
-	    	#{restDay}, 
-	    	#{spotOverinfo})
+            place_id, 
+            admission_fee, 
+            opening_hours, 
+            contact_info, 
+            parking_info, 
+            rest_day, 
+            spot_overinfo
+        ) values ( 
+            #{placeId}, 
+            #{admissionFee}, 
+            #{openingHours}, 
+            #{contactInfo}, 
+            #{parkingInfo}, 
+            #{restDay}, 
+            #{spotOverinfo})
     </insert>
 
     <resultMap id="placeDetailResultMap" type="placeDTO">
-        <id     property="placeId"           column="place_id" />
-        <result property="placeApiId"        column="place_api_id" />
-        <result property="name"              column="place_name" />
-        <result property="address"           column="place_address" />
-        <result property="latitude"          column="place_lat" />
-        <result property="longitude"         column="place_lng" />
+        <id     property="placeId"          column="place_id" />
+        <result property="placeApiId"       column="place_api_id" />
+        <result property="name"             column="place_name" />
+        <result property="address"          column="place_address" />
+        <result property="latitude"         column="place_lat" />
+        <result property="longitude"        column="place_lng" />
         <result property="placeMainImageUrl" column="place_main_image_url" />
-        <result property="placeTypeId"       column="place_type_id" />
-        <result property="placeLocationId"   column="place_location_id" />
+        <result property="placeTypeId"      column="place_type_id" />
+        <result property="placeLocationId"  column="place_location_id" />
         
         <association property="touristSpotDetail" javaType="touristSpotDTO">
-            <id     property="placeId"       column="place_id"/>
+            <id     property="placeId"        column="place_id"/>
             <result property="spotOverinfo"  column="spot_overinfo" />
             <result property="admissionFee"  column="admission_fee" />
             <result property="openingHours"  column="opening_hours" />
@@ -104,7 +104,7 @@
             
             ts.spot_overinfo, ts.admission_fee, ts.opening_hours,
             ts.contact_info,  
-            ts.parking_info, 
+            ts.parking_info,  
             ts.rest_day
             
         FROM 

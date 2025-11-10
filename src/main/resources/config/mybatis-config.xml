@@ -4,7 +4,6 @@
   "https://mybatis.org/dtd/mybatis-3-config.dtd">
 
 <configuration>
-
 	<!--XML Mapper에서 사용중인 클래스의 별칭  -->
 	<!-- <typeAliases>
 		<typeAlias type="com.test.project.model.UserDTO" alias="udto" />	
