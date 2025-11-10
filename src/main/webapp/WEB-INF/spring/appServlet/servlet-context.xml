@@ -8,6 +8,7 @@
 		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
 
+<<<<<<< HEAD
 	<!-- DispatcherServlet Context: defines this servlet's request-processing 
 		infrastructure -->
 
@@ -48,4 +49,67 @@
 
 
 
+=======
+	<annotation-driven />
+
+	<resources mapping="/resources/**" location="/resources/" />
+
+<<<<<<< HEAD
+	<!-- Resolves views selected for rendering by @Controllers to .jsp resources in the /WEB-INF/views directory -->
+	<beans:bean id="tilesConfigurer" class="org.springframework.web.servlet.view.tiles3.TilesConfigurer">
+		<beans:property name="definitions">
+			<beans:list>
+				<beans:value>/WEB-INF/tiles.xml</beans:value> 
+			</beans:list>
+		</beans:property>
+	</beans:bean>
+	
+	<beans:bean id="tilesViewResolver" class="org.springframework.web.servlet.view.UrlBasedViewResolver">
+		<beans:property name="viewClass" value="org.springframework.web.servlet.view.tiles3.TilesView" />
+=======
+	<context:property-placeholder location="classpath:application.properties" />
+	
+	<context:component-scan base-package="com.project.trip.mypage.controller" />
+	<context:component-scan base-package="com.project.trip.allplace.controller" />
+	<context:component-scan base-package="com.test.tiles.controller" />
+	<context:component-scan base-package="com.test.project.controller" />
+
+
+	<beans:bean id="tilesViewResolver"
+		class="org.springframework.web.servlet.view.UrlBasedViewResolver">
+		<beans:property name="viewClass"
+			value="org.springframework.web.servlet.view.tiles3.TilesView" />
+>>>>>>> dev
+		<beans:property name="order" value="1" />
+	</beans:bean>
+	
+	<beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<beans:property name="prefix" value="/WEB-INF/views/" />
+		<beans:property name="suffix" value=".jsp" />
+<<<<<<< HEAD
+		<beans:property name="order" value="2" /> 
+	</beans:bean>
+	
+	<context:component-scan base-package="com.project.trip" use-default-filters="false">
+    	<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+	</context:component-scan>
+	
+	
+	
+>>>>>>> 59657f53e4aac7282f0eeac87715ace7e15a5121
 </beans:beans>
+=======
+		<beans:property name="order" value="2" />
+	</beans:bean>
+
+	<beans:bean id="tilesConfigurer"
+		class="org.springframework.web.servlet.view.tiles3.TilesConfigurer">
+		<beans:property name="definitions">
+			<beans:list>
+				<beans:value>/WEB-INF/tiles.xml</beans:value>
+			</beans:list>
+		</beans:property>
+	</beans:bean>
+	
+</beans:beans>
+>>>>>>> dev

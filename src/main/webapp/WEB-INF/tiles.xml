@@ -6,9 +6,37 @@
 	
 <tiles-definitions>
 	
+<<<<<<< HEAD
+	<definition name="main" template="/WEB-INF/views/layout/main.jsp">
+		<put-attribute name="header" value="/WEB-INF/views/inc/header.jsp"></put-attribute>
+		<put-attribute name="content" value="/WEB-INF/views/content/index.jsp"></put-attribute>
+	</definition>
+
 	<definition name="*.*" template="/WEB-INF/views/layout/main.jsp">
+<<<<<<< HEAD
 		<put-attribute name="header" value="/WEB-INF/views/inc/header.jsp" />
 		<put-attribute name="content" value="/WEB-INF/views/content/{1}/{2}.jsp" />
+=======
+		<put-attribute name="header" value="/WEB-INF/views/inc/header.jsp"></put-attribute>
+		<put-attribute name="content" value="/WEB-INF/views/content/{1}/{2}.jsp"></put-attribute>
 	</definition>
+
+	<definition name="mypage.*.*" template="/WEB-INF/views/layout/main.jsp">
+    	<put-attribute name="header" value="/WEB-INF/views/inc/header.jsp"></put-attribute>
+    	<put-attribute name="content" value="/WEB-INF/views/content/mypage/{1}/{2}.jsp"></put-attribute>
+>>>>>>> 59657f53e4aac7282f0eeac87715ace7e15a5121
+	</definition>
+
+	<definition name="admin.main" template="/WEB-INF/views/layout/admin-main.jsp">
+		<put-attribute name="header" value="/WEB-INF/views/inc/admin-header.jsp"/>
+		<put-attribute name="content" value="/WEB-INF/views/content/admin/index.jsp"/>
+	</definition>
+
+	<definition name="admin.*" template="/WEB-INF/views/layout/admin-feature.jsp">
+		<put-attribute name="header" value="/WEB-INF/views/inc/admin-header.jsp"/>
+		<put-attribute name="content" value="/WEB-INF/views/content/admin/{1}/{2}.jsp"/>
+	</definition>
+
 	
+>>>>>>> dev
 </tiles-definitions>
