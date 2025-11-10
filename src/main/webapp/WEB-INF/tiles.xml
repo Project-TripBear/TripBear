@@ -5,9 +5,8 @@
 	"http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
 	
 <tiles-definitions>
-	
-<<<<<<< HEAD
-	<definition name="main" template="/WEB-INF/views/layout/main.jsp">
+
+<definition name="main" template="/WEB-INF/views/layout/main.jsp">
 		<put-attribute name="header" value="/WEB-INF/views/inc/header.jsp"></put-attribute>
 		<put-attribute name="content" value="/WEB-INF/views/content/index.jsp"></put-attribute>
 	</definition>
@@ -32,6 +31,4 @@
 		<put-attribute name="content" value="/WEB-INF/views/content/admin/{1}/{2}.jsp"/>
 	</definition>
 
-	
->>>>>>> dev
 </tiles-definitions>
