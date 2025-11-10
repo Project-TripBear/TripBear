@@ -7,6 +7,7 @@ import java.util.Random;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,6 +29,7 @@ public class MailController {
     @Autowired
     private final MailSender mailSender;
     private final MemberMapper memberMapper;
+    private final PasswordEncoder passwordEncoder;
 
 
     @PostMapping("/sendmail")
@@ -132,6 +134,58 @@ public class MailController {
 		} catch (Exception e) {
 			System.out.println("MailController.findId() Error");
 			e.printStackTrace(); 
+		}
+		
+		response.put("result", result);
+		return response;
+	}
+	
+	@PostMapping("/findpw")
+	@ResponseBody
+	public Map<String, Integer> findPw(@RequestParam("id") String id,
+									   @RequestParam("email") String email) {
+		
+		Map<String, Integer> response = new HashMap<>();
+		int result = 0; // 0: 실패, 1: 성공
+		
+		try {
+			// 1. DB에서 아이디와 이메일이 일치하는 사용자가 있는지 확인
+			// (UserDTO를 재사용하여 파라미터 전달)
+			UserDTO checkDto = new UserDTO();
+			checkDto.setId(id);
+			checkDto.setEmail(email);
+			
+			// (MemberMapper에 userCheckByIdAndEmail 쿼리가 필요합니다)
+			int userCount = memberMapper.userCheckByIdAndEmail(checkDto);
+			
+			// 2. 일치하는 사용자가 있을 경우(1)에만
+			if (userCount > 0) {
+				
+				// 3. 임시 비밀번호 생성 (6자리 숫자)
+				Random rnd = new Random();
+				int validNumber = rnd.nextInt(900000) + 100000;
+				String strNumber = String.valueOf(validNumber);
+
+				// 4. (★중요★) DB에 저장하기 전에 Spring Security로 암호화
+				String encodedNewPw = passwordEncoder.encode(strNumber);
+
+				// 5. DB에 암호화된 새 비밀번호로 업데이트
+				UserDTO updateDto = new UserDTO();
+				updateDto.setId(id);
+				updateDto.setEmail(email);
+				updateDto.setPw(encodedNewPw); // 암호화된 비밀번호
+				
+				// (MemberMapper에 PwUpdate 쿼리가 필요합니다)
+				memberMapper.PwUpdate(updateDto);
+
+				// 6. 사용자에게는 '암호화되지 않은' 원본 번호를 메일로 발송
+				mailSender.sendPwVerificationMail(email, strNumber);
+				result = 1; // 성공
+			}
+			
+		} catch (Exception e) {
+			System.out.println("MailController.findPw() Error");
+			e.printStackTrace();
 		}
 		
 		response.put("result", result);

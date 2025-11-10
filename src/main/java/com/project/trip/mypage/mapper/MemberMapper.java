@@ -14,6 +14,10 @@ public interface MemberMapper {
 
 	String idSelect(UserDTO dto);
 
+	void PwUpdate(UserDTO updateDto);
+
+	int userCheckByIdAndEmail(UserDTO checkDto);
+
 
 
 }

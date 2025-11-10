@@ -44,11 +44,36 @@ public class AddMember {
 
 	
 	@Test
-	public void testMapper() {
+	public void getTest() {
 		
 		assertNotNull(mapper);
 		
 		UserDTO dto = mapper.get("kimminjun");
+		
+		System.out.println("dto : " + dto);
+		
+	}
+	
+	@Test
+	public void addTest() {
+		
+		assertNotNull(mapper);
+		
+		UserDTO dto = new UserDTO();
+		dto.setId("cat");
+		dto.setPw(encoder.encode("1111"));
+		dto.setSsn("111111-1111111");
+		dto.setPhoneNumber("010-1111-1111");
+		dto.setNickName("고양이11");
+		dto.setName("고양이");
+		dto.setEmail("cat@gmail.com");
+		dto.setGender("f");
+		dto.setAddress("서울시 강남구");
+		dto.setHeight("175");
+		dto.setWeight("75");
+		dto.setHealthGoals("11");
+		
+		mapper.add(dto);
 		
 		System.out.println("dto : " + dto);
 		

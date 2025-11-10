@@ -77,6 +77,12 @@ public class MemberController {
 		return "mypage.member.idselect";
 	}
 	
+	@GetMapping("/member/findpw")
+	public String findPwForm() {
+		
+		return "mypage.member.pwselect";
+	}
+	
 	
 	 
 	

@@ -48,6 +48,16 @@ WHERE
 	<select id="idSelect" resultType="String" parameterType="userdto">
     SELECT username FROM tblUser WHERE email = #{email} AND real_name = #{name}
 </select>
+
+<select id="userCheckByIdAndEmail" parameterType="userdto" resultType="int">
+    SELECT COUNT(*) FROM tblUser 
+    WHERE username = #{id} AND email = #{email}
+</select>
+
+<update id="PwUpdate" parameterType="userdto">
+    UPDATE tblUser SET password = #{pw} 
+    WHERE username = #{id} AND email = #{email}
+</update>
 </mapper>
 
 

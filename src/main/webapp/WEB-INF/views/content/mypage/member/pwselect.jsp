@@ -5,10 +5,6 @@
 <html lang="ko">
 <head>
 	<meta charset="UTF-8">
-	
-	<style>
-	
-	</style>
 </head>
 <body>
 	
@@ -16,7 +12,7 @@
 	<div id="main">
 		<h1>비밀번호 찾기</h1>
 		
-		<form method="POST" action="/main/user/idsearch.do">
+		<form>
 		<table class="borad-title">
 			
 			<tr>
@@ -29,187 +25,77 @@
 				<td>
 					<div>
 						<input type="email" name="email" id="email" required class="long">
-						<input type="button" value="인증 메일 보내기" id="btnMail">
-					</div>
-					<div style="margin-top: 10px;">
-						<input type="text" id="validNumber" class="short" disabled maxlength="5">
-						<input type="button" value="입력하기" id="btnValid" disabled>
-						<span id="remainTime" style="display: none;">05:00</span>
-					</div>
-				</td>
+						
+						</div>
+					
+					</td>
 			</tr>
-			
 			
 		</table>
 		
 		<div>
-			<button type="button" class="btn" onclick="location.href='/main/index.do';">돌아가기</button>
-			<button type="button" class="btn" id="btnPwSearch">비밀번호 찾기</button>
-
+			<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/member/login';">돌아가기</button>
+			<button type="button" class="btn" id="btnPwSearch">임시 비밀번호 발급</button>
 		</div>
+		
+		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
 	</form>
 	</div>
 	
 	
+	<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
 <script>
+	
+	// (★) 이메일 인증 관련 JS 코드 (btnMail, btnValid, timer 등) 모두 제거
 
-    
-    
-    
-	
-	let timer = 0;
-
-	$('#btnMail').click(() => {
-		
-		if ($('#email').val().trim() != '') {
-			
-			$.ajax({
-				type: 'POST',
-				url: '/main/user/sendmail.do',
-				data: {
-					email: $('#email').val().trim()
-				},
-				dataType: 'json',
-				success: function(result) {
-					
-					if (result.result > 0) {
-						
-						//alert('성공');
-						$('#validNumber').prop('disabled', false);
-						$('#btnValid').prop('disabled', false);
-						$('#remainTime').show();
-						
-						//타이머 동작
-						const remainTime = new Date();
-						remainTime.setMinutes(0);
-						remainTime.setSeconds(300);
-						
-						timer = setInterval(() => {
-							
-							remainTime.setSeconds(remainTime.getSeconds() - 1);
-							$('#remainTime').text(
-								String(remainTime.getMinutes()).padStart(2, '0')
-								+ ':'
-								+ String(remainTime.getSeconds()).padStart(2, '0')
-							);
-							
-							if ($('#remainTime').text() == '00:00') {
-								
-								
-								//인증 시간 만료
-								$.ajax({
-									type: 'POST',
-									url: '/main/user/delmail.do',
-									dataType: 'json',
-									success: function(result) {
-																					
-										if (result.result > 0) {
-											
-											$('#validNumber').val('');
-											$('#btnValid').prop('disabled', true);
-											$('#validNumber').prop('disabled', true);
-											$('#remainTime').hide();
-											
-											clearInterval(timer);
-											timer = 0;
-											
-										}
-										
-									},
-									error: function(a,b,c) {
-										console.log(a,b,c);
-									}
-								});
-								
-							}
-					
-						}, 1000);
-						
-					} else {
-						alert('인증 메일 발송에 실패했습니다.');
-					}
-					
-				},
-				error: function(a,b,c) {
-					console.log(a,b,c);
-				}
-			});
-			
-		} else {
-			alert('이메일을 입력하세요.');
-		}		
-		
-	});
-	
-	$('#btnValid').click(() => {
-		
-		$.ajax({
-			type: 'POST',
-			url: '/main/user/validmail.do',
-			data: {
-				validNumber: $('#validNumber').val()
-			},
-			dataType: 'json',
-			success: function(result) {
-				
-				if (result.result > 0) {
-					 alert('인증에 성공했습니다.');
-		                isValid = true;
-		                
-		                clearInterval(timer); 
-		                $('#remainTime').hide();
-		                $('#validNumber').prop('disabled', true); 
-		                $('#btnValid').prop('disabled', true); 
-					
-				} else {
-					alert('인증 번호가 틀립니다.');
-				}
-				
-			},
-			error: function(a,b,c) {
-				console.log(a,b,c);
-			}
-		});
-		
-	});
-	
-	let isValid = false;
 	
 	$('#btnPwSearch').click(() => {
+		
+		// (★) CSRF 토큰과 ContextPath를 '클릭 시점'에 읽어옵니다.
+		const contextPath = '${pageContext.request.contextPath}';
+		const csrfToken = $('input[name="${_csrf.parameterName}"]').val();
+		const csrfHeader = '${_csrf.parameterName}';
 
-	    // 1. 이메일 인증을 완료했는지 먼저 확인합니다.
-	    if (!isValid) {
-	        alert('이메일 인증을 진행하세요.');
-	        return; // AJAX 요청을 보내지 않고 함수를 종료합니다.
-	    }
+		const id = $('#id').val().trim();
+		const email = $('#email').val().trim();
+		
+		// 1. 아이디와 이메일을 입력했는지 확인
+		if (id === '' || email === '') {
+	        alert('아이디와 이메일을 모두 입력하세요.');
+	        return;
+	    }
 
-	    // 2. 서버로 아이디 찾기 AJAX 요청을 보냅니다.
-	    $.ajax({
-	        type: 'POST',
-	        url: '/main/user/pwsearch.do', // form의 action과 동일한 주소
-	        data: {
-	            id: $('#id').val(),
-	            email: $('#email').val()
-	        },
-	        dataType: 'json',
-	        success: function(result) {
-	            
-	            // 3. 서버로부터 받은 결과(result)에 따라 안내창을 띄웁니다.
-	            if (result.result == 1) {
-	                // 성공했을 때 띄울 안내창
-	                alert('입력하신 이메일로 새 비밀번호를 발송했습니다. 메일을 확인해주세요.');
-	                location.href = '/main/user/login.do'; // 로그인 페이지로 이동
-	            } else {
-	                // 실패했을 때 띄울 안내창
-	                alert('일치하는 회원 정보가 없습니다. 이메일과 아이디를 다시 확인해주세요.');
-	            }
-	        },
-	        error: function(a, b, c) {
-	            console.log(a, b, c);
-	            alert('비밀번호를 찾는 중 오류가 발생했습니다.');
-	        }
-	    });
+		// (★) 전송할 데이터 (아이디, 이메일, CSRF 토큰)
+		let findData = {
+	        id: id,
+	        email: email
+	    };
+		findData[csrfHeader] = csrfToken;
+
+	    // 2. 서버로 비밀번호 찾기 AJAX 요청을 보냅니다.
+	    $.ajax({
+	        type: 'POST',
+	        url: contextPath + '/member/mail/findpw', // (★) MailController에 만든 Spring URL
+	        data: findData,
+	        dataType: 'json',
+	        success: function(result) {
+	            
+	            // 3. 서버로부터 받은 결과(result)에 따라 안내창을 띄웁니다.
+	            if (result.result == 1) {
+	                // 성공
+	                alert('입력하신 이메일로 임시 비밀번호를 발송했습니다. 메일을 확인해주세요.');
+	                location.href = contextPath + '/member/login'; // 로그인 페이지로 이동
+	            } else {
+	                // 실패
+	                alert('일치하는 회원 정보가 없습니다. 아이디와 이메일을 다시 확인해주세요.');
+	            }
+	        },
+	        error: function(a, b, c) {
+	            console.log(a, b, c);
+	            alert('비밀번호를 찾는 중 오류가 발생했습니다.');
+	        }
+	    });
 
 	});
 
