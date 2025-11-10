@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 
+   이 XML은 'com.project.trip.allplace.mapper.PlaceMapper' 인터페이스를 구현합니다.
+-->
+<mapper namespace="com.project.trip.allplace.mapper.PlaceMapper">
+
+    <!-- 
+        [수정됨]
+        mybatis-config.xml에서 정의한 별칭 'pdto'를 사용합니다.
+        resultType="PlaceDTO" -> resultType="pdto"
+    -->
+    <select id="findPlaceByContentId" 
+            parameterType="string" 
+            resultType="placedto">
+        
+        SELECT 
+            place_id        as "placeId",
+            api_content_id  as "apiContentId",
+            name,
+            address,
+            latitude,
+            longitude
+        FROM 
+            tblPlace 
+        WHERE 
+            api_content_id = #{apiContentId}
+            
+    </select>
+
+    <!-- 
+        [수정됨]
+        mybatis-config.xml에서 정의한 별칭 'pdto'를 사용합니다.
+        parameterType="PlaceDTO" -> parameterType="pdto"
+    -->
+    <insert id="insertPlace" 
+            parameterType="placedto">
+        
+        <selectKey keyProperty="placeId" resultType="long" order="BEFORE">
+            SELECT seq_tblPlace.NEXTVAL FROM DUAL
+        </selectKey>
+        
+        INSERT INTO tblPlace (
+            place_id, 
+            api_content_id, 
+            name, 
+            address, 
+            latitude, 
+            longitude
+        ) VALUES (
+            #{placeId}, 
+            #{apiContentId}, 
+            #{name}, 
+            #{address}, 
+            #{latitude}, 
+            #{longitude}
+        )
+    </insert>
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

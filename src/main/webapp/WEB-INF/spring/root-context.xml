@@ -2,50 +2,63 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
+       xmlns:tx="http://www.springframework.org/schema/tx" 
        xsi:schemaLocation="
            http://www.springframework.org/schema/beans
            https://www.springframework.org/schema/beans/spring-beans.xsd
            http://mybatis.org/schema/mybatis-spring
-           https://mybatis.org/schema/mybatis-spring.xsd">
+           https://mybatis.org/schema/mybatis-spring.xsd
+           http://www.springframework.org/schema/beans 
+           https://www.springframework.org/schema/beans/spring-beans.xsd
+           http://mybatis.org/schema/mybatis-spring 
+           
+           https://mybatis.org/schema/mybatis-spring.xsd
+           
+           http://www.springframework.org/schema/tx
+           http://www.springframework.org/schema/tx/spring-tx.xsd">
 
-	<!--  Root Context: Oracle Cloud 전용 설정 -->
-
-	<!--  HikariCP 설정 -->
 	<bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
 
-		<!--  오라클 드라이버 (log4jdbc 제거) -->
 		<property name="driverClassName" value="oracle.jdbc.OracleDriver"/>
 
-		<!--  Wallet 기반 연결 주소 -->
-		<!--  실제 Wallet 경로로 변경 -->
-		<!-- 예시: C:/dev/Wallet_TripBearDB -->
 		<property name="jdbcUrl" 
 		          value="jdbc:oracle:thin:@TripBearDB_high?tns_admin=C:/dev/Wallet_TripBearDB"/>
 
-		<!--  오라클 클라우드 DB 계정 정보 -->
 		<property name="username" value="tripbear"/>
 		<property name="password" value="Java123456789"/>
 
-		<!--  커넥션 풀 성능 옵션 (선택) -->
 		<property name="maximumPoolSize" value="10"/>
 		<property name="connectionTimeout" value="30000"/>
 		<property name="idleTimeout" value="600000"/>
 		<property name="maxLifetime" value="1800000"/>
 	</bean>
 
-	<!--  Hikari DataSource 등록 -->
 	<bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
 		<constructor-arg ref="hikariConfig"/>
 	</bean>
 
-	<!--  MyBatis 설정 -->
 	<bean id="sessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="dataSource"/>
-		<property name="mapperLocations" value="classpath:mappers/**/*.xml"/>
+
+		<property name="mapperLocations" value="classpath:mapper/**/*.xml"/>
 		<property name="configLocation" value="classpath:config/mybatis-config.xml"/>
 	</bean>
 
-	<!--  Mapper 인터페이스 자동 스캔 -->
 	<mybatis-spring:scan base-package="com.project.trip"/>
+	
+	
+	
+	<bean id="restTemplate" class="org.springframework.web.client.RestTemplate" />
+	
+	<!-- 이 Bean이 PlatformTransactionManager 역할을 합니다. -->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <!-- 위에서 정의한 'dataSource' Bean을 참조합니다. -->
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <!-- 2. @Transactional 어노테이션을 '작동'시키기 위한 설정 -->
+    <!-- transaction-manager="transactionManager"는 위에서 정의한 bean의 id와 일치시킵니다. -->
+    <tx:annotation-driven transaction-manager="transactionManager"/>
 
 </beans>
+
