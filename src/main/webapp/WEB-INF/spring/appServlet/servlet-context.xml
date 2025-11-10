@@ -13,10 +13,9 @@
 
 	<context:property-placeholder location="classpath:application.properties" />
 	
-	<context:component-scan base-package="com.project.trip.mypage.controller" />
-	<context:component-scan base-package="com.project.trip.allplace.controller" />
-	<context:component-scan base-package="com.test.tiles.controller" />
-	<context:component-scan base-package="com.test.project.controller" />
+	<context:component-scan base-package="com.project.trip" />
+
+
 
 
 	<beans:bean id="tilesViewResolver"
