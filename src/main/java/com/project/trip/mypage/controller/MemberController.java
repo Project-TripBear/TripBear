@@ -1,12 +1,25 @@
 package com.project.trip.mypage.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
+
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.project.trip.mypage.mapper.MemberMapper;
+import com.project.trip.mypage.model.UserDTO;
 
 import lombok.RequiredArgsConstructor;
+
 
 
 @Controller
@@ -16,26 +29,57 @@ public class MemberController {
 	private final PasswordEncoder encoder;
 	private final MemberMapper mapper;
 
-	/*
-	 * @GetMapping("/member/add") public String add() {
-	 * 
-	 * return "member.add"; }
-	 * 
-	 * @PostMapping("/member/addok") public String addok(UserDTO dto) {
-	 * 
-	 * //System.out.println(dto); //암호 > 암호화
-	 * 
-	 * dto.setPw((encoder.encode(dto.getPw())));
-	 * 
-	 * mapper.add(dto);
-	 * 
-	 * return "redirect:/"; }
-	 */
+	
+	@GetMapping("/member/add")
+	public String add() {
+		
+		return "mypage.member.add";
+	}
+	
+	@PostMapping("/member/addok")
+	public String addok(UserDTO dto) {
+		
+		//System.out.println(dto);
+		//암호 > 암호화
+		
+		dto.setPw((encoder.encode(dto.getPw())));
+		
+		mapper.add(dto);
+		
+		return "redirect:/";
+	}
+	
+	
+	@PostMapping("/member/idCheck") // (★) 새 URL 매핑
+	@ResponseBody // (★) JSON으로 응답
+	public Map<String, Integer> idCheck(@RequestParam("id") String id) {
+		
+		Map<String, Integer> response = new HashMap<>();
+		
+		int count = mapper.idCheck(id); // (mapper가 중복이면 1, 아니면 0을 반환한다고 가정)
+		
+		System.out.println("아이디 유효성값 : " + count);
+		response.put("result", count);
+		return response;
+	}
+	
+
 	
 	@GetMapping("/member/login")
 	public String login() {
 		
 		return "mypage.member.login";
 	}
+	
+	@GetMapping("/member/findid")
+	public String findIdForm() {
+		
+		return "mypage.member.idselect";
+	}
+	
+	
+	 
+	
+
 	
 }

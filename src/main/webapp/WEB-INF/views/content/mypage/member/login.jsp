@@ -34,3 +34,8 @@
 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
 </form>
 
+<div class="find-links">
+			<button type="button" onclick="location.href='/trip/member/findid';">아이디 찾기</button>
+			<button type="button" onclick="location.href='/trip/member/findpw';">비밀번호 찾기</button>
+		</div>
+

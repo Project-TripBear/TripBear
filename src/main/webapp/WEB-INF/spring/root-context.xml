@@ -3,19 +3,18 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
        xmlns:tx="http://www.springframework.org/schema/tx" 
+       xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="
            http://www.springframework.org/schema/beans
            https://www.springframework.org/schema/beans/spring-beans.xsd
            http://mybatis.org/schema/mybatis-spring
            https://mybatis.org/schema/mybatis-spring.xsd
-           http://www.springframework.org/schema/beans 
-           https://www.springframework.org/schema/beans/spring-beans.xsd
-           http://mybatis.org/schema/mybatis-spring 
-           
-           https://mybatis.org/schema/mybatis-spring.xsd
-           
+
            http://www.springframework.org/schema/tx
-           http://www.springframework.org/schema/tx/spring-tx.xsd">
+           http://www.springframework.org/schema/tx/spring-tx.xsd
+           http://www.springframework.org/schema/context 
+           http://www.springframework.org/schema/context/spring-context-4.3.xsd"> 
+    <context:property-placeholder location="classpath:application.properties" />
 
 	<bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
 
@@ -39,13 +38,15 @@
 
 	<bean id="sessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="dataSource"/>
-		<property name="mapperLocations" value="classpath:mapper/**/*.xml"/>
+		<property name="mapperLocations" value="classpath:mappers/*.xml"/>
 		<property name="configLocation" value="classpath:config/mybatis-config.xml"/>
 	</bean>
-
-<<<<<<< HEAD
-	<mybatis-spring:scan base-package="com.project.trip.allplace.mapper"/>
 	
+	<context:component-scan base-package="com.project.trip.mypage.service" />
+	   
+	<mybatis-spring:scan base-package="com.project.trip.allplace.mapper"/>
+	<mybatis-spring:scan base-package="com.project.trip.mypage.mapper"/>
+
 	
 	
 	<bean id="restTemplate" class="org.springframework.web.client.RestTemplate" />
@@ -55,11 +56,10 @@
         <!-- 위에서 정의한 'dataSource' Bean을 참조합니다. -->
         <property name="dataSource" ref="dataSource"/>
     </bean>
-=======
-	<!--  Mapper 인터페이스 자동 스캔 (각자 Mapper경로 추가)-->
-	<!-- <mybatis-spring:scan base-package="com.project.trip.mapper"/> -->
-	<mybatis-spring:scan base-package="com.project.trip.mypage.mapper"/>
->>>>>>> 91d01cb990505b2dd009df1c4c6575b26eebbbe9
+
+
+
+
 
     <!-- 2. @Transactional 어노테이션을 '작동'시키기 위한 설정 -->
     <!-- transaction-manager="transactionManager"는 위에서 정의한 bean의 id와 일치시킵니다. -->

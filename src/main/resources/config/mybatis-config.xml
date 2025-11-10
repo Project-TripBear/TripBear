@@ -6,13 +6,8 @@
 <configuration>
 
 	<!--XML Mapper에서 사용중인 클래스의 별칭  -->
- <typeAliases>
-		<typeAlias type="com.project.trip.mypage.model.UserDTO" alias="udto" />	
-		<!-- <typeAlias type="com.test.project.model.BoardDTO" alias="bdto" /> -->	
-	</typeAliases>
-<<<<<<< HEAD
- -->
  	<typeAliases>
+ 		<typeAlias type="com.project.trip.mypage.model.UserDTO" alias="userdto" />	
  		<typeAlias type="com.project.trip.allplace.model.KeywordLinkDTO" alias="keywordlinkdto"/>
  		<typeAlias type="com.project.trip.allplace.model.PlaceDTO" alias="placedto"/>
  		<typeAlias type="com.project.trip.allplace.model.TouristSpotDTO" alias="touristspotdto"/>
@@ -22,7 +17,5 @@
  		<typeAlias type="com.project.trip.reservation.model.CarReservationDTO" alias="carreservationdto" />
  	</typeAliases>
  
-=======
 
->>>>>>> 91d01cb990505b2dd009df1c4c6575b26eebbbe9
 </configuration>

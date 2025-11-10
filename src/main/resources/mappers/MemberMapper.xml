@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<!-- XML Mapper -->
+<mapper namespace="com.project.trip.mypage.mapper.MemberMapper">
+	<select id="get" parameterType="String" resultType="userdto">
+		
+		<!-- username, password enabled  -->
+		SELECT
+    u.user_id AS seq,
+    u.username AS id,
+    u.password AS pw,
+    u.ssn,
+    u.phone_number AS phoneNumber,
+    u.nickname,
+    u.real_name AS name,
+    u.email,
+    u.address,
+    u.gender,
+    u.height,
+    u.weight,
+    u.health_goals AS healthGoals,
+    (
+        SELECT s.status
+        FROM tblUserStatus s
+        WHERE s.user_status_id = u.user_status_id
+    ) AS auth
+FROM
+    tblUser u
+WHERE
+	u.username = #{username}
+	</select>
+	
+	<insert id="add" parameterType="userdto">			
+		
+		
+		insert into tblUser (user_id, user_status_id, real_name, ssn, phone_number, username, password, email, nickname, address, regdate, deleted_at, gender, height, weight, health_goals) 
+		values (seqUser.nextVal, 1, #{name}, #{ssn}, #{phoneNumber}, #{id}, #{pw}, #{email}, #{nickName}, #{address}, sysdate, null, #{gender}, #{height}, #{weight}, #{healthGoals})
+	</insert>
+	
+	<select id="idCheck" parameterType="String" resultType="int">
+	select count(*) from tblUser where username = #{id}
+	</select>
+
+
+	<select id="idSelect" resultType="String" parameterType="userdto">
+    SELECT username FROM tblUser WHERE email = #{email} AND real_name = #{name}
+</select>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
