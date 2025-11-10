@@ -2,7 +2,6 @@ package com.project.trip.board.notice.controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,7 +30,7 @@ public class NoticeController {
 		
 		model.addAttribute("list", list);
 		
-		return "notice.list";
+		return "notice/list";
 	}
 	
 	@GetMapping("/view")
@@ -41,14 +40,14 @@ public class NoticeController {
 		
 		model.addAttribute("notice", notice);
 		
-		return "notice.view";
+		return "notice/view";
 	}
 
 	@GetMapping("/add")
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public String addForm() {
 		
-		return "notice.add";
+		return "notice/add";
 	}
 
 	@PostMapping("/add")
@@ -70,7 +69,7 @@ public class NoticeController {
 		
 		model.addAttribute("notice", notice);
 		
-		return "notice.edit";
+		return "notice/edit";
 	}
 
 	@PostMapping("/edit")
@@ -81,7 +80,7 @@ public class NoticeController {
 		
 		rttr.addFlashAttribute("message", "공지사항이 수정되었습니다.");
 		
-		return "redirect:/notice/view?seq=" + dto.getNoticePostId();
+		return "redirect:/notice/view?id=" + dto.getNoticePostId();
 	}
 	
 	@PostMapping("/delete")

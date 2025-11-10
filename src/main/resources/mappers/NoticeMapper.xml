@@ -3,7 +3,7 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.project.trip.notice.mapper.NoticeMapper">
+<mapper namespace="com.project.trip.board.notice.mapper.NoticeMapper">
 
 	<resultMap id="noticeResultMap" type="noticedto" >
 		<id property="noticePostId" column="notice_post_id"/>
@@ -22,18 +22,19 @@
 			notice_regdate, 
 			notice_view_count
 		from tblNoticepost
-			order by noticePostId DESC
+			order by notice_post_id DESC
 	</select>
 	
 	<select id="findById" parameterType="long" resultMap="noticeResultMap">
 		select
-			notice_post_id as noticePostId,
-			notice_header as noticeHeader, 
-			admin_id as adminId, 
-			notice_regdate as noticeRegdate, 
-			notice_view_count as noticeViewCount
+			notice_post_id,
+			notice_header, 
+			admin_id, 
+			notice_regdate, 
+			notice_view_count,
+			notice_content
 		from tblNoticepost
-			where noticePostId = #{noticePostId}
+			where notice_post_id = #{noticePostId}
 	</select>
 	
 	<update id="incrementViewCount" parameterType="long">

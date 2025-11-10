@@ -6,5 +6,8 @@
 <configuration>
  	<typeAliases>
  		<typeAlias type="com.project.trip.board.notice.model.NoticeDTO" alias="noticedto"/>
+ 		<typeAlias type="com.project.trip.reservation.model.AccomReservationDTO" alias="accomreservationdto" />
+        <typeAlias type="com.project.trip.reservation.model.ReservationDTO" alias="reservationdto" />
+        <typeAlias type="com.project.trip.reservation.model.CarReservationDTO" alias="carreservationdto" />
  	</typeAliases>
 </configuration>

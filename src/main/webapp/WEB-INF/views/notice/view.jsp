@@ -11,28 +11,28 @@
         <h2>공지사항</h2>
         
         <div class="notice-header">
-            <h3>${notice.title}</h3>
+            <h3>${notice.noticeHeader}</h3>
             <div class="notice-meta">
                 <span>작성자: 관리자</span>
-                <span>작성일: <fmt:formatDate value="${notice.regdate}" pattern="yyyy-MM-dd" /></span>
-                <span>조회수: ${notice.viewCount}</span>
+                <span>작성일: <fmt:formatDate value="${notice.noticeRegdate}" pattern="yyyy-MM-dd" /></span>
+                <span>조회수: ${notice.noticeViewCount}</span>
             </div>
         </div>
         
         <div class="notice-content">
 
-            <c:out value="${notice.content}" escapeXml="false" />
+            <c:out value="${notice.noticeContent}" escapeXml="false" />
         </div>
         
         <div class="notice-actions">
-            <button type="button" class="btn" onclick="location.href='<c:url value="/notice/list.do"/>';">목록</button>
+            <button type="button" class="btn" onclick="location.href='<c:url value="/notice/list"/>';">목록</button>
 
             <sec:authorize access="hasRole('ROLE_ADMIN')">
-                <button type="button" class="btn" onclick="location.href='<c:url value="/notice/edit.do?id=${notice.noticeId}"/>';">수정</button>
+                <button type="button" class="btn" onclick="location.href='<c:url value="/notice/edit?id=${notice.noticePostId}"/>';">수정</button>
 
-                <form action="<c:url value="/notice/delete.do"/>" method="POST" style="display:inline;" onsubmit="return confirm('정말 삭제하시겠습니까?');">
+                <form action="<c:url value="/notice/delete"/>" method="POST" style="display:inline;" onsubmit="return confirm('정말 삭제하시겠습니까?');">
                     <sec:csrfInput />
-                    <input type="hidden" name="id" value="${notice.noticeId}" />
+                    <input type="hidden" name="id" value="${notice.noticePostId}" />
                     <button type="submit" class="btn btn-danger">삭제</button>
                 </form>
             </sec:authorize>

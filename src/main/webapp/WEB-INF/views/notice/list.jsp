@@ -30,39 +30,35 @@
 				</tr>
 				</c:if>	
 					
-				<c:forEach items="${list}" var="dto">
+				<c:forEach items="${list}" var="notice">
 				<tr>
-					<td>${dto.rnum}</td>
+					<td>${notice.noticePostId}</td>
 					<td class="title">
-						<a href="<c:url value='/notice/view?seq=${dto.notice_post_id}' />">${dto.notice_header}</a>
-							<c:if test="${dto.isnew < 1}">
-								<span class="isnew">new</span>
-							</c:if>
-						</td>
-						<td>관리자</td>
-						<td>${dto.notice_regdate}</td>
-                        <td>${dto.notice_view_count}</td>
-					</tr>
-					</c:forEach>
-				</tbody>
-			</table>
+						<a href="<c:url value='/notice/view?id=${notice.noticePostId}'/>">${notice.noticeHeader}</a>
+					</td>
+					<td>관리자</td>
+					<td>${notice.noticeRegdate}</td>
+                    <td>${notice.noticeViewCount}</td>
+				</tr>
+				</c:forEach>
+			</tbody>
+		</table>
 			
 			<div class="notice-footer">
 				<div class="search-box">
-					<form method="GET" action="/trip/notice/list.do">
+					<form method="GET" action="<c:url value='/notice/list'/>">
 						<input type="text" name="search" placeholder="Search">
 						<button type="submit">검색</button>
 					</form>
 				</div>
-				
 				<div class="pagination">
     				${pagebar}
 				</div>
 			
 				<div class="table-options">
-					<sec:authorize access="hasRole('ROLE_ADMIN)">
+					<sec:authorize access="hasRole('ROLE_ADMIN')">
 						<button type="button" class="btn btn-primary" 
-							onclick="location.href='<c:url value='/notice/add'/>;">글쓰기</button>
+							onclick="location.href='<c:url value='/notice/add'/>';">글쓰기</button>
 					</sec:authorize>
 				</div>
 			</div>

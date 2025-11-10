@@ -1,11 +1,11 @@
-package com.project.trip.board.notice.model;
+package com.project.trip.board.notice.service;
 
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
 import com.project.trip.board.notice.mapper.NoticeMapper;
-import com.project.trip.board.notice.service.NoticeService;
+import com.project.trip.board.notice.model.NoticeDTO;
 
 import lombok.RequiredArgsConstructor;
 
