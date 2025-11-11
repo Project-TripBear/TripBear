@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE tiles-definitions PUBLIC 
+	"-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN" 
+	"http://tiles.apache.org/dtds/tiles-config_3.0.dtd">
+	
+<tiles-definitions>
+    
+    <definition name="admin.layout" template="/WEB-INF/views/layout/admin_layout.jsp">
+        <put-attribute name="content" value="" />
+        <put-attribute name="header" value="/WEB-INF/views/inc/admin_header.jsp" /> 
+        <put-attribute name="sidebar" value="" />
+    </definition>
+    
+    <definition name="admin/main" extends="admin.layout">
+        <put-attribute name="title" value="관리자 메인" />
+        <put-attribute name="content" value="/WEB-INF/views/content/admin/main.jsp" />  
+        <put-attribute name="sidebar" value="/WEB-INF/views/inc/admin_sidebar.jsp" />
+    </definition>
+    
+    <definition name="admin/board/integratedList" extends="admin.layout">
+        <put-attribute name="title" value="통합 게시판" />
+        <put-attribute name="content" value="/WEB-INF/views/content/admin/integratedList.jsp" />  
+        <put-attribute name="sidebar" value="/WEB-INF/views/inc/admin_sidebar.jsp" />        
+    </definition>    
+
+    <definition name="content/admin/userlist" extends="admin.layout">
+        <put-attribute name="title" value="회원 정보 조회"/>
+        <put-attribute name="content" value="/WEB-INF/views/content/admin/userlist.jsp"/>
+        <put-attribute name="sidebar" value="/WEB-INF/views/inc/admin_sidebar.jsp" />
+    </definition>
+	
+	<definition name="content/admin/suspendedlist" extends="admin.layout">
+        <put-attribute name="title" value="정지된 회원 목록"/>
+        <put-attribute name="content" value="/WEB-INF/views/content/admin/suspendedlist.jsp"/>
+        <put-attribute name="sidebar" value="/WEB-INF/views/inc/admin_sidebar.jsp" />
+    </definition>
+    
+    <definition name="content/admin/accomlist" extends="admin.layout">
+        <put-attribute name="title" value="숙소 목록 관리"/>
+        <put-attribute name="content" value="/WEB-INF/views/content/admin/accomlist.jsp"/>
+        <put-attribute name="sidebar" value="/WEB-INF/views/inc/admin_sidebar.jsp" />
+    </definition>
+    
+    <definition name="content/admin/accomadd" extends="admin.layout">
+        <put-attribute name="title" value="신규 숙소 등록"/>
+        <put-attribute name="content" value="/WEB-INF/views/content/admin/accomadd.jsp"/>
+        <put-attribute name="sidebar" value="/WEB-INF/views/inc/admin_sidebar.jsp" />
+    </definition>
+    
+    <definition name="content/admin/accomview" extends="admin.layout">
+        <put-attribute name="title" value="숙소 상세 정보"/>
+        <put-attribute name="content" value="/WEB-INF/views/content/admin/accomview.jsp"/>
+        <put-attribute name="sidebar" value="/WEB-INF/views/inc/admin_sidebar.jsp" />
+    </definition>
+
+    <definition name="content/admin/accomedit" extends="admin.layout">
+        <put-attribute name="title" value="숙소 정보 수정"/>
+        <put-attribute name="content" value="/WEB-INF/views/content/admin/accomedit.jsp"/>
+        <put-attribute name="sidebar" value="/WEB-INF/views/inc/admin_sidebar.jsp" />
+    </definition>
+    
+	<definition name="content/admin/carlist" extends="admin.layout">
+        <put-attribute name="title" value="렌터카 관리"/>
+        <put-attribute name="content" value="/WEB-INF/views/content/admin/carlist.jsp"/>
+        <put-attribute name="sidebar" value="/WEB-INF/views/inc/admin_sidebar.jsp" />
+    </definition>
+
+    <definition name="content/admin/addcar" extends="admin.layout">
+        <put-attribute name="title" value="신규 렌터카 등록"/>
+        <put-attribute name="content" value="/WEB-INF/views/content/admin/addcar.jsp"/>
+        <put-attribute name="sidebar" value="/WEB-INF/views/inc/admin_sidebar.jsp" />
+    </definition>
+
+
+
+
+</tiles-definitions>

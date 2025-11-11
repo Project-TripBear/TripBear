@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.project.trip.admin.car.mapper.AdminCarMapper">
+<insert id="addCar" parameterType="carDTO">
+        INSERT INTO tblRentalCar (
+            car_id, 
+            place_Location_id,
+            car_name, 
+            car_type, 
+            car_number,
+            car_fuel_type, 
+            car_seats,
+            car_price_per_day,
+            car_image_url,
+            car_status
+        ) VALUES (
+            seq_rental_car.NEXTVAL, #{placeLocationId, jdbcType=INTEGER},
+            #{carName, jdbcType=VARCHAR}, 
+            #{carType, jdbcType=VARCHAR}, 
+            #{carNumber, jdbcType=VARCHAR},
+            #{fuelType, jdbcType=VARCHAR}, 
+            #{carSeats, jdbcType=INTEGER},
+            #{pricePerDay, jdbcType=INTEGER},
+            #{carImageUrl, jdbcType=VARCHAR},
+            #{carStatus, jdbcType=CHAR}
+        )
+    </insert>
+
+<select id="getMaxPrice" resultType="int">
+        SELECT NVL(MAX(car_price_per_day), 500000) FROM tblRentalCar
+    </select>
+    
+    <select id="getAllCars" parameterType="java.util.Map" resultType="carDTO">
+        SELECT 
+            c.car_id as carId, 
+            c.car_name as carName, 
+            c.car_type as carType, 
+            c.car_fuel_type as fuelType, 
+            c.car_price_per_day as pricePerDay,
+            (SELECT COUNT(*) 
+             FROM tblCarReservation res 
+             WHERE res.car_id = c.car_id 
+             AND SYSDATE BETWEEN res.pickup_date AND res.dropoff_date) as reservationCount
+        FROM tblRentalCar c
+        <where>
+            c.car_price_per_day BETWEEN #{minPrice} AND #{maxPrice}
+            
+            <if test="fuelTypes != null and fuelTypes.length > 0">
+                AND c.car_fuel_type IN
+                <foreach collection="fuelTypes" item="fuel" open="(" separator="," close=")">
+                    #{fuel}
+                </foreach>
+            </if>
+        </where>
+        <choose>
+            <when test="sortOrder == 'price_asc'">
+                ORDER BY c.car_price_per_day ASC, c.car_name ASC
+            </when>
+            <when test="sortOrder == 'price_desc'">
+                ORDER BY c.car_price_per_day DESC, c.car_name ASC
+            </when>
+            <otherwise>
+                ORDER BY c.car_name ASC
+            </otherwise>
+        </choose>
+    </select>
+    
+    <delete id="deleteCar" parameterType="int">
+        DELETE FROM tblRentalCar WHERE car_id = #{carId}
+    </delete>
+</mapper>

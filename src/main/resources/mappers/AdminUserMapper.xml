@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.project.trip.admin.user.mapper.AdminUserMapper">
+ 
+<select id="getAllUsers" parameterType="java.util.Map" resultType="AdminUserDTO">
+    SELECT 
+        userId, nickname, realName, email, regdate, status
+    FROM (
+        SELECT 
+            T.*, 
+            ROWNUM AS RNUM
+        FROM (
+            SELECT 
+                user_id as userId,
+                nickname, 
+                real_name as realName,
+                email, 
+                regdate, 
+                CASE user_status_id
+                    WHEN 1 THEN '활동중'
+                    WHEN 2 THEN '정지'
+                    ELSE '알 수 없음'
+                END as status
+            FROM tblUser 
+            <where>
+                <if test="keyword != null and keyword != ''">
+                    <if test="searchType == 'real_name'">
+                        AND real_name LIKE '%' || #{keyword, jdbcType=VARCHAR} || '%'
+                    </if>
+                    <if test="searchType == 'email'">
+                        AND email LIKE '%' || #{keyword, jdbcType=VARCHAR} || '%'
+                    </if>
+                </if>
+                <if test="status != null and status != ''">
+                    AND user_status_id = #{status, jdbcType=INTEGER}
+                </if>
+            </where>
+            ORDER BY regdate DESC
+        ) T
+        WHERE ROWNUM &lt;= #{endRow} )
+    WHERE RNUM &gt;= #{startRow} 
+    </select>
+    
+    <select id="getTotalUserCount" parameterType="java.util.Map" resultType="int">
+        SELECT COUNT(*)
+        FROM tblUser
+        <where>
+            <if test="keyword != null and keyword != ''">
+                <if test="searchType == 'real_name'">
+                    AND real_name LIKE '%' || #{keyword, jdbcType=VARCHAR} || '%'
+                </if>
+                <if test="searchType == 'email'">
+                    AND email LIKE '%' || #{keyword, jdbcType=VARCHAR} || '%'
+                </if>
+            </if>
+            <if test="status != null and status != ''">
+                AND user_status_id = #{status, jdbcType=INTEGER}
+            </if>
+        </where>
+    </select>
+
+    <update id="updateUserStatus">
+        UPDATE tblUser SET
+            user_status_id = #{statusId}
+        WHERE user_id = #{userId}
+    </update>
+    
+    <insert id="insertSuspendLog">
+    INSERT INTO tblMemSuspended ( 
+        memsuspended_id,  
+        user_id,
+        admin_id,         
+        suspended_reason,
+        suspended_startdate,
+        suspended_enddate
+    ) VALUES (
+        (SELECT NVL(MAX(memsuspended_id), 0) + 1 FROM tblMemSuspended), 
+        #{userId}, 
+        #{adminId}, 
+        #{reason, jdbcType=VARCHAR}, 
+        SYSDATE, 
+        SYSDATE + #{duration}
+    )
+</insert>
+    
+   <select id="getSuspendedUserList" resultType="suspendedUserDTO">
+    SELECT 
+        l.memsuspended_id as memsuspendedId,
+        l.user_id as userId,
+        u.nickname,
+        l.suspended_reason as suspendedReason,
+        l.suspended_startdate as suspendedStartDate,
+        l.suspended_enddate as suspendedEndDate
+    FROM tblMemSuspended l
+    JOIN tblUser u ON l.user_id = u.user_id
+    WHERE l.suspended_enddate > SYSDATE
+        
+        ORDER BY l.suspended_startdate DESC
+	</select>
+
+	<delete id="deleteSuspendLog">
+        DELETE FROM tblMemSuspended WHERE user_id = #{userId}
+    </delete>
+
+</mapper>
