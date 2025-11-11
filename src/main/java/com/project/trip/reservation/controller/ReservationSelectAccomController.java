@@ -21,7 +21,7 @@ public class ReservationSelectAccomController {
 	private final ReservationService reservationService;
 
     // 숙소 선택 화면
-    @GetMapping("/reservation/select-accom.do")
+    @GetMapping("/reservation/select-accom")
     public ModelAndView selectAccom(HttpServletRequest req) throws Exception {
         // 루트에서 넘어온 파라미터 (문자열 region, 인원, 날짜)
         String region   = req.getParameter("region");    // 예: "부산"
