@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.project.trip.AI.mapper.AiMapper">
+	
+	<resultMap id="routeResultMap" type="com.project.trip.AI.model.RouteDTO">
+        <id     property="aiRouteId"        column="AI_ROUTE_ID"/>
+        <result property="userId"           column="USER_ID"/>
+        <result property="conversationId"   column="CONVERSATION_ID"/>
+        <result property="aiRouteTitle"     column="AI_ROUTE_TITLE"/>
+        <result property="aiRouteDays"      column="AI_ROUTE_DAYS"/>
+        <result property="aiRouteCreated"   column="AI_ROUTE_CREATED"/>
+        <result property="aiRouteRegion"    column="AI_ROUTE_REGION"/>
+        <result property="aiRouteStartDate" column="AI_ROUTE_STARTDATE"/>
+        <result property="aiRouteEndDate"   column="AI_ROUTE_ENDDATE"/>
+        <result property="weatherConsideration" column="WEATHER_CONSIDERATION"/>
+    </resultMap>
+
+    <resultMap id="stopResultMap" type="com.project.trip.AI.model.RouteStopDTO">
+        <id     property="aiRouteStopId"    column="AI_ROUTE_STOP_ID"/>
+        <result property="aiRouteId"        column="AI_ROUTE_ID"/>
+        <result property="aiRouteDay"       column="AI_ROUTE_DAY"/>
+        <result property="aiRouteStopOrder" column="AI_ROUTE_STOP_ORDER"/>
+        <result property="aiRouteLat"       column="AI_ROUTE_LAT"/>
+        <result property="aiRouteLong"      column="AI_ROUTE_LONG"/>
+        <result property="aiRouteDescription" column="AI_ROUTE_DESCRIPTION"/>
+        <result property="activityCode"     column="ACTIVITY_CODE"/>
+        <result property="durationInMinutes" column="DURATION_IN_MINUTES"/>
+        <result property="transportationMode" column="TRANSPORTATION_MODE"/>
+    </resultMap>
+    
+    
+	<insert id="insertAiRoute" parameterType="RouteDTO">
+		<selectKey keyProperty="aiRouteId" resultType="long" order="BEFORE">
+			select seqAiRoute.nextval from dual
+		</selectKey>
+		
+		INSERT INTO tblAiRoute (
+            AI_ROUTE_ID, 
+            USER_ID, 
+            AI_ROUTE_TITLE, 
+            AI_ROUTE_DAYS, 
+            AI_ROUTE_CREATED, 
+            AI_ROUTE_REGION, 
+            AI_ROUTE_STARTDATE, 
+            AI_ROUTE_ENDDATE,
+            WEATHER_CONSIDERATION
+        ) VALUES (
+            #{aiRouteId},
+            #{userId},
+            #{aiRouteTitle},
+            #{aiRouteDays},
+            sysdate,
+            #{aiRouteRegion},
+            TO_DATE(#{aiRouteStartDate}, 'YYYY-MM-DD'),
+            TO_DATE(#{aiRouteEndDate}, 'YYYY-MM-DD'),
+            #{weatherConsideration}
+        )
+	</insert>
+	
+	<insert id="insertAiRouteStop" parameterType="RouteStopDTO">
+		INSERT INTO tblAiRouteStop (
+            AI_ROUTE_STOP_ID, 
+            AI_ROUTE_ID, 
+            AI_ROUTE_DAY, 
+            AI_ROUTE_STOP_ORDER, 
+            AI_ROUTE_LAT, 
+            AI_ROUTE_LONG, 
+            AI_ROUTE_DESCRIPTION, 
+            ACTIVITY_CODE, 
+            DURATION_IN_MINUTES, 
+            TRANSPORTATION_MODE
+        ) VALUES (
+            seqAiRouteStop.nextval,
+            #{aiRouteId},
+            #{aiRouteDay},
+            #{aiRouteStopOrder},
+            #{aiRouteLat},
+            #{aiRouteLong},
+            #{aiRouteDescription},
+            #{activityCode},
+            #{durationInMinutes},
+            #{transportationMode}
+        )
+	</insert>
+	
+	<select id="findRouteById" resultMap="routeResultMap" parameterType="long">
+        SELECT 
+            AI_ROUTE_ID,
+            USER_ID,
+            AI_ROUTE_TITLE,
+            AI_ROUTE_DAYS,
+            AI_ROUTE_CREATED,
+            AI_ROUTE_REGION,
+            TO_CHAR(AI_ROUTE_STARTDATE, 'YYYY-MM-DD') AS AI_ROUTE_STARTDATE,
+            TO_CHAR(AI_ROUTE_ENDDATE, 'YYYY-MM-DD') AS AI_ROUTE_ENDDATE,
+            WEATHER_CONSIDERATION
+        FROM tblAiRoute
+        WHERE AI_ROUTE_ID = #{aiRouteId}
+    </select>
+    
+    <select id="findStopsByRouteId" resultMap="stopResultMap" parameterType="long">
+        
+        SELECT *
+        FROM tblAiRouteStop
+        WHERE AI_ROUTE_ID = #{aiRouteId}
+        ORDER BY AI_ROUTE_DAY, AI_ROUTE_STOP_ORDER
+
+	</select>
+</mapper>
+  
