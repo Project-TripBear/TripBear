@@ -31,19 +31,12 @@
 		<security:intercept-url pattern="/resources/**" access="permitAll" />
 		
 		<security:intercept-url pattern="/" access="permitAll" />
-		
-<<<<<<< HEAD
-		<security:intercept-url pattern="/*/add" access="hasRole('ROLE_MEMBER')" />
-		<security:intercept-url pattern="/*/edit" access="hasRole('ROLE_MEMBER')" />
-		<security:intercept-url pattern="/*/del" access="hasRole('ROLE_MEMBER')" />
-		
-=======
+
 				
 		<security:intercept-url pattern="/member/mypage" access="hasAuthority('ACTIVE')" />		
 		<security:intercept-url pattern="/*/add" access="hasAuthority('ACTIVE')" />
 		<security:intercept-url pattern="/*/edit" access="hasAuthority('ACTIVE')" />
 		<security:intercept-url pattern="/*/del" access="hasAuthority('ACTIVE')" />
->>>>>>> e641b5d501b4c2861d680ccbc1542d6cb1e4dd40
 		<!-- <security:intercept-url pattern="/member.do" access="hasRole('ROLE_MEMBER')" />
 		<security:intercept-url pattern="/admin.do" access="hasRole('ROLE_ADMIN')" /> -->
 		

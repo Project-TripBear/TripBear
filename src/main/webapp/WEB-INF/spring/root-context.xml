@@ -38,11 +38,15 @@
 
 	<bean id="sessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="dataSource"/>
-		<property name="mapperLocations" value="classpath:mappers/*.xml"/>
-		<property name="configLocation" value="classpath:config/mybatis-config.xml"/>
+  <property name="mapperLocations">
+        <array>
+            <value>classpath:mappers/*.xml</value>
+            <value>classpath:mappers/board/**/*.xml</value>
+        </array>
+    </property>		
+    <property name="configLocation" value="classpath:config/mybatis-config.xml"/>
 	</bean>
-	
-<<<<<<< HEAD
+		
 	<mybatis-spring:scan 
         base-package="com.project.trip.allplace.mapper, 
                       com.project.trip.board.notice.mapper, 
@@ -53,18 +57,13 @@
                       com.project.trip.admin.user.mapper,                      
 		      		com.project.trip.mypage.mapper,
 		      		com.project.trip.board.routepost.mapper,
-		      		com.project.trip.reservation.mapper"/>
+		      		com.project.trip.reservation.mapper,
+		      		com.project.trip.mypage.service"/>
 	
 	<context:component-scan base-package="com.project.trip">
         <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
     </context:component-scan>
-=======
-	<context:component-scan base-package="com.project.trip.mypage.service" />
 
-	<mybatis-spring:scan base-package="com.project.trip.allplace.mapper"/>
-	<mybatis-spring:scan base-package="com.project.trip.mypage.mapper"/>
-
->>>>>>> e641b5d501b4c2861d680ccbc1542d6cb1e4dd40
 	
 	
 	<bean id="restTemplate" class="org.springframework.web.client.RestTemplate" />
