@@ -38,15 +38,18 @@
 
 	<bean id="sessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="dataSource"/>
+<<<<<<< HEAD
 		<property name="mapperLocations" value="classpath:mappers/**/*.xml"/>
 		<property name="configLocation" value="classpath:config/mybatis-config.xml"/>
 	</bean>
 	
 	<mybatis-spring:scan base-package="com.project.trip.**.mapper"/>
+		
 	
 	<context:component-scan base-package="com.project.trip">
         <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
     </context:component-scan>
+
 	
 	
 	<bean id="restTemplate" class="org.springframework.web.client.RestTemplate" />
@@ -60,5 +63,8 @@
     <!-- 2. @Transactional 어노테이션을 '작동'시키기 위한 설정 -->
     <!-- transaction-manager="transactionManager"는 위에서 정의한 bean의 id와 일치시킵니다. -->
     <tx:annotation-driven transaction-manager="transactionManager"/>
-
+	
+	<bean id="restTemplate" class="org.springframework.web.client.RestTemplate" />
+	
+	
 </beans>

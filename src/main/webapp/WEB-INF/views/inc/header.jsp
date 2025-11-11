@@ -55,8 +55,8 @@
             <div class="user-info">
                 <%-- 로그인 상태가 아닐 때 --%>
                 <sec:authorize access="isAnonymous()">
-                    <a href="${pageContext.request.contextPath}/member/login.do" class="btn-login">로그인</a>
-                    <a href="${pageContext.request.contextPath}/member/register.do" class="btn-login">회원가입</a>
+                	<a href="${pageContext.request.contextPath}/member/login" class="btn-login">로그인</a>
+                    <a href="${pageContext.request.contextPath}/member/register" class="btn-login">회원가입</a>
                 </sec:authorize>
 
                 <%-- 로그인 상태일 때 --%>

@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+
 // 1. 형님이 보내주신 DTO를 import 합니다.
 import com.project.trip.admin.board.model.IntegratedBoardDTO;
 

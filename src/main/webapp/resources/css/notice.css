@@ -481,6 +481,81 @@ main {
 }
 
 /* ========================================================= */
+/* NOTICE VIEW (상세보기) STYLES START                       */
+/* ========================================================= */
+
+.notice-view-container {
+    max-width: 800px; /* 폼과 유사하게 최대 너비 지정 */
+    margin: 40px auto;
+    padding: 40px;
+    background-color: var(--surface); /* 카드 배경 흰색 */
+    border-radius: var(--radius); /* 둥근 모서리 */
+    box-shadow: var(--shadow-soft); /* 부드러운 그림자 */
+}
+
+.notice-view-container h2 {
+    text-align: center;
+    font-size: 2rem;
+    color: var(--primary-dark);
+    margin-bottom: 30px;
+    border-bottom: 2px solid var(--border);
+    padding-bottom: 15px;
+}
+
+.notice-header {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 20px;
+    margin-bottom: 30px;
+}
+
+.notice-header h3 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-top: 0;
+    margin-bottom: 15px;
+    line-height: 1.4;
+    color: var(--text);
+}
+
+.notice-meta {
+    font-size: 0.9rem;
+    color: var(--text-light);
+}
+
+.notice-meta span {
+    margin-right: 15px;
+}
+
+.notice-content {
+    padding: 20px 0;
+    min-height: 250px; /* 내용이 적어도 최소 높이 보장 */
+    font-size: 1rem;
+    line-height: 1.8;
+    color: var(--text);
+}
+
+/* c:out escapeXml=false 로 삽입된 HTML 태그 스타일링 */
+.notice-content p {
+    margin-bottom: 1.5em;
+}
+
+.notice-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    margin: 10px 0;
+}
+
+.notice-actions {
+    display: flex;
+    justify-content: flex-end; /* 버튼 우측 정렬 */
+    gap: 15px; /* 버튼 사이 간격 */
+    margin-top: 40px;
+    padding-top: 25px;
+    border-top: 1px solid var(--border);
+}
+
+/* ========================================================= */
 /* MOBILE MENU (HAMBURGER) STYLES START                      */
 /* ========================================================= */
 .hamburger-btn {

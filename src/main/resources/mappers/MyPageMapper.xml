@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<!-- XML Mapper -->
+<mapper namespace="com.project.trip.mypage.mapper.MyPageMapper">
+	
+<select id="getAllBoardTotalCount" parameterType="map" resultType="int">
+    SELECT COUNT(*) AS cnt 
+    FROM vwUserAllActivities 
+    WHERE user_id = #{seq}
+    <if test='search == "y"'>
+        AND ${column} LIKE '%' || #{word} || '%'
+    </if>
+</select>
+
+<!-- 게시물 목록 조회 (페이징) -->
+<select id="totalBoardList" parameterType="map" resultType="com.project.trip.mypage.model.BoardDTO">
+    SELECT * FROM (
+        SELECT a.*, ROWNUM AS rnum 
+        FROM (
+            SELECT 
+                bseq AS seq,
+                activity_type AS boradTitle,
+                activity_code AS boradCode,
+                title AS subject,
+                TO_CHAR(regdate, 'YYYY-MM-DD') AS regdate
+            FROM vwUserAllActivities 
+            WHERE user_id = #{seq}
+            <if test='search == "y"'>
+                AND ${column} LIKE '%' || #{word} || '%'
+            </if>
+            ORDER BY regdate DESC
+        ) a
+    ) 
+    WHERE rnum BETWEEN #{begin} AND #{end}
+</select>
+
+<!-- 전체 댓글 수 조회 -->
+<select id="getAllCommentTotalCount" parameterType="map" resultType="int">
+    SELECT COUNT(*) AS cnt 
+    FROM vwUserAllComments 
+    WHERE user_id = #{seq}
+    <if test='search == "y"'>
+        AND ${column} LIKE '%' || #{word} || '%'
+    </if>
+</select>
+
+<!-- 댓글 목록 조회 (페이징) -->
+<select id="totalCommentList" parameterType="map" resultType="com.project.trip.mypage.model.BoardDTO">
+    SELECT * FROM (
+        SELECT a.*, ROWNUM AS rnum 
+        FROM (
+            SELECT 
+                parent_post_id AS seq,
+                comment_type AS boradTitle,
+                activity_code AS boradCode,
+                parent_post_title AS subject,
+                content AS commentcontent,
+                TO_CHAR(regdate, 'YYYY-MM-DD') AS regdate
+            FROM vwUserAllComments 
+            WHERE user_id = #{seq}
+            <if test='search == "y"'>
+                AND ${column} LIKE '%' || #{word} || '%'
+            </if>
+            ORDER BY regdate DESC
+        ) a
+    ) 
+    WHERE rnum BETWEEN #{begin} AND #{end}
+    </select>
+    
+    <select id="getAllLikeTotalCount" parameterType="map" resultType="int">
+    SELECT COUNT(*) AS cnt 
+    FROM vwUserAllLikes 
+    WHERE user_id = #{seq}
+    <if test='search == "y"'>
+        AND ${column} LIKE '%' || #{word} || '%'
+    </if>
+</select>
+
+<select id="totalLikeList" parameterType="map" resultType="com.project.trip.mypage.model.BoardDTO">
+    SELECT * FROM (
+        SELECT a.*, ROWNUM AS rnum 
+        FROM (
+            SELECT 
+                post_id AS seq,
+                board_name AS boradTitle,
+                board_type AS boradCode,
+                post_title AS subject,
+                TO_CHAR(regdate, 'YYYY-MM-DD') AS regdate
+            FROM vwUserAllLikes 
+            WHERE user_id = #{seq}
+            <if test='search == "y"'>
+                AND ${column} LIKE '%' || #{word} || '%'
+            </if>
+            ORDER BY regdate DESC
+        ) a
+    ) 
+    WHERE rnum BETWEEN #{begin} AND #{end}
+</select>
+
+
+<select id="getAllScrapTotalCount" parameterType="map" resultType="int">
+    SELECT COUNT(*) AS cnt 
+    FROM vwAllScraps 
+    WHERE user_id = #{seq}
+    <if test='search == "y"'>
+        AND ${column} LIKE '%' || #{word} || '%'
+    </if>
+</select>
+
+<select id="totalScrapList" parameterType="map" resultType="com.project.trip.mypage.model.BoardDTO">
+    SELECT * FROM (
+        SELECT a.*, ROWNUM AS rnum 
+        FROM (
+            SELECT 
+                content_id AS seq,
+                board_name AS boradTitle,
+                content_type AS boradCode,
+                post_title AS subject,
+                TO_CHAR(post_regdate, 'YYYY-MM-DD') AS regdate
+            FROM vwAllScraps 
+            WHERE user_id = #{seq}
+            <if test='search == "y"'>
+                AND ${column} LIKE '%' || #{word} || '%'
+            </if>
+            ORDER BY post_regdate DESC
+        ) a
+    ) 
+    WHERE rnum BETWEEN #{begin} AND #{end}
+</select>
+
+<!-- 숙소 예약 활동 -->
+<select id="getAccomReservationTotalCount" parameterType="map" resultType="int">
+    SELECT COUNT(*) AS cnt 
+    FROM vwAccomReservAtionDetails 
+    WHERE user_id = #{seq}
+    <if test='search == "y"'>
+        AND ${column} LIKE '%' || #{word} || '%'
+    </if>
+</select>
+
+<select id="totalAccomList" parameterType="map" resultType="com.project.trip.mypage.model.AccomReservationViewDTO">
+    SELECT * FROM (
+        SELECT a.*, ROWNUM AS rnum 
+        FROM (
+            SELECT 
+                reservation_id AS seq,
+                user_id AS useq,
+                room_total_price AS roomtotalprice,
+                accom_reservation_id AS accomseq,
+                room_name AS roomname,
+                place_name AS placename,
+                place_address AS placeaddress,
+                room_type AS roomtype,
+                accom_type AS accomtype,
+                guest_count AS guestcount,
+                TO_CHAR(checkin_date, 'YYYY-MM-DD') AS checkindate,
+                TO_CHAR(checkout_date, 'YYYY-MM-DD') AS checkoutdate
+            FROM vwAccomReservAtionDetails 
+            WHERE user_id = #{seq}
+              AND status_id != 3
+            <if test='search == "y"'>
+                AND ${column} LIKE '%' || #{word} || '%'
+            </if>
+            ORDER BY reservation_id DESC
+        ) a
+    ) 
+    WHERE rnum BETWEEN #{begin} AND #{end}
+</select>
+
+<select id="getAccomReservation" resultType="com.project.trip.mypage.model.AccomReservationViewDTO">
+    SELECT 
+        reservation_id AS seq,
+        user_id AS useq,
+        room_total_price AS roomtotalprice,
+        accom_reservation_id AS accomseq,
+        room_name AS roomname,
+        place_name AS placename,
+        place_address AS placeaddress,
+        room_type AS roomtype,
+        accom_type AS accomtype,
+        guest_count AS guestcount,
+        TO_CHAR(checkin_date, 'YYYY-MM-DD') AS checkindate,
+        TO_CHAR(checkout_date, 'YYYY-MM-DD') AS checkoutdate
+    FROM vwAccomReservAtionDetails 
+    WHERE reservation_id = #{seq}
+      AND accom_reservation_id = #{accomseq}
+</select>
+
+<update id="addAccomCancel" parameterType="String">
+    UPDATE tblAccomReservation 
+    SET status_id = 3
+    WHERE accom_reservation_id = #{accomseq}
+</update>
+
+<select id="getCarReservationTotalCount" parameterType="map" resultType="int">
+    SELECT COUNT(*) AS cnt 
+    FROM vwCarReservationDetails 
+    WHERE user_id = #{seq}
+    <if test='search == "y"'>
+        AND ${column} LIKE '%' || #{word} || '%'
+    </if>
+</select>
+
+<select id="totalCarList" parameterType="map" resultType="com.project.trip.mypage.model.CarReservationViewDTO">
+    SELECT * FROM (
+        SELECT a.*, ROWNUM AS rnum 
+        FROM (
+            SELECT 
+                reservation_id AS seq,
+                user_id AS useq,
+                car_reservation_id AS carseq,
+                status_name AS statusname,
+                TO_CHAR(pickup_date, 'YYYY-MM-DD') AS pickupdate,
+                TO_CHAR(dropoff_date, 'YYYY-MM-DD') AS dropoffdate,
+                pickup_location AS pickuplocation,
+                dropoff_location AS dropofflocation,
+                car_total_price AS cartotalprice,
+                car_notes AS carnotes,
+                car_type AS cartype,
+                car_fuel_type AS carfueltype,
+                car_name AS carname
+            FROM vwCarReservationDetails 
+            WHERE user_id = #{seq}
+              AND status_id != 3
+            <if test='search == "y"'>
+                AND ${column} LIKE '%' || #{word} || '%'
+            </if>
+            ORDER BY reservation_id DESC
+        ) a
+    ) 
+    WHERE rnum BETWEEN #{begin} AND #{end}
+</select>
+
+<!-- 렌트카 예약 상세보기 -->
+<select id="getCarReservation" resultType="com.project.trip.mypage.model.CarReservationViewDTO">
+    SELECT 
+        reservation_id AS seq,
+        user_id AS useq,
+        car_reservation_id AS carseq,
+        status_name AS statusname,
+        TO_CHAR(pickup_date, 'YYYY-MM-DD') AS pickupdate,
+        TO_CHAR(dropoff_date, 'YYYY-MM-DD') AS dropoffdate,
+        pickup_location AS pickuplocation,
+        dropoff_location AS dropofflocation,
+        car_total_price AS cartotalprice,
+        car_notes AS carnotes,
+        car_type AS cartype,
+        car_fuel_type AS carfueltype,
+        car_name AS carname
+    FROM vwCarReservationDetails 
+    WHERE reservation_id = #{seq}
+      AND car_reservation_id = #{carseq}
+</select>
+
+<!-- 렌트카 예약 취소 -->
+<update id="addCarCancel" parameterType="String">
+    UPDATE tblCarReservation 
+    SET status_id = 3
+    WHERE car_reservation_id = #{carseq}
+</update>
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
