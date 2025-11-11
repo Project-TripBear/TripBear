@@ -14,4 +14,8 @@ public class carDTO {
     private String fuelType;
     private int pricePerDay;
     private boolean isReserved; // 예약 여부
+ 
+    private int placeLocationId;
+    private String carNumber;
+    private int carSeats;
 }

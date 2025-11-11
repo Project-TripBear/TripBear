@@ -6,6 +6,8 @@
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
 	<!--  스프링 시큐리티의 모든 설정 security-context.xml  -->
+
+	
 	
 	<!-- 403 핸들러 -->
 	<bean id="customAccessDeniedHandler" class="com.project.trip.auth.CustomAccessDeniedHandler"></bean>
@@ -26,11 +28,16 @@
 	
 	<security:http>
 	
+	<security:csrf disabled="true" />
+	
 		<!-- 허가 -->
 		<security:intercept-url pattern="/member/login" access="permitAll" />
 		<security:intercept-url pattern="/resources/**" access="permitAll" />
 		
 		<security:intercept-url pattern="/" access="permitAll" />
+		
+		<security:intercept-url pattern="/admin/**" access="permitAll" />
+
 		
 		<security:intercept-url pattern="/*/add" access="hasRole('ROLE_MEMBER')" />
 		<security:intercept-url pattern="/*/edit" access="hasRole('ROLE_MEMBER')" />

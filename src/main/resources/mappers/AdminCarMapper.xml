@@ -5,79 +5,101 @@
 <mapper namespace="com.project.trip.admin.car.mapper.AdminCarMapper">
 
     <insert id="addCar" parameterType="carDTO">
-        INSERT INTO TB_CAR (
-            CAR_ID, CAR_NAME, CAR_TYPE, CAR_YEAR, CAR_COMPANY, 
-            CAR_PRICE, CAR_IMAGE, CAR_DESCRIPTION, CAR_FUEL
-        ) VALUES (
-            TB_CAR_SEQ.NEXTVAL, 
-            #{carName}, #{carType}, #{carYear}, #{carCompany}, 
-            #{carPrice}, #{carImage}, #{carDescription}, #{carFuel}
+        INSERT INTO tblRentalCar (
+            car_id, 
+            car_name, 
+            car_type, 
+            car_fuel_type,
+            car_price_per_day, 
+            car_image_url,
+            
+            car_number,  car_seats,   place_Location_id ) VALUES (
+            tblRentalCar_SEQ.NEXTVAL, 
+            #{carName}, 
+            #{carType}, 
+            #{carFuel},   #{carPrice},  #{carImage},  #{carNumber},
+            #{carSeats},
+            #{placeLocationId}
         )
     </insert>
     
     <select id="getMaxPrice" resultType="int">
-        SELECT MAX(CAR_PRICE) FROM TB_CAR
+        SELECT MAX(car_price_per_day) FROM tblRentalCar
     </select>
     
     <select id="getAllCars" parameterType="map" resultType="carDTO">
         SELECT
-            CAR_ID, CAR_NAME, CAR_TYPE, CAR_YEAR, CAR_COMPANY, 
-            CAR_PRICE, CAR_IMAGE, CAR_DESCRIPTION, CAR_FUEL
+            car_id AS carId, 
+            car_name AS carName, 
+            car_type AS carType, 
+            car_price_per_day AS carPrice, 
+            car_image_url AS carImage, 
+            car_fuel_type AS carFuel,
+            car_number AS carNumber,
+            car_seats AS carSeats,
+            place_Location_id AS placeLocationId
         FROM
-            TB_CAR
+            tblRentalCar
         WHERE 1=1
         
         <if test="fuelTypes != null and fuelTypes.length > 0">
-            AND CAR_FUEL IN
+            AND car_fuel_type IN
             <foreach item="fuel" collection="fuelTypes" open="(" separator="," close=")">
                 #{fuel}
             </foreach>
         </if>
         
         <if test="minPrice != null and maxPrice != null">
-            AND CAR_PRICE BETWEEN #{minPrice} AND #{maxPrice}
+            AND car_price_per_day BETWEEN #{minPrice} AND #{maxPrice}
         </if>
         
         <choose>
             <when test="sortOrder == 'price_asc'">
-                ORDER BY CAR_PRICE ASC
+                ORDER BY car_price_per_day ASC
             </when>
             <when test="sortOrder == 'price_desc'">
-                ORDER BY CAR_PRICE DESC
+                ORDER BY car_price_per_day DESC
             </when>
             <otherwise>
-                ORDER BY CAR_ID DESC
+                ORDER BY car_id DESC
             </otherwise>
         </choose>
     </select>
     
     <select id="selectCarDetail" parameterType="int" resultType="carDTO">
         SELECT
-            CAR_ID, CAR_NAME, CAR_TYPE, CAR_YEAR, CAR_COMPANY, 
-            CAR_PRICE, CAR_IMAGE, CAR_DESCRIPTION, CAR_FUEL
+            car_id AS carId, 
+            car_name AS carName, 
+            car_type AS carType, 
+            car_price_per_day AS carPrice, 
+            car_image_url AS carImage, 
+            car_fuel_type AS carFuel,
+            car_number AS carNumber,
+            car_seats AS carSeats,
+            place_Location_id AS placeLocationId
         FROM
-            TB_CAR
+            tblRentalCar
         WHERE
-            CAR_ID = #{carId}
+            car_id = #{carId}
     </select>
 
     <delete id="deleteCar" parameterType="int">
-        DELETE FROM TB_CAR
-        WHERE CAR_ID = #{carId}
+        DELETE FROM tblRentalCar
+        WHERE car_id = #{carId}
     </delete>
 
     <update id="updateCar" parameterType="carDTO">
-        UPDATE TB_CAR
+        UPDATE tblRentalCar
         SET 
-            CAR_NAME = #{carName},
-            CAR_TYPE = #{carType},
-            CAR_YEAR = #{carYear},
-            CAR_COMPANY = #{carCompany},
-            CAR_PRICE = #{carPrice},
-            CAR_IMAGE = #{carImage},
-            CAR_DESCRIPTION = #{carDescription},
-            CAR_FUEL = #{carFuel}
+            car_name = #{carName},
+            car_type = #{carType},
+            car_fuel_type = #{carFuel},
+            car_price_per_day = #{carPrice},
+            car_image_url = #{carImage},
+            car_number = #{carNumber},
+            car_seats = #{carSeats},
+            place_Location_id = #{placeLocationId}
         WHERE 
-            CAR_ID = #{carId}
+            car_id = #{carId}
     </update>
 </mapper>
