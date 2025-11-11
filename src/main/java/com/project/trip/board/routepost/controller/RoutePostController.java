@@ -175,7 +175,7 @@ public class RoutePostController {
 
     // 게시글 삭제
     @GetMapping("/del/{routepostId}")
-    public String del(@PathVariable String routepostId) {
+    public String del(@PathVariable int routepostId) {
         postService.del(routepostId);
         return "redirect:/routepost/list";
     }

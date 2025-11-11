@@ -21,7 +21,7 @@ public interface RoutePostMapper {
     int edit(RoutePostDTO dto);
 
     // 게시글 삭제
-    int del(String routepostId);
+    int del(int routepostId);
 
     // 게시글 이미지 목록
     List<RoutePostImageDTO> getImages(String routepostId);
@@ -30,7 +30,7 @@ public interface RoutePostMapper {
     int addImage(RoutePostImageDTO imgDto);
 
     // 이미지 삭제
-    int delImages(String routepostId);
+    int delImages(int routepostId);
     
     // 조회수 증가
     void increaseViewCount(String routepostId);

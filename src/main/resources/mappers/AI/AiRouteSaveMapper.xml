@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.project.trip.AI.mapper.AiRouteSaveMapper">
+
+    <!-- ① AI 루트 → 사용자 루트 복사 -->
+    <insert id="insertUserRouteFromAi">
+        INSERT INTO tblUserRoute (
+            user_route_id,
+            user_id,
+            ai_route_id,
+            user_route_title,
+            user_route_days,
+            user_route_region,
+            user_route_startdate,
+            user_route_enddate,
+            user_route_created
+        )
+        SELECT
+            seqUserRoute.NEXTVAL,
+            #{userId},
+            ai_route_id,
+            ai_route_title,
+            ai_route_days,
+            ai_route_region,
+            al_route_startdate,
+            al_route_enddate,
+            SYSDATE
+        FROM tblAiRoute
+        WHERE ai_route_id = #{aiRouteId}
+    </insert>
+
+    <!-- ② 최신 생성된 user_route_id 조회 -->
+    <select id="getLatestUserRouteId" parameterType="long" resultType="long">
+        SELECT MAX(user_route_id)
+        FROM tblUserRoute
+        WHERE user_id = #{userId}
+    </select>
+
+    <!-- ③ AI 루트의 스탑 → 사용자 루트 스탑 복사 -->
+    <insert id="insertUserRouteStopsFromAi">
+        INSERT INTO tblUserRouteStop (
+            user_route_stop_id,
+            user_route_id,
+            user_route_day,
+            user_route_stop_order,
+            user_route_lat,
+            user_route_long,
+            user_route_description,
+            activity_code,
+            duration_category,
+            restaurant_category,
+            transportation_mode
+        )
+        SELECT
+            seqUserRouteStop.NEXTVAL,
+            #{userRouteId},
+            ai_route_day,
+            ai_route_stop_order,
+            ai_route_lat,
+            ai_route_long,
+            ai_route_description,
+            activity_code,
+            duration_category,
+            restaurant_category,
+            transportation_mode
+        FROM tblAiRouteStop
+        WHERE ai_route_id = #{aiRouteId}
+    </insert>
+
+</mapper>

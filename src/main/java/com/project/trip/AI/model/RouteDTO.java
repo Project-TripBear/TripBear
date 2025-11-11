@@ -16,7 +16,7 @@ public class RouteDTO {
 	private long userId;
 	private long conversationId;
 	
-	private String AiRouteTile;
+	private String AiRouteTitle;
 	private int AiRouteDays;
 	private Date AiRouteCreated;
 	private String AiRouteRegion;

@@ -13,7 +13,7 @@ public interface RoutePostService {
     RoutePostDTO get(String routepostId);
     int add(RoutePostDTO dto);
     int edit(RoutePostDTO dto);
-    int del(String routepostId);
+    int del(int routepostId);
 
     // ===== 이미지 =====
     List<RoutePostImageDTO> getImages(String routepostId);
@@ -32,4 +32,5 @@ public interface RoutePostService {
     boolean isScrapped(Map<String, Object> map);
     int addScrap(Map<String, Object> map);
     int removeScrap(Map<String, Object> map);
+	
 }

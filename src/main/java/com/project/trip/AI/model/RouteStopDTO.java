@@ -20,7 +20,11 @@ public class RouteStopDTO {
 	private String transportationMode;
 	
 	//헬스케어
-	private Double walkingDistanceKm;
-	private Integer walkingStepsCount;
+	private double walkingDistanceKm;
+	private int walkingStepsCount;
+	
+	//헬스케어 구윤추가
+	private long healthcareId;
+	private int healthcareCaloriesBurned;
 
 }

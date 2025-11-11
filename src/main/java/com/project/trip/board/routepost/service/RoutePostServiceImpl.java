@@ -38,7 +38,7 @@ public class RoutePostServiceImpl implements RoutePostService {
     }
 
     @Override
-    public int del(String routepostId) {
+    public int del(int routepostId) {
         // 게시글 삭제 전 이미지 삭제 (연관 데이터 정리)
         mapper.delImages(routepostId);
         return mapper.del(routepostId);
@@ -56,7 +56,7 @@ public class RoutePostServiceImpl implements RoutePostService {
     }
 
     @Override
-    public int delImages(String routepostId) {
+    public int delImages(int routepostId) {
         return mapper.delImages(routepostId);
     }
 
