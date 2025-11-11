@@ -1,5 +1,6 @@
 package com.project.trip.AI.model;
 
+<<<<<<< HEAD
 import lombok.Data;
 
 @Data
@@ -26,5 +27,8 @@ public class AiRouteRequestDTO {
 		private double weight;
 	}
 	
+=======
+public class TripPreferencesDTO {
+>>>>>>> d5d93c924996805d9e9a204ace61fd688ea1593e
 
 }
