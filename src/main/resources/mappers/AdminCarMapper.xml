@@ -1,74 +1,83 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper
- PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
- "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.project.trip.admin.car.mapper.AdminCarMapper">
-<insert id="addCar" parameterType="carDTO">
-        INSERT INTO tblRentalCar (
-            car_id, 
-            place_Location_id,
-            car_name, 
-            car_type, 
-            car_number,
-            car_fuel_type, 
-            car_seats,
-            car_price_per_day,
-            car_image_url,
-            car_status
+
+    <insert id="addCar" parameterType="carDTO">
+        INSERT INTO TB_CAR (
+            CAR_ID, CAR_NAME, CAR_TYPE, CAR_YEAR, CAR_COMPANY, 
+            CAR_PRICE, CAR_IMAGE, CAR_DESCRIPTION, CAR_FUEL
         ) VALUES (
-            seq_rental_car.NEXTVAL, #{placeLocationId, jdbcType=INTEGER},
-            #{carName, jdbcType=VARCHAR}, 
-            #{carType, jdbcType=VARCHAR}, 
-            #{carNumber, jdbcType=VARCHAR},
-            #{fuelType, jdbcType=VARCHAR}, 
-            #{carSeats, jdbcType=INTEGER},
-            #{pricePerDay, jdbcType=INTEGER},
-            #{carImageUrl, jdbcType=VARCHAR},
-            #{carStatus, jdbcType=CHAR}
+            TB_CAR_SEQ.NEXTVAL, 
+            #{carName}, #{carType}, #{carYear}, #{carCompany}, 
+            #{carPrice}, #{carImage}, #{carDescription}, #{carFuel}
         )
     </insert>
-
-<select id="getMaxPrice" resultType="int">
-        SELECT NVL(MAX(car_price_per_day), 500000) FROM tblRentalCar
+    
+    <select id="getMaxPrice" resultType="int">
+        SELECT MAX(CAR_PRICE) FROM TB_CAR
     </select>
     
-    <select id="getAllCars" parameterType="java.util.Map" resultType="carDTO">
-        SELECT 
-            c.car_id as carId, 
-            c.car_name as carName, 
-            c.car_type as carType, 
-            c.car_fuel_type as fuelType, 
-            c.car_price_per_day as pricePerDay,
-            (SELECT COUNT(*) 
-             FROM tblCarReservation res 
-             WHERE res.car_id = c.car_id 
-             AND SYSDATE BETWEEN res.pickup_date AND res.dropoff_date) as reservationCount
-        FROM tblRentalCar c
-        <where>
-            c.car_price_per_day BETWEEN #{minPrice} AND #{maxPrice}
-            
-            <if test="fuelTypes != null and fuelTypes.length > 0">
-                AND c.car_fuel_type IN
-                <foreach collection="fuelTypes" item="fuel" open="(" separator="," close=")">
-                    #{fuel}
-                </foreach>
-            </if>
-        </where>
+    <select id="getAllCars" parameterType="map" resultType="carDTO">
+        SELECT
+            CAR_ID, CAR_NAME, CAR_TYPE, CAR_YEAR, CAR_COMPANY, 
+            CAR_PRICE, CAR_IMAGE, CAR_DESCRIPTION, CAR_FUEL
+        FROM
+            TB_CAR
+        WHERE 1=1
+        
+        <if test="fuelTypes != null and fuelTypes.length > 0">
+            AND CAR_FUEL IN
+            <foreach item="fuel" collection="fuelTypes" open="(" separator="," close=")">
+                #{fuel}
+            </foreach>
+        </if>
+        
+        <if test="minPrice != null and maxPrice != null">
+            AND CAR_PRICE BETWEEN #{minPrice} AND #{maxPrice}
+        </if>
+        
         <choose>
             <when test="sortOrder == 'price_asc'">
-                ORDER BY c.car_price_per_day ASC, c.car_name ASC
+                ORDER BY CAR_PRICE ASC
             </when>
             <when test="sortOrder == 'price_desc'">
-                ORDER BY c.car_price_per_day DESC, c.car_name ASC
+                ORDER BY CAR_PRICE DESC
             </when>
             <otherwise>
-                ORDER BY c.car_name ASC
+                ORDER BY CAR_ID DESC
             </otherwise>
         </choose>
     </select>
     
+    <select id="selectCarDetail" parameterType="int" resultType="carDTO">
+        SELECT
+            CAR_ID, CAR_NAME, CAR_TYPE, CAR_YEAR, CAR_COMPANY, 
+            CAR_PRICE, CAR_IMAGE, CAR_DESCRIPTION, CAR_FUEL
+        FROM
+            TB_CAR
+        WHERE
+            CAR_ID = #{carId}
+    </select>
+
     <delete id="deleteCar" parameterType="int">
-        DELETE FROM tblRentalCar WHERE car_id = #{carId}
+        DELETE FROM TB_CAR
+        WHERE CAR_ID = #{carId}
     </delete>
+
+    <update id="updateCar" parameterType="carDTO">
+        UPDATE TB_CAR
+        SET 
+            CAR_NAME = #{carName},
+            CAR_TYPE = #{carType},
+            CAR_YEAR = #{carYear},
+            CAR_COMPANY = #{carCompany},
+            CAR_PRICE = #{carPrice},
+            CAR_IMAGE = #{carImage},
+            CAR_DESCRIPTION = #{carDescription},
+            CAR_FUEL = #{carFuel}
+        WHERE 
+            CAR_ID = #{carId}
+    </update>
 </mapper>

@@ -1,22 +1,20 @@
-// 파일 경로: com.project.trip.admin.car.mapper.AdminCarMapper.java
-
 package com.project.trip.admin.car.mapper;
 
 import java.util.List;
 import java.util.Map;
-
 import com.project.trip.admin.car.model.carDTO;
 
 public interface AdminCarMapper {
 
-	void addCar(carDTO dto);
-    
-    // 1. [추가] 최대 가격
+    int insertCar(carDTO dto);
+
     int getMaxPrice();
 
-    // 2. [추가] 렌터카 목록
     List<carDTO> getAllCars(Map<String, Object> params);
-    
-    // 3. [추가] 렌터카 삭제
-    void deleteCar(int carId);
+
+    carDTO selectCarDetail(int carId); // 상세 조회 추가
+
+    int deleteCar(int carId); // 리턴 타입 int로 변경
+
+    int updateCar(carDTO dto);
 }
