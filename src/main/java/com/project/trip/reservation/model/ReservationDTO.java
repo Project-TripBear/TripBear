@@ -21,6 +21,9 @@ public class ReservationDTO {
     private String roomName;
     private String carName;
     private String region;
+<<<<<<< HEAD
 
+=======
+>>>>>>> 39aba4fdfa6e2eb938fa3783350778dcb146979c
 }
 
