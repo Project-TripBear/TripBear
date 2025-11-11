@@ -58,6 +58,31 @@ WHERE
     UPDATE tblUser SET password = #{pw} 
     WHERE username = #{id} AND email = #{email}
 </update>
+
+
+<update id="userEdit" parameterType="userdto">
+    UPDATE tblUser 
+    <set>
+        <if test="pw != null and pw != ''">
+            password = #{pw},
+        </if>
+        real_name = #{name}, 
+        phone_number = #{phoneNumber}, 
+        email = #{email}, 
+        nickname = #{nickName}, 
+        address = #{address}, 
+        gender = #{gender}, 
+        height = #{height}, 
+        weight = #{weight}, 
+        health_goals = #{healthGoals},
+    </set>
+    WHERE user_id = #{seq}
+</update>
+
+<delete id="userDel" parameterType="String">
+    DELETE FROM tblUser WHERE user_id = #{seq}
+</delete>
+ 
 </mapper>
 
 
