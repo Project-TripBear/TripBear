@@ -20,11 +20,8 @@
 		location="classpath:application.properties" />
 
 	<!-- 컴포넌트 스캔 (Controller 포함 모든 패키지) -->
-	<context:component-scan
-		base-package="com.project.trip">
-		<context:include-filter type="annotation"
-			expression="org.springframework.stereotype.Controller" />
-	</context:component-scan>
+	<context:component-scan base-package="com.project.trip" />
+
 
 
 	<!-- Tiles 설정 -->
@@ -33,6 +30,7 @@
 		<beans:property name="definitions">
 			<beans:list>
 				<beans:value>/WEB-INF/tiles.xml</beans:value>
+				<beans:value>/WEB-INF/tiles_admin.xml</beans:value>
 			</beans:list>
 		</beans:property>
 	</beans:bean>
@@ -54,3 +52,4 @@
 	</beans:bean>
 
 </beans:beans>
+
