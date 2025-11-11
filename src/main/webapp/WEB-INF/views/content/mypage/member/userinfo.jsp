@@ -59,10 +59,10 @@
 		</table>
 	
 		<div>
-			<button type="button" class="back" onclick="location.href='/main/board/list.do';">돌아가기</button>
-<button type="button" onclick="location.href='/main/user/useredit.do';" class="edit primary">수정하기</button>
+			<button type="button" class="back" onclick="location.href='/trip/member/mypage';">돌아가기</button>
+<button type="button" onclick="location.href='/trip/member/useredit';" class="edit primary">수정하기</button>
 
-<button type="button" onclick="location.href='/main/user/userdel.do';" class="edit primary">회원탈퇴</button>
+<button type="button" onclick="location.href='/trip/member/userdel.do';" class="edit primary">회원탈퇴</button>
 
 </div>
 	</div>

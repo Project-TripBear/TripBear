@@ -30,10 +30,10 @@
 		<security:intercept-url pattern="/" access="permitAll" />
 		
 				
-		<security:intercept-url pattern="/board/add" access="hasRole('ROLE_MEMBER')" />
-		<security:intercept-url pattern="/board/edit" access="hasRole('ROLE_MEMBER')" />
-		<security:intercept-url pattern="/board/del" access="hasRole('ROLE_MEMBER')" />
-		
+		<security:intercept-url pattern="/member/mypage" access="hasAuthority('ACTIVE')" />		
+		<security:intercept-url pattern="/*/add" access="hasAuthority('ACTIVE')" />
+		<security:intercept-url pattern="/*/edit" access="hasAuthority('ACTIVE')" />
+		<security:intercept-url pattern="/*/del" access="hasAuthority('ACTIVE')" />
 		<!-- <security:intercept-url pattern="/member.do" access="hasRole('ROLE_MEMBER')" />
 		<security:intercept-url pattern="/admin.do" access="hasRole('ROLE_ADMIN')" /> -->
 		

@@ -5,33 +5,132 @@
   
 <!-- XML Mapper -->
 <mapper namespace="com.project.trip.mypage.mapper.MyPageMapper">
-	<select id="get" parameterType="String" resultType="userdto">
-		
-		<!-- username, password enabled  -->
-		SELECT
-    u.user_id AS seq,
-    u.username AS id,
-    u.password AS pw,
-    u.ssn,
-    u.phone_number AS phoneNumber,
-    u.nickname,
-    u.real_name AS name,
-    u.email,
-    u.address,
-    u.gender,
-    u.height,
-    u.weight,
-    u.health_goals AS healthGoals,
-    (
-        SELECT s.status
-        FROM tblUserStatus s
-        WHERE s.user_status_id = u.user_status_id
-    ) AS auth
-FROM
-    tblUser u
-WHERE
-	u.username = #{username}
-	</select>
+	
+<select id="getAllBoardTotalCount" parameterType="map" resultType="int">
+    SELECT COUNT(*) AS cnt 
+    FROM vwUserAllActivities 
+    WHERE user_id = #{seq}
+    <if test='search == "y"'>
+        AND ${column} LIKE '%' || #{word} || '%'
+    </if>
+</select>
+
+<!-- 게시물 목록 조회 (페이징) -->
+<select id="totalBoardList" parameterType="map" resultType="com.project.trip.mypage.model.BoardDTO">
+    SELECT * FROM (
+        SELECT a.*, ROWNUM AS rnum 
+        FROM (
+            SELECT 
+                bseq AS seq,
+                activity_type AS boradTitle,
+                activity_code AS boradCode,
+                title AS subject,
+                TO_CHAR(regdate, 'YYYY-MM-DD') AS regdate
+            FROM vwUserAllActivities 
+            WHERE user_id = #{seq}
+            <if test='search == "y"'>
+                AND ${column} LIKE '%' || #{word} || '%'
+            </if>
+            ORDER BY regdate DESC
+        ) a
+    ) 
+    WHERE rnum BETWEEN #{begin} AND #{end}
+</select>
+
+<!-- 전체 댓글 수 조회 -->
+<select id="getAllCommentTotalCount" parameterType="map" resultType="int">
+    SELECT COUNT(*) AS cnt 
+    FROM vwUserAllComments 
+    WHERE user_id = #{seq}
+    <if test='search == "y"'>
+        AND ${column} LIKE '%' || #{word} || '%'
+    </if>
+</select>
+
+<!-- 댓글 목록 조회 (페이징) -->
+<select id="totalCommentList" parameterType="map" resultType="com.project.trip.mypage.model.BoardDTO">
+    SELECT * FROM (
+        SELECT a.*, ROWNUM AS rnum 
+        FROM (
+            SELECT 
+                parent_post_id AS seq,
+                comment_type AS boradTitle,
+                activity_code AS boradCode,
+                parent_post_title AS subject,
+                content AS commentcontent,
+                TO_CHAR(regdate, 'YYYY-MM-DD') AS regdate
+            FROM vwUserAllComments 
+            WHERE user_id = #{seq}
+            <if test='search == "y"'>
+                AND ${column} LIKE '%' || #{word} || '%'
+            </if>
+            ORDER BY regdate DESC
+        ) a
+    ) 
+    WHERE rnum BETWEEN #{begin} AND #{end}
+    </select>
+    
+    <select id="getAllLikeTotalCount" parameterType="map" resultType="int">
+    SELECT COUNT(*) AS cnt 
+    FROM vwUserAllLikes 
+    WHERE user_id = #{seq}
+    <if test='search == "y"'>
+        AND ${column} LIKE '%' || #{word} || '%'
+    </if>
+</select>
+
+<select id="totalLikeList" parameterType="map" resultType="com.project.trip.mypage.model.BoardDTO">
+    SELECT * FROM (
+        SELECT a.*, ROWNUM AS rnum 
+        FROM (
+            SELECT 
+                post_id AS seq,
+                board_name AS boradTitle,
+                board_type AS boradCode,
+                post_title AS subject,
+                TO_CHAR(regdate, 'YYYY-MM-DD') AS regdate
+            FROM vwUserAllLikes 
+            WHERE user_id = #{seq}
+            <if test='search == "y"'>
+                AND ${column} LIKE '%' || #{word} || '%'
+            </if>
+            ORDER BY regdate DESC
+        ) a
+    ) 
+    WHERE rnum BETWEEN #{begin} AND #{end}
+</select>
+
+
+<select id="getAllScrapTotalCount" parameterType="map" resultType="int">
+    SELECT COUNT(*) AS cnt 
+    FROM vwAllScraps 
+    WHERE user_id = #{seq}
+    <if test='search == "y"'>
+        AND ${column} LIKE '%' || #{word} || '%'
+    </if>
+</select>
+
+<select id="totalScrapList" parameterType="map" resultType="com.project.trip.mypage.model.BoardDTO">
+    SELECT * FROM (
+        SELECT a.*, ROWNUM AS rnum 
+        FROM (
+            SELECT 
+                content_id AS seq,
+                board_name AS boradTitle,
+                content_type AS boradCode,
+                post_title AS subject,
+                TO_CHAR(post_regdate, 'YYYY-MM-DD') AS regdate
+            FROM vwAllScraps 
+            WHERE user_id = #{seq}
+            <if test='search == "y"'>
+                AND ${column} LIKE '%' || #{word} || '%'
+            </if>
+            ORDER BY post_regdate DESC
+        ) a
+    ) 
+    WHERE rnum BETWEEN #{begin} AND #{end}
+</select>
+
 
 </mapper>
 

@@ -30,14 +30,14 @@ public class MemberController {
 	private final MemberMapper mapper;
 
 	
-	@GetMapping("/member/add")
-	public String add() {
+	@GetMapping("/member/register")
+	public String register() {
 		
-		return "mypage.member.add";
+		return "mypage.member.register";
 	}
 	
-	@PostMapping("/member/addok")
-	public String addok(UserDTO dto) {
+	@PostMapping("/member/registerok")
+	public String registerok(UserDTO dto) {
 		
 		//System.out.println(dto);
 		//암호 > 암호화

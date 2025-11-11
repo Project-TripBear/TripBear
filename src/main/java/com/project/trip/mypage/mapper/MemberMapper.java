@@ -18,6 +18,10 @@ public interface MemberMapper {
 
 	int userCheckByIdAndEmail(UserDTO checkDto);
 
+	int userEdit(UserDTO dto);
+
+	void userDel(String seq);
+
 
 
 }
