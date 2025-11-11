@@ -29,19 +29,19 @@ public class AdminUserServiceTest {
     @Test
     public void testGetUserList() {
         
-        log.info("--- 회원 목록 조회 테스트 시작 ---");
-        
-        List<AdminUserDTO> list = service.getUserList();
-        
-        assertNotNull("Service가 null을 반환했습니다.", list);
-        
-        log.info("총 " + list.size() + "명의 회원이 조회되었습니다.");
-        
-        list.stream().limit(5).forEach(dto -> {
-            log.info(dto);
-        });
-        
-        log.info("--- 테스트 성공 ---");
+		
+		 log.info("--- 회원 목록 조회 테스트 시작 ---");
+		  
+		 List<AdminUserDTO> list = service.getUserList();
+		  
+		 assertNotNull("Service가 null을 반환했습니다.", list);
+		 
+		 log.info("총 " + list.size() + "명의 회원이 조회되었습니다.");
+		  
+		 list.stream().limit(5).forEach(dto -> { log.info(dto); });
+		  
+		 log.info("--- 테스트 성공 ---");
+		 
     }
 
 }
