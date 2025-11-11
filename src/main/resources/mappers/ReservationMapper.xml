@@ -4,9 +4,8 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.project.trip.reservation.mapper.ReservationMapper">
-
-    <!-- 통합예약 INSERT -->
-    <insert id="insertReservation" parameterType="ReservationDTO">
+    <!-- 통합예약 INSERT: reservationId를 selectKey로 미리 뽑아 DTO에 주입 -->
+    <insert id="insertReservation" parameterType="reservationdto">
         <selectKey keyProperty="reservationId" resultType="long" order="BEFORE">
             SELECT seqReservation.NEXTVAL FROM dual
         </selectKey>
@@ -30,9 +29,8 @@
         )
     </insert>
 
-
-    <!-- 객실예약 -->
-    <insert id="insertAccomReservation" parameterType="AccomReservationDTO">
+    <!-- 객실예약 INSERT (필수) -->
+    <insert id="insertAccomReservation" parameterType="accomreservationdto">
         <selectKey keyProperty="accomReservationId" resultType="long" order="BEFORE">
             SELECT seqAccomReservation.NEXTVAL FROM dual
         </selectKey>
@@ -51,20 +49,19 @@
         ) VALUES (
             #{accomReservationId},
             #{roomId},
-            #{reservationId},
+            #{reservationId},        <!-- 통합예약 PK FK -->
             #{userRouteId},
             #{statusId},
             #{guestCount},
             #{roomTotalPrice},
-            TO_DATE(#{checkinDate}, 'YYYY-MM-DD'),
+            TO_DATE(#{checkinDate},  'YYYY-MM-DD'),
             TO_DATE(#{checkoutDate}, 'YYYY-MM-DD'),
             #{accomNotes}
         )
     </insert>
 
-
-    <!-- 차량 예약 -->
-    <insert id="insertCarReservation" parameterType="CarReservationDTO">
+    <!-- 차량예약 INSERT (선택) -->
+    <insert id="insertCarReservation" parameterType="carreservationdto">
         <selectKey keyProperty="carReservationId" resultType="long" order="BEFORE">
             SELECT seqCarReservation.NEXTVAL FROM dual
         </selectKey>
@@ -84,18 +81,17 @@
         ) VALUES (
             #{carReservationId},
             #{carId},
-            #{reservationId},
+            #{reservationId},        <!-- 통합예약 PK FK -->
             #{userRouteId},
             #{statusId},
-            TO_DATE(#{pickupDate}, 'YYYY-MM-DD'),
-            TO_DATE(#{dropoffDate}, 'YYYY-MM-DD'),
+            TO_DATE(#{pickupDate},   'YYYY-MM-DD'),
+            TO_DATE(#{dropoffDate},  'YYYY-MM-DD'),
             #{pickupLocation},
             #{dropoffLocation},
             #{carTotalPrice},
             #{carNotes}
         )
     </insert>
-
 
     <select id="findReservationById" parameterType="long" resultType="ReservationDTO">
         SELECT
@@ -109,7 +105,6 @@
         FROM tblReservation
         WHERE reservation_id = #{reservationId}
     </select>
-
 
     <select id="findAccomByReservationId" parameterType="long" resultType="AccomReservationDTO">
         SELECT
