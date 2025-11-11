@@ -27,7 +27,10 @@
 		<beans:property name="definitions">
 			<beans:list>
 				<beans:value>/WEB-INF/tiles.xml</beans:value>
+<<<<<<< HEAD
 				<beans:value>/WEB-INF/tiles_admin.xml</beans:value>
+=======
+>>>>>>> e641b5d501b4c2861d680ccbc1542d6cb1e4dd40
 			</beans:list>
 		</beans:property>
 	</beans:bean>
@@ -45,5 +48,9 @@
 		<beans:property name="order" value="2" />
 	</beans:bean>
 
+<<<<<<< HEAD
 </beans:beans>
 
+=======
+</beans:beans>
+>>>>>>> e641b5d501b4c2861d680ccbc1542d6cb1e4dd40

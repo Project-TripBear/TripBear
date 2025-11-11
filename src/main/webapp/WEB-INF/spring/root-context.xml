@@ -42,6 +42,7 @@
 		<property name="configLocation" value="classpath:config/mybatis-config.xml"/>
 	</bean>
 	
+<<<<<<< HEAD
 	<mybatis-spring:scan 
         base-package="com.project.trip.allplace.mapper, 
                       com.project.trip.board.notice.mapper, 
@@ -57,6 +58,13 @@
 	<context:component-scan base-package="com.project.trip">
         <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
     </context:component-scan>
+=======
+	<context:component-scan base-package="com.project.trip.mypage.service" />
+
+	<mybatis-spring:scan base-package="com.project.trip.allplace.mapper"/>
+	<mybatis-spring:scan base-package="com.project.trip.mypage.mapper"/>
+
+>>>>>>> e641b5d501b4c2861d680ccbc1542d6cb1e4dd40
 	
 	
 	<bean id="restTemplate" class="org.springframework.web.client.RestTemplate" />
