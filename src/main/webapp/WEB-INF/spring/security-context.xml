@@ -1,70 +1,77 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:security="http://www.springframework.org/schema/security"
-	xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd
-		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:security="http://www.springframework.org/schema/security"
+    xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-	<!--  스프링 시큐리티의 모든 설정 security-context.xml  -->
+    <bean id="customAccessDeniedHandler" class="com.project.trip.auth.CustomAccessDeniedHandler" />
+    <bean id="customLoginSuccessHandler" class="com.project.trip.auth.CustomLoginSuccessHandler" />
+    <bean id="customLoginFailureHandler" class="com.project.trip.auth.CustomLoginFailureHandler" />
+    
+    <bean id="bCryptPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"></bean>
+    <bean id="customUserDetailsService" class="com.project.trip.auth.CustomUserDetailsService"></bean>
+    <bean id="customAdminDetailsService" class="com.project.trip.admin.adminpage.service.CustomAdminDetailsService"/>
 
-	
-	
-	<!-- 403 핸들러 -->
-	<bean id="customAccessDeniedHandler" class="com.project.trip.auth.CustomAccessDeniedHandler"></bean>
-	
-	<!-- 로그인 성공 핸들러  -->
-	<bean id="customLoginSuccessHandler" class="com.project.trip.auth.CustomLoginSuccessHandler"></bean>
-	
-	<!-- 로그인 실패 핸들러 -->
-	<bean id="customLoginFailureHandler" class="com.project.trip.auth.CustomLoginFailureHandler"></bean>
-	
-	<!-- 14.PasswordEncoder 빈 만들기(정식)  
-		- BCryptPasswordEncoder: blowfish 알고리즘
-	 -->
-	<bean id="bCryptPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"></bean>
-	
-	<!-- 18. 로그인 처리 인증정보관리  -->
-	<bean id="customUserDetailsService" class="com.project.trip.auth.CustomUserDetailsService"></bean>
-	
-	<security:http>
-	
-	<security:csrf disabled="true" />
-	
-		<!-- 허가 -->
-		<security:intercept-url pattern="/member/login" access="permitAll" />
-		<security:intercept-url pattern="/resources/**" access="permitAll" />
-		
-		<security:intercept-url pattern="/" access="permitAll" />
-		
-		<security:intercept-url pattern="/admin/**" access="permitAll" />
+    
 
-		
-		<security:intercept-url pattern="/*/add" access="hasRole('ROLE_MEMBER')" />
-		<security:intercept-url pattern="/*/edit" access="hasRole('ROLE_MEMBER')" />
-		<security:intercept-url pattern="/*/del" access="hasRole('ROLE_MEMBER')" />
-		
-		<!-- <security:intercept-url pattern="/member.do" access="hasRole('ROLE_MEMBER')" />
-		<security:intercept-url pattern="/admin.do" access="hasRole('ROLE_ADMIN')" /> -->
-		
-		
-		<!-- 8.1 403 처리(핸들러 사용) -->
-		<security:access-denied-handler ref="customAccessDeniedHandler"/>
-		
-		
-		<!-- 10. 로그아웃 처리 -->
-		<security:logout logout-url="/member/logout" invalidate-session="true" logout-success-url="/" delete-cookies=""  />
-		
-		<!-- 11. 로그인 성공 후 처리 핸들러 -->
-		<security:form-login login-page="/member/login" login-processing-url="/login" authentication-success-handler-ref="customLoginSuccessHandler"  authentication-failure-handler-ref="customLoginFailureHandler"/>
-		
-	</security:http>	
-	
-	
-	<!-- 18. 17번기반 + 로그인 처리 + 인증 정보 관리  -->
-	<security:authentication-manager>
-		<security:authentication-provider user-service-ref="customUserDetailsService">
-			<security:password-encoder ref="bCryptPasswordEncoder" />
-		</security:authentication-provider>
-	</security:authentication-manager>	
-	
+    <security:http pattern="/admin/**" auto-config="true" use-expressions="true">
+        <security:csrf disabled="true" />
+        
+        <security:intercept-url pattern="/admin/login" access="permitAll" />
+        <security:intercept-url pattern="/admin/**" access="hasRole('ROLE_ADMIN')" />
+
+        <security:form-login 
+            login-page="/admin/login" 
+            login-processing-url="/admin/login_process"
+            default-target-url="/admin/main"
+            authentication-failure-url="/admin/login?error"
+            username-parameter="admin_username"
+            password-parameter="admin_password" />
+
+        <security:logout 
+            logout-url="/admin/logout"
+            logout-success-url="/admin/login"
+            invalidate-session="true" />
+
+        <security:access-denied-handler ref="customAccessDeniedHandler"/>
+        
+        </security:http>    
+
+
+    <security:http auto-config="true" use-expressions="true">
+        <security:csrf disabled="true" />
+        
+        <security:intercept-url pattern="/member/login" access="permitAll" />
+        <security:intercept-url pattern="/resources/**" access="permitAll" />
+        <security:intercept-url pattern="/" access="permitAll" />
+        <security:intercept-url pattern="/*/add" access="hasRole('ROLE_MEMBER')" />
+        <security:intercept-url pattern="/*/edit" access="hasRole('ROLE_MEMBER')" />
+        <security:intercept-url pattern="/*/del" access="hasRole('ROLE_MEMBER')" />
+
+        <security:form-login 
+            login-page="/member/login"
+            login-processing-url="/login"
+            authentication-success-handler-ref="customLoginSuccessHandler"
+            authentication-failure-handler-ref="customLoginFailureHandler" />
+
+        <security:logout 
+            logout-url="/member/logout"
+            logout-success-url="/"
+            invalidate-session="true" />
+
+        <security:access-denied-handler ref="customAccessDeniedHandler" />
+    </security:http>    
+    
+    
+    <security:authentication-manager>
+        <security:authentication-provider user-service-ref="customUserDetailsService">
+            <security:password-encoder ref="bCryptPasswordEncoder" />
+        </security:authentication-provider>
+
+        <security:authentication-provider user-service-ref="customAdminDetailsService">
+            <security:password-encoder ref="bCryptPasswordEncoder" />
+        </security:authentication-provider>
+    </security:authentication-manager>    
+    
 </beans>

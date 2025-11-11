@@ -1,5 +1,6 @@
 <%-- 파일 경로: /WEB-INF/views/content/admin/addcar.jsp --%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> <%-- ★★★ [추가] JSTL 선언 ★★★ --%>
 
 <%-- 이 페이지 전용 CSS --%>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
@@ -12,6 +13,21 @@
         
         <div class="form-section card">
             <h3 class="form-section-title">1. 차량 기본 정보</h3>
+            
+            <%-- ★★★ 컨트롤러에서 받은 ${locations}로 드롭다운 생성 ★★★ --%>
+            <div class="form-group">
+                <label for="placeLocationId">등록 지역 (차고지)</label>
+                <select id="placeLocationId" name="placeLocationId" required>
+                    <option value="">-- 지역 선택 --</option>
+                    <c:forEach items="${locations}" var="loc">
+                        <%-- 
+                          XML에서 "id", "name"으로 별칭을 줬습니다.
+                          (만약 안나오면 loc.ID / loc.NAME 대문자로 변경)
+                        --%>
+                        <option value="${loc.id}">${loc.name}</option>
+                    </c:forEach>
+                </select>
+            </div>
             
             <div class="form-group">
                 <label for="carName">차량 이름 (모델명)</label>
@@ -59,8 +75,8 @@
             </div>
             
             <div class="form-group">
-                <label for="carImageUrl">차량 이미지 URL</label>
-                <input type="text" id="carImageUrl" name="carImageUrl" placeholder="https://...">
+                <label for="carImage">차량 이미지 URL</label>
+                <input type="text" id="carImage" name="carImage" placeholder="https://...">
             </div>
             
             <div class="form-group">
@@ -92,4 +108,4 @@
         }
         return true; 
     }
-</script>
+</script>	

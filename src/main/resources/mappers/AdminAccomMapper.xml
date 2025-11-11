@@ -9,7 +9,7 @@
         SELECT NVL(MAX(price_per_night), 2000000) FROM tblAccomRoom
     </select>
 
-    <select id="getAllAccommodations" parameterType="java.util.Map" resultType="com.project.trip.admin.accom.model.accomDTO">
+    <select id="getAllAccommodations" parameterType="java.util.Map" resultType="accomDTO">
         SELECT 
             p.place_name as accomName,
             a.accom_type as accomType,
@@ -45,7 +45,7 @@
         </choose>
     </select>
 
-    <insert id="insertPlace" parameterType="com.project.trip.admin.accom.model.accomAllInfoDTO">
+    <insert id="insertPlace" parameterType="accomAllInfoDTO">
         <selectKey keyProperty="placeId" resultType="int" order="BEFORE">
             SELECT NVL(MAX(place_id), 0) + 1 FROM tblPlace
         </selectKey>
@@ -65,7 +65,7 @@
         )
     </insert>
 
-    <insert id="insertAccom" parameterType="com.project.trip.admin.accom.model.accomAllInfoDTO">
+    <insert id="insertAccom" parameterType="accomAllInfoDTO">
         <selectKey keyProperty="accomId" resultType="int" order="BEFORE">
             SELECT NVL(MAX(accom_id), 0) + 1 FROM tblAccom
         </selectKey>
@@ -79,7 +79,7 @@
         )
     </insert>
     
-    <insert id="insertAccomRoom" parameterType="com.project.trip.admin.accom.model.accomAllInfoDTO">
+    <insert id="insertAccomRoom" parameterType="accomAllInfoDTO">
         INSERT INTO tblAccomRoom (
             room_id, accom_id, room_name, room_type, capacity, 
             price_per_night, room_area, room_image_url, room_status
@@ -96,7 +96,7 @@
         )
     </insert>
     
-    <select id="getAccommodationDetails" parameterType="int" resultType="com.project.trip.admin.accom.model.accomAllInfoDTO">
+    <select id="getAccommodationDetails" parameterType="int" resultType="accomAllInfoDTO">
         SELECT 
             p.place_id as placeId,
             a.accom_id as accomId,
@@ -124,7 +124,7 @@
         WHERE r.room_id = #{roomId}
     </select>
     
-    <update id="updatePlace" parameterType="com.project.trip.admin.accom.model.accomAllInfoDTO">
+    <update id="updatePlace" parameterType="accomAllInfoDTO">
         UPDATE tblPlace SET
             place_name = #{placeName, jdbcType=VARCHAR},
             place_address = #{placeAddress, jdbcType=VARCHAR},

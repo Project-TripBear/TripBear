@@ -2,8 +2,11 @@
 
 package com.project.trip.admin.car.controller;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.project.trip.admin.car.model.carDTO; // DTO 이름은 형님 코드를 따름
+import com.project.trip.admin.car.model.carDTO;
 import com.project.trip.admin.car.service.AdminCarService;
 
 import lombok.RequiredArgsConstructor;
@@ -37,7 +40,6 @@ public class AdminCarController {
         int maxPriceFromDB = carService.getMaxPrice();
         
         int minPrice = (minPriceParam != null) ? minPriceParam : 0;
-        // DB에서 가져온 최고 가격을 기본값으로 사용
         int maxPrice = (maxPriceParam != null) ? maxPriceParam : maxPriceFromDB;
         
         List<carDTO> list = carService.getAllCars(fuelTypes, minPrice, maxPrice, sortOrder);
@@ -49,13 +51,17 @@ public class AdminCarController {
         model.addAttribute("sortOrder", sortOrder);
         model.addAttribute("maxPriceFromDB", maxPriceFromDB);
 
-        // 뷰 이름을 Tiles 정의에 따라 논리적 이름으로 반환한다고 가정
         return "content/admin/carlist"; 
     }
 
     // 렌터카 등록 폼 페이지로 이동
     @GetMapping("/add")
-    public String addCarForm() {
+    public String addCarForm(Model model) {
+    	
+    	List<Map<String, Object>> locations = carService.getAllLocations();
+        model.addAttribute("locations", locations); // jsp에서 ${locations}로 사용
+        
+        
         return "content/admin/addcar"; 
     }
 
@@ -81,15 +87,15 @@ public class AdminCarController {
             carService.deleteCar(carId);
             rttr.addFlashAttribute("msg", "차량이 삭제되었습니다.");
         } catch (Exception e) {
-            // 예약 내역이 존재하여 FK 제약 조건 위반 시 에러 발생
             rttr.addFlashAttribute("msg", "삭제 중 오류가 발생했습니다. (예약 내역이 존재할 수 있습니다)");
             e.printStackTrace();
         }
         return "redirect:/admin/car/list";
     }
+
+    // 렌터카 수정 폼 페이지로 이동
     @GetMapping("/edit")
     public String editCarForm(@RequestParam("carId") int carId, Model model) {
-        // 상세 정보 조회를 재사용하여 폼에 데이터를 채웁니다.
         carDTO carDetail = carService.getCarDetail(carId); 
         
         if (carDetail == null) {
@@ -99,8 +105,8 @@ public class AdminCarController {
         
         model.addAttribute("carDetail", carDetail);
         
-        // editcar.jsp 뷰 이름을 반환 (Tiles에서 처리)
-        return "content/admin/accomedit"; // Tiles 정의에 따라 수정 필요 (예: admin.car.edit)
+        // ★★★ [수정] accomedit -> editcar로 뷰 이름 변경 ★★★
+        return "content/admin/editcar"; 
     }
 
     /**
@@ -117,8 +123,10 @@ public class AdminCarController {
                 rttr.addFlashAttribute("msg", "수정된 내용이 없거나 차량 ID가 유효하지 않습니다.");
             }
             
-            // 상세 보기 페이지로 리다이렉트 (수정된 내용 확인)
-            return "redirect:/admin/car/view?carId=" + dto.getCarId();
+            // ★★★ [참고] 수정 후 상세 보기 페이지가 있다면 거기로 보내는 것이 좋습니다. ★★★
+            // (지금은 목록으로 다시 보냅니다)
+            // return "redirect:/admin/car/view?carId=" + dto.getCarId();
+            return "redirect:/admin/car/list"; // 목록으로 리다이렉트
             
         } catch (Exception e) {
             rttr.addFlashAttribute("msg", "차량 수정 중 오류가 발생했습니다.");

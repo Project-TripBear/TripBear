@@ -4,40 +4,52 @@
 
 <mapper namespace="com.project.trip.admin.car.mapper.AdminCarMapper">
 
-    <insert id="addCar" parameterType="carDTO">
+    <insert id="insertCar" parameterType="carDTO">
         INSERT INTO tblRentalCar (
             car_id, 
             car_name, 
             car_type, 
             car_fuel_type,
             car_price_per_day, 
+            car_number,
+            car_seats,
+            place_Location_id,
             car_image_url,
+            car_status
+        ) VALUES (
             
-            car_number,  car_seats,   place_Location_id ) VALUES (
-            tblRentalCar_SEQ.NEXTVAL, 
-            #{carName}, 
-            #{carType}, 
-            #{carFuel},   #{carPrice},  #{carImage},  #{carNumber},
-            #{carSeats},
-            #{placeLocationId}
+            seqrentalcar.NEXTVAL, 
+            
+            #{carName, jdbcType=VARCHAR}, 
+            #{carType, jdbcType=VARCHAR}, 
+            #{fuelType, jdbcType=VARCHAR}, 
+            #{pricePerDay, jdbcType=INTEGER}, 
+            #{carNumber, jdbcType=VARCHAR},
+            #{carSeats, jdbcType=INTEGER},
+            #{placeLocationId, jdbcType=INTEGER},
+            #{carImage, jdbcType=VARCHAR},
+            #{carStatus, jdbcType=CHAR}
         )
     </insert>
     
+    
+    
     <select id="getMaxPrice" resultType="int">
-        SELECT MAX(car_price_per_day) FROM tblRentalCar
+        SELECT NVL(MAX(car_price_per_day), 500000) FROM tblRentalCar
     </select>
     
-    <select id="getAllCars" parameterType="map" resultType="carDTO">
+    <select id="getAllCars" parameterType="java.util.Map" resultType="carDTO">
         SELECT
             car_id AS carId, 
             car_name AS carName, 
             car_type AS carType, 
-            car_price_per_day AS carPrice, 
-            car_image_url AS carImage, 
-            car_fuel_type AS carFuel,
+            car_fuel_type AS fuelType, 
+            car_price_per_day AS pricePerDay, 
             car_number AS carNumber,
             car_seats AS carSeats,
-            place_Location_id AS placeLocationId
+            place_Location_id AS placeLocationId,
+            car_image_url AS carImage,
+            car_status AS carStatus
         FROM
             tblRentalCar
         WHERE 1=1
@@ -71,12 +83,13 @@
             car_id AS carId, 
             car_name AS carName, 
             car_type AS carType, 
-            car_price_per_day AS carPrice, 
-            car_image_url AS carImage, 
-            car_fuel_type AS carFuel,
+            car_fuel_type AS fuelType, 
+            car_price_per_day AS pricePerDay, 
             car_number AS carNumber,
             car_seats AS carSeats,
-            place_Location_id AS placeLocationId
+            place_Location_id AS placeLocationId,
+            car_image_url AS carImage,
+            car_status AS carStatus
         FROM
             tblRentalCar
         WHERE
@@ -91,15 +104,24 @@
     <update id="updateCar" parameterType="carDTO">
         UPDATE tblRentalCar
         SET 
-            car_name = #{carName},
-            car_type = #{carType},
-            car_fuel_type = #{carFuel},
-            car_price_per_day = #{carPrice},
-            car_image_url = #{carImage},
-            car_number = #{carNumber},
-            car_seats = #{carSeats},
-            place_Location_id = #{placeLocationId}
+            car_name = #{carName, jdbcType=VARCHAR},
+            car_type = #{carType, jdbcType=VARCHAR},
+            car_fuel_type = #{fuelType, jdbcType=VARCHAR}, 
+            car_price_per_day = #{pricePerDay, jdbcType=INTEGER}, 
+            car_number = #{carNumber, jdbcType=VARCHAR},
+            car_seats = #{carSeats, jdbcType=INTEGER},
+            place_Location_id = #{placeLocationId, jdbcType=INTEGER},
+            car_image_url = #{carImage, jdbcType=VARCHAR},
+            car_status = #{carStatus, jdbcType=CHAR}
         WHERE 
             car_id = #{carId}
     </update>
+    
+    <select id="getAllLocations" resultType="map">
+        SELECT 
+            place_Location_id AS "id", 
+            place_Location_name AS "name" 
+        FROM tblPlaceLocation 
+        ORDER BY place_Location_id
+    </select>
 </mapper>

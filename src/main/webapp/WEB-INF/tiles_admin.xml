@@ -6,6 +6,16 @@
 	
 <tiles-definitions>
     
+   <definition name="login.layout" template="/WEB-INF/views/layout/adminlogin_layout.jsp">
+        <put-attribute name="title" value="관리자 로그인" />
+        <put-attribute name="content" value="" />
+    </definition>
+
+    <definition name="admin/login" extends="login.layout">
+        <put-attribute name="title" value="관리자 로그인" />
+        <put-attribute name="content" value="/WEB-INF/views/content/admin/admin_login.jsp" />
+    </definition>
+    
     <definition name="admin.layout" template="/WEB-INF/views/layout/admin_layout.jsp">
         <put-attribute name="content" value="" />
         <put-attribute name="header" value="/WEB-INF/views/inc/admin_header.jsp" /> 

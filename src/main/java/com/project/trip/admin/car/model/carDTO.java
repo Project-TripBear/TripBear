@@ -18,4 +18,7 @@ public class carDTO {
     private int placeLocationId;
     private String carNumber;
     private int carSeats;
+    
+    private String carImage;
+    private String carStatus;
 }
