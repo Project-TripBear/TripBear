@@ -1,15 +1,23 @@
 package com.project.trip.AI.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
+import com.google.gson.Gson;
 import com.project.trip.AI.model.AiRouteRequestDTO;
 import com.project.trip.AI.model.RouteDTO;
 
 @Service
 public class GeminiServiceImpl implements GeminiService{
+	
+	@Autowired
+	private RestTemplate restTemplate;
+	
+	private Gson gson = new Gson();
 
-	private String GEMINI_API_KEY = "AIzaSyC9h80v1xE78JuHpoCbTbJwFKJKY9S1Qys";
-	private String GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + GEMINI_API_KEY;
+	private String GEMINI_API_KEY = "";
+	
 
 	@Override
 	public RouteDTO generateRoute(AiRouteRequestDTO preferences) {
