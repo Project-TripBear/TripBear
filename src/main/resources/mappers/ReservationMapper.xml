@@ -4,7 +4,6 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.project.trip.reservation.mapper.ReservationMapper">
-
     <!-- 통합예약 INSERT: reservationId를 selectKey로 미리 뽑아 DTO에 주입 -->
     <insert id="insertReservation" parameterType="reservationdto">
         <selectKey keyProperty="reservationId" resultType="long" order="BEFORE">
@@ -19,15 +18,14 @@
             reservation_price,
             reservation_start_date,
             reservation_end_date
-            -- reservation_regdate는 DEFAULT SYSDATE 사용
         ) VALUES (
             #{reservationId},
             #{userId},
             #{userRouteId},
-            NVL(#{statusId}, 1),  <!-- 기본값: 예약요청(1) -->
+            NVL(#{statusId}, 1),
             #{reservationPrice},
             TO_DATE(#{reservationStartDate}, 'YYYY-MM-DD'),
-            TO_DATE(#{reservationEndDate},   'YYYY-MM-DD')
+            TO_DATE(#{reservationEndDate}, 'YYYY-MM-DD')
         )
     </insert>
 
@@ -94,5 +92,79 @@
             #{carNotes}
         )
     </insert>
+
+    <select id="findReservationById" parameterType="long" resultType="ReservationDTO">
+        SELECT
+            reservation_id AS reservationId,
+            user_id AS userId,
+            user_route_id AS userRouteId,
+            status_id AS statusId,
+            reservation_price AS reservationPrice,
+            TO_CHAR(reservation_start_date,'YYYY-MM-DD') AS reservationStartDate,
+            TO_CHAR(reservation_end_date,'YYYY-MM-DD') AS reservationEndDate
+        FROM tblReservation
+        WHERE reservation_id = #{reservationId}
+    </select>
+
+    <select id="findAccomByReservationId" parameterType="long" resultType="AccomReservationDTO">
+        SELECT
+            ar.accom_reservation_id AS accomReservationId,
+            ar.room_id AS roomId,
+            ar.user_route_id AS userRouteId,
+            ar.status_id AS statusId,
+            ar.guest_count AS guestCount,
+            ar.room_total_price AS roomTotalPrice,
+            TO_CHAR(ar.checkin_date,'YYYY-MM-DD') AS checkinDate,
+            TO_CHAR(ar.checkout_date,'YYYY-MM-DD') AS checkoutDate,
+            ar.accom_notes AS accomNotes,
+            ar.reservation_id AS reservationId,
+            p.place_name AS accomName,
+            r.room_name AS roomName
+        FROM tblAccomReservation ar
+            JOIN tblAccomRoom r ON ar.room_id = r.room_id
+            JOIN tblAccom a ON r.accom_id = a.accom_id
+            JOIN tblPlace p ON a.place_id = p.place_id
+        WHERE ar.reservation_id = #{reservationId}
+    </select>
+
+
+    <select id="findCarByReservationId" parameterType="long" resultType="CarReservationDTO">
+        SELECT
+            cr.car_reservation_id AS carReservationId,
+            cr.car_id AS carId,
+            cr.reservation_id AS reservationId,
+            cr.user_route_id AS userRouteId,
+            cr.status_id AS statusId,
+            TO_CHAR(cr.pickup_date,'YYYY-MM-DD') AS pickupDate,
+            TO_CHAR(cr.dropoff_date,'YYYY-MM-DD') AS dropoffDate,
+            cr.pickup_location AS pickupLocation,
+            cr.dropoff_location AS dropoffLocation,
+            cr.car_total_price AS carTotalPrice,
+            cr.car_notes AS carNotes,
+            c.car_name AS carName
+        FROM tblCarReservation cr
+            JOIN tblRentalCar c ON cr.car_id = c.car_id
+        WHERE cr.reservation_id = #{reservationId}
+    </select>
+
+
+    <select id="selectRoomsByRegion" parameterType="string" resultType="com.project.trip.reservation.model.AccomRoomCardDTO">
+        SELECT
+            r.room_id AS roomId,
+            a.accom_id AS accomId,
+            p.place_name AS accomName,
+            r.room_name AS roomName,
+            r.price_per_night AS pricePerNight,
+            p.place_address AS address,
+            p.place_lat AS lat,
+            p.place_lng AS lng,
+            r.room_image_url AS imageUrl
+        FROM tblPlaceLocation pl
+            JOIN tblPlace p ON p.place_location_id = pl.place_location_id
+            JOIN tblAccom a ON a.place_id = p.place_id
+            JOIN tblAccomRoom r ON r.accom_id = a.accom_id
+        WHERE pl.place_location_name = #{region}
+        ORDER BY p.place_name, r.room_name
+    </select>
 
 </mapper>
