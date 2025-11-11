@@ -19,6 +19,8 @@
     	<typeAlias type="com.project.trip.admin.car.model.carDTO" alias="carDTO"/>    
     	<typeAlias type="com.project.trip.admin.user.model.AdminUserDTO" alias="AdminUserDTO"/>
     	<typeAlias type="com.project.trip.admin.user.model.suspendedUserDTO" alias="suspendedUserDTO"/>
+    	<typeAlias type="com.project.trip.admin.report.model.reportDTO" alias="reportDTO"/> 
+
  		<package name="com.project.trip.admin.accom.model"/>
  		<package name="com.project.trip.board.notice.model"/>
  		<package name="com.project.trip.reservation.model"/>

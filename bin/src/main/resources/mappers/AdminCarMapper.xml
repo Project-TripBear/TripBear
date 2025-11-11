@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.project.trip.admin.car.mapper.AdminCarMapper">
+
+    <insert id="insertCar" parameterType="carDTO">
+        INSERT INTO tblRentalCar (
+            car_id, 
+            car_name, 
+            car_type, 
+            car_fuel_type,
+            car_price_per_day, 
+            car_number,
+            car_seats,
+            place_Location_id,
+            car_image_url,
+            car_status
+        ) VALUES (
+            
+            seqrentalcar.NEXTVAL, 
+            
+            #{carName, jdbcType=VARCHAR}, 
+            #{carType, jdbcType=VARCHAR}, 
+            #{fuelType, jdbcType=VARCHAR}, 
+            #{pricePerDay, jdbcType=INTEGER}, 
+            #{carNumber, jdbcType=VARCHAR},
+            #{carSeats, jdbcType=INTEGER},
+            #{placeLocationId, jdbcType=INTEGER},
+            #{carImage, jdbcType=VARCHAR},
+            #{carStatus, jdbcType=CHAR}
+        )
+    </insert>
+    
+    
+    
+    <select id="getMaxPrice" resultType="int">
+        SELECT NVL(MAX(car_price_per_day), 500000) FROM tblRentalCar
+    </select>
+    
+    <select id="getAllCars" parameterType="java.util.Map" resultType="carDTO">
+        SELECT
+            car_id AS carId, 
+            car_name AS carName, 
+            car_type AS carType, 
+            car_fuel_type AS fuelType, 
+            car_price_per_day AS pricePerDay, 
+            car_number AS carNumber,
+            car_seats AS carSeats,
+            place_Location_id AS placeLocationId,
+            car_image_url AS carImage,
+            car_status AS carStatus
+        FROM
+            tblRentalCar
+        WHERE 1=1
+        
+        <if test="fuelTypes != null and fuelTypes.length > 0">
+            AND car_fuel_type IN
+            <foreach item="fuel" collection="fuelTypes" open="(" separator="," close=")">
+                #{fuel}
+            </foreach>
+        </if>
+        
+        <if test="minPrice != null and maxPrice != null">
+            AND car_price_per_day BETWEEN #{minPrice} AND #{maxPrice}
+        </if>
+        
+        <choose>
+            <when test="sortOrder == 'price_asc'">
+                ORDER BY car_price_per_day ASC
+            </when>
+            <when test="sortOrder == 'price_desc'">
+                ORDER BY car_price_per_day DESC
+            </when>
+            <otherwise>
+                ORDER BY car_id DESC
+            </otherwise>
+        </choose>
+    </select>
+    
+    <select id="selectCarDetail" parameterType="int" resultType="carDTO">
+        SELECT
+            car_id AS carId, 
+            car_name AS carName, 
+            car_type AS carType, 
+            car_fuel_type AS fuelType, 
+            car_price_per_day AS pricePerDay, 
+            car_number AS carNumber,
+            car_seats AS carSeats,
+            place_Location_id AS placeLocationId,
+            car_image_url AS carImage,
+            car_status AS carStatus
+        FROM
+            tblRentalCar
+        WHERE
+            car_id = #{carId}
+    </select>
+
+    <delete id="deleteCar" parameterType="int">
+        DELETE FROM tblRentalCar
+        WHERE car_id = #{carId}
+    </delete>
+
+    <update id="updateCar" parameterType="carDTO">
+        UPDATE tblRentalCar
+        SET 
+            car_name = #{carName, jdbcType=VARCHAR},
+            car_type = #{carType, jdbcType=VARCHAR},
+            car_fuel_type = #{fuelType, jdbcType=VARCHAR}, 
+            car_price_per_day = #{pricePerDay, jdbcType=INTEGER}, 
+            car_number = #{carNumber, jdbcType=VARCHAR},
+            car_seats = #{carSeats, jdbcType=INTEGER},
+            place_Location_id = #{placeLocationId, jdbcType=INTEGER},
+            car_image_url = #{carImage, jdbcType=VARCHAR},
+            car_status = #{carStatus, jdbcType=CHAR}
+        WHERE 
+            car_id = #{carId}
+    </update>
+    
+    <select id="getAllLocations" resultType="map">
+        SELECT 
+            place_Location_id AS "id", 
+            place_Location_name AS "name" 
+        FROM tblPlaceLocation 
+        ORDER BY place_Location_id
+    </select>
+</mapper>

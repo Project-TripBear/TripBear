@@ -11,7 +11,6 @@
     
     <bean id="bCryptPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"></bean>
     <bean id="customUserDetailsService" class="com.project.trip.auth.CustomUserDetailsService"></bean>
-    <bean id="customAdminDetailsService" class="com.project.trip.admin.adminpage.service.CustomAdminDetailsService"/>
 
     
 
@@ -19,20 +18,7 @@
         <security:csrf disabled="true" />
         
         <security:intercept-url pattern="/admin/login" access="permitAll" />
-        <security:intercept-url pattern="/admin/**" access="hasRole('ROLE_ADMIN')" />
-
-        <security:form-login 
-            login-page="/admin/login" 
-            login-processing-url="/admin/login_process"
-            default-target-url="/admin/main"
-            authentication-failure-url="/admin/login?error"
-            username-parameter="admin_username"
-            password-parameter="admin_password" />
-
-        <security:logout 
-            logout-url="/admin/logout"
-            logout-success-url="/admin/login"
-            invalidate-session="true" />
+        <security:intercept-url pattern="/admin/**" access="permitAll" />
 
         <security:access-denied-handler ref="customAccessDeniedHandler"/>
         
@@ -69,9 +55,7 @@
             <security:password-encoder ref="bCryptPasswordEncoder" />
         </security:authentication-provider>
 
-        <security:authentication-provider user-service-ref="customAdminDetailsService">
-            <security:password-encoder ref="bCryptPasswordEncoder" />
-        </security:authentication-provider>
+      
     </security:authentication-manager>    
     
 </beans>

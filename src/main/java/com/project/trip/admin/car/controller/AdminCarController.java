@@ -96,7 +96,13 @@ public class AdminCarController {
     // 렌터카 수정 폼 페이지로 이동
     @GetMapping("/edit")
     public String editCarForm(@RequestParam("carId") int carId, Model model) {
+        
+        // 1. 차량 상세 정보 조회
         carDTO carDetail = carService.getCarDetail(carId); 
+        
+        // 2. 등록 지역 목록 조회 (locations 데이터 추가)
+        List<Map<String, Object>> locations = carService.getAllLocations();
+        model.addAttribute("locations", locations);
         
         if (carDetail == null) {
             model.addAttribute("msg", "수정할 차량 정보를 찾을 수 없습니다.");
@@ -105,7 +111,7 @@ public class AdminCarController {
         
         model.addAttribute("carDetail", carDetail);
         
-        // ★★★ [수정] accomedit -> editcar로 뷰 이름 변경 ★★★
+        // editcar.jsp로 이동
         return "content/admin/editcar"; 
     }
 
@@ -134,4 +140,23 @@ public class AdminCarController {
             return "redirect:/admin/car/edit?carId=" + dto.getCarId(); // 실패 시 수정 폼으로
         }
     }
+    
+    @GetMapping("/view")
+    public String viewCarDetail(@RequestParam("carId") int carId, Model model) {
+        
+        // carService에 이미 구현된 getCarDetail(int carId)를 사용합니다.
+        carDTO carDetail = carService.getCarDetail(carId); 
+        
+        if (carDetail == null) {
+            model.addAttribute("msg", "상세 정보를 찾을 수 없는 차량 ID입니다.");
+            return "redirect:/admin/car/list";
+        }
+        
+        // carview.jsp에서 'carDetail'이라는 이름으로 DTO를 사용합니다.
+        model.addAttribute("carDetail", carDetail);
+        
+        // content/admin/carview 타일즈 뷰 이름 반환
+        return "content/admin/carview"; 
+    }
+    
 }
