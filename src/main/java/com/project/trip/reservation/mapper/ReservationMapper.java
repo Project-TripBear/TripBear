@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 import com.project.trip.reservation.model.AccomReservationDTO;
 import com.project.trip.reservation.model.AccomRoomCardDTO;
 import com.project.trip.reservation.model.CarReservationDTO;
+import com.project.trip.reservation.model.RentalCarCardDTO;
 import com.project.trip.reservation.model.ReservationDTO;
 
 @Mapper
@@ -28,5 +29,7 @@ public interface ReservationMapper {
 	AccomReservationDTO findAccomByReservationId(Long reservationId);
 	
 	List<AccomRoomCardDTO> selectRoomsByRegion(String region);
+
+	List<RentalCarCardDTO> findCarsByRegion(String region);
     
 }

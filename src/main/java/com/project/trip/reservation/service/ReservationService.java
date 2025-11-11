@@ -6,6 +6,7 @@ import com.project.trip.reservation.model.AccomReservationDTO;
 import com.project.trip.reservation.model.AccomRoomCardDTO;
 import com.project.trip.reservation.model.CarReservationDTO;
 import com.project.trip.reservation.model.IntegratedReservation;
+import com.project.trip.reservation.model.RentalCarCardDTO;
 import com.project.trip.reservation.model.ReservationDTO;
 
 public interface ReservationService {
@@ -19,5 +20,7 @@ public interface ReservationService {
     IntegratedReservation getIntegratedReservation(Long reservationId) throws Exception;
     
     List<AccomRoomCardDTO> findRoomsByRegion(String region) throws Exception;
+
+	List<RentalCarCardDTO> findCarsByRegion(String region);
 
 }

@@ -23,11 +23,8 @@ public class ReservationSelectAccomController {
 	private final ReservationService reservationService;
 
     // 숙소 선택 화면
-<<<<<<< HEAD
+
     @GetMapping("/select-accom")
-=======
-    @GetMapping("/reservation/select-accom")
->>>>>>> 39aba4fdfa6e2eb938fa3783350778dcb146979c
     public ModelAndView selectAccom(HttpServletRequest req) throws Exception {
         
     	System.out.println("### SELECT ACCOM CALLED ###");

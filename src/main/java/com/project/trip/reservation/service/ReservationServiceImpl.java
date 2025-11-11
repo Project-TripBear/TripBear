@@ -10,6 +10,7 @@ import com.project.trip.reservation.model.AccomReservationDTO;
 import com.project.trip.reservation.model.AccomRoomCardDTO;
 import com.project.trip.reservation.model.CarReservationDTO;
 import com.project.trip.reservation.model.IntegratedReservation;
+import com.project.trip.reservation.model.RentalCarCardDTO;
 import com.project.trip.reservation.model.ReservationDTO;
 
 import lombok.RequiredArgsConstructor;
@@ -61,7 +62,10 @@ public class ReservationServiceImpl implements ReservationService {
     public List<AccomRoomCardDTO> findRoomsByRegion(String region) throws Exception {
         return reservationMapper.selectRoomsByRegion(region);
     }
-
-
+	
+	@Override
+	public List<RentalCarCardDTO> findCarsByRegion(String region) {
+	    return reservationMapper.findCarsByRegion(region);
+	}
 
 }

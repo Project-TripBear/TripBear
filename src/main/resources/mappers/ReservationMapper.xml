@@ -166,5 +166,25 @@
         WHERE pl.place_location_name = #{region}
         ORDER BY p.place_name, r.room_name
     </select>
+    
+    <!-- 차량 카드 리스트 조회 -->
+<select id="findCarsByRegion" parameterType="string" resultType="com.project.trip.reservation.model.RentalCarCardDTO">
+    SELECT
+        c.car_id AS carId,
+        pl.place_location_id AS placeLocationId,
+        c.car_name AS carName,
+        c.car_type AS carType,
+        c.car_number AS carNumber,
+        c.fuel_type AS fuelType,
+        c.seats AS seats,
+        c.price_per_day AS pricePerDay,
+        c.car_image_url AS imageUrl
+    FROM tblPlaceLocation pl
+        JOIN tblPlace p ON p.place_location_id = pl.place_location_id
+        JOIN tblRentalCar c ON c.place_id = p.place_id
+    WHERE pl.place_location_name = #{region}
+    ORDER BY c.car_name
+</select>
+    
 
 </mapper>
