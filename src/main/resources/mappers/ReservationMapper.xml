@@ -167,24 +167,93 @@
         ORDER BY p.place_name, r.room_name
     </select>
     
-    <!-- 차량 카드 리스트 조회 -->
-<select id="findCarsByRegion" parameterType="string" resultType="com.project.trip.reservation.model.RentalCarCardDTO">
-    SELECT
-        c.car_id AS carId,
-        pl.place_location_id AS placeLocationId,
-        c.car_name AS carName,
-        c.car_type AS carType,
-        c.car_number AS carNumber,
-        c.fuel_type AS fuelType,
-        c.seats AS seats,
-        c.price_per_day AS pricePerDay,
-        c.car_image_url AS imageUrl
-    FROM tblPlaceLocation pl
-        JOIN tblPlace p ON p.place_location_id = pl.place_location_id
-        JOIN tblRentalCar c ON c.place_id = p.place_id
-    WHERE pl.place_location_name = #{region}
-    ORDER BY c.car_name
-</select>
-    
+    <select id="findCarsByRegion"
+        parameterType="map"
+        resultType="com.project.trip.reservation.model.RentalCarCardDTO">
+	
+	    SELECT 
+	        c.car_id AS carId,
+	        c.place_location_id AS placeLocationId,
+	        c.car_name AS carName,
+	        c.car_type AS carType,
+	        c.car_number AS carNumber,
+	        c.car_fuel_type AS fuelType,
+	        c.car_seats AS seats,
+	        c.car_price_per_day AS pricePerDay,
+	        c.car_image_url AS carImageUrl
+	    FROM tblRentalCar c
+	        JOIN tblPlaceLocation pl ON pl.place_location_id = c.place_location_id
+	    WHERE pl.place_location_name = #{region, jdbcType=VARCHAR}
+	      AND c.car_status = 'y'
+	    
+	    <if test="carType != null and carType != ''">
+	        AND c.car_type = #{carType, jdbcType=VARCHAR}
+	    </if>
+	    <if test="fuelType != null and fuelType != ''">
+	        AND c.car_fuel_type = #{fuelType, jdbcType=VARCHAR}
+	    </if>
+	    <if test="seats != null">
+	        AND c.car_seats = #{seats, jdbcType=INTEGER}
+	    </if>
+	    <if test="maxPrice != null">
+	        AND c.car_price_per_day &lt;= #{maxPrice, jdbcType=INTEGER}
+	    </if>
+	
+	    ORDER BY c.car_name
+	</select>
+
+	<select id="getRoomPricePerNight" resultType="int">
+	    SELECT price_per_night FROM tblAccomRoom WHERE room_id = #{roomId}
+	</select>
+	
+	<select id="getCarPricePerDay" resultType="int">
+	    SELECT price_per_day FROM tblRentalCar WHERE car_id = #{carId}
+	</select>
+	
+	<select id="getRoomInfo" parameterType="long" resultType="com.project.trip.reservation.model.AccomRoomCardDTO">
+	    SELECT 
+	        r.room_id AS roomId,
+	        a.accom_id AS accomId,
+	        p.place_name AS accomName,
+	        r.room_name AS roomName,
+	        r.price_per_night AS pricePerNight,
+	        p.place_address AS address,
+	        p.place_lat AS lat,
+	        p.place_lng AS lng,
+	        r.room_image_url AS imageUrl
+	    FROM tblPlace p
+	        JOIN tblAccom a ON a.place_id = p.place_id
+	        JOIN tblAccomRoom r ON r.accom_id = a.accom_id
+	    WHERE r.room_id = #{roomId}
+	</select>
+	
+	<select id="getCarInfo" parameterType="long" resultType="com.project.trip.reservation.model.RentalCarCardDTO">
+	    SELECT 
+	        car_id AS carId,
+	        place_location_id AS placeLocationId,
+	        car_name AS carName,
+	        car_type AS carType,
+	        car_number AS carNumber,
+	        car_fuel_type AS fuelType,
+	        car_seats AS seats,
+	        car_price_per_day AS pricePerDay,
+	        car_image_url AS carImageUrl
+	    FROM tblRentalCar
+	    WHERE car_id = #{carId}
+	</select>
+	
+	<select id="getCarTypes" resultType="string">
+	    SELECT DISTINCT car_type FROM tblRentalCar WHERE car_status = 'y'
+	</select>
+	
+	<select id="getFuelTypes" resultType="string">
+	    SELECT DISTINCT car_fuel_type FROM tblRentalCar WHERE car_status = 'y'
+	</select>
+	
+	<select id="getSeats" resultType="int">
+	    SELECT DISTINCT car_seats FROM tblRentalCar WHERE car_status = 'y' ORDER BY car_seats
+	</select>
+	
+	
 
 </mapper>

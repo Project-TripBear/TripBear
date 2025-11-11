@@ -1,6 +1,7 @@
 package com.project.trip.reservation.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
@@ -30,6 +31,20 @@ public interface ReservationMapper {
 	
 	List<AccomRoomCardDTO> selectRoomsByRegion(String region);
 
-	List<RentalCarCardDTO> findCarsByRegion(String region);
+	List<RentalCarCardDTO> findCarsByRegion(Map<String, Object> params);
+
+	Integer getRoomPricePerNight(Long roomId);
+
+	Integer getCarPricePerDay(Long carId);
+	
+	AccomRoomCardDTO getRoomInfo(Long roomId);
+
+    RentalCarCardDTO getCarInfo(Long carId);
+
+	List<?> getCarTypes();
+
+	List<?> getFuelTypes();
+
+	List<?> getSeats();
     
 }

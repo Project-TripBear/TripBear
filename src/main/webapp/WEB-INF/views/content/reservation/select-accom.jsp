@@ -167,7 +167,7 @@ body {
 							<div class="actions">
 								<!-- 다음 단계: 차량 선택 페이지로 이동 -->
 								<form method="get"
-									action="${pageContext.request.contextPath}/reservation/select-car.do">
+									action="${pageContext.request.contextPath}/reservation/select-car">
 									<input type="hidden" name="region" value="${region}" /> <input
 										type="hidden" name="checkin" value="${checkin}" /> <input
 										type="hidden" name="checkout" value="${checkout}" /> <input

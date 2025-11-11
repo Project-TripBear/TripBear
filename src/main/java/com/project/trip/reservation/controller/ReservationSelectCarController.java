@@ -1,6 +1,7 @@
 package com.project.trip.reservation.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -25,15 +26,29 @@ public class ReservationSelectCarController {
     @GetMapping("/select-car")
     public ModelAndView selectCar(HttpServletRequest req) throws Exception {
 
+        // ✅ 기본 파라미터
         String region   = req.getParameter("region");
         String checkin  = req.getParameter("checkin");
         String checkout = req.getParameter("checkout");
         String people   = req.getParameter("people");
         String roomId   = req.getParameter("roomId");
 
-        // 차량 카드 조회
-        List<RentalCarCardDTO> cars = reservationService.findCarsByRegion(region);
+        // ✅ 필터 파라미터
+        String carType  = req.getParameter("carType");
+        String fuelType = req.getParameter("fuelType");
+        String seatsStr = req.getParameter("seats");
+        String maxPriceStr = req.getParameter("maxPrice");
 
+        Integer seats = (seatsStr != null && !seatsStr.isBlank()) ? Integer.parseInt(seatsStr) : null;
+        Integer maxPrice = (maxPriceStr != null && !maxPriceStr.isBlank()) ? Integer.parseInt(maxPriceStr) : null;
+
+        // ✅ 차량 목록 조회
+        List<RentalCarCardDTO> cars = reservationService.findCarsByRegion(region, carType, fuelType, seats, maxPrice);
+
+        // ✅ 필터 옵션 (DB에서 DISTINCT로 가져오기)
+        Map<String, List<?>> filters = reservationService.getCarFilterOptions();
+
+        // ✅ ModelAndView 구성
         ModelAndView mav = new ModelAndView("reservation.select-car");
         mav.addObject("region", region);
         mav.addObject("checkin", checkin);
@@ -41,12 +56,17 @@ public class ReservationSelectCarController {
         mav.addObject("people", people);
         mav.addObject("roomId", roomId);
 
-        mav.addObject("cars", cars);
+        mav.addObject("carType", carType);
+        mav.addObject("fuelType", fuelType);
+        mav.addObject("seats", seats);
+        mav.addObject("maxPrice", maxPrice);
+
+        mav.addObject("carList", cars);
+        mav.addObject("filters", filters); // 👈 JSP에서 동적 필터 출력용
         mav.addObject("carsJson", new ObjectMapper().writeValueAsString(cars));
+
+        System.out.println("🚗 [SelectCarController] 차량 수: " + (cars == null ? 0 : cars.size()));
 
         return mav;
     }
-
 }
-
-
