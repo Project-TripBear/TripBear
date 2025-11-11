@@ -18,10 +18,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.project.trip.mypage.mapper.MemberMapper;
 import com.project.trip.mypage.mapper.MyPageMapper;
+import com.project.trip.mypage.model.AccomReservationViewDTO;
 import com.project.trip.mypage.model.BoardDTO;
+import com.project.trip.mypage.model.CarReservationViewDTO;
 import com.project.trip.mypage.model.UserDTO;
 
 import lombok.RequiredArgsConstructor;
@@ -609,7 +612,268 @@ public class MyPageController {
 	        
 	        return pagebar.toString();
 	    }
+	    
+	    
+	    @GetMapping("/member/accomreservation")
+	    public String accomReservation(
+	            @RequestParam(value = "column", required = false) String column,
+	            @RequestParam(value = "word", required = false) String word,
+	            @RequestParam(value = "page", required = false, defaultValue = "1") int page,
+	            Authentication authentication,
+	            Model model) {
+	        
+	        String username = authentication.getName();
+	        UserDTO userInfo = membermapper.get(username);
+	        String seq = String.valueOf(userInfo.getSeq());
+	        
+	        // 검색 여부 판단
+	        String search = "n";
+	        if (column != null && word != null && !word.trim().equals("")) {
+	            search = "y";
+	        }
+	        
+	        // 검색 파라미터 설정
+	        Map<String, String> map = new HashMap<>();
+	        
+	        if ("y".equals(search)) {
+	            map.put("column", "title"); // 공통 컬럼명
+	        } else {
+	            map.put("column", column);
+	        }
+	        map.put("word", word);
+	        map.put("search", search);
+	        map.put("seq", seq);
+	        
+	        // 페이징 설정
+	        int pageSize = 10;
+	        int begin = ((page - 1) * pageSize) + 1;
+	        int end = begin + pageSize - 1;
+	        
+	        map.put("begin", String.valueOf(begin));
+	        map.put("end", String.valueOf(end));
+	        map.put("nowPage", String.valueOf(page));
+	        
+	        System.out.println(map);
+	        
+	        // 총 예약 수 조회
+	        int totalCount = pagemapper.getAccomReservationTotalCount(map);
+	        int totalPage = (int) Math.ceil((double) totalCount / pageSize);
+	        
+	        map.put("totalCount", String.valueOf(totalCount));
+	        map.put("totalPage", String.valueOf(totalPage));
+	        
+	        // 예약 목록 조회
+	        List<AccomReservationViewDTO> list = pagemapper.totalAccomList(map);
+	        
+	        // 페이지바 생성
+	        String pagebar = generateAccomPageBar(page, totalPage, 10);
+	        
+	        model.addAttribute("list", list);
+	        model.addAttribute("map", map);
+	        model.addAttribute("pagebar", pagebar);
+	        
+	        return "mypage.member.accomreservation";
+	    }
+
+	    private String generateAccomPageBar(int nowPage, int totalPage, int blockSize) {
+	        StringBuilder pagebar = new StringBuilder();
+	        
+	        int loop = 1;
+	        int n = ((nowPage - 1) / blockSize) * blockSize + 1;
+	        
+	        // 이전 버튼
+	        if (n == 1) {
+	            pagebar.append(" <a href='#!'>이전</a> ");
+	        } else {
+	            pagebar.append(String.format(" <a href='/trip/member/accomreservation?page=%d'>이전</a> ", n - 1));
+	        }
+	        
+	        // 페이지 번호
+	        while (!(loop > blockSize || n > totalPage)) {
+	            if (n == nowPage) {
+	                pagebar.append(String.format(" <a href='#!' style='color:tomato;' class='page'>%d</a> ", n));
+	            } else {
+	                pagebar.append(String.format(" <a href='/trip/member/accomreservation?page=%d' class='page'>%d</a> ", n, n));
+	            }
+	            loop++;
+	            n++;
+	        }
+	        
+	        // 다음 버튼
+	        if (n > totalPage) {
+	            pagebar.append(" <a href='#!'>다음</a> ");
+	        } else {
+	            pagebar.append(String.format(" <a href='/trip/member/accomreservation?page=%d'>다음</a> ", n));
+	        }
+	        
+	        return pagebar.toString();
+	    }
+	    
+	    @GetMapping("/member/accomreservationview")
+	    public String accomReservationView(
+	            @RequestParam("seq") String seq,
+	            @RequestParam("accomseq") String accomseq,
+	            Authentication authentication,
+	            Model model) {
+	        
+	        String username = authentication.getName();
+	        UserDTO userInfo = membermapper.get(username);
+	        String useq = String.valueOf(userInfo.getSeq());
+	        
+	        // 예약 상세 정보 조회
+	        AccomReservationViewDTO dto = pagemapper.getAccomReservation(seq, accomseq);
+	        
+	        model.addAttribute("dto", dto);
+	        
+	        return "mypage.member.accomreservationview";
+	    }
+	    
+	    
+	    @PostMapping("/member/accomcancel")
+	    @ResponseBody
+	    public String accomCancel(@RequestParam("accomseq") String accomseq) {
+	        
+	        try {
+	            // 예약 취소 처리
+	            pagemapper.addAccomCancel(accomseq);
+	            
+	            return "success";
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	            return "error";
+	        }
+	    }
 	
 	
-	
+	    @GetMapping("/member/carreservation")
+	    public String carReservation(
+	            @RequestParam(value = "column", required = false) String column,
+	            @RequestParam(value = "word", required = false) String word,
+	            @RequestParam(value = "page", required = false, defaultValue = "1") int page,
+	            Authentication authentication,
+	            Model model) {
+	        
+	        String username = authentication.getName();
+	        UserDTO userInfo = membermapper.get(username);
+	        String seq = String.valueOf(userInfo.getSeq());
+	        
+	        // 검색 여부 판단
+	        String search = "n";
+	        if (column != null && word != null && !word.trim().equals("")) {
+	            search = "y";
+	        }
+	        
+	        // 검색 파라미터 설정
+	        Map<String, String> map = new HashMap<>();
+	        
+	        if ("y".equals(search)) {
+	            map.put("column", "title");
+	        } else {
+	            map.put("column", column);
+	        }
+	        map.put("word", word);
+	        map.put("search", search);
+	        map.put("seq", seq);
+	        
+	        // 페이징 설정
+	        int pageSize = 10;
+	        int begin = ((page - 1) * pageSize) + 1;
+	        int end = begin + pageSize - 1;
+	        
+	        map.put("begin", String.valueOf(begin));
+	        map.put("end", String.valueOf(end));
+	        map.put("nowPage", String.valueOf(page));
+	        
+	        System.out.println(map);
+	        
+	        // 총 예약 수 조회
+	        int totalCount = pagemapper.getCarReservationTotalCount(map);
+	        int totalPage = (int) Math.ceil((double) totalCount / pageSize);
+	        
+	        map.put("totalCount", String.valueOf(totalCount));
+	        map.put("totalPage", String.valueOf(totalPage));
+	        
+	        // 예약 목록 조회
+	        List<CarReservationViewDTO> list = pagemapper.totalCarList(map);
+	        
+	        // 페이지바 생성
+	        String pagebar = generateCarPageBar(page, totalPage, 10);
+	        
+	        model.addAttribute("list", list);
+	        model.addAttribute("map", map);
+	        model.addAttribute("pagebar", pagebar);
+	        
+	        return "mypage.member.carreservation";
+	    }
+
+	    private String generateCarPageBar(int nowPage, int totalPage, int blockSize) {
+	        StringBuilder pagebar = new StringBuilder();
+	        
+	        int loop = 1;
+	        int n = ((nowPage - 1) / blockSize) * blockSize + 1;
+	        
+	        // 이전 버튼
+	        if (n == 1) {
+	            pagebar.append(" <a href='#!'>이전</a> ");
+	        } else {
+	            pagebar.append(String.format(" <a href='/trip/member/carreservation?page=%d'>이전</a> ", n - 1));
+	        }
+	        
+	        // 페이지 번호
+	        while (!(loop > blockSize || n > totalPage)) {
+	            if (n == nowPage) {
+	                pagebar.append(String.format(" <a href='#!' style='color:tomato;' class='page'>%d</a> ", n));
+	            } else {
+	                pagebar.append(String.format(" <a href='/trip/member/carreservation?page=%d' class='page'>%d</a> ", n, n));
+	            }
+	            loop++;
+	            n++;
+	        }
+	        
+	        // 다음 버튼
+	        if (n > totalPage) {
+	            pagebar.append(" <a href='#!'>다음</a> ");
+	        } else {
+	            pagebar.append(String.format(" <a href='/trip/member/carreservation?page=%d'>다음</a> ", n));
+	        }
+	        
+	        return pagebar.toString();
+	    }
+	    
+	    
+	    @GetMapping("/member/carreservationview")
+	    public String carReservationView(
+	            @RequestParam("seq") String seq,
+	            @RequestParam("carseq") String carseq,
+	            Authentication authentication,
+	            Model model) {
+	        
+	        String username = authentication.getName();
+	        UserDTO userInfo = membermapper.get(username);
+	        
+	        System.out.println("carseq 테스트:" + carseq);
+	        
+	        // 예약 상세 정보 조회
+	        CarReservationViewDTO dto = pagemapper.getCarReservation(seq, carseq);
+	        
+	        model.addAttribute("dto", dto);
+	        
+	        return "mypage.member.carreservationview";
+	    }
+
+	    // 렌트카 예약 취소
+	    @PostMapping("/member/carcancel")
+	    @ResponseBody
+	    public String carCancel(@RequestParam("carseq") String carseq) {
+	        
+	        try {
+	            // 예약 취소 처리
+	            pagemapper.addCarCancel(carseq);
+	            
+	            return "success";
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	            return "error";
+	        }
+	    }
 }
