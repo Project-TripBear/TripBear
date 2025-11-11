@@ -10,6 +10,12 @@
 		<put-attribute name="header" value="/WEB-INF/views/inc/header.jsp"></put-attribute>
 		<put-attribute name="content" value="/WEB-INF/views/content/index.jsp"></put-attribute>
 	</definition>
+	
+		<!--  ✅ 사용자(공용) 서브 페이지 3단계 들어갈경우  -->
+	<definition name="*.*.*" template="/WEB-INF/views/layout/public-feature.jsp">
+		<put-attribute name="header" value="/WEB-INF/views/inc/header.jsp"/>
+		<put-attribute name="content" value="/WEB-INF/views/content/{1}/{2}/{3}.jsp"/>
+	</definition>
 
 	<definition name="*.*" template="/WEB-INF/views/layout/main.jsp">
 		<put-attribute name="header" value="/WEB-INF/views/inc/header.jsp"></put-attribute>

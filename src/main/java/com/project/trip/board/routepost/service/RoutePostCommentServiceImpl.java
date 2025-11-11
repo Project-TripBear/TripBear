@@ -33,4 +33,9 @@ public class RoutePostCommentServiceImpl implements RoutePostCommentService {
     public int count(String routepostId) {
         return commentMapper.count(routepostId);
     }
+    
+    @Override
+    public int edit(RoutePostCommentDTO dto) { // ✅ 추가
+        return commentMapper.edit(dto);
+    }
 }

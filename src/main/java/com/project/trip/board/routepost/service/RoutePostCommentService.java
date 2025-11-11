@@ -16,4 +16,7 @@ public interface RoutePostCommentService {
 
     // 댓글 개수 (게시글별)
     int count(String routepostId);
+    
+    //댓글 수정
+	int edit(RoutePostCommentDTO dto);
 }

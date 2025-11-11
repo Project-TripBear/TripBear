@@ -22,5 +22,7 @@ public class RoutePostDTO {
     private String commentCount; // 댓글 수 추가
     
     private List<RoutePostImageDTO> images;
+    
+    private String routeId; //연결된 루트 추가
 	
 }

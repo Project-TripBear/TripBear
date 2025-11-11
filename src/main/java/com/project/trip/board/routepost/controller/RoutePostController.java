@@ -1,12 +1,22 @@
 package com.project.trip.board.routepost.controller;
 
+import java.io.File;
 import java.util.List;
-import java.util.Map;
+import java.util.UUID;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.http.MediaType;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.project.trip.board.routepost.model.RoutePostDTO;
 import com.project.trip.board.routepost.model.RoutePostImageDTO;
@@ -24,7 +34,7 @@ public class RoutePostController {
     public String list(Model model) {
         List<RoutePostDTO> list = postService.list();
         model.addAttribute("list", list);
-        return "board/routepost/list"; // Tiles 기준: /WEB-INF/views/board/routepost/list.jsp
+        return "board.routepost.list"; // Tiles 기준: /WEB-INF/views/board/routepost/list.jsp
     }
 
     // 게시글 상세보기
@@ -41,36 +51,93 @@ public class RoutePostController {
         List<RoutePostImageDTO> images = postService.getImages(routepostId);
         model.addAttribute("images", images);
 
-        return "board/routepost/view";
+        return "board.routepost.view";
     }
 
     // 게시글 작성 폼
     @GetMapping("/add")
     public String addForm() {
-        return "board/routepost/add";
+        return "board.routepost.add";
     }
 
-    // 게시글 등록 처리
-    @PostMapping("/add")
-    public String add(RoutePostDTO dto) {
+    @PostMapping(value = "/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public String add(@ModelAttribute RoutePostDTO dto,
+                      @RequestParam(value = "images", required = false) MultipartFile[] images,
+                      HttpServletRequest req) throws Exception {
+    	
+    	dto.setUserId("hong");
+    	
+        // 1️⃣ 게시글 등록
         int result = postService.add(dto);
+
+        // 2️⃣ 업로드 폴더 경로 지정
+        String uploadPath = req.getServletContext().getRealPath("/asset/upload/routepost");
+
+        File folder = new File(uploadPath);
+        if (!folder.exists()) folder.mkdirs();
+
+        // 3️⃣ 이미지 파일 저장 + DB 등록
+        if (images != null && images.length > 0) {
+            for (MultipartFile file : images) {
+                if (!file.isEmpty()) {
+                    String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+                    File dest = new File(uploadPath, fileName);
+                    file.transferTo(dest);
+
+                    RoutePostImageDTO imgDto = new RoutePostImageDTO();
+                    imgDto.setRoutepostId(dto.getRoutepostId());  // 게시글 PK
+                    imgDto.setRoutepostImageUrl(fileName);        // 파일명
+                    postService.addImage(imgDto);
+                }
+            }
+        }
+
         return "redirect:/routepost/list";
     }
+
 
     // 게시글 수정 폼
     @GetMapping("/edit/{routepostId}")
     public String editForm(@PathVariable String routepostId, Model model) {
         RoutePostDTO dto = postService.get(routepostId);
         model.addAttribute("dto", dto);
-        return "board/routepost/edit";
+        return "board.routepost.edit";
     }
 
     // 게시글 수정 처리
-    @PostMapping("/edit")
-    public String edit(RoutePostDTO dto) {
+    @PostMapping(value = "/edit", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public String edit(@ModelAttribute RoutePostDTO dto,
+                       @RequestParam(value = "images", required = false) MultipartFile[] images,
+                       HttpServletRequest req) throws Exception {
+
         postService.edit(dto);
+
+        // 기존 이미지 삭제
+        postService.delImages(dto.getRoutepostId());
+
+        String uploadPath = req.getServletContext().getRealPath("/asset/upload/routepost");
+
+        File folder = new File(uploadPath);
+        if (!folder.exists()) folder.mkdirs();
+
+        if (images != null && images.length > 0) {
+            for (MultipartFile file : images) {
+                if (!file.isEmpty()) {
+                    String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+                    File dest = new File(uploadPath, fileName);
+                    file.transferTo(dest);
+
+                    RoutePostImageDTO imgDto = new RoutePostImageDTO();
+                    imgDto.setRoutepostId(dto.getRoutepostId());
+                    imgDto.setRoutepostImageUrl(fileName);
+                    postService.addImage(imgDto);
+                }
+            }
+        }
+
         return "redirect:/routepost/view/" + dto.getRoutepostId();
     }
+
 
     // 게시글 삭제
     @GetMapping("/del/{routepostId}")

@@ -26,6 +26,12 @@ public class RoutePostCommentRestController {
     public int add(@RequestBody RoutePostCommentDTO dto) {
         return commentService.add(dto);
     }
+    
+    // 댓글 수정
+    @PutMapping("/edit")
+    public int edit(@RequestBody RoutePostCommentDTO dto) {
+        return commentService.edit(dto);
+    }
 
     // 댓글 삭제
     @DeleteMapping("/del/{commentId}")
