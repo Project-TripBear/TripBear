@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.project.trip.admin.car.mapper.AdminCarMapper">
+
+    <insert id="addCar" parameterType="carDTO">
+        INSERT INTO TB_CAR (
+            CAR_ID, CAR_NAME, CAR_TYPE, CAR_YEAR, CAR_COMPANY, 
+            CAR_PRICE, CAR_IMAGE, CAR_DESCRIPTION, CAR_FUEL
+        ) VALUES (
+            TB_CAR_SEQ.NEXTVAL, 
+            #{carName}, #{carType}, #{carYear}, #{carCompany}, 
+            #{carPrice}, #{carImage}, #{carDescription}, #{carFuel}
+        )
+    </insert>
+    
+    <select id="getMaxPrice" resultType="int">
+        SELECT MAX(CAR_PRICE) FROM TB_CAR
+    </select>
+    
+    <select id="getAllCars" parameterType="map" resultType="carDTO">
+        SELECT
+            CAR_ID, CAR_NAME, CAR_TYPE, CAR_YEAR, CAR_COMPANY, 
+            CAR_PRICE, CAR_IMAGE, CAR_DESCRIPTION, CAR_FUEL
+        FROM
+            TB_CAR
+        WHERE 1=1
+        
+        <if test="fuelTypes != null and fuelTypes.length > 0">
+            AND CAR_FUEL IN
+            <foreach item="fuel" collection="fuelTypes" open="(" separator="," close=")">
+                #{fuel}
+            </foreach>
+        </if>
+        
+        <if test="minPrice != null and maxPrice != null">
+            AND CAR_PRICE BETWEEN #{minPrice} AND #{maxPrice}
+        </if>
+        
+        <choose>
+            <when test="sortOrder == 'price_asc'">
+                ORDER BY CAR_PRICE ASC
+            </when>
+            <when test="sortOrder == 'price_desc'">
+                ORDER BY CAR_PRICE DESC
+            </when>
+            <otherwise>
+                ORDER BY CAR_ID DESC
+            </otherwise>
+        </choose>
+    </select>
+    
+    <select id="selectCarDetail" parameterType="int" resultType="carDTO">
+        SELECT
+            CAR_ID, CAR_NAME, CAR_TYPE, CAR_YEAR, CAR_COMPANY, 
+            CAR_PRICE, CAR_IMAGE, CAR_DESCRIPTION, CAR_FUEL
+        FROM
+            TB_CAR
+        WHERE
+            CAR_ID = #{carId}
+    </select>
+
+    <delete id="deleteCar" parameterType="int">
+        DELETE FROM TB_CAR
+        WHERE CAR_ID = #{carId}
+    </delete>
+
+    <update id="updateCar" parameterType="carDTO">
+        UPDATE TB_CAR
+        SET 
+            CAR_NAME = #{carName},
+            CAR_TYPE = #{carType},
+            CAR_YEAR = #{carYear},
+            CAR_COMPANY = #{carCompany},
+            CAR_PRICE = #{carPrice},
+            CAR_IMAGE = #{carImage},
+            CAR_DESCRIPTION = #{carDescription},
+            CAR_FUEL = #{carFuel}
+        WHERE 
+            CAR_ID = #{carId}
+    </update>
+</mapper>

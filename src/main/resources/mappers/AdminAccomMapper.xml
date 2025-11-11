@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.project.trip.admin.accom.mapper.AdminAccomMapper">
+
+<select id="getMaxPrice" resultType="int">
+        SELECT NVL(MAX(price_per_night), 2000000) FROM tblAccomRoom
+    </select>
+
+    <select id="getAllAccommodations" parameterType="java.util.Map" resultType="com.project.trip.admin.accom.model.accomDTO">
+        SELECT 
+            p.place_name as accomName,
+            a.accom_type as accomType,
+            r.room_id as roomId,
+            r.room_name as roomName,
+            r.price_per_night as pricePerNight,
+            r.capacity,
+            r.room_image_url as roomImage
+        FROM tblAccomRoom r
+            JOIN tblAccom a ON r.accom_id = a.accom_id
+            JOIN tblPlace p ON a.place_id = p.place_id
+        <where>
+            <if test="minPrice != null and maxPrice != null">
+                AND r.price_per_night BETWEEN #{minPrice} AND #{maxPrice}
+            </if>
+            <if test="accomTypes != null and accomTypes.length > 0">
+                AND a.accom_type IN
+                <foreach collection="accomTypes" item="type" open="(" separator="," close=")">
+                    #{type}
+                </foreach>
+            </if>
+        </where>
+        <choose>
+            <when test="sortOrder == 'price_asc'">
+                ORDER BY r.price_per_night ASC
+            </when>
+            <when test="sortOrder == 'price_desc'">
+                ORDER BY r.price_per_night DESC
+            </when>
+            <otherwise>
+                ORDER BY p.place_name ASC, r.room_name ASC
+            </otherwise>
+        </choose>
+    </select>
+
+    <insert id="insertPlace" parameterType="com.project.trip.admin.accom.model.accomAllInfoDTO">
+        <selectKey keyProperty="placeId" resultType="int" order="BEFORE">
+            SELECT NVL(MAX(place_id), 0) + 1 FROM tblPlace
+        </selectKey>
+        INSERT INTO tblPlace (
+            place_id, place_name, place_address, place_lat, place_lng, 
+            place_type_id, place_Location_id, place_main_image_url, place_description
+        ) VALUES (
+            #{placeId}, 
+            #{placeName, jdbcType=VARCHAR}, 
+            #{placeAddress, jdbcType=VARCHAR},
+            #{placeLat, jdbcType=DOUBLE},
+            #{placeLng, jdbcType=DOUBLE},
+            #{placeTypeId, jdbcType=INTEGER},
+            #{placeLocationId, jdbcType=INTEGER},
+            #{placeMainImageUrl, jdbcType=VARCHAR},
+            #{placeDescription, jdbcType=VARCHAR}
+        )
+    </insert>
+
+    <insert id="insertAccom" parameterType="com.project.trip.admin.accom.model.accomAllInfoDTO">
+        <selectKey keyProperty="accomId" resultType="int" order="BEFORE">
+            SELECT NVL(MAX(accom_id), 0) + 1 FROM tblAccom
+        </selectKey>
+        INSERT INTO tblAccom (
+            accom_id, place_id, accom_type, accom_tel
+        ) VALUES (
+            #{accomId},
+            #{placeId}, 
+            #{accomType, jdbcType=VARCHAR},
+            #{accomTel, jdbcType=VARCHAR}
+        )
+    </insert>
+    
+    <insert id="insertAccomRoom" parameterType="com.project.trip.admin.accom.model.accomAllInfoDTO">
+        INSERT INTO tblAccomRoom (
+            room_id, accom_id, room_name, room_type, capacity, 
+            price_per_night, room_area, room_image_url, room_status
+        ) VALUES (
+            (SELECT NVL(MAX(room_id), 0) + 1 FROM tblAccomRoom),
+            #{accomId}, 
+            #{roomName, jdbcType=VARCHAR},
+            #{roomType, jdbcType=VARCHAR},
+            #{capacity, jdbcType=INTEGER},
+            #{pricePerNight, jdbcType=INTEGER},
+            #{roomArea, jdbcType=VARCHAR},
+            #{roomImageUrl, jdbcType=VARCHAR},
+            #{roomStatus, jdbcType=CHAR}
+        )
+    </insert>
+    
+    <select id="getAccommodationDetails" parameterType="int" resultType="com.project.trip.admin.accom.model.accomAllInfoDTO">
+        SELECT 
+            p.place_id as placeId,
+            a.accom_id as accomId,
+            r.room_id as roomId,
+            p.place_name as placeName,
+            p.place_address as placeAddress,
+            p.place_lat as placeLat,
+            p.place_lng as placeLng,
+            p.place_type_id as placeTypeId,
+            p.place_location_id as placeLocationId,
+            p.place_main_image_url as placeMainImageUrl,
+            p.place_description as placeDescription,
+            a.accom_type as accomType,
+            a.accom_tel as accomTel,
+            r.room_name as roomName,
+            r.room_type as roomType,
+            r.capacity,
+            r.price_per_night as pricePerNight,
+            r.room_area as roomArea,
+            r.room_image_url as roomImageUrl,
+            r.room_status as roomStatus
+        FROM tblAccomRoom r
+            JOIN tblAccom a ON r.accom_id = a.accom_id
+            JOIN tblPlace p ON a.place_id = p.place_id
+        WHERE r.room_id = #{roomId}
+    </select>
+    
+    <update id="updatePlace" parameterType="com.project.trip.admin.accom.model.accomAllInfoDTO">
+        UPDATE tblPlace SET
+            place_name = #{placeName, jdbcType=VARCHAR},
+            place_address = #{placeAddress, jdbcType=VARCHAR},
+            place_lat = #{placeLat, jdbcType=DOUBLE},
+            place_lng = #{placeLng, jdbcType=DOUBLE},
+            place_type_id = #{placeTypeId, jdbcType=INTEGER},
+            place_location_id = #{placeLocationId, jdbcType=INTEGER},
+            place_main_image_url = #{placeMainImageUrl, jdbcType=VARCHAR},
+            place_description = #{placeDescription, jdbcType=VARCHAR}
+        WHERE place_id = #{placeId}
+    </update>
+    
+    <update id="updateAccom" parameterType="accomAllInfoDTO">
+        UPDATE tblAccom SET
+            accom_type = #{accomType, jdbcType=VARCHAR},
+            accom_tel = #{accomTel, jdbcType=VARCHAR}
+        WHERE accom_id = #{accomId}
+    </update>
+    
+    <update id="updateAccomRoom" parameterType="accomAllInfoDTO">
+        UPDATE tblAccomRoom SET
+            room_name = #{roomName, jdbcType=VARCHAR},
+            room_type = #{roomType, jdbcType=VARCHAR},
+            capacity = #{capacity, jdbcType=INTEGER},
+            price_per_night = #{pricePerNight, jdbcType=INTEGER},
+            room_area = #{roomArea, jdbcType=VARCHAR},
+            room_image_url = #{roomImageUrl, jdbcType=VARCHAR},
+            room_status = #{roomStatus, jdbcType=CHAR}
+        WHERE room_id = #{roomId}
+    </update>
+
+    <select id="getAccomIdAndPlaceIdByRoomId" parameterType="int" resultType="accomAllInfoDTO">
+        SELECT 
+            r.accom_id as accomId, 
+            a.place_id as placeId
+        FROM tblAccomRoom r
+            JOIN tblAccom a ON r.accom_id = a.accom_id
+        WHERE r.room_id = #{roomId}
+    </select>
+    
+    <delete id="deleteAccomRoom" parameterType="int">
+        DELETE FROM tblAccomRoom WHERE room_id = #{roomId}
+    </delete>
+    
+    <delete id="deleteAccom" parameterType="int">
+        DELETE FROM tblAccom WHERE accom_id = #{accomId}
+    </delete>
+    
+    <delete id="deletePlace" parameterType="int">
+        DELETE FROM tblPlace WHERE place_id = #{placeId}
+    </delete>
+    
+    </mapper>
