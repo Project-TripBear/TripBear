@@ -1,7 +1,5 @@
 package com.project.trip.mypage.model;
 
-import java.util.List;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -24,8 +22,6 @@ public class UserDTO {
 	private String weight;
 	private String healthGoals;
 	private String auth;
-
-
 
 
 
