@@ -50,13 +50,13 @@ public class AdminCarController {
         model.addAttribute("maxPriceFromDB", maxPriceFromDB);
 
         // 뷰 이름을 Tiles 정의에 따라 논리적 이름으로 반환한다고 가정
-        return "admin.carlist"; 
+        return "content/admin/carlist"; 
     }
 
     // 렌터카 등록 폼 페이지로 이동
     @GetMapping("/add")
     public String addCarForm() {
-        return "admin.car.add"; 
+        return "content/admin/addcar"; 
     }
 
     // 렌터카 등록 처리

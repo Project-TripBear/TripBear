@@ -14,6 +14,12 @@
  		<typeAlias type="com.project.trip.reservation.model.AccomReservationDTO" alias="accomreservationdto" />
  		<typeAlias type="com.project.trip.reservation.model.ReservationDTO" alias="reservationdto" />
  		<typeAlias type="com.project.trip.reservation.model.CarReservationDTO" alias="carreservationdto" />
+ 		<typeAlias type="com.project.trip.admin.board.model.IntegratedBoardDTO" alias="integratedboarddto"/>
+    	<typeAlias type="com.project.trip.admin.accom.model.accomAllInfoDTO" alias="accomAllInfoDTO"/>         
+    	<typeAlias type="com.project.trip.admin.car.model.carDTO" alias="carDTO"/>    
+    	<typeAlias type="com.project.trip.admin.user.model.AdminUserDTO" alias="AdminUserDTO"/>
+    	<typeAlias type="com.project.trip.admin.user.model.suspendedUserDTO" alias="suspendedUserDTO"/>
+ 		<package name="com.project.trip.admin.accom.model"/>
  		<package name="com.project.trip.board.notice.model"/>
  		<package name="com.project.trip.reservation.model"/>
  		<package name="com.project.trip.board.routepost.model"/>

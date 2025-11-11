@@ -9,15 +9,10 @@ import com.project.trip.mypage.mapper.MemberMapper;
 import com.project.trip.mypage.model.CustomUser;
 import com.project.trip.mypage.model.UserDTO;
 
-
-
-<<<<<<< HEAD
-=======
 import com.project.trip.mypage.mapper.MemberMapper;
 import com.project.trip.mypage.model.CustomUser;
 import com.project.trip.mypage.model.UserDTO;
 
->>>>>>> c242be10d3ced46c7eb053e15f34200f02bc903d
 
 //User > CustomUser 사용
 public class CustomUserDetailsService implements UserDetailsService {
