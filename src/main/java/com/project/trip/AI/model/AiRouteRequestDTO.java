@@ -9,14 +9,22 @@ public class AiRouteRequestDTO {
 	private String duration;
 	private String travelStyle;
 	private String activityTime;
-	private String buduget;
+	private String budget;
 	private String preferredArea;
-	private String transpotation;
-	private String acctivityType;
-	private String compation;
+	private String transportation;
+	private String activityType;
+	private String companion;
 	
+	private PhysicalInfo physicalInfo;
 	private String startDate;
 	private String endDate;
+	
+	@Data
+	public static class PhysicalInfo {
+		private String gender;
+		private double height;
+		private double weight;
+	}
 	
 
 }

@@ -237,7 +237,7 @@
         
         function renderCalendar(year, month) {
             calendarDates.innerHTML = '';
-            // ✅ [수정] JSP가 오해하지 않도록 문자열 합치기 방식으로 변경
+            
             currentMonthYear.textContent = year + '년 ' + (month + 1) + '월';
             
             const firstDayOfMonth = new Date(year, month, 1).getDay();
@@ -254,7 +254,7 @@
                 if (cellDate < today) {
                     classes += ' disabled';
                 }
-                // ✅ [수정] JSP가 오해하지 않도록 문자열 합치기 방식으로 변경
+                
                 const dateString = year + '-' + String(month + 1).padStart(2, '0') + '-' + String(date).padStart(2, '0');
                 calendarDates.insertAdjacentHTML('beforeend', '<div class="' + classes + '" data-date="' + dateString + '">' + date + '</div>');
             }
@@ -307,7 +307,7 @@
                     const startDate = new Date(selectedDateStr);
                     const endDate = new Date(startDate);
                     endDate.setDate(startDate.getDate() + durationInNights);
-                    // ✅ [수정] JSP가 오해하지 않도록 문자열 합치기 방식으로 변경
+                    
                     userChoices.endDate = endDate.getFullYear() + '-' + String(endDate.getMonth() + 1).padStart(2, '0') + '-' + String(endDate.getDate()).padStart(2, '0');
                     
                     highlightDateRange();
@@ -338,11 +338,11 @@
             let completedSteps = 0;
             const keys = Object.keys(userChoices);
             
-            // 'duration'이 있으면 1, 'startDate'와 'endDate'가 모두 있으면 1 추가
+            
             if (keys.includes('duration')) completedSteps++;
             if (keys.includes('startDate') && keys.includes('endDate')) completedSteps++;
 
-            // 날짜 관련 키를 제외한 나머지 키 개수 추가
+            
             const otherKeys = keys.filter(k => k !== 'duration' && k !== 'startDate' && k !== 'endDate');
             completedSteps += otherKeys.length;
 
@@ -421,19 +421,18 @@
 
         function submitPlan() {
             console.log('최종 사용자 선택:', userChoices);
-            
-            // 1. 로딩 화면을 보여줍니다.
+            // 1. 로딩 화면 표시
             aiPlanContainer.style.display = 'none';
-            loadingContainer.style.display = 'flex'; 
+            loadingContainer.style.display = 'flex';
             progressBar.style.width = '100%';
 
-            // 2. fetch API를 사용해 서버에 AJAX POST 요청을 보냅니다.
-            fetch('/trip/ai/generate.do', { // ※※※※※ '/trip'은 본인의 프로젝트 경로(Context Path)에 맞게 수정하세요. ※※※※※
+            // 2. 서버에 AJAX POST 요청
+            fetch('/trip/ai/generate', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(userChoices) // JavaScript 객체를 JSON 문자열로 변환
+                body: JSON.stringify(userChoices)
             })
             .then(response => {
                 if (!response.ok) {
@@ -442,17 +441,19 @@
                 return response.json();
             })
             .then(data => {
-                // 3. 서버로부터 성공 응답을 받으면, 지정된 URL로 페이지를 이동시킵니다.
-                if (data.success) {
-                    window.location.href = data.redirectUrl;
+                // 3. (중요) 성공 시, 응답으로 받은 'routeId'를 쿼리스트링으로 붙여 이동합니다.
+                if (data.success && data.routeId) {
+                    console.log('AI 루트 생성 성공. ID:', data.routeId);
+                    // (주의) '/trip'은 본인의 Context Path에 맞게 확인하세요.
+                    window.location.href = '/trip/ai/result?routeId=' + data.routeId;
                 } else {
-                    // 서버 로직상 실패 시 (그럴 경우는 거의 없지만)
+                    // 4. 서버 로직상 실패 시
                     loadingContainer.style.display = 'none';
-                    alert('루트 생성에 실패했습니다. 다시 시도해주세요.');
+                    alert('루트 생성에 실패했습니다: ' + (data.message || '알 수 없는 오류'));
                 }
             })
             .catch(error => {
-                // 4. 네트워크 오류 등 요청 자체가 실패했을 때 처리합니다.
+                // 5. 네트워크 오류 등 요청 자체가 실패했을 때
                 console.error('Error:', error);
                 loadingContainer.style.display = 'none';
                 alert('서버와 통신 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
