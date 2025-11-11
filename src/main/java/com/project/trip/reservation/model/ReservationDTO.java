@@ -21,8 +21,6 @@ public class ReservationDTO {
     private String roomName;
     private String carName;
     private String region;
-<<<<<<< HEAD
+
 }
-=======
-}
->>>>>>> origin
+
