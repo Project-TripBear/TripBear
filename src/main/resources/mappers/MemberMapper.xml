@@ -46,12 +46,12 @@ WHERE
 
 
 	<select id="idSelect" resultType="String" parameterType="userdto">
-    SELECT username FROM tblUser WHERE email = #{email} AND real_name = #{name}
+    SELECT username FROM tblUser WHERE email = #{email} AND real_name = #{name} and user_status_id = 1
 </select>
 
 <select id="userCheckByIdAndEmail" parameterType="userdto" resultType="int">
     SELECT COUNT(*) FROM tblUser 
-    WHERE username = #{id} AND email = #{email}
+    WHERE username = #{id} AND email = #{email} and user_status_id = 1
 </select>
 
 <update id="PwUpdate" parameterType="userdto">
@@ -82,6 +82,41 @@ WHERE
 <delete id="userDel" parameterType="String">
     DELETE FROM tblUser WHERE user_id = #{seq}
 </delete>
+
+ <select id="getUserByUsername" parameterType="String" resultType="com.project.trip.mypage.model.UserDTO">
+    SELECT user_id AS seq,
+           real_name AS name,
+           email
+    FROM tblUser
+    WHERE username = #{username}
+</select>
+
+<select id="getMyBoardCount" parameterType="String" resultType="int">
+    SELECT COUNT(*) 
+    FROM vwUserAllActivities 
+    WHERE user_id = #{seq}
+</select>
+
+<select id="getMyCommentCount" parameterType="String" resultType="int">
+    SELECT COUNT(*) 
+    FROM vwUserAllComments 
+    WHERE user_id = #{seq}
+</select>
+
+<select id="getMyLikeTotalCount" parameterType="String" resultType="int">
+    SELECT COUNT(*)
+    FROM vwUserAllLikes
+    WHERE user_id = #{seq}
+</select>
+
+<select id="getMyScrapTotalCount" parameterType="String" resultType="int">
+    SELECT COUNT(*)
+    FROM vwAllScraps
+    WHERE user_id = #{seq}
+</select>
+
+
+
  
 </mapper>
 

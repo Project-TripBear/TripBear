@@ -20,7 +20,7 @@ import com.project.trip.mypage.model.UserDTO;
 		"file:src/main/webapp/WEB-INF/spring/appServlet/servlet-context.xml",
 		"file:src/main/webapp/WEB-INF/spring/security-context.xml"
 })
-public class AddMember {
+public class MemberTest {
 	
 	//의존 주입의 타입 > 인터페이스 + 상속 구현한 클래스 2개 이상
 	//1. @Qualifier 사용

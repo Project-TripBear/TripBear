@@ -22,6 +22,7 @@ public class UserDTO {
 	private String weight;
 	private String healthGoals;
 	private String auth;
+	private String userStatusId;
 
 
 

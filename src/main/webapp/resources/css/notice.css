@@ -35,6 +35,8 @@ body {
 /* HEADER STYLES START                                       */
 /* ========================================================= */
 
+
+
 /* === HEADER 기본 구조 === */
 #main-header {
     background-color: rgba(255, 255, 255, 0.8);
@@ -753,4 +755,564 @@ main {
     .notice-title h2 {
         font-size: 2rem;
     }
+  
+    
 }
+
+/* ------------------------------------------------------------ */
+/* 로그인 (1번) */
+/* 폼을 감싸는 컨테이너 스타일 */
+.page-login-container {
+    max-width: 420px; /* 너비 약간 증가 */
+    margin: 80px auto; 
+    padding: 50px 40px; /* 내부 여백 증가로 여유로운 느낌 부여 */
+    background-color: var(--surface); 
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-soft);
+    box-sizing: border-box;
+}
+
+/* <h2>로그인</h2> 스타일 */
+.page-login-container h2 {
+    text-align: center;
+    font-size: 2rem; /* 글자 크기 키우기 */
+    font-weight: 700;
+    color: var(--primary-dark);
+    margin-bottom: 30px;
+    border-bottom: 2px solid var(--primary-light); /* 연한 테마 색상으로 구분선 */
+    padding-bottom: 15px;
+}
+
+/* 폼 내부 테이블 스타일 */
+.page-login-container form table.vertical.content {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 25px;
+}
+
+/* 테이블 셀 패딩 및 레이블 스타일 조정 */
+.page-login-container form table.vertical.content tr {
+    border-bottom: none; /* 테이블 행 구분선 제거 (미니멀) */
+}
+.page-login-container form table.vertical.content th {
+    font-weight: 500;
+    color: var(--text); /* 일반 텍스트 색상 사용 */
+    padding: 10px 15px 10px 0;
+    width: 25%; /* 아이디/암호 레이블 너비 줄임 */
+    text-align: left;
+    font-size: 1rem;
+}
+.page-login-container form table.vertical.content td {
+    padding: 10px 0;
+}
+
+
+/* 입력 필드 스타일 (.short 클래스) */
+.page-login-container form input.short {
+    width: 100%; /* 100%로 변경 */
+    padding: 12px;
+    border: 1px solid var(--border); /* 연한 테두리 */
+    border-radius: 8px;
+    font-size: 1rem;
+    color: var(--text);
+    background-color: var(--surface); /* 배경색을 흰색으로 변경하여 깔끔하게 */
+    transition: all 0.3s;
+    box-sizing: border-box;
+}
+
+.page-login-container form input.short:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(108, 154, 139, 0.15); /* 테마 색상으로 더 뚜렷한 포커스 효과 */
+    background-color: var(--surface);
+}
+
+
+/* 로그인 버튼 스타일 (로그인 버튼을 별도 div 안에 넣어주셨으므로 div button 선택자 사용) */
+.page-login-container form > div button:not(.find-links button) {
+    display: block;
+    width: 100%;
+    padding: 14px; /* 높이 증가 */
+    border: none;
+    border-radius: 30px;
+    background-color: var(--primary); /* 주 색상 적용 */
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: 30px; /* 위쪽 마진 증가 */
+    box-shadow: 0 4px 10px rgba(108, 154, 139, 0.2); /* 은은한 그림자 추가 */
+}
+
+.page-login-container form > div button:not(.find-links button):hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-2px); /* 호버 시 약간 띄우는 효과 */
+    box-shadow: 0 6px 15px rgba(108, 154, 139, 0.3);
+}
+
+/* 아이디/비밀번호 찾기 링크 영역 */
+.page-login-container .find-links {
+    text-align: center;
+    margin-top: 25px;
+    padding-top: 15px;
+    /* border-top: 1px solid var(--border);  구분선 제거 (미니멀) */
+}
+
+/* 아이디/비밀번호 찾기 버튼 스타일 (보조 역할로 변경) */
+.page-login-container .find-links button {
+    background: none;
+    border: none;
+    color: var(--text-light); /* 보조 텍스트 색상 */
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 5px 10px;
+    transition: color 0.2s;
+}
+
+.page-login-container .find-links button:hover {
+    color: var(--primary); /* 호버 시 테마 색상으로 강조 */
+    text-decoration: none; /* 밑줄 대신 색상 변화로 강조 */
+}
+
+.page-login-container .find-links button:not(:last-child) {
+    /* 구분선을 | 문자 대신 약간의 간격과 연한 색으로 처리 */
+    border-right: 1px solid var(--border);
+    padding-right: 15px;
+    margin-right: 5px;
+}
+/* ------------------------------------------------------------ */
+
+
+/* 아이디 찾기(2번) */
+
+
+
+/* 1. 컨테이너 스타일 (외곽 카드 복구 및 중앙 정렬) */
+.page-findid-container {
+    max-width: 550px; 
+    /* !important를 사용하여 다른 스타일의 마진/배경을 강제로 덮어씁니다. */
+    margin: 80px auto !important; 
+    padding: 50px 40px;
+    background-color: var(--surface) !important; /* 흰색 카드 배경 */
+    border-radius: var(--radius) !important; /* 둥근 모서리 */
+    box-shadow: var(--shadow-soft) !important; /* 그림자 */
+    box-sizing: border-box;
+}
+
+/* <h1>아이디 찾기</h1> 스타일 */
+.page-findid-container h1 {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary-dark);
+    margin-bottom: 30px;
+    border-bottom: 2px solid var(--primary-light); 
+    padding-bottom: 15px;
+}
+
+/* 2. 테이블 레이아웃 및 정렬 */
+.page-findid-container form table.board-title {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 30px;
+}
+.page-findid-container form table.board-title th {
+    font-weight: 600;
+    color: var(--text);
+    padding: 15px 15px 15px 0;
+    width: 20%; /* 레이블 너비 조정 */
+    text-align: left;
+    vertical-align: middle; /* 세로 중앙 정렬 */
+}
+.page-findid-container form table.board-title td {
+    padding: 15px 0;
+    vertical-align: middle; /* 세로 중앙 정렬 */
+}
+
+/* 3. 입력 필드 공통 스타일 및 크기 제한 */
+.page-findid-container form input[type="text"],
+.page-findid-container form input[type="email"] {
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 1rem;
+    background-color: var(--surface);
+    box-sizing: border-box;
+    transition: all 0.3s;
+}
+
+/* 이름 입력 필드 (#name) 스타일 */
+.page-findid-container form input#name {
+    width: 100%;
+    max-width: 350px; /* 불필요한 확장 방지 */
+}
+
+/* 포커스 효과 (모든 인풋) */
+.page-findid-container form input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(108, 154, 139, 0.15);
+}
+
+/* 4. 이메일/인증 섹션 (Flexbox 기반 정렬) */
+
+/* 이메일 발송 박스 (인풋 + 버튼) */
+.page-findid-container .email-send-box {
+    display: flex;
+    gap: 10px;
+    align-items: center; 
+    width: 100%;
+    max-width: 450px; 
+}
+
+/* 이메일 입력 필드 (#email) */
+.page-findid-container form input#email {
+    flex-grow: 1; 
+    min-width: 150px;
+}
+
+/* 인증 메일 보내기 버튼 */
+.page-findid-container .btn-mail-send {
+    padding: 10px 15px;
+    border-radius: 20px;
+    background-color: var(--primary-light); 
+    color: var(--text);
+    font-weight: 500;
+    font-size: 0.95rem;
+    white-space: nowrap;
+    height: 40px; 
+    line-height: 18px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+/* 인증 번호 입력 및 타이머 박스 */
+.page-findid-container .validation-box {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-top: 10px;
+}
+
+/* 인증 번호 입력 필드 */
+.page-findid-container input#validNumber {
+    max-width: 100px;
+    text-align: center;
+}
+
+/* 인증 번호 입력 버튼 */
+.page-findid-container .btn-valid-check {
+    padding: 10px 15px;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    background-color: var(--surface);
+    color: var(--text-light);
+    font-weight: 500;
+    font-size: 0.95rem;
+    white-space: nowrap;
+    height: 40px;
+    line-height: 18px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+/* 남은 시간 타이머 */
+.page-findid-container #remainTime {
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 0.95rem;
+    white-space: nowrap;
+}
+
+/* 5. 하단 버튼 그룹 */
+.page-findid-container .action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 40px;
+}
+
+/* 버튼 스타일 (크기 및 색상 통일) */
+.page-findid-container .action-buttons .btn {
+    padding: 12px 28px;
+    min-width: 120px;
+    text-align: center;
+    border-radius: 30px;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+.page-findid-container .btn-primary { 
+    background-color: var(--primary);
+    color: white;
+}
+.page-findid-container .btn-secondary {
+    background-color: #E9ECEF;
+    color: var(--text-light);
+}
+.page-findid-container .btn-primary:hover {
+    background-color: var(--primary-dark);
+}
+.page-findid-container .btn-secondary:hover {
+    background-color: #dee2e6;
+    color: var(--text);
+}
+/* ------------------------------------------------------------ */
+
+
+
+
+/* 비밀번호 찾기(3번) */
+
+/* =========================================================
+ 🔑 FIND PASSWORD PAGE STYLES (page-findpw-container)
+ ========================================================= */
+
+/* 1. 컨테이너 스타일 (외곽 카드 및 중앙 정렬) */
+.page-findpw-container {
+    max-width: 500px; /* 아이디 찾기보다 약간 작게 조정 */
+    margin: 80px auto !important; 
+    padding: 50px 40px;
+    background-color: var(--surface) !important; 
+    border-radius: var(--radius) !important; 
+    box-shadow: var(--shadow-soft) !important; 
+    box-sizing: border-box;
+}
+
+/* <h1>비밀번호 찾기</h1> 스타일 */
+.page-findpw-container h1 {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary-dark);
+    margin-bottom: 30px;
+    border-bottom: 2px solid var(--primary-light); 
+    padding-bottom: 15px;
+}
+
+/* 2. 테이블 레이아웃 및 정렬 */
+.page-findpw-container form table.board-title {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 30px;
+}
+.page-findpw-container form table.board-title th {
+    font-weight: 600;
+    color: var(--text);
+    padding: 15px 15px 15px 0;
+    width: 20%; 
+    text-align: left;
+    vertical-align: middle; 
+}
+.page-findpw-container form table.board-title td {
+    padding: 15px 0;
+    vertical-align: middle; 
+}
+
+/* 3. 입력 필드 스타일 통일 */
+.page-findpw-container form input[type="text"],
+.page-findpw-container form input[type="email"] {
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 1rem;
+    background-color: var(--surface);
+    box-sizing: border-box;
+    transition: all 0.3s;
+    width: 100%; /* 너비 100%로 설정 후 max-width로 제한 */
+    max-width: 300px; /* 💡 아이디/이메일 필드 너비 제한 */
+}
+
+.page-findpw-container form input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(108, 154, 139, 0.15);
+}
+
+/* 아이디 필드 (#id)와 이메일 필드 (#email)에 max-width 300px 적용됨 */
+
+/* 4. 하단 버튼 그룹 */
+.page-findpw-container .action-buttons {
+    /* 💡 Flexbox 속성을 다시 강조하여 중앙 정렬 복구 */
+    display: flex !important;
+    justify-content: center !important;
+    gap: 15px;
+    margin-top: 40px;
+}
+
+/* 버튼 스타일 (크기 및 색상 통일) */
+.page-findpw-container .action-buttons .btn {
+    padding: 12px 28px;
+    /* 💡 버튼 너비를 고정하여 폼 전체를 차지하지 않도록 방지 */
+    min-width: 150px; 
+    text-align: center;
+    border-radius: 30px;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: none;
+}
+
+/* 비밀번호 발급 버튼 (Primary) */
+.page-findpw-container .btn-primary { 
+    background-color: var(--primary);
+    color: white;
+}
+/* 돌아가기 버튼 (Secondary) */
+.page-findpw-container .btn-secondary {
+    background-color: #E9ECEF;
+    color: var(--text-light);
+}
+.page-findpw-container .btn-primary:hover {
+    background-color: var(--primary-dark);
+}
+.page-findpw-container .btn-secondary:hover {
+    background-color: #dee2e6;
+    color: var(--text);
+}
+
+/* ------------------------------------------------------------ */
+
+/* 마이페이지 (3번) */
+/* =========================================================
+ 🔑 MYPAGE STYLES - FINAL VERSION (전체)
+ * 활동 요약 정렬 및 메뉴 스타일 적용 *
+ ========================================================= */
+
+/* 마이페이지 전체 컨테이너 (레이아웃) */
+.page-mypage-container {
+    max-width: 850px; /* 전체 컨테이너 너비 제한 */
+    margin: 40px auto !important; 
+    padding: 0 30px;
+}
+
+/* 1. 마이페이지 제목 */
+.page-mypage-container h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--primary-dark);
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--primary-light) !important; 
+    max-width: 850px; 
+    width: 100%;
+}
+
+/* --- 2. 내 활동 요약 섹션 (수직 중앙 정렬 강제) --- */
+#my-summary {
+    max-width: 800px;
+    margin: 0 auto 50px auto; 
+    /* 💡 패딩 조정으로 정렬 공간 확보 */
+    padding: 15px 30px !important; 
+    background-color: var(--surface) !important; 
+    border-radius: var(--radius) !important;
+    box-shadow: var(--shadow-soft) !important; 
+    border: 1px solid var(--border);
+}
+
+#my-summary #summary-list {
+    list-style: none;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: flex; /* Flexbox로 한 줄 배치 */
+    gap: 25px;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center !important; /* 💡 수직 중앙 정렬 강제 */
+    height: 100%; 
+}
+
+/* 모든 <li> 요소의 높이와 줄 간격 균형 통일 */
+#my-summary #summary-list li {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--text);
+    padding: 5px 0 !important; /* 💡 수직 패딩 추가로 높이 기준 통일 */
+    margin: 0 !important; 
+    position: relative;
+    white-space: nowrap;
+    line-height: 1.5 !important; /* 💡 줄 간격 통일 */
+}
+
+
+/* 요약 섹션의 첫 번째 항목 (제목 역할) */
+#my-summary #summary-list li:first-child {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--primary-dark);
+    padding-right: 20px;
+    border-right: 1px solid var(--primary-light); 
+    margin-right: 5px;
+    padding-top: 5px !important;
+    padding-bottom: 5px !important; /* 💡 높이 통일을 위한 패딩 유지 */
+    line-height: 1.5 !important;
+}
+
+/* 나머지 요약 항목 (게시글 수 등) - 불필요한 구분자 제거 */
+#my-summary #summary-list li:not(:first-child) {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--text);
+}
+
+
+/* --- 3. 마이페이지 메뉴 테이블 --- */
+.page-mypage-container table.mypage-menu-table {
+    width: 100%;
+    max-width: 600px; 
+    margin: 0 auto !important; /* 중앙 정렬 */
+    border-collapse: collapse;
+    background-color: var(--surface) !important;
+    border-radius: var(--radius) !important;
+    overflow: hidden;
+    box-shadow: var(--shadow-soft) !important;
+    border: 1px solid var(--border);
+}
+
+.mypage-menu-table tr {
+    border-bottom: 1px solid var(--border);
+    transition: background-color 0.3s;
+}
+.mypage-menu-table tr:hover {
+    background-color: #F8F9FA !important;
+}
+.mypage-menu-table tr:last-child {
+    border-bottom: none;
+}
+
+/* 💡 테이블 제목 (<th>) 스타일 - 색상 강조 및 정렬 */
+.mypage-menu-table th {
+    width: 120px;
+    padding: 18px 20px;
+    text-align: left;
+    color: var(--primary-dark) !important; 
+    font-weight: 700;
+    font-size: 1rem;
+    background-color: #F8F9FA; 
+    border-right: 1px solid var(--border);
+    vertical-align: middle;
+}
+
+.mypage-menu-table td {
+    padding: 18px 20px;
+    vertical-align: middle;
+}
+
+.mypage-menu-table td a {
+    display: block;
+    text-decoration: none;
+    color: var(--text);
+    font-size: 1.1rem;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+.mypage-menu-table td a:hover {
+    color: var(--primary);
+    text-decoration: none;
+}
+/* ------------------------------------------------------------ */

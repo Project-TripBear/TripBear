@@ -4,25 +4,39 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
+    <%-- jQuery 라이브러리를 꼭 추가해주세요 --%>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     
+    <%-- ▼▼▼ 분리한 CSS 파일을 연결합니다 ▼▼▼ --%>
 
 </head>
 <body>
 
+    <%@ include file="/WEB-INF/views/inc/header.jsp" %>
 
     <div id="main">
         <h1>내 여행 루트</h1>
 
         <div id="route-list-body">
             <c:forEach items="${list}" var="dto">
-                <div class="route-item" onclick="location.href='/trip/user/trip/route/userRouteView.do?id=${dto.seq}'">
+                <div class="route-item" onclick="location.href='/trip/route/userRouteView.do?id=${dto.seq}'">
                     <div class="route-title">${dto.userroutetitle}</div>
                     <div class="route-details">
                         <span>인원수: ${dto.userroutedays}</span>
                         <span>여행시작일: ${dto.userroutestartdate}</span>
                         <span>여행종료일: ${dto.userrouteenddate}</span>
                     </div>
+                    
                 </div>
+                <!-- 경로확인 -->
+                <form action="${pageContext.request.contextPath}/reservation/accomList.do" method="get">
+    <input type="hidden" name="start_date" value="${dto.userroutestartdate}">
+    <input type="hidden" name="end_date" value="${dto.userrouteenddate}">
+    <input type="hidden" name="people" value="${dto.userroutedays}">
+
+    <button type="submit" class="btn btn-primary">예약하기</button>
+</form>
+            
             </c:forEach>
         </div>
 
@@ -33,7 +47,7 @@
         </c:if>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"/>
+    <%-- JavaScript 부분은 변경 없이 그대로 둡니다. --%>
     <script>
         let currentPage = ${nowPage};
         const totalPage = ${totalPage};
@@ -43,7 +57,7 @@
 
             $.ajax({
                 type: 'GET',
-                url: '/main/user/userroute.do',
+                url: '/trip/user/userroute.do',
                 data: {
                     page: currentPage,
                     ajax: 'true'
@@ -53,7 +67,7 @@
                     if (newList.length > 0) {
                         newList.forEach(function(dto) {
                             const newRow = `
-                                <div class="route-item" onclick="location.href='/main/user/userroute.do?seq=\${dto.seq}'">
+                                <div class="route-item" onclick="location.href='/trip/user/userroute.do?seq=\${dto.seq}'">
                                     <div class="route-title">\${dto.userroutetitle}</div>
                                     <div class="route-details">
                                         <span>인원수: \${dto.userroutedays}</span>
