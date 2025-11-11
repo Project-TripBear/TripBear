@@ -23,4 +23,6 @@ public class PlaceDTO {
     private String placeMainImageUrl;
     
     private TouristSpotDTO touristSpotDetail;
+    private EventDTO eventDetail;
+    private RestaurantDTO restaurantDetail;   
 }

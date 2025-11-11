@@ -4,10 +4,11 @@ import java.util.List;
 
 import com.project.trip.allplace.model.PlaceDTO;
 import com.project.trip.allplace.model.TourApiResponseVO;
+import com.project.trip.allplace.model.TourItemVO;
 
 public interface AllPlaceService {
 
-	public PlaceDTO addPlaceOnDemand(String contentId);
+	public PlaceDTO addPlaceOnDemand(TourItemVO item);
 	
 	public PlaceDTO getPlaceDetail(long placeId);
 	
@@ -18,5 +19,9 @@ public interface AllPlaceService {
     
     // 2. 해시태그로 장소 목록 검색
     public List<PlaceDTO> findPlacesByKeyword(String keywordName);
+    
+    public TourApiResponseVO searchFestival(String eventStartDate, String arrange);
 	
+    public TourApiResponseVO searchByArea(long locationId, String contentTypeId, String arrange);
+    
 }

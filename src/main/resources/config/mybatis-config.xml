@@ -4,6 +4,7 @@
   "https://mybatis.org/dtd/mybatis-3-config.dtd">
 
 <configuration>
+
 	<!--XML Mapper에서 사용중인 클래스의 별칭  -->
 	<!-- <typeAliases>
 		<typeAlias type="com.test.project.model.UserDTO" alias="udto" />	
@@ -11,13 +12,13 @@
 	</typeAliases>
  -->
  	<settings>
-        <setting name="jdbcTypeForNull" value="VARCHAR"/>
+	    <setting name="jdbcTypeForNull" value="VARCHAR"/> 
     </settings>
  
  	<typeAliases>
  		<package name="com.project.trip.allplace.model"/>
- 		<package name="com.project.trip.board.review.model"/>
- 		<package name="com.project.trip.reservation.model"/>
+        <package name="com.project.trip.board.model"/>
+        <package name="com.project.trip.reservation.model"/>
  	</typeAliases>
  
 </configuration>

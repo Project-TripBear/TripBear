@@ -2,9 +2,11 @@ package com.project.trip.allplace.mapper;
 
 import java.util.List;
 
+import com.project.trip.allplace.model.EventDTO;
 import com.project.trip.allplace.model.KeywordDTO;
 import com.project.trip.allplace.model.KeywordLinkDTO;
 import com.project.trip.allplace.model.PlaceDTO;
+import com.project.trip.allplace.model.RestaurantDTO;
 import com.project.trip.allplace.model.TouristSpotDTO;
 
 public interface PlaceMapper {
@@ -28,5 +30,9 @@ public interface PlaceMapper {
     
     // 4. 키워드 이름으로 장소 목록 검색 (3개 테이블 JOIN)
     public List<PlaceDTO> findPlacesByKeywordName(String keywordName);
+    
+    public int insertEvent(EventDTO dto);
+    
+    public int insertRestaurant(RestaurantDTO dto);
 	
 }

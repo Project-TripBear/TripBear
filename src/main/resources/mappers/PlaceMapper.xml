@@ -71,49 +71,78 @@
             #{spotOverinfo})
     </insert>
 
-    <resultMap id="placeDetailResultMap" type="placeDTO">
-        <id     property="placeId"          column="place_id" />
-        <result property="placeApiId"       column="place_api_id" />
-        <result property="name"             column="place_name" />
-        <result property="address"          column="place_address" />
-        <result property="latitude"         column="place_lat" />
-        <result property="longitude"        column="place_lng" />
+     <resultMap id="placeDetailResultMap" type="placeDTO">
+        <id     property="placeId"           column="place_id" />
+        <result property="placeApiId"        column="place_api_id" />
+        <result property="name"              column="place_name" />
+        <result property="address"           column="place_address" />
+        <result property="latitude"          column="place_lat" />
+        <result property="longitude"         column="place_lng" />
         <result property="placeMainImageUrl" column="place_main_image_url" />
-        <result property="placeTypeId"      column="place_type_id" />
-        <result property="placeLocationId"  column="place_location_id" />
+        <result property="placeTypeId"       column="place_type_id" />
+        <result property="placeLocationId"   column="place_location_id" />
         
+        <!-- 1. 관광지 상세정보 (1:1) -->
         <association property="touristSpotDetail" javaType="touristSpotDTO">
             <id     property="placeId"        column="place_id"/>
-            <result property="spotOverinfo"  column="spot_overinfo" />
-            <result property="admissionFee"  column="admission_fee" />
-            <result property="openingHours"  column="opening_hours" />
-            <result property="contactInfo"   column="contact_info" />
-            <result property="parkingInfo"   column="parking_info" />
-            <result property="restDay"       column="rest_day" />
+            <result property="spotOverinfo"   column="spot_overinfo" />
+            <result property="admissionFee"   column="admission_fee" />
+            <result property="openingHours"   column="opening_hours" />
+            <result property="contactInfo"    column="contact_info" />
+            <result property="parkingInfo"    column="parking_info" />
+            <result property="restDay"        column="rest_day" />
+        </association>
+        
+        <!-- 2. 축제 상세정보 (1:1) -->
+        <association property="eventDetail" javaType="eventDTO">
+            <id     property="eventId"      column="event_id"/>
+            <result property="placeId"      column="place_id"/>
+            <result property="eventName"    column="event_name"/>
+            <result property="eventStart"   column="event_start"/>
+            <result property="eventEnd"     column="event_end"/>
+            <result property="eventInfo"    column="event_info"/>
+            <result property="eventLink"    column="event_link"/>
+        </association>
+        
+        <!-- 3. 음식점 상세정보 (1:1) -->
+        <association property="restaurantDetail" javaType="restaurantDTO">
+            <id     property="placeId"              column="place_id"/>
+            <result property="restaurantCategory"   column="restaurant_category"/>
+            <result property="restaurantCall"       column="restaurant_call"/>
+            <result property="restaurantPrice"      column="restaurant_price"/>
+            <result property="restaurantRating"     column="restaurant_rating"/>
+            <result property="restaurantCount"      column="restaurant_count"/>
+            <result property="restaurantOpenTime"   column="restaurant_open_time"/>
+            <result property="restaurantCloseTime"  column="restaurant_close_time"/>
         </association>
     </resultMap>
 
+    <!-- [수정] 3개의 상세 테이블을 LEFT JOIN 하도록 변경 -->
     <select id="getPlaceDetailById" parameterType="long" resultMap="placeDetailResultMap">
         SELECT
             p.place_id, p.place_api_id, p.place_name, p.place_address, 
             p.place_lat, p.place_lng, p.place_main_image_url,
             p.place_type_id, p.place_location_id,
             
-            pt.place_type_name,
-            pl.place_location_name,
-            
             ts.spot_overinfo, ts.admission_fee, ts.opening_hours,
-            ts.contact_info,  
-            ts.parking_info,  
-            ts.rest_day
+            ts.contact_info,  ts.parking_info,  ts.rest_day,
+            
+            e.event_id, e.event_name, e.event_start, e.event_end,
+            e.event_info, e.event_link,
+            
+            r.restaurant_category, r.restaurant_call, r.restaurant_price,
+            r.restaurant_rating, r.restaurant_count, 
+            r.restaurant_open_time, r.restaurant_close_time
             
         FROM 
             tblPlace p
-        
-        JOIN tblPlaceType pt     ON p.place_type_id = pt.place_type_id
-        JOIN tblPlaceLocation pl ON p.place_location_id = pl.place_location_id
-        LEFT JOIN tblTouristSpot ts ON p.place_id = ts.place_id
-        
+        LEFT JOIN 
+            tblTouristSpot ts ON p.place_id = ts.place_id
+        LEFT JOIN
+            tblEvent e ON p.place_id = e.place_id
+        LEFT JOIN
+            tblRestaurant r ON p.place_id = r.place_id
+            
         WHERE 
             p.place_id = #{placeId}
     </select>
@@ -157,5 +186,56 @@
         ORDER BY
             p.place_id DESC
     </select>
+    
+    <insert id="insertEvent" parameterType="eventDTO">
+        
+        <selectKey keyProperty="eventId" resultType="long" order="BEFORE">
+            SELECT SEQEVENT.NEXTVAL FROM DUAL
+        </selectKey>
+
+        INSERT INTO tblEvent (
+            event_id,
+            place_id,
+            event_theme_id,
+            event_name,
+            event_start,
+            event_end,
+            event_info,
+            event_link
+        ) VALUES (
+            #{eventId},
+            #{placeId},
+            #{eventThemeId}, 
+            #{eventName},
+            
+            TO_DATE(#{eventStart}, 'YYYYMMDD'), 
+            TO_DATE(#{eventEnd},   'YYYYMMDD'),
+            
+            #{eventInfo},
+            #{eventLink}
+        )
+    </insert>
+    
+   <insert id="insertRestaurant" parameterType="restaurantDTO">
+    INSERT INTO tblRestaurant (
+        place_id,
+        restaurant_category,
+        restaurant_call,
+        restaurant_price,
+        restaurant_rating,
+        restaurant_count,
+        restaurant_open_time,
+        restaurant_close_time
+    ) VALUES (
+        #{placeId},
+        #{restaurantCategory},
+        #{restaurantCall},
+        #{restaurantPrice},
+        #{restaurantRating},
+        #{restaurantCount},
+        #{restaurantOpenTime},
+        #{restaurantCloseTime}
+    )
+</insert>
 
 </mapper>
