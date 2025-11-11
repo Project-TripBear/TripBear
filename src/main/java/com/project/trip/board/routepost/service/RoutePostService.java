@@ -9,7 +9,7 @@ import com.project.trip.board.routepost.model.RoutePostImageDTO;
 public interface RoutePostService {
 
     // ===== 게시글 =====
-    List<RoutePostDTO> list();
+	List<RoutePostDTO> list(Map<String, Object> map);
     RoutePostDTO get(String routepostId);
     int add(RoutePostDTO dto);
     int edit(RoutePostDTO dto);
@@ -18,7 +18,7 @@ public interface RoutePostService {
     // ===== 이미지 =====
     List<RoutePostImageDTO> getImages(String routepostId);
     int addImage(RoutePostImageDTO imgDto);
-    int delImages(String routepostId);
+    int delImages(int i);
 
     // ===== 조회수 =====
     void increaseViewCount(String routepostId);

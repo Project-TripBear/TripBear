@@ -18,8 +18,8 @@ public class RoutePostServiceImpl implements RoutePostService {
 
     // ===== 게시글 =====
     @Override
-    public List<RoutePostDTO> list() {
-        return mapper.list();
+    public List<RoutePostDTO> list(Map<String, Object> map) {
+        return mapper.list(map); //
     }
 
     @Override

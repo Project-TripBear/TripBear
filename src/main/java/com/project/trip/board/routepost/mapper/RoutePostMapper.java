@@ -9,7 +9,7 @@ import com.project.trip.board.routepost.model.RoutePostImageDTO;
 public interface RoutePostMapper {
 	
 	// 게시글 목록
-    List<RoutePostDTO> list();
+    List<RoutePostDTO> list(Map<String, Object> map);
 
     // 게시글 상세보기
     RoutePostDTO get(String routepostId);

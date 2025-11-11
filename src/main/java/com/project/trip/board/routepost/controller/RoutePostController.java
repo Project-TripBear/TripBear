@@ -1,12 +1,17 @@
 package com.project.trip.board.routepost.controller;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,12 +20,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.http.MediaType;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.project.trip.board.routepost.model.RoutePostDTO;
 import com.project.trip.board.routepost.model.RoutePostImageDTO;
 import com.project.trip.board.routepost.service.RoutePostService;
+import com.project.trip.mypage.model.CustomUser;
 
 @Controller
 @RequestMapping("/routepost")
@@ -31,28 +36,57 @@ public class RoutePostController {
 
     // 게시글 목록
     @GetMapping("/list")
-    public String list(Model model) {
-        List<RoutePostDTO> list = postService.list();
+    public String list(@RequestParam(defaultValue="1") int page, Model model) {
+
+        int pageSize = 10; // 한 페이지당 게시글 수
+        int start = (page - 1) * pageSize + 1;
+        int end = page * pageSize;
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("start", start);
+        map.put("end", end);
+
+        List<RoutePostDTO> list = postService.list(map);
         model.addAttribute("list", list);
-        return "board.routepost.list"; // Tiles 기준: /WEB-INF/views/board/routepost/list.jsp
+        model.addAttribute("currentPage", page);
+
+        return "board.routepost.list";
     }
 
-    // 게시글 상세보기
+
+ // 게시글 상세보기
     @GetMapping("/view/{routepostId}")
-    public String view(@PathVariable String routepostId, Model model) {
-        // 조회수 증가
+    public String view(@PathVariable String routepostId,
+                       Model model,
+                       Authentication authentication) {
+
+        // 기본 데이터
         postService.increaseViewCount(routepostId);
-
-        // 게시글 정보
         RoutePostDTO post = postService.get(routepostId);
-        model.addAttribute("post", post);
-
-        // 이미지 목록
         List<RoutePostImageDTO> images = postService.getImages(routepostId);
+
+        model.addAttribute("post", post);
         model.addAttribute("images", images);
+
+        // 로그인 사용자 확인
+        if (authentication != null && authentication.isAuthenticated()
+            && !"anonymousUser".equals(authentication.getPrincipal())) {
+
+            CustomUser user = (CustomUser) authentication.getPrincipal();
+
+            System.out.println("✅ 로그인 사용자: " + user.getUdto().getSeq() + " / " + user.getUsername());
+
+            model.addAttribute("userId", user.getUdto().getSeq());   // NUMBER (댓글 INSERT용)
+            model.addAttribute("userName", user.getUsername());      // 문자열 (표시용)
+        } else {
+            model.addAttribute("userId", null);
+            model.addAttribute("userName", null);
+        }
 
         return "board.routepost.view";
     }
+
+
 
     // 게시글 작성 폼
     @GetMapping("/add")

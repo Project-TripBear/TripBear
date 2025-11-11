@@ -38,21 +38,11 @@
 
 	<bean id="sessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="dataSource"/>
-		<property name="mapperLocations" value="classpath:mappers/*.xml"/>
+		<property name="mapperLocations" value="classpath:mappers/**/*.xml"/>
 		<property name="configLocation" value="classpath:config/mybatis-config.xml"/>
 	</bean>
 	
-	<mybatis-spring:scan 
-        base-package="com.project.trip.allplace.mapper, 
-                      com.project.trip.board.notice.mapper, 
-                      com.project.trip.airoute.mapper,
-                      com.project.trip.admin.accom.mapper,
-                      com.project.trip.admin.board.mapper,
-                      com.project.trip.admin.car.mapper,
-                      com.project.trip.admin.user.mapper,                      
-		      		com.project.trip.mypage.mapper,
-		      		com.project.trip.board.routepost.mapper,
-		      		com.project.trip.reservation.mapper"/>
+	<mybatis-spring:scan base-package="com.project.trip.**.mapper"/>
 	
 	<context:component-scan base-package="com.project.trip">
         <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>

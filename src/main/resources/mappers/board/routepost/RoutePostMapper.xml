@@ -5,7 +5,7 @@
 
 <mapper namespace="com.project.trip.board.routepost.mapper.RoutePostMapper">
 
-      <!-- 🟩 게시글 목록 (검색 + 페이징 + 댓글 수 포함) -->
+      <!--  게시글 목록 (검색 + 페이징 + 댓글 수 포함) -->
 	<select id="list" parameterType="map" resultType="RoutePostDTO">
 	    SELECT * FROM (
 	        SELECT ROWNUM AS rnum, a.*
@@ -37,7 +37,7 @@
 	                    GROUP BY routepost_id
 	                ) c ON r.routepost_id = c.routepost_id
 	            <where>
-	                <!-- 🔍 동적 검색 조건 -->
+	                <!--  동적 검색 조건 -->
 	                <if test="keyword != null and keyword != ''">
 	                    <choose>
 	                        <when test="searchType == 'title'">
@@ -61,13 +61,15 @@
 	            </where>
 	            ORDER BY r.routepost_regdate DESC
 	        ) a
-	        WHERE ROWNUM &lt;= #{end}
+	       WHERE ROWNUM &lt;= #{end, jdbcType=NUMERIC}
+
 	    )
-	    WHERE rnum &gt;= #{start}
+	    WHERE rnum &gt;= #{start, jdbcType=NUMERIC}
+
 	</select>
 
 
-    <!-- 🟩 게시글 전체 개수 (페이지 계산용) -->
+    <!-- 게시글 전체 개수 (페이지 계산용) -->
     <select id="totalCount" parameterType="map" resultType="int">
         SELECT COUNT(*)
         FROM tblRoutePost r
@@ -96,14 +98,14 @@
         </where>
     </select>
     
-     <!-- 🟩 조회수 증가 -->
+     <!-- 조회수 증가 -->
     <update id="increaseViewCount" parameterType="string">
         UPDATE tblRoutePost
         SET routepost_view_count = routepost_view_count + 1
         WHERE routepost_id = #{routepostId}
     </update>
 
-    <!-- 🟩 게시글 상세보기 (닉네임 + 좋아요 수 포함) -->
+    <!-- 게시글 상세보기 (닉네임 + 좋아요 수 포함) -->
     <select id="get" parameterType="string" resultType="RoutePostDTO">
         SELECT
             r.routepost_id             AS routepostId,
@@ -127,8 +129,11 @@
         WHERE r.routepost_id = #{routepostId}
     </select>
 
-    <!-- 🟩 게시글 등록 -->
+    <!-- 게시글 등록 -->
     <insert id="add" parameterType="RoutePostDTO">
+        <selectKey keyProperty="routepostId" resultType="string" order="BEFORE">
+            SELECT seqRoutePost.NEXTVAL FROM dual
+        </selectKey>
         INSERT INTO tblRoutePost (
             routepost_id,
             user_id,
@@ -141,20 +146,20 @@
             routepost_regdate,
             routepost_update
         ) VALUES (
-            seqRoutePost.NEXTVAL,
+            #{routepostId},
             #{userId},
             #{routepostTitle},
             #{routepostContent},
             #{routepostSatisfaction},
             NVL(#{routepostViewCount}, 0),
             NVL(#{routepostReportCount}, 0),
-            #{routepostStatus},
+            NVL(#{routepostStatus}, 'A'),
             SYSDATE,
             SYSDATE
         )
     </insert>
 
-    <!-- 🟩 게시글 수정 -->
+    <!-- 게시글 수정 -->
     <update id="edit" parameterType="RoutePostDTO">
         UPDATE tblRoutePost
         SET routepost_title        = #{routepostTitle},
@@ -164,13 +169,13 @@
         WHERE routepost_id = #{routepostId}
     </update>
 
-    <!-- 🟩 게시글 삭제 -->
+    <!--  게시글 삭제 -->
     <delete id="del" parameterType="string">
         DELETE FROM tblRoutePost
         WHERE routepost_id = #{routepostId}
     </delete>
 
-    <!-- 🟩 이미지 목록 -->
+    <!-- 이미지 목록 -->
     <select id="getImages" parameterType="string" resultType="RoutePostImageDTO">
         SELECT
             routepost_image_id   AS routepostImageId,
@@ -182,7 +187,7 @@
         ORDER BY routepost_image_seq ASC
     </select>
 
-    <!-- 🟩 이미지 등록 -->
+    <!-- 이미지 등록 -->
     <insert id="addImage" parameterType="RoutePostImageDTO">
         INSERT INTO tblRoutePostImage (
             routepost_image_id,
@@ -190,20 +195,24 @@
             routepost_image_seq,
             routepost_image_url
         ) VALUES (
-            #{routepostImageId},
+            seqRoutePostImage.NEXTVAL,
             #{routepostId},
-            #{routepostImageSeq},
+            (
+                SELECT NVL(MAX(routepost_image_seq), 0) + 1
+                FROM tblRoutePostImage
+                WHERE routepost_id = #{routepostId}
+            ),
             #{routepostImageUrl}
         )
     </insert>
 
-    <!-- 🟩 이미지 전체 삭제 -->
+    <!-- 이미지 전체 삭제 -->
     <delete id="delImages" parameterType="string">
         DELETE FROM tblRoutePostImage
         WHERE routepost_id = #{routepostId}
     </delete>
     
-        <!-- 🟩 좋아요 확인 -->
+        <!-- 좋아요 확인 -->
     <select id="checkLike" parameterType="map" resultType="int">
         SELECT COUNT(*) 
         FROM tblRoutePostLikes
@@ -211,13 +220,13 @@
           AND routepost_id = #{routepostId}
     </select>
 
-    <!-- 🟩 좋아요 추가 -->
+    <!-- 좋아요 추가 -->
     <insert id="addLike" parameterType="map">
         INSERT INTO tblRoutePostLikes (user_id, routepost_id)
         VALUES (#{userId}, #{routepostId})
     </insert>
 
-    <!-- 🟩 좋아요 취소 -->
+    <!-- 좋아요 취소 -->
     <delete id="removeLike" parameterType="map">
         DELETE FROM tblRoutePostLikes
         WHERE user_id = #{userId} 
@@ -225,7 +234,7 @@
     </delete>
 
 
-    <!-- 🟩 스크랩 확인 -->
+    <!-- 스크랩 확인 -->
     <select id="checkScrap" parameterType="map" resultType="int">
         SELECT COUNT(*) 
         FROM tblRoutePostScrap
@@ -233,7 +242,7 @@
           AND routepost_id = #{routepostId}
     </select>
 
-    <!-- 🟩 스크랩 추가 -->
+    <!-- 스크랩 추가 -->
     <insert id="addScrap" parameterType="map">
         INSERT INTO tblRoutePostScrap (
             routepost_scrap_id, routepost_user_id, routepost_id
@@ -244,7 +253,7 @@
         )
     </insert>
 
-    <!-- 🟩 스크랩 취소 -->
+    <!-- 스크랩 취소 -->
     <delete id="removeScrap" parameterType="map">
         DELETE FROM tblRoutePostScrap
         WHERE routepost_user_id = #{userId} 
