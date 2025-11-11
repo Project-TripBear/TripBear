@@ -14,4 +14,5 @@ public interface AdminBoardService {
         @Param("startRow") int startRow, 
         @Param("endRow") int endRow
     );
+
 }
