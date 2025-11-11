@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import com.project.trip.board.routepost.mapper.RoutePostCommentMapper;
 import com.project.trip.board.routepost.model.RoutePostCommentDTO;
 
-@Service
+@Service("routePostCommentService")
 public class RoutePostCommentServiceImpl implements RoutePostCommentService {
 
     @Autowired

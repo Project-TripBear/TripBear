@@ -42,12 +42,6 @@
 		<property name="configLocation" value="classpath:config/mybatis-config.xml"/>
 	</bean>
 	
-	<mybatis-spring:scan 
-        base-package="com.project.trip.allplace.mapper, 
-                      com.project.trip.board.notice.mapper, 
-                      com.project.trip.airoute.mapper,
-		      com.project.trip.mypage.mapper"/>
-	
 	<context:component-scan base-package="com.project.trip">
         <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
     </context:component-scan>

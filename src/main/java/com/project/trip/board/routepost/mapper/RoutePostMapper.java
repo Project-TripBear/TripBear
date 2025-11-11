@@ -45,6 +45,10 @@ public interface RoutePostMapper {
     int addScrap(Map<String, Object> map);
     int removeScrap(Map<String, Object> map);
 
+	int isLiked(Map<String, Object> map);
+
+	int isScrapped(Map<String, Object> map);
+
 
 
 }
