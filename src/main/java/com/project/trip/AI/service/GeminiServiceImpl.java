@@ -17,8 +17,8 @@ public class GeminiServiceImpl implements GeminiService{
 	private Gson gson = new Gson();
 
 	private String GEMINI_API_KEY = "";
+	String geminiApiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"
 	
-
 	@Override
 	public RouteDTO generateRoute(AiRouteRequestDTO preferences) {
 
