@@ -1,7 +1,5 @@
 package com.project.trip.mypage.mapper;
 
-import org.apache.ibatis.annotations.Param;
-
 import com.project.trip.mypage.model.UserDTO;
 
 public interface MemberMapper {
