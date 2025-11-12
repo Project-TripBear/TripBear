@@ -24,6 +24,7 @@
  		<package name="com.project.trip.reservation.model"/>
  		<package name="com.project.trip.board.routepost.model"/>
  		<package name="com.project.trip.AI.model"/>
+		<package name="com.project.trip.AI.model.gemini"/>
  	</typeAliases>
  
 </configuration>
