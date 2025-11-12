@@ -27,7 +27,7 @@
                 </div>
       
               </div>
-            <a href="${pageContext.request.contextPath}/route/mainroute" class="${activeMenu == 'route' ?
+            <a href="${pageContext.request.contextPath}/ai/plan" class="${activeMenu == 'route' ?
 'active' : ''}">여행루트</a>
             
             <div class="nav-item has-dropdown">
