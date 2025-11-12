@@ -19,8 +19,6 @@ public class AiRouteRequestDTO {
 	private String startDate;
 	private String endDate;
 	
-	private PhysicalInfo physicalInfo;
-	
 	private String healthGoal;
 	private String foodPreference;
 	private String healthCondition;

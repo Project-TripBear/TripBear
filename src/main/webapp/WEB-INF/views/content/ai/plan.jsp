@@ -1,12 +1,14 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI 여행 루트 계획</title>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/route.css">
+<title>AI 여행 루트 계획</title>
     
     <link rel="stylesheet" href="${pageContext.request.contextPath}/asset/css/route.css">
+    
+    <meta name="_csrf" content="${_csrf.token}">
+    <meta name="_csrf_header" content="${_csrf.parameterName}">
+    
 </head>
 <body class="ai-plan-page">
     <%@ include file="/WEB-INF/views/inc/header.jsp" %>
@@ -213,6 +215,9 @@
         
     <script>
     document.addEventListener('DOMContentLoaded', function() {
+    	
+    	const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
         
     	const userChoices = {};
         const progressBar = document.getElementById('progressBar');
@@ -427,7 +432,9 @@
             fetch('/trip/ai/generate', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    
+                    [csrfHeader]: csrfToken
                 },
                 body: JSON.stringify(userChoices)
             })

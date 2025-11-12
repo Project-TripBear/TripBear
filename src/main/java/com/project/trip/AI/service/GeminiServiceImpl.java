@@ -23,7 +23,7 @@ public class GeminiServiceImpl implements GeminiService{
 	
 	private Gson gson = new Gson();
 
-	private String GEMINI_API_KEY = "";
+	private String GEMINI_API_KEY = "AIzaSyBbLQsNwivCj7-hXYpPT9vpCWm9Z1w1dg4";
 	
 	@Override
 	public RouteDTO generateRoute(AiRouteRequestDTO preferences, WeatherDTO weather) {
