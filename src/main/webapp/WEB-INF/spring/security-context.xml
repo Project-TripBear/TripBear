@@ -32,10 +32,8 @@
 		
 		<security:intercept-url pattern="/" access="permitAll" />
 
-		<security:intercept-url pattern="/asset/**" access="permitAll"/>
-
 		<security:intercept-url pattern="/ai/plan" access="permitAll" />
-		<security:intercept-url pattern="/ai/generate" access="hasAuthority('ACTIVE')" />
+		<security:intercept-url pattern="/ai/generate" access="permitAll" />
 		<security:intercept-url pattern="/ai/result" access="permitAll" />
 				
 		<security:intercept-url pattern="/member/mypage" access="hasAuthority('ACTIVE')" />		
