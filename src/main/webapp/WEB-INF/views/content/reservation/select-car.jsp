@@ -83,9 +83,10 @@
 
         <!-- 스킵/뒤로가기 -->
         <button class="skip-btn"
-            onclick="location.href='${pageContext.request.contextPath}/reservation/confirm?region=${region}&checkin=${checkin}&checkout=${checkout}&people=${people}&roomId=${roomId}'">
-            차량 선택 안 함 →
-        </button>
+    onclick="location.href='${pageContext.request.contextPath}/reservation/confirm?region=${param.region}&checkin=${param.checkin}&checkout=${param.checkout}&people=${param.people}&roomId=${param.roomId}'">
+		    차량 선택 안 함 →
+		</button>
+
 
         <button class="skip-btn"
             onclick="location.href='${pageContext.request.contextPath}/reservation/select-accom?region=${region}&checkin=${checkin}&checkout=${checkout}&people=${people}'">
@@ -108,7 +109,7 @@
                         <img class="car-image" src="${pageContext.request.contextPath}/resources/img/car/${c.carImageUrl}" alt="${c.carName}">
                     </c:when>
                     <c:otherwise>
-                        <img class="car-image" src="${pageContext.request.contextPath}/resources/img/car/k5.jpg" alt="기본 차량 이미지">
+                        <img class="car-image" src="${pageContext.request.contextPath}/resources/img/car/default-car.jpg" alt="기본 차량 이미지">
                     </c:otherwise>
                 </c:choose>
 

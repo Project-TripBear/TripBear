@@ -22,7 +22,7 @@
             #{reservationId},
             #{userId},
             #{userRouteId},
-            NVL(#{statusId}, 1),
+            NVL(#{statusId, jdbcType=INTEGER}, 1),
             #{reservationPrice},
             TO_DATE(#{reservationStartDate}, 'YYYY-MM-DD'),
             TO_DATE(#{reservationEndDate}, 'YYYY-MM-DD')
@@ -51,12 +51,12 @@
             #{roomId},
             #{reservationId},        <!-- 통합예약 PK FK -->
             #{userRouteId},
-            #{statusId},
+            NVL(#{statusId, jdbcType=INTEGER}, 1),
             #{guestCount},
             #{roomTotalPrice},
             TO_DATE(#{checkinDate},  'YYYY-MM-DD'),
             TO_DATE(#{checkoutDate}, 'YYYY-MM-DD'),
-            #{accomNotes}
+            #{accomNotes, jdbcType=VARCHAR}
         )
     </insert>
 
@@ -83,13 +83,13 @@
             #{carId},
             #{reservationId},        <!-- 통합예약 PK FK -->
             #{userRouteId},
-            #{statusId},
+            NVL(#{statusId, jdbcType=INTEGER}, 1),
             TO_DATE(#{pickupDate},   'YYYY-MM-DD'),
             TO_DATE(#{dropoffDate},  'YYYY-MM-DD'),
-            #{pickupLocation},
-            #{dropoffLocation},
+            #{pickupLocation, jdbcType=VARCHAR},
+            #{dropoffLocation, jdbcType=VARCHAR},
             #{carTotalPrice},
-            #{carNotes}
+            #{carNotes, jdbcType=VARCHAR}
         )
     </insert>
 

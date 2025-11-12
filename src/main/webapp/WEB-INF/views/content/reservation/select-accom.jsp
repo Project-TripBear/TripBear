@@ -153,8 +153,14 @@ body {
 				<div id="roomList">
 					<c:forEach var="r" items="${rooms}">
 						<div class="card" data-room-id="${r.roomId}" data-accom-id="${r.accomId}">
-							<img class="thumb"
-								src="${pageContext.request.contextPath}/resources/img/room/${r.imageUrl}" />
+							<c:choose>
+					           <c:when test="${not empty r.imageUrl}">
+					               <img class="thumb" src="${pageContext.request.contextPath}/resources/img/room/${r.imageUrl}">
+					           </c:when>
+					           <c:otherwise>
+					               <img class="thumb" src="${pageContext.request.contextPath}/resources/img/room/default-hotel.jpg" alt="기본 숙소 이미지">
+					           </c:otherwise>
+					        </c:choose>
 
 							<div class="meta">
 								<h4>${r.accomName}·${r.roomName}</h4>
