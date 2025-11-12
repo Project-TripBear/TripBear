@@ -78,7 +78,4 @@
     <!-- transaction-manager="transactionManager"는 위에서 정의한 bean의 id와 일치시킵니다. -->
     <tx:annotation-driven transaction-manager="transactionManager"/>
 	
-	<bean id="restTemplate" class="org.springframework.web.client.RestTemplate" />
-	
-	
 </beans>
