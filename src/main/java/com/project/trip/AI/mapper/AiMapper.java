@@ -16,7 +16,7 @@ public interface AiMapper {
 
 	List<RouteStopDTO> findStopsByRouteId(long aiRouteId);
 
-	void insertHealtCareLog(HealthCareLogDTO logDTO);
+	void insertHealthCareLog(HealthCareLogDTO logDTO);
 
 
 }

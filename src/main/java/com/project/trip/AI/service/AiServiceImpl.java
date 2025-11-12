@@ -1,5 +1,7 @@
 package com.project.trip.AI.service;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,7 @@ import com.project.trip.AI.mapper.AiMapper;
 import com.project.trip.AI.model.AiRouteRequestDTO;
 import com.project.trip.AI.model.RouteDTO;
 import com.project.trip.AI.model.RouteStopDTO;
+import com.project.trip.AI.model.WeatherDTO;
 
 @Service
 public class AiServiceImpl implements AiService {
@@ -19,12 +22,20 @@ public class AiServiceImpl implements AiService {
 	
 	@Autowired
 	private GeminiService geminiService;
+	
+	@Autowired
+	private WeatherService weatherService;
+	
+	@Autowired
+	private HealthCareService healthCareService;
 
 	@Override
 	@Transactional
-public RouteDTO createAndSaveAiRoute(AiRouteRequestDTO preferences, long longUserId) { 
+	public RouteDTO createAndSaveAiRoute(AiRouteRequestDTO preferences,long longUserId, double userWeight) { 
         
-        RouteDTO generatedRoute = geminiService.generateRoute(preferences);
+		WeatherDTO weather = weatherService.getWeather(preferences.getCity(), preferences.getStartDate());
+		
+        RouteDTO generatedRoute = geminiService.generateRoute(preferences, weather);
         
         generatedRoute.setUserId(longUserId); 
         
@@ -37,9 +48,23 @@ public RouteDTO createAndSaveAiRoute(AiRouteRequestDTO preferences, long longUse
 
         long routeId = generatedRoute.getAiRouteId();
         if (generatedRoute.getStops() != null && !generatedRoute.getStops().isEmpty()) {
-            for (RouteStopDTO stop : generatedRoute.getStops()) {
+            
+        	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        	LocalDate startDate = LocalDate.parse(preferences.getStartDate(), formatter);
+        	
+        	
+        	for (RouteStopDTO stop : generatedRoute.getStops()) {
                 stop.setAiRouteId(routeId); // 부모 ID 설정
                 aimapper.insertAiRouteStop(stop);
+                
+                if ("헬스케어".equals(preferences.getTravelStyle())) {
+                	healthCareService.saveHealthCareLog(
+                			longUserId, 
+                			userWeight, 
+                			stop, 
+                			startDate
+                	);
+                }
             }
         }
         

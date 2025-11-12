@@ -53,7 +53,7 @@ public class HealthCareServiceImpl implements HealthCareService{
 		logDTO.setHealthcareStepsCount(stop.getWalkingStepsCount());
 		logDTO.setHealthcareCaloriesBurned(caloriesBurned);
 		
-		aimapper.insertHealtCareLog(logDTO);
+		aimapper.insertHealthCareLog(logDTO);
 		
 		System.out.println(String.format(
 				"[HealthCareService] 헬스케어 로그 저장: StopID=%d, 날짜=%s, 칼로리=%.1f kcal", 
