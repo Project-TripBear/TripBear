@@ -1,14 +1,11 @@
 package com.project.trip.AI.service;
 
 import java.util.List;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.project.trip.AI.mapper.UserRouteMapper;
 import com.project.trip.AI.model.UserRouteDTO;
 import com.project.trip.AI.model.UserRouteStopDTO;
-
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -21,7 +18,6 @@ public class UserRouteServiceImpl implements UserRouteService {
     public UserRouteDTO getUserRouteWithStops(Long userRouteId) {
         UserRouteDTO route = mapper.selectUserRouteById(userRouteId);
         if (route == null) return null;
-
         List<UserRouteStopDTO> stops = mapper.selectStopsByUserRouteId(userRouteId);
         route.setStops(stops);
         return route;
@@ -32,5 +28,15 @@ public class UserRouteServiceImpl implements UserRouteService {
     public int deleteUserRouteCascade(Long userRouteId) {
         mapper.deleteStopsByUserRouteId(userRouteId);
         return mapper.deleteUserRouteById(userRouteId);
+    }
+
+    @Override
+    public int updateStopOrder(Long stopId, int day, int order) {
+        return mapper.updateStopOrder(stopId, day, order);
+    }
+
+    @Override
+    public int updateTransportMode(Long stopId, String mode) {
+        return mapper.updateTransportMode(stopId, mode);
     }
 }

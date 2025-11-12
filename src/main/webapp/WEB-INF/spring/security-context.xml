@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:security="http://www.springframework.org/schema/security"
 	xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
-
+	
 	<!--  스프링 시큐리티의 모든 설정 security-context.xml  -->
+	
+	
 	
 	<!-- 403 핸들러 -->
 	<bean id="customAccessDeniedHandler" class="com.project.trip.auth.CustomAccessDeniedHandler"></bean>
@@ -23,6 +26,9 @@
 	
 	<!-- 18. 로그인 처리 인증정보관리  -->
 	<bean id="customUserDetailsService" class="com.project.trip.auth.CustomUserDetailsService"></bean>
+	
+	<!-- restapi 보안 구윤추가 -->
+	<security:http pattern="/api/**" security="none" />
 	
 	<security:http>
 	
@@ -66,3 +72,4 @@
 	</security:authentication-manager>	
 	
 </beans>
+

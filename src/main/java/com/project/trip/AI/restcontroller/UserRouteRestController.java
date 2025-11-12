@@ -15,19 +15,44 @@ public class UserRouteRestController {
 
     private final UserRouteService userRouteService;
 
-    // ✅ 사용자 루트 조회 (userRouteView.jsp)
+    // ✅ 사용자 루트 조회
     @GetMapping("/{id}")
     public ResponseEntity<UserRouteDTO> getUserRoute(@PathVariable("id") Long id) {
         UserRouteDTO dto = userRouteService.getUserRouteWithStops(id);
         return (dto == null) ? ResponseEntity.notFound().build() : ResponseEntity.ok(dto);
     }
 
-    // ✅ 사용자 루트 삭제 (userRouteView.jsp)
+    // ✅ 사용자 루트 삭제
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteUserRoute(@PathVariable("id") Long id) {
         int deleted = userRouteService.deleteUserRouteCascade(id);
         return (deleted > 0)
             ? ResponseEntity.ok("삭제 완료")
+            : ResponseEntity.notFound().build();
+    }
+
+    // ✅ 방문 순서/일차 수정
+    @PatchMapping("/stop/{stopId}")
+    public ResponseEntity<String> updateStopOrder(
+            @PathVariable("stopId") Long stopId,
+            @RequestParam("day") int day,
+            @RequestParam("order") int order) {
+
+        int updated = userRouteService.updateStopOrder(stopId, day, order);
+        return (updated > 0)
+            ? ResponseEntity.ok("순서/날짜 수정 완료")
+            : ResponseEntity.notFound().build();
+    }
+
+    // ✅ 이동수단 수정
+    @PatchMapping("/stop/{stopId}/mode")
+    public ResponseEntity<String> updateTransportMode(
+            @PathVariable("stopId") Long stopId,
+            @RequestParam("mode") String mode) {
+
+        int updated = userRouteService.updateTransportMode(stopId, mode);
+        return (updated > 0)
+            ? ResponseEntity.ok("이동수단 변경 완료")
             : ResponseEntity.notFound().build();
     }
 }

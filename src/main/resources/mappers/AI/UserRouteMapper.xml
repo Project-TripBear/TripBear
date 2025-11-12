@@ -5,54 +5,62 @@
 
 <mapper namespace="com.project.trip.AI.mapper.UserRouteMapper">
 
-  <!-- ✅ 단일 루트 기본 정보 조회 -->
+  <!-- 루트 기본정보 -->
   <select id="selectUserRouteById" resultType="UserRouteDTO">
     SELECT
-      ur.USER_ROUTE_ID       AS userRouteId,
-      ur.USER_ID             AS userId,
-      ur.SOURCE_AI_ROUTE_ID  AS sourceAiRouteId,
-      ur.USER_ROUTE_TITLE    AS userRouteTitle,
-      ur.USER_ROUTE_DAYS     AS userRouteDays,
-      ur.USER_ROUTE_REGION   AS userRouteRegion,
+      ur.USER_ROUTE_ID AS userRouteId,
+      ur.USER_ID AS userId,
+      ur.SOURCE_AI_ROUTE_ID AS sourceAiRouteId,
+      ur.USER_ROUTE_TITLE AS userRouteTitle,
+      ur.USER_ROUTE_DAYS AS userRouteDays,
+      ur.USER_ROUTE_REGION AS userRouteRegion,
       ur.USER_ROUTE_STARTDATE AS userRouteStartdate,
-      ur.USER_ROUTE_ENDDATE   AS userRouteEnddate,
-      ur.USER_ROUTE_SAVED     AS userRouteSaved
+      ur.USER_ROUTE_ENDDATE AS userRouteEnddate,
+      ur.USER_ROUTE_SAVED AS userRouteSaved
     FROM tblUserRoute ur
     WHERE ur.USER_ROUTE_ID = #{userRouteId}
   </select>
 
-  <!-- ✅ 루트별 스탑 목록 조회 -->
+  <!-- 스탑 목록 -->
   <select id="selectStopsByUserRouteId" resultType="UserRouteStopDTO">
     SELECT
-      s.USER_ROUTE_STOP_ID      AS userRouteStopId,
-      s.USER_ROUTE_ID           AS userRouteId,
-      s.USER_ROUTE_DAY          AS userRouteDay,
-      s.USER_ROUTE_STOP_ORDER   AS userRouteStopOrder,
-      s.USER_ROUTE_LAT          AS userRouteLat,
-      s.USER_ROUTE_LONG         AS userRouteLong,
-      s.USER_ROUTE_DESCRIPTION  AS userRouteDescription,
-      s.ACTIVITY_CODE           AS activityCode,
-      s.DURATION_CATEGORY       AS durationCategory,
-      s.RESTAURANT_CATEGORY     AS restaurantCategory,
-      s.TRANSPORTATION_MODE     AS transportationMode,
-      NVL(s.WALKING_DISTANCE_KM, 0) AS walkingDistanceKm,
-      NVL(s.WALKING_STEPS_COUNT, 0) AS walkingStepsCount,
-      NVL(s.HEALTHCARE_CALORIES_BURNED, 0) AS healthcareCaloriesBurned
+      s.USER_ROUTE_STOP_ID AS userRouteStopId,
+      s.USER_ROUTE_ID AS userRouteId,
+      s.USER_ROUTE_DAY AS userRouteDay,
+      s.USER_ROUTE_STOP_ORDER AS userRouteStopOrder,
+      s.USER_ROUTE_LAT AS userRouteLat,
+      s.USER_ROUTE_LONG AS userRouteLong,
+      s.USER_ROUTE_DESCRIPTION AS userRouteDescription,
+      s.ACTIVITY_CODE AS activityCode,
+      s.DURATION_IN_MINUTES AS durationInMinutes,
+      s.RESTAURANT_CATEGORY AS restaurantCategory,
+      s.TRANSPORTATION_MODE AS transportationMode
     FROM tblUserRouteStop s
     WHERE s.USER_ROUTE_ID = #{userRouteId}
     ORDER BY s.USER_ROUTE_DAY, s.USER_ROUTE_STOP_ORDER
   </select>
 
-  <!-- ✅ 스탑 삭제 (상위 FK 삭제 전 실행) -->
+  <!-- 삭제 -->
   <delete id="deleteStopsByUserRouteId">
-    DELETE FROM tblUserRouteStop
-    WHERE USER_ROUTE_ID = #{userRouteId}
+    DELETE FROM tblUserRouteStop WHERE USER_ROUTE_ID = #{userRouteId}
+  </delete>
+  <delete id="deleteUserRouteById">
+    DELETE FROM tblUserRoute WHERE USER_ROUTE_ID = #{userRouteId}
   </delete>
 
-  <!-- ✅ 루트 삭제 -->
-  <delete id="deleteUserRouteById">
-    DELETE FROM tblUserRoute
-    WHERE USER_ROUTE_ID = #{userRouteId}
-  </delete>
+  <!-- ✅ 일차/순서 수정 -->
+  <update id="updateStopOrder">
+    UPDATE tblUserRouteStop
+    SET USER_ROUTE_DAY = #{day},
+        USER_ROUTE_STOP_ORDER = #{order}
+    WHERE USER_ROUTE_STOP_ID = #{stopId}
+  </update>
+
+  <!-- ✅ 이동수단 수정 -->
+  <update id="updateTransportMode">
+    UPDATE tblUserRouteStop
+    SET TRANSPORTATION_MODE = #{mode}
+    WHERE USER_ROUTE_STOP_ID = #{stopId}
+  </update>
 
 </mapper>

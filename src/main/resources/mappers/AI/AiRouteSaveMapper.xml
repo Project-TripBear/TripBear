@@ -6,7 +6,7 @@
 <mapper namespace="com.project.trip.AI.mapper.AiRouteSaveMapper">
 
     <!-- ① AI 루트 → 사용자 루트 복사 -->
-    <insert id="insertUserRouteFromAi">
+    <insert id="insertUserRouteFromAi" parameterType="map">
         INSERT INTO tblUserRoute (
             user_route_id,
             user_id,
@@ -33,14 +33,14 @@
     </insert>
 
     <!-- ② 최신 생성된 user_route_id 조회 -->
-    <select id="getLatestUserRouteId" parameterType="long" resultType="long">
+    <select id="getLatestUserRouteId" resultType="long">
         SELECT MAX(user_route_id)
         FROM tblUserRoute
         WHERE user_id = #{userId}
     </select>
 
     <!-- ③ AI 루트의 스탑 → 사용자 루트 스탑 복사 -->
-    <insert id="insertUserRouteStopsFromAi">
+    <insert id="insertUserRouteStopsFromAi" parameterType="map">
         INSERT INTO tblUserRouteStop (
             user_route_stop_id,
             user_route_id,
@@ -50,20 +50,20 @@
             user_route_long,
             user_route_description,
             activity_code,
-            duration_category,
+            duration_in_minutes,
             restaurant_category,
             transportation_mode
         )
         SELECT
             seqUserRouteStop.NEXTVAL,
-            #{userRouteId},
+            #{newUserRouteId},  <!--  이름 맞춤 -->
             ai_route_day,
             ai_route_stop_order,
             ai_route_lat,
             ai_route_long,
             ai_route_description,
             activity_code,
-            duration_in_minutes,       <!-- //실제 AI 테이블 컬럼명에 맞게 변경 / uesr랑 다름 -->
+            duration_in_minutes,  <!--  실제 컬럼명에 맞게 변경 -->
             restaurant_category,
             transportation_mode
         FROM tblAiRouteStop
