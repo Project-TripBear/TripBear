@@ -62,7 +62,7 @@ public class AdminCarController {
         model.addAttribute("locations", locations); // jsp에서 ${locations}로 사용
         
         
-        return "content/admin/addcar"; 
+        return "admin/addcar"; 
     }
 
     // 렌터카 등록 처리
@@ -112,7 +112,7 @@ public class AdminCarController {
         model.addAttribute("carDetail", carDetail);
         
         // editcar.jsp로 이동
-        return "content/admin/editcar"; 
+        return "admin/editcar"; 
     }
 
     /**
@@ -156,7 +156,7 @@ public class AdminCarController {
         model.addAttribute("carDetail", carDetail);
         
         // content/admin/carview 타일즈 뷰 이름 반환
-        return "content/admin/carview"; 
+        return "admin/carview"; 
     }
     
 }

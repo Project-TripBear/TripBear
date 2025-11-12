@@ -1,7 +1,5 @@
 package com.project.trip.mypage.mapper;
 
-import org.apache.ibatis.annotations.Param;
-
 import com.project.trip.mypage.model.UserDTO;
 
 public interface MemberMapper {
@@ -17,6 +15,10 @@ public interface MemberMapper {
 	void PwUpdate(UserDTO updateDto);
 
 	int userCheckByIdAndEmail(UserDTO checkDto);
+
+	int userEdit(UserDTO dto);
+
+	void userDel(String seq);
 
 
 

@@ -37,7 +37,7 @@ public class AdminReportController {
         model.addAttribute("list", list);
         
         // reportlist.jsp를 타일즈 뷰 이름으로 반환
-        return "content/admin/reportlist"; 
+        return "admin/reportlist"; 
     }
 
     /**
@@ -51,7 +51,7 @@ public class AdminReportController {
         model.addAttribute("list", list);
         
         // reporthistory.jsp를 타일즈 뷰 이름으로 반환
-        return "content/admin/reporthistory"; 
+        return "admin/reporthistory"; 
     }
 
     /**
