@@ -1,6 +1,5 @@
 package com.project.trip.AI.model;
 
-<<<<<<< HEAD
 import lombok.Data;
 
 @Data
@@ -16,19 +15,20 @@ public class AiRouteRequestDTO {
 	private String activityType;
 	private String companion;
 	
-	private PhysicalInfo physicalInfo;
 	private String startDate;
 	private String endDate;
+	
+	private PhysicalInfo physicalInfo;
+	
+	private String healthGoal;
+	private String foodPreference;
+	private String healthCondition;
 	
 	@Data
 	public static class PhysicalInfo {
 		private String gender;
-		private double height;
-		private double weight;
+		private String height;
+		private String weight;
 	}
 	
-=======
-public class TripPreferencesDTO {
->>>>>>> d5d93c924996805d9e9a204ace61fd688ea1593e
-
 }
