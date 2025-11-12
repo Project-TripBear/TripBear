@@ -23,7 +23,7 @@ public class AiRestController {
     @Autowired
     private AiService aiService;
 
-    @PostMapping("/ai/generate.do")
+    @PostMapping("/ai/generate")
     public ResponseEntity<Map<String, Object>> generateAiRoute(
             @RequestBody AiRouteRequestDTO preferences, 
             HttpSession session) {
