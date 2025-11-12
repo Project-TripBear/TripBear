@@ -20,8 +20,11 @@
 
 		<property name="driverClassName" value="oracle.jdbc.OracleDriver"/>
 
+		<!-- <property name="jdbcUrl" 
+          value="jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS=(PROTOCOL=tcps)(HOST=adb.ap-osaka-1.oraclecloud.com)(PORT=1522))(CONNECT_DATA=(SERVICE_NAME=g386346d5207ad8_tripbeardb_high.adb.oraclecloud.com))(SECURITY=(MY_WALLET_DIRECTORY=/Users/seokyong/dev/Wallet_TripBearDB)))"/> -->
+
 		<property name="jdbcUrl" 
-          value="jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS=(PROTOCOL=tcps)(HOST=adb.ap-osaka-1.oraclecloud.com)(PORT=1522))(CONNECT_DATA=(SERVICE_NAME=g386346d5207ad8_tripbeardb_high.adb.oraclecloud.com))(SECURITY=(MY_WALLET_DIRECTORY=/Users/seokyong/dev/Wallet_TripBearDB)))"/>
+		          value="jdbc:oracle:thin:@TripBearDB_high?tns_admin=C:/dev/Wallet_TripBearDB"/>
 
 		<property name="username" value="tripbear"/>
 		<property name="password" value="Java123456789"/>

@@ -7,7 +7,6 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.1/nouislider.min.css" />
 
-<h1>숙소 관리</h1>
 
 <form id="filterForm" method="GET" action="${pageContext.request.contextPath}/admin/accom/list">
     

@@ -1,17 +1,21 @@
-<%-- 파일 경로: /WEB-INF/views/content/admin/reporthistory.jsp --%>
+<%-- 파일 경로: /WEB-INF/views/content/admin/reportlist.jsp --%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
-<h1>신고 처리 내역</h1>
+<h1>신고 관리</h1>
 
-<!-- 탭 네비게이션: URL 수정 완료 -->
-<div style="margin-bottom: 20px;">
-    <a href="${pageContext.request.contextPath}/admin/report/list" style="margin-right: 15px; color: #6c757d;">대기 중인 신고</a>
-    <a href="${pageContext.request.contextPath}/admin/report/history" style="color: #007BFF; font-weight: bold;">처리 내역</a>
+<div class="board-nav-tabs">
+    <ul class="admin-tab-style">
+        <li class="nav-item">
+            <a class="nav-link active" href="${pageContext.request.contextPath}/admin/report/list">대기 중인 신고</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="${pageContext.request.contextPath}/admin/report/history">처리 내역</a>
+        </li>
+    </ul>
 </div>
-
-<table class="admin-table">
+<br> <table class="admin-table admin-list-table">
     <thead>
         <tr>
             <th>신고 번호</th>
@@ -21,6 +25,7 @@
             <th>신고 사유</th>
             <th>신고일</th>
             <th>처리 상태</th>
+            <th>액션</th>
         </tr>
     </thead>
     <tbody>
@@ -28,7 +33,6 @@
             <tr>
                 <td>${dto.reportId}</td>
                 
-                <%-- ★ 신고 목록과 동일하게 게시글 링크 적용 (view.do 제거) --%>
                 <td>
                     <c:choose>
                         <c:when test="${dto.reportTargetType == 'findboard'}">
@@ -61,19 +65,21 @@
                 <td>${dto.reportedUserNickname}</td>
                 <td>${dto.reportReasonType}</td>
                 <td><fmt:formatDate value="${dto.reportRegdate}" pattern="yyyy-MM-dd"/></td>
+                
                 <td>
-                    <c:if test="${dto.reportStatus == 'APPROVED'}">
-                        <span style="color: #007BFF; font-weight: bold;">승인(숨김)</span>
-                    </c:if>
-                    <c:if test="${dto.reportStatus == 'REJECTED'}">
-                        <span style="color: #DC3545; font-weight: bold;">반려</span>
-                    </c:if>
+                    <span class="status-badge pending">대기 중</span>
+                </td>
+                
+                <td>
+                    <div class="report-actions">
+                        <a href="${pageContext.request.contextPath}/admin/report/view?reportId=${dto.reportId}" class="btn secondary">상세</a>
+                        </div>
                 </td>
             </tr>
         </c:forEach>
         <c:if test="${empty list}">
             <tr>
-                <td colspan="7" style="text-align: center;">처리된 신고 내역이 없습니다.</td>
+                <td colspan="8" style="text-align: center;">대기 중인 신고 내역이 없습니다.</td>
             </tr>
         </c:if>
     </tbody>

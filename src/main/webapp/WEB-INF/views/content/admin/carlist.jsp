@@ -12,41 +12,38 @@
     </div>
 </c:if>
 
-<h1>렌터카 관리</h1>
 
 <form id="filterForm" method="GET" action="${pageContext.request.contextPath}/admin/car/list">
     
     <input type="hidden" name="sort" id="sortInput" value="${sortOrder}">
     
     <div class="controls-bar">
-        <div class="controls-left">
+        <div></div> 
+        
+        <div class="controls-right">
+            <div class="sort-dropdown">
+                <button type="button" class="dropbtn">
+                    <i class="fa-solid fa-arrow-down-short-wide" style="margin-right: 5px;"></i>
+                    <span id="sort-text">
+                        <c:choose>
+                            <c:when test="${sortOrder == 'price_asc'}">가격: 낮은순</c:when>
+                            <c:when test="${sortOrder == 'price_desc'}">가격: 높은순</c:when>
+                            <c:otherwise>등록일: 최신순</c:otherwise>
+                        </c:choose>
+                    </span>
+                </button>
+                <div class="dropdown-content">
+                    <a href="#" onclick="submitSort('')"><i class="fa-solid fa-calendar-days"></i> 등록일: 최신순</a>
+                    <a href="#" onclick="submitSort('price_asc')"><i class="fa-solid fa-arrow-up-1-9"></i> 가격: 낮은순</a>
+                    <a href="#" onclick="submitSort('price_desc')"><i class="fa-solid fa-arrow-down-9-1"></i> 가격: 높은순</a>
+                </div>
+            </div>
+            
             <button type="button" class="btn secondary" onclick="openFilterModal()">
                 <i class="fa-solid fa-filter"></i> 필터
             </button>
             
-            <div class="sort-dropdown">
-   
-              <button type="button" class="dropbtn">
-                    <span id="sort-text">
-                        <c:choose>
-                            <c:when test="${sortOrder == 'price_asc'}">낮은 가격순</c:when>
-                            <c:when test="${sortOrder == 'price_desc'}">높은 가격순</c:when>
-                            <c:otherwise>기본 정렬</c:otherwise>
-                        </c:choose>
-                    </span>
-   
-                  <i class="fa-solid fa-caret-down"></i>
-                </button>
-                <div class="dropdown-content">
-                    <a href="#" onclick="submitSort('')">기본 정렬</a>
-                    <a href="#" onclick="submitSort('price_asc')">낮은 가격순</a>
-                   <a href="#" onclick="submitSort('price_desc')">높은 가격순</a>
-                </div>
-            </div>
-        </div>
-        
-        <div class="controls-right">
-             <button type="button" class="btn primary" onclick="location.href='${pageContext.request.contextPath}/admin/car/add'">
+            <button type="button" class="btn primary" onclick="location.href='${pageContext.request.contextPath}/admin/car/add'">
              <i class="fa-solid fa-plus"></i> 렌터카 등록
              </button>
         </div>
@@ -61,11 +58,14 @@
             
             <div class="filter-group">
                 <h3>연료 유형</h3>
-                <label><input type="checkbox" name="fuel" value="가솔린" <c:if test="${selectedFuels.contains('가솔린')}">checked</c:if>> 가솔린</label>
-                <label><input type="checkbox" name="fuel" value="디젤" <c:if test="${selectedFuels.contains('디젤')}">checked</c:if>> 디젤</label>
-                <label><input type="checkbox" name="fuel" value="LPG" <c:if test="${selectedFuels.contains('LPG')}">checked</c:if>> LPG</label>
-                <label><input type="checkbox" name="fuel" value="전기" <c:if test="${selectedFuels.contains('전기')}">checked</c:if>> 전기</label>
+                <div class="filter-group-checkboxes">
+                    <label><input type="checkbox" name="fuel" value="가솔린" <c:if test="${selectedFuels.contains('가솔린')}">checked</c:if>> 가솔린</label>
+                    <label><input type="checkbox" name="fuel" value="디젤" <c:if test="${selectedFuels.contains('디젤')}">checked</c:if>> 디젤</label>
+                    <label><input type="checkbox" name="fuel" value="LPG" <c:if test="${selectedFuels.contains('LPG')}">checked</c:if>> LPG</label>
+                    <label><input type="checkbox" name="fuel" value="전기" <c:if test="${selectedFuels.contains('전기')}">checked</c:if>> 전기</label>
+                </div>
             </div>
+            
             <div class="filter-group">
                 <h3>가격 범위 (1박 기준)</h3>
                 <div id="price-display" class="price-display"></div>
@@ -75,7 +75,8 @@
                 <input type="hidden" name="minPrice" id="minPriceInput" value="${minPrice}">
                 <input type="hidden" name="maxPrice" id="maxPriceInput" value="${maxPrice}">
             </div>
-            <div class="modal-actions">
+            
+            <div class="modal-actions filter-footer-actions">
                 <a href="${pageContext.request.contextPath}/admin/car/list" class="btn btn-reset"><i class="fa-solid fa-rotate-left"></i> 초기화</a>
                 <button type="submit" class="btn primary"><i class="fa-solid fa-check"></i> 적용하기</button>
             </div>
@@ -101,7 +102,7 @@
                                      onerror="this.parentElement.classList.add('img-error'); this.style.display='none';">
                             </c:when>
 							<c:otherwise>
-							    <div class="img-error"></div> 
+							    <div class="img-error"></div>
 							</c:otherwise>
                         </c:choose>
                         
@@ -114,6 +115,7 @@
                             </c:otherwise>
                         </c:choose>
                     </div>
+					</a>
 
                     <div class="car-info">
 					<a href="${pageContext.request.contextPath}/admin/car/view?carId=${car.carId}" class="accom-name-link">
@@ -125,7 +127,6 @@
                         
                         <p class="car-detail"><i class="fa-solid fa-gas-pump"></i> 연료: ${car.fuelType}</p>
                         <p class="car-detail"><i class="fa-solid fa-user-group"></i> 좌석: ${car.carSeats}인승</p>
-                  
                         <p class="car-price"><i class="fa-solid fa-won-sign"></i> 
                             <fmt:formatNumber value="${car.pricePerDay}" pattern="#,###원"/> / 일
                          </p>
@@ -166,32 +167,45 @@
         document.getElementById('filterForm').submit();
     }
     
-    // --- 가격 슬라이더 스크립트 ---
+    // --- 가격 슬라이더 스크립트 (숙소 목록의 버그 수정 로직 반영) ---
     const priceSlider = document.getElementById('price-slider');
     const minPriceInput = document.getElementById('minPriceInput');
     const maxPriceInput = document.getElementById('maxPriceInput');
     const priceDisplay = document.getElementById('price-display');
     
-    const dbMaxPrice = <c:out value="${maxPriceFromDB}" default="500000" />;
+    // DB 최대 가격을 안전하게 가져오기 (기본값 500000)
+    const dbMaxPrice = parseInt('<c:out value="${maxPriceFromDB}" default="500000" />');
+    
+    // 현재 적용된 최소/최대 가격을 안전하게 가져오기 (값이 없을 경우 기본값 설정)
+    const currentMinPrice = parseInt('<c:out value="${minPrice}" default="0"/>');
+    // maxPrice가 null이면 dbMaxPrice로 설정
+    const currentMaxPrice = parseInt('<c:out value="${maxPrice}" default="${maxPriceFromDB}"/>');
+    
     if (priceSlider) {
         noUiSlider.create(priceSlider, {
             start: [ 
-                <c:out value="${minPrice}" default="0"/>, 
-                <c:out value="${maxPrice == maxPriceFromDB ? maxPriceFromDB : maxPrice}" default="${maxPriceFromDB}"/> 
+                currentMinPrice, 
+                currentMaxPrice
             ],
             connect: true,
             step: 10000,
             range: { 'min': 0, 'max': dbMaxPrice }
         });
+        
         priceSlider.noUiSlider.on('update', function (values, handle) {
             const minPrice = parseInt(values[0]);
             const maxPrice = parseInt(values[1]);
-            let maxPriceText = maxPrice.toLocaleString() + '원';
+            
+            // maxPrice가 DB 최대값과 같을 경우 표시 문구를 '이상'으로 변경할 수 있음
+            let maxPriceText = (maxPrice === dbMaxPrice) ? maxPrice.toLocaleString() + '원 이상' : maxPrice.toLocaleString() + '원';
             
             priceDisplay.innerHTML = minPrice.toLocaleString() + '원 - ' + maxPriceText;
             
             minPriceInput.value = minPrice;
             maxPriceInput.value = maxPrice;
         });
+        
+        // 초기 로딩 시 가격 디스플레이 업데이트 (슬라이더가 생성된 후)
+        priceSlider.noUiSlider.set([currentMinPrice, currentMaxPrice], true);
     }
 </script>

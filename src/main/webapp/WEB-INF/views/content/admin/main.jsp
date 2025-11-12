@@ -5,7 +5,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
-<h1>✨ 대시보드 개요</h1>
 
 <c:if test="${not empty msg}">
     <div class="alert alert-success" style="margin-bottom: 1.5rem;"><i class="fa-solid fa-circle-check"></i> ${msg}</div>
