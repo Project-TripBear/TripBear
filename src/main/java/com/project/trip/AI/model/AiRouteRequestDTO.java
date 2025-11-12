@@ -15,6 +15,7 @@ public class AiRouteRequestDTO {
 	private String activityType;
 	private String companion;
 	
+	private PhysicalInfo physicalInfo;
 	private String startDate;
 	private String endDate;
 	
