@@ -179,9 +179,6 @@ body {
 									<input type="hidden" name="checkout" value="${checkout}" /> 
 									<input type="hidden" name="people" value="${people}" /> 
 									<input type="hidden" name="roomId" value="${r.roomId}" />
-									
-									<input type="hidden" name="userId" value="${userId}">
-    								<input type="hidden" name="userRouteId" value="${userRouteId}">
 									<button class="btn primary" type="submit">이 방 선택</button>
 								</form>
 							</div>
