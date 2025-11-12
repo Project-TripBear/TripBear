@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.project.trip.board.hotdeal.mapper.HotDealLikeMapper">
+
+	<!-- <resultMap id="noticeResultMap" type="NoticeDTO" >
+		<id property="noticePostId" column="notice_post_id"/>
+		<result property="adminId" column="admin_id"/>
+		<result property="noticeHeader" column="notice_header"/>
+		<result property="noticeContent" column="notice_content"/>
+		<result property="noticeViewCount" column="notice_view_count"/>
+		<result property="noticeRegdate" column="notice_regdate"/>
+	</resultMap> -->
+	
+	 <!-- 총 게시물 수 조회 -->
+   	 <select id="likeCheck" resultType="int" parameterType="map">
+        SELECT COUNT(*)
+        FROM tblHotDealLikes
+        WHERE user_id = #{userId}
+          AND hotdeal_id = #{hotdealId}
+    </select>
+    
+    <select id="scrapCheck" resultType="int" parameterType="map">
+        SELECT COUNT(*)
+        FROM tblHotDealScrap
+        WHERE user_id = #{userId}
+          AND hotdeal_id = #{hotdealId}
+    </select>
+
+	</mapper>

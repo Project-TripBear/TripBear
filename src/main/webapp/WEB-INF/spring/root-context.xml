@@ -48,7 +48,8 @@
 	</bean>
 		
 	<mybatis-spring:scan 
-        base-package="com.project.trip.allplace.mapper, 
+        base-package="com.project.trip.allplace.mapper,
+        			  com.project.trip.board.hotdeal.mapper, 
                       com.project.trip.board.notice.mapper, 
                       com.project.trip.airoute.mapper,
                       com.project.trip.admin.accom.mapper,
