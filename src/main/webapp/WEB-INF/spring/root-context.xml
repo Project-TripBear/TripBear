@@ -2,76 +2,87 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
-       xmlns:tx="http://www.springframework.org/schema/tx" 
+       xmlns:tx="http://www.springframework.org/schema/tx"
        xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="
            http://www.springframework.org/schema/beans
            https://www.springframework.org/schema/beans/spring-beans.xsd
            http://mybatis.org/schema/mybatis-spring
            https://mybatis.org/schema/mybatis-spring.xsd
-
            http://www.springframework.org/schema/tx
-           http://www.springframework.org/schema/tx/spring-tx.xsd
-           http://www.springframework.org/schema/context 
-           http://www.springframework.org/schema/context/spring-context.xsd"> 
+           https://www.springframework.org/schema/tx/spring-tx.xsd
+           http://www.springframework.org/schema/context
+           https://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!-- ✅ application.properties 연결 -->
     <context:property-placeholder location="classpath:application.properties" />
 
-	<bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
+    <!-- ✅ HikariCP 설정 -->
+    <bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
+        <property name="driverClassName" value="oracle.jdbc.OracleDriver" />
+        <property name="jdbcUrl" value="jdbc:oracle:thin:@TripBearDB_high?tns_admin=C:/dev/Wallet_TripBearDB" />
+        <property name="username" value="tripbear" />
+        <property name="password" value="Java123456789" />
+        <property name="maximumPoolSize" value="5" />
+        <property name="connectionTimeout" value="30000" />
+        <property name="idleTimeout" value="600000" />
+        <property name="maxLifetime" value="1800000" />
+    </bean>
 
-		<property name="driverClassName" value="oracle.jdbc.OracleDriver"/>
+    <!-- ✅ DataSource Bean -->
+    <bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
+        <constructor-arg ref="hikariConfig" />
+    </bean>
 
-		<property name="jdbcUrl" 
-		          value="jdbc:oracle:thin:@TripBearDB_high?tns_admin=C:/dev/Wallet_TripBearDB"/>
+    <!-- ✅ MyBatis SqlSessionFactory 설정 -->
+    <bean id="sessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource" />
+        <property name="mapperLocations">
+            <array>
+                <value>classpath:mappers/*.xml</value>
+                <value>classpath:mappers/board/**/*.xml</value>
+            </array>
+        </property>
+        <property name="configLocation" value="classpath:config/mybatis-config.xml" />
+    </bean>
 
-		<property name="username" value="tripbear"/>
-		<property name="password" value="Java123456789"/>
+    <!-- ✅ Mapper 자동 스캔 -->
+    <mybatis-spring:scan
+        base-package="com.project.trip.allplace.mapper,
+                      com.project.trip.board.notice.mapper,
+                      com.project.trip.airoute.mapper,
+                      com.project.trip.admin.accom.mapper,
+                      com.project.trip.admin.board.mapper,
+                      com.project.trip.admin.car.mapper,
+                      com.project.trip.admin.user.mapper,
+                      com.project.trip.mypage.mapper,
+                      com.project.trip.board.routepost.mapper,
+                      com.project.trip.reservation.mapper,
+                      com.project.trip.AI.mapper" />
 
-		<property name="maximumPoolSize" value="5"/>
-		<property name="connectionTimeout" value="30000"/>
-		<property name="idleTimeout" value="600000"/>
-		<property name="maxLifetime" value="1800000"/>
-	</bean>
-
-	<bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
-		<constructor-arg ref="hikariConfig"/>
-	</bean>
-
-	<bean id="sessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
-		<property name="dataSource" ref="dataSource"/>
-		<property name="mapperLocations" value="classpath:mappers/*.xml"/>
-		<property name="configLocation" value="classpath:config/mybatis-config.xml"/>
-	</bean>
-	
-	<mybatis-spring:scan 
-	    base-package="com.project.trip.allplace.mapper, 
-	                  com.project.trip.board.notice.mapper, 
-	                  com.project.trip.airoute.mapper,
-	                  com.project.trip.mypage.mapper,
-	                  com.project.trip.board.routepost.mapper"/>
-	
-	<context:component-scan base-package="com.project.trip">
-        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    <!-- ✅ Component Scan (Controller 제외) -->
+    <context:component-scan base-package="com.project.trip">
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller" />
     </context:component-scan>
-	
-	<bean id="restTemplate" class="org.springframework.web.client.RestTemplate">
+
+    <!-- ✅ RestTemplate (UTF-8 인코딩 + JSON 변환기 포함) -->
+    <bean id="restTemplate" class="org.springframework.web.client.RestTemplate">
         <property name="messageConverters">
             <list>
                 <bean class="org.springframework.http.converter.StringHttpMessageConverter">
                     <constructor-arg value="UTF-8" />
                 </bean>
                 <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter" />
-                </list>
+            </list>
         </property>
     </bean>
-	
-	<!-- 이 Bean이 PlatformTransactionManager 역할을 합니다. -->
+
+    <!-- ✅ 트랜잭션 관리자 -->
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-        <!-- 위에서 정의한 'dataSource' Bean을 참조합니다. -->
-        <property name="dataSource" ref="dataSource"/>
+        <property name="dataSource" ref="dataSource" />
     </bean>
 
-    <!-- 2. @Transactional 어노테이션을 '작동'시키기 위한 설정 -->
-    <!-- transaction-manager="transactionManager"는 위에서 정의한 bean의 id와 일치시킵니다. -->
-    <tx:annotation-driven transaction-manager="transactionManager"/>
+    <!-- ✅ @Transactional 어노테이션 활성화 -->
+    <tx:annotation-driven transaction-manager="transactionManager" />
 
 </beans>

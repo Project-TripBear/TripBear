@@ -9,6 +9,8 @@
 <link rel="stylesheet" href="http://bit.ly/3WJ5ilK" />
 </head>
 <body>
+	<%@ include file="/WEB-INF/views/inc/header.jsp" %>
+
 	<!-- test.jsp  -->
 	<h1>로그인 완료 테스트</h1>
 	

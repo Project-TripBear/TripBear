@@ -1,0 +1,117 @@
+/* mapsidebar.css */
+
+/* 사이드바 */
+.sidebar {
+    width: 380px;
+    min-width: 380px;
+    background-color: #fff;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+    z-index: 10;
+}
+
+/* 사이드바 헤더 (버튼/검색창 영역) */
+.sidebar-header {
+    padding: 20px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+}
+
+/* 검색창 */
+#search-input {
+    width: 100%;
+    padding: 12px; 
+    border-radius: 8px; 
+    border: 1px solid var(--border); 
+    box-sizing: border-box;
+    margin-bottom: 15px;
+}
+
+/* 사이드바 버튼 그룹 (공통) */
+.button-group {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+/* 맛집 필터 (4칸) */
+.button-group.restaurant-filters {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+/* 기본 필터 (3칸) */
+.button-group.filter-group {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+/* 버튼 개별 스타일 */
+.group-btn {
+    padding: 10px;
+    border: 1px solid var(--border);
+    background-color: #fff;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+/* 활성화된 버튼 */
+.group-btn.active {
+    background-color: var(--primary-dark);
+    color: white;
+    border-color: var(--primary-dark);
+    font-weight: bold;
+}
+
+/* 장소 목록 컨테이너 (스크롤 영역) */
+.place-list-container {
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+/* 장소 목록 아이템 (한 줄) */
+.place-item {
+    display: flex;
+    padding: 15px; 
+    border-bottom: 1px solid var(--border);
+    cursor: pointer; 
+    transition: background-color 0.2s;
+}
+
+.place-item:hover { 
+    background-color: #f8f9fa; 
+}
+
+/* 선택된 장소 아이템 */
+.place-item.selected { 
+    background-color: #e6f3f0;
+    border-left: 4px solid var(--primary-dark);
+}
+
+.place-item img {
+    width: 100px;
+    height: 100px; 
+    border-radius: 12px;
+    object-fit: cover; 
+    margin-right: 15px; 
+    flex-shrink: 0;
+}
+
+.place-info h4 { 
+    margin: 0 0 5px 0; 
+    font-size: 1.1rem; 
+}
+
+.place-info p { 
+    margin: 0; 
+    font-size: 0.9rem; 
+    color: #868e96; 
+}
+
+.place-info .distance { 
+    font-weight: bold; 
+    color: var(--primary-dark); 
+    margin-top: 8px; 
+}
+

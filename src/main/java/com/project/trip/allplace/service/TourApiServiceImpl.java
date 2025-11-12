@@ -1,12 +1,15 @@
 package com.project.trip.allplace.service;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.project.trip.allplace.model.PlaceDTO;
 // (모든 DTO import)
 import com.project.trip.allplace.model.TourApiResponseVO;
 import com.project.trip.allplace.model.TourIntroEventVO;
@@ -22,6 +25,9 @@ public class TourApiServiceImpl implements TourApiService {
 
     @Autowired
     private RestTemplate restTemplate;
+    
+    @Autowired
+    private AllPlaceService allPlaceService;
 
     // (재발급 받은 새 키를 사용해주세요. 이 키는 외부에 노출되면 안 됩니다!)
     private final String serviceKey = "4ad9f6404c1b5c50ee33409214a285bd720eab16c791577e2e460245c5f3b7b4"; 
@@ -249,20 +255,20 @@ public class TourApiServiceImpl implements TourApiService {
     }
     
     
+    
     @Override
     public TourApiResponseVO searchByArea(String areaCode, String contentTypeId, String arrange) {
-        URI uri = UriComponentsBuilder
-                .fromHttpUrl(AREA_BASED_URL)
-                .queryParam("serviceKey", serviceKey)
-                .queryParam("MobileApp", "TripBear")
-                .queryParam("MobileOS", "ETC")
-                .queryParam("arrange", arrange) // ("A" -> arrange)
-                .queryParam("areaCode", areaCode) 
-                .queryParam("contentTypeId", contentTypeId) 
-                .queryParam("_type", "json")
-                .build()     
-                .encode()    
-                .toUri();
+    	URI uri = UriComponentsBuilder
+    	        .fromHttpUrl(AREA_BASED_URL)
+    	        .queryParam("serviceKey", serviceKey)
+    	        .queryParam("MobileApp", "TripBear")
+    	        .queryParam("MobileOS", "ETC")
+    	        .queryParam("arrange", arrange)
+    	        .queryParam("areaCode", areaCode)
+    	        .queryParam("contentTypeId", contentTypeId)
+    	        .queryParam("_type", "json")
+    	        .build(true)   // ✅ serviceKey 인코딩 방지
+    	        .toUri();
         try {
             TourApiResponseVO response = restTemplate.getForObject(uri, TourApiResponseVO.class);
             if (response != null && 
@@ -277,6 +283,44 @@ public class TourApiServiceImpl implements TourApiService {
             e.printStackTrace();
             return null;
         }
+    }
+    
+    @Override
+    public List<PlaceDTO> searchByAreaAll(long locationId, String contentTypeId, String arrange, int rows, int maxPages) {
+        List<PlaceDTO> out = new ArrayList<>();
+        int pageNo = 1;
+
+        while (pageNo <= maxPages) {
+            // ↓ pageNo/rows를 파라미터로 받는 오버로드 메서드가 필요 (아래 참고)
+            TourApiResponseVO res = searchByArea(locationId, contentTypeId, arrange, pageNo, rows);
+            if (res == null || res.getResponse() == null || res.getResponse().getBody() == null) {
+                break;
+            }
+
+            TourApiResponseVO.Body body = res.getResponse().getBody();
+            List<TourItemVO> items = (body.getItems() != null && body.getItems().getItem() != null)
+                    ? body.getItems().getItem()
+                    : java.util.Collections.emptyList();
+
+            if (items.isEmpty()) {
+                break; // 더 이상 결과 없음
+            }
+
+            for (TourItemVO item : items) {
+                PlaceDTO saved = addPlaceOnDemand(item);
+                if (saved != null && saved.getLatitude() != 0.0 && saved.getLongitude() != 0.0) {
+                    out.add(saved);
+                }
+            }
+
+            // 마지막 페이지 판단: 이번 페이지에 받은 개수가 rows보다 작으면 종료
+            if (items.size() < rows) {
+                break;
+            }
+
+            pageNo++;
+        }
+        return out;
     }
     
     

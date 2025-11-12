@@ -201,6 +201,11 @@ public class AllPlaceServiceImpl implements AllPlaceService {
             e.printStackTrace();
         }
     }
+    
+    
+    
+    
+    
 
     @Override
     public List<PlaceDTO> findPlacesByKeyword(String keywordName) {
@@ -233,27 +238,29 @@ public class AllPlaceServiceImpl implements AllPlaceService {
      * (헬퍼1) TourAPI의 areacode(String)를 DB의 place_location_id(long)로 변환합니다.
      */
     private long mapAreaCodeToLocationId(String areaCode) {
-        if (areaCode == null) {
-            return 1L; // Default to 서울
-        }
-        
-        // DB: 1=서울, 2=부산, 3=제주, 4=강원, 5=대구, 6=전북, 7=인천, 8=전남, 9=울산, 10=경기
-        // API: 1=서울, 2=인천, 4=대구, 6=부산, 7=울산, 31=경기, 32=강원, 37=전북, 38=전남, 39=제주
+        if (areaCode == null) return 1L; // 기본값: 서울
+
         switch (areaCode) {
-            case "1":  return 1L;  // 서울 -> 1
-            case "6":  return 2L;  // 부산 (API=6) -> 2
-            case "39": return 3L;  // 제주 (API=39) -> 3
-            case "32": return 4L;  // 강원 (API=32) -> 4
-            case "4":  return 5L;  // 대구 (API=4) -> 5
-            case "37": return 6L;  // 전북 (API=37) -> 6
-            case "2":  return 7L;  // 인천 (API=2) -> 7
-            case "38": return 8L;  // 전남 (API=38) -> 8
-            case "7":  return 9L;  // 울산 (API=7) -> 9
-            case "31": return 10L; // 경기 (API=31) -> 10
-            default:
-                // 그 외 API 지역코드(3, 5, 8, 33, 34, 35, 36)는
-                // DB에 없으므로 1(서울)로 설정
-                return 1L; 
+            case "1":  return 1L;   // 서울
+            case "2":  return 7L;   // 인천
+            case "3":  return 12L;  // 대전
+            case "4":  return 5L;   // 대구
+            case "5":  return 14L;  // 광주
+            case "6":  return 2L;   // 부산
+            case "7":  return 9L;   // 울산
+            case "8":  return 15L;  // 세종
+
+            case "31": return 16L;  // 경기
+            case "32": return 17L;  // 강원
+            case "33": return 18L;  // 충북
+            case "34": return 19L;  // 충남
+            case "35": return 20L;  // 경북
+            case "36": return 21L;  // 경남
+            case "37": return 22L;  // 전북
+            case "38": return 23L;  // 전남
+            case "39": return 3L;   // 제주
+
+            default:   return 1L;   // 기본: 서울
         }
     }
     
@@ -263,20 +270,31 @@ public class AllPlaceServiceImpl implements AllPlaceService {
      * (헬퍼2) DB의 place_location_id(long)를 TourAPI의 areacode(String)로 변환합니다.
      */
     private String mapLocationIdToAreaCode(long locationId) {
-        // DB: 1=서울, 2=부산, 3=제주, 4=강원, 5=대구, 6=전북, 7=인천, 8=전남, 9=울산, 10=경기
-        switch ((int)locationId) {
-            case 1:  return "1";  // 서울 (DB=1) -> API "1"
-            case 2:  return "6";  // 부산 (DB=2) -> API "6"
-            case 3:  return "39"; // 제주 (DB=3) -> API "39"
-            case 4:  return "32"; // 강원 (DB=4) -> API "32"
-            case 5:  return "4";  // 대구 (DB=5) -> API "4"
-            case 6:  return "37"; // 전북 (DB=6) -> API "37"
-            case 7:  return "2";  // 인천 (DB=7) -> API "2"
-            case 8:  return "38"; // 전남 (DB=8) -> API "38"
-            case 9:  return "7";  // 울산 (DB=9) -> API "7"
-            case 10: return "31"; // 경기 (DB=10) -> API "31"
-            default:
-                return "1"; // (기본값 서울)
+        switch ((int) locationId) {
+            case 1:  return "1";   // 서울
+            case 2:  return "6";   // 부산
+            case 3:  return "39";  // 제주
+            case 4:  return "32";  // 강릉 (강원)
+            case 5:  return "4";   // 대구
+            case 6:  return "37";  // 전주 (전북)
+            case 7:  return "2";   // 인천
+            case 8:  return "38";  // 여수 (전남)
+            case 9:  return "7";   // 울산
+            case 10: return "31";  // 수원 (경기)
+            case 11: return "35";  // 경주 (경북)
+            case 12: return "3";   // 대전
+            case 13: return "32";  // 춘천 (강원)
+            case 14: return "5";   // 광주
+            case 15: return "8";   // 세종
+            case 16: return "31";  // 경기
+            case 17: return "32";  // 강원
+            case 18: return "33";  // 충북
+            case 19: return "34";  // 충남
+            case 20: return "35";  // 경북
+            case 21: return "36";  // 경남
+            case 22: return "37";  // 전북
+            case 23: return "38";  // 전남
+            default: return "1";   // 기본값: 서울
         }
     }
     // --- [여기까지] ---

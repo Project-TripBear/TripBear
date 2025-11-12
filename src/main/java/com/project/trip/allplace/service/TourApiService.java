@@ -1,6 +1,9 @@
 package com.project.trip.allplace.service;
 
 
+import java.util.List;
+
+import com.project.trip.allplace.model.PlaceDTO;
 import com.project.trip.allplace.model.TourApiResponseVO;
 import com.project.trip.allplace.model.TourIntroEventVO;
 import com.project.trip.allplace.model.TourIntroRestaurantVO;
@@ -26,5 +29,8 @@ public interface TourApiService {
 	public TourApiResponseVO searchFestival(String eventStartDate, String arrange);
 	
 	public TourApiResponseVO searchByArea(String areaCode, String contentTypeId, String arrange);
+	
+	List<PlaceDTO> searchByAreaAll(long locationId, String contentTypeId, String arrange, int rows, int maxPages);
+
 	
 }

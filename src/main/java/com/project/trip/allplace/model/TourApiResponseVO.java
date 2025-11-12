@@ -41,6 +41,15 @@ public class TourApiResponseVO {
         // JsonNode를 사용한 커스텀 Setter를 추가합니다.
         
         private Items items;
+        
+        @JsonProperty("totalCount")
+        private Integer totalCount;   // 총 건수 (없을 수도 있어 Integer 권장)
+
+        @JsonProperty("pageNo")
+        private Integer pageNo;       // 현재 페이지
+
+        @JsonProperty("numOfRows")
+        private Integer numOfRows;    // 페이지당 건수
 
         @JsonProperty("items")
         public void setItems(JsonNode node) {

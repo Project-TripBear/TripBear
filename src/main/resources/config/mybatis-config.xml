@@ -5,20 +5,31 @@
 
 <configuration>
 
-	<!--XML Mapper에서 사용중인 클래스의 별칭  -->
-	<!-- <typeAliases>
-		<typeAlias type="com.test.project.model.UserDTO" alias="udto" />	
-		<typeAlias type="com.test.project.model.BoardDTO" alias="bdto" />	
-	</typeAliases>
- -->
+
  	<settings>
 	    <setting name="jdbcTypeForNull" value="VARCHAR"/> 
     </settings>
- 
- 	<typeAliases>
+        
+
+<typeAliases>
+ 		<typeAlias type="com.project.trip.mypage.model.UserDTO" alias="userdto" />	
+ 		
+ 		<typeAlias type="com.project.trip.reservation.model.AccomReservationDTO" alias="accomreservationdto" />
+ 		<typeAlias type="com.project.trip.reservation.model.ReservationDTO" alias="reservationdto" />
+ 		<typeAlias type="com.project.trip.reservation.model.CarReservationDTO" alias="carreservationdto" />
+ 		<typeAlias type="com.project.trip.admin.board.model.IntegratedBoardDTO" alias="integratedboarddto"/>
+    	<typeAlias type="com.project.trip.admin.accom.model.accomAllInfoDTO" alias="accomAllInfoDTO"/>         
+    	<typeAlias type="com.project.trip.admin.car.model.carDTO" alias="carDTO"/>    
+    	<typeAlias type="com.project.trip.admin.user.model.AdminUserDTO" alias="AdminUserDTO"/>
+    	<typeAlias type="com.project.trip.admin.user.model.suspendedUserDTO" alias="suspendedUserDTO"/>
+ 		<package name="com.project.trip.admin.accom.model"/>
+ 		<package name="com.project.trip.board.notice.model"/>
+ 		<package name="com.project.trip.reservation.model"/>
+ 		<package name="com.project.trip.board.routepost.model"/>
+ 		<package name="com.project.trip.AI.model"/>
  		<package name="com.project.trip.allplace.model"/>
-        <package name="com.project.trip.board.model"/>
-        <package name="com.project.trip.reservation.model"/>
+        <package name="com.project.trip.board.review.model"/>
+
  	</typeAliases>
  
 </configuration>
