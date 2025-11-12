@@ -8,9 +8,4 @@ public interface GeminiService {
 
 	RouteDTO generateRoute(AiRouteRequestDTO preferences, WeatherDTO weather);
 
-@Service
-public class GeminiService {
-    public String test() {
-        return "Gemini test";
-    }
 }
