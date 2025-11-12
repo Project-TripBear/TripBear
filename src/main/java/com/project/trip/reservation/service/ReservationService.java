@@ -29,5 +29,12 @@ public interface ReservationService {
 	IntegratedReservation getIntegratedReservationPreview(String region, String checkin, String checkout, String people, String roomId, String carId) throws Exception;
 
 	Map<String, List<?>> getCarFilterOptions();
+	
+	long calculateTotalPrice(Long roomId, Long carId, String checkin, String checkout,
+            String rentalStart, String rentalEnd) throws Exception;
+
+	Object getCarInfo(long carId);
+	
+	Object getRoomInfo(long roomId);
 
 }

@@ -139,6 +139,52 @@ public class ReservationServiceImpl implements ReservationService {
 	    filters.put("seats", reservationMapper.getSeats());
 	    return filters;
 	}
+	
+	@Override
+	public Object getRoomInfo(long roomId) {
+	    return reservationMapper.getRoomInfo(roomId);
+	}
+
+	@Override
+	public Object getCarInfo(long carId) {
+	    return reservationMapper.getCarInfo(carId);
+	}
+
+	@Override
+	public long calculateTotalPrice(Long roomId, Long carId,
+	                                String checkin, String checkout,
+	                                String rentalStart, String rentalEnd) throws Exception {
+
+	    long total = 0;
+
+	    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+	    Date in = sdf.parse(checkin);
+	    Date out = sdf.parse(checkout);
+	    long nights = (out.getTime() - in.getTime()) / (1000 * 60 * 60 * 24);
+	    if (nights <= 0) nights = 1; // 최소 1박 처리
+
+	    if (roomId != null) {
+	        Integer roomPrice = reservationMapper.getRoomPricePerNight(roomId);
+	        total += roomPrice * nights;
+	    }
+
+	    // 차량 기간은 별도로 계산 (rentalStart ~ rentalEnd)
+	    if (carId != null) {
+	        Date rentStart = sdf.parse(rentalStart != null ? rentalStart : checkin);
+	        Date rentEnd   = sdf.parse(rentalEnd   != null ? rentalEnd   : checkout);
+	        long rentDays = (rentEnd.getTime() - rentStart.getTime()) / (1000 * 60 * 60 * 24);
+	        if (rentDays <= 0) rentDays = 1;
+
+	        Integer carPrice = reservationMapper.getCarPricePerDay(carId);
+	        total += carPrice * rentDays;
+	    }
+
+	    return total;
+	}
+
+	
+	
 
 
 

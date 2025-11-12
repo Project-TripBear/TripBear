@@ -207,7 +207,7 @@
 	</select>
 	
 	<select id="getCarPricePerDay" resultType="int">
-	    SELECT price_per_day FROM tblRentalCar WHERE car_id = #{carId}
+	    SELECT car_price_per_day FROM tblRentalCar WHERE car_id = #{carId}
 	</select>
 	
 	<select id="getRoomInfo" parameterType="long" resultType="com.project.trip.reservation.model.AccomRoomCardDTO">
