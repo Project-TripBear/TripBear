@@ -58,7 +58,8 @@
 		      		com.project.trip.mypage.mapper,
 		      		com.project.trip.board.routepost.mapper,
 		      		com.project.trip.reservation.mapper,
-		      		com.project.trip.mypage.service"/>
+		      		com.project.trip.mypage.service,
+		      		com.project.trip.AI.mapper"/>
 	
 	<context:component-scan base-package="com.project.trip">
         <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
@@ -77,5 +78,5 @@
     <!-- 2. @Transactional 어노테이션을 '작동'시키기 위한 설정 -->
     <!-- transaction-manager="transactionManager"는 위에서 정의한 bean의 id와 일치시킵니다. -->
     <tx:annotation-driven transaction-manager="transactionManager"/>
-
+    
 </beans>

@@ -3,13 +3,10 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
-<!DOCTYPE html>
-<html lang="ko">
-<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI 추천 여행 루트</title>
-    <%@ include file="/WEB-INF/views/inc/asset.jsp" %>
+    
     <%-- (필요) 이 페이지를 꾸밀 CSS (예: result.css) --%>
     <%-- <link rel="stylesheet" href="${pageContext.request.contextPath}/asset/css/result.css"> --%>
     
@@ -101,5 +98,3 @@
     polyline.setMap(map);
     </script>
     --%>
-</body>
-</html>

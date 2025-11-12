@@ -8,6 +8,7 @@
 body {
 	max-width: 100% !important;
 	width: 100% !important;
+	padding: 0;
 }
 
 #wrap, #container, .container {
@@ -18,16 +19,11 @@ body {
 }
 
 .select-layout {
+    width: 100%;
     display: grid;
     grid-template-columns: 55% 45%;
     gap: 12px;
     height: calc(100vh - 120px);
-}
-
-.map-wrap {
-	border-radius: 16px;
-	overflow: hidden;
-	min-height: 520px;
 }
 
 #map {
@@ -114,8 +110,23 @@ body {
 	color: #888;
 	text-align: center;
 }
+
+.map-wrap {
+    border-radius: 20px;
+    overflow: hidden;
+    min-height: 520px;
+}
+
+.page-inner,
+.select-layout {
+    width: 100%;
+    margin: 100px auto 10px auto;
+    max-width: 1400px;
+}
+
 </style>
 
+<div class="page-inner">
 <div class="select-layout">
 	<!-- Left: Map -->
 	<div class="map-wrap">
@@ -141,9 +152,15 @@ body {
 			<c:otherwise>
 				<div id="roomList">
 					<c:forEach var="r" items="${rooms}">
-						<div class="card" data-room-id="${r.roomId}">
-							<img class="thumb"
-								src="${pageContext.request.contextPath}/resources/img/room/${r.imageUrl}" />
+						<div class="card" data-room-id="${r.roomId}" data-accom-id="${r.accomId}">
+							<c:choose>
+					           <c:when test="${not empty r.imageUrl}">
+					               <img class="thumb" src="${pageContext.request.contextPath}/resources/img/room/${r.imageUrl}">
+					           </c:when>
+					           <c:otherwise>
+					               <img class="thumb" src="${pageContext.request.contextPath}/resources/img/room/default-hotel.jpg" alt="기본 숙소 이미지">
+					           </c:otherwise>
+					        </c:choose>
 
 							<div class="meta">
 								<h4>${r.accomName}·${r.roomName}</h4>
@@ -156,7 +173,7 @@ body {
 							<div class="actions">
 								<!-- 다음 단계: 차량 선택 페이지로 이동 -->
 								<form method="get"
-									action="${pageContext.request.contextPath}/reservation/select-car.do">
+									action="${pageContext.request.contextPath}/reservation/select-car">
 									<input type="hidden" name="region" value="${region}" /> <input
 										type="hidden" name="checkin" value="${checkin}" /> <input
 										type="hidden" name="checkout" value="${checkout}" /> <input
@@ -172,6 +189,7 @@ body {
 		</c:choose>
 	</div>
 	
+</div>
 </div>
 
 <!-- Kakao Map SDK (키 바꿔줘!) -->
@@ -193,10 +211,10 @@ window.kakao.maps.load(function(){
     const roomListEl = document.getElementById('roomList');
     const showAllBtn = document.getElementById('showAll');
 
-    function filterToRoom(roomId) {
+    function filterToAccom(accomId) {
         const cards = roomListEl.querySelectorAll('.card');
         cards.forEach(c=>{
-            c.style.display = (c.dataset.roomId == roomId) ? 'flex' : 'none';
+            c.style.display = (c.dataset.accomId == accomId) ? 'flex' : 'none';
         });
     }
 
@@ -215,7 +233,7 @@ window.kakao.maps.load(function(){
         });
 
         kakao.maps.event.addListener(marker,'click',()=>{
-            filterToRoom(r.roomId);
+        	filterToAccom(r.accomId);
         });
     });
     
@@ -229,9 +247,10 @@ window.kakao.maps.load(function(){
         markerMap[r.roomId] = marker; // 저장
 
         kakao.maps.event.addListener(marker,'click',()=>{
-            filterToRoom(r.roomId);
+            filterToAccom(r.accomId);
             map.setCenter(marker.getPosition());
         });
+
     });
 
     // 카드 클릭 → 마커 중심 이동
@@ -244,18 +263,4 @@ window.kakao.maps.load(function(){
 
 });
 </script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
