@@ -15,15 +15,28 @@ public class AiRouteRequestDTO {
 	private String activityType;
 	private String companion;
 	
-	private PhysicalInfo physicalInfo;
 	private String startDate;
 	private String endDate;
 	
+<<<<<<< HEAD
 	
+=======
+	private PhysicalInfo physicalInfo;
+	
+	private String healthGoal;
+	private String foodPreference;
+	private String healthCondition;
+	
+	@Data
+>>>>>>> 691aab35894de916ac1f2d9835cba4b568572f74
 	public static class PhysicalInfo {
 		private String gender;
-		private double height;
-		private double weight;
+		private String height;
+		private String weight;
 	}
+<<<<<<< HEAD
 
+=======
+	
+>>>>>>> 691aab35894de916ac1f2d9835cba4b568572f74
 }
