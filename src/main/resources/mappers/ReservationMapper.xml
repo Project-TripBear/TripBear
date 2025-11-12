@@ -164,6 +164,7 @@
             JOIN tblAccom a ON a.place_id = p.place_id
             JOIN tblAccomRoom r ON r.accom_id = a.accom_id
         WHERE pl.place_location_name = #{region}
+        	AND r.room_status = 'y'
         ORDER BY p.place_name, r.room_name
     </select>
     
@@ -204,10 +205,12 @@
 
 	<select id="getRoomPricePerNight" resultType="int">
 	    SELECT price_per_night FROM tblAccomRoom WHERE room_id = #{roomId}
+	    											AND room_status = 'y'
 	</select>
 	
 	<select id="getCarPricePerDay" resultType="int">
 	    SELECT car_price_per_day FROM tblRentalCar WHERE car_id = #{carId}
+	    											AND car_status = 'y'
 	</select>
 	
 	<select id="getRoomInfo" parameterType="long" resultType="com.project.trip.reservation.model.AccomRoomCardDTO">
@@ -225,6 +228,7 @@
 	        JOIN tblAccom a ON a.place_id = p.place_id
 	        JOIN tblAccomRoom r ON r.accom_id = a.accom_id
 	    WHERE r.room_id = #{roomId}
+	    	AND r.room_status = 'y'
 	</select>
 	
 	<select id="getCarInfo" parameterType="long" resultType="com.project.trip.reservation.model.RentalCarCardDTO">
@@ -240,6 +244,7 @@
 	        car_image_url AS carImageUrl
 	    FROM tblRentalCar
 	    WHERE car_id = #{carId}
+	    	AND car_status = 'y'
 	</select>
 	
 	<select id="getCarTypes" resultType="string">
