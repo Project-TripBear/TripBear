@@ -1,4 +1,4 @@
-package com.project.trip.mapper;
+package com.project.trip.member.test;
 
 import static org.junit.Assert.assertNotNull;
 

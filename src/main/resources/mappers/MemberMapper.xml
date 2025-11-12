@@ -80,7 +80,7 @@ WHERE
 </update>
 
 <delete id="userDel" parameterType="String">
-    DELETE FROM tblUser WHERE user_id = #{seq}
+    update tblUser set user_status_id = 2 WHERE user_id = #{seq}
 </delete>
 
  <select id="getUserByUsername" parameterType="String" resultType="com.project.trip.mypage.model.UserDTO">

@@ -10,7 +10,7 @@
 </head>
 <body>
 <!-- view.jsp -->
-<nav class="board-sub-header">
+<%-- <nav class="board-sub-header">
     <div class="sub-header-inner">
         <a href="/trip/member/carreservation">렌트카 예약</a>
         <a href="/trip/member/accomreservation">숙소 예약</a>
@@ -62,6 +62,33 @@
 <div>
 <button type="button" class="back" onclick="location.href='/trip/member/accomreservation';">돌아가기</button>
 <button type="button" class="back" id="btnCancel" onclick="cancel(${dto.accomseq});">예약취소하기</button>
+</div> --%>
+
+<div class="page-accomview-container"> <nav class="board-sub-header">
+        <div class="sub-header-inner">
+            <a href="/trip/member/carreservation">렌트카 예약</a>
+            <a href="/trip/member/accomreservation" class="active">숙소 예약</a> </div>
+    </nav>
+
+    <div id="main">
+        <h1>숙소 예약 상세 내역</h1> <table id="view" class="vertical view-detail-table"> <tr><th>예약번호</th><td>${dto.seq}</td></tr>
+            <tr><th>숙소 유형</th><td>${dto.accomtype}</td></tr>
+            <tr><th>주소</th><td>${dto.placeaddress}</td></tr>
+            <tr><th>장소명</th><td>${dto.placename}</td></tr>
+            <tr><th>객실명</th><td>${dto.roomname}</td></tr>
+            <tr><th>숙박 인원</th><td>${dto.guestcount}</td></tr>
+            <tr><th>체크인</th><td>${dto.checkindate}</td></tr>
+            <tr><th>체크아웃</th><td>${dto.checkoutdate}</td></tr>
+            
+            <tr class="highlight-row"> <th>총비용</th>
+                <td><span class="price-value">${dto.roomtotalprice}</span> 원</td>
+            </tr>
+        </table>
+
+        <div class="action-buttons-group"> <button type="button" class="btn btn-secondary" onclick="location.href='/trip/member/accomreservation';">돌아가기</button>
+            <button type="button" class="btn btn-danger" id="btnCancel" onclick="cancel(${dto.accomseq});">예약 취소하기</button> </div>
+        
+    </div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
