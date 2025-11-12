@@ -3,6 +3,7 @@
 package com.project.trip.admin.car.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.project.trip.admin.car.model.carDTO;
 
@@ -25,4 +26,6 @@ public interface AdminCarService {
 
     /** 렌터카 삭제 */
     int deleteCar(int carId);
+    
+    List<Map<String, Object>> getAllLocations();
 }

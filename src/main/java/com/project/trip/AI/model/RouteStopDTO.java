@@ -16,11 +16,14 @@ public class RouteStopDTO {
 	
 	private String activityCode;
 	private int durationInMinutes;
-	private String restaurantCategory;
 	private String transportationMode;
 	
-	//헬스케어
-	private Double walkingDistanceKm;
-	private Integer walkingStepsCount;
+	 //헬스케어
+    private double walkingDistanceKm;
+    private int walkingStepsCount;
+    private String restaurantCategory;
 
+    //헬스케어 구윤추가
+    private long healthcareId;
+    private int healthcareCaloriesBurned;
 }

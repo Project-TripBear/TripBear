@@ -75,6 +75,14 @@ public class AdminAccomServiceImpl implements AdminAccomService {
     public void updateAccommodation(accomAllInfoDTO dto) {
         // DTO에 모든 ID(placeId, accomId, roomId)가 있다고 가정하고
         // 3개 테이블을 순차적으로 업데이트
+    	
+    	dto.setPlaceLat(37.5665); 
+        dto.setPlaceLng(126.9780);
+        
+        dto.setPlaceLocationId(1); // (임시 값 1 - '서울'이라고 가정)
+        dto.setPlaceTypeId(1);
+        
+        
         mapper.updatePlace(dto);
         mapper.updateAccom(dto);
         mapper.updateAccomRoom(dto);

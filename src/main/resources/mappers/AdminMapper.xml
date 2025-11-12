@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.project.trip.admin.auth.mapper.AdminMapper">
+
+    <select id="getAdmin" parameterType="String" resultType="com.project.trip.admin.auth.model.AdminDTO">
+   SELECT 
+        ADMIN_NAME as "adminId",   ADMIN_PASSWORD as "adminPw" 
+    FROM tblAdmin 
+    WHERE ADMIN_NAME = #{adminId}  
+    </select>
+    
+	<select id="getAdminIdByUsername" parameterType="string" resultType="long">
+	    SELECT ADMIN_ID
+	    FROM tblAdmin
+	    WHERE ADMIN_NAME = #{adminUsername}
+	</select>
+
+</mapper>

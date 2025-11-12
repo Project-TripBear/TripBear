@@ -23,25 +23,12 @@ public class UserDTO {
 	private String weight;
 	private String healthGoals;
 	private String auth;
+<<<<<<< HEAD
 	private String userStatusId;
 
 
 
+=======
+>>>>>>> b7ec453984d7a9e4a1a2b11e57190c6dec34424b
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
