@@ -154,8 +154,8 @@ public class HotDealController {
 	            if (auth != null && auth.isAuthenticated()
 	                    && !(auth instanceof AnonymousAuthenticationToken)) {  // 익명사용자 제외
 	                userId = auth.getName();
-	                System.out.println("userId: " + userId);
-
+	                System.out.println("userId: " + userId + seq);
+	                
 	                UserDTO userDto = membermapper.get(userId);
 
 	                if (userDto == null) {
@@ -196,6 +196,7 @@ public class HotDealController {
 
 	            // 댓글 조회
 	            List<HotDealCommentDTO> clist = mapper.listComment(seq);
+	            System.out.println("댓글리스트:" + clist);
 	            if (clist == null) {
 	                clist = new ArrayList<>();
 	            }

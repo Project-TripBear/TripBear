@@ -77,7 +77,11 @@ WHERE hotdeal_id = #{seq}
     <select id="listComment" parameterType="string" resultType="com.project.trip.board.hotdeal.model.HotDealCommentDTO">
         SELECT *
         FROM (
-            SELECT vw_hotdeal_comment.*, 
+            SELECT vw_hotdeal_comment.*,
+            		vw_hotdeal_comment.user_id as useq,
+            		vw_hotdeal_comment.hotdeal_id as bseq,
+            		vw_hotdeal_comment.user_login as id,
+            		vw_hotdeal_comment.hotdeal_comment_id as seq,
                    (SELECT nickname FROM tblUser WHERE user_id = vw_hotdeal_comment.user_id) AS name
             FROM vw_hotdeal_comment
             WHERE hotdeal_id = #{bseq}
@@ -95,7 +99,7 @@ WHERE hotdeal_id = #{seq}
 <update id="editComment" parameterType="com.project.trip.board.hotdeal.model.HotDealCommentDTO">
     UPDATE tblHotDealComment 
     SET hotdeal_comment_content = #{content} 
-    WHERE hotdeal_comment_id = #{seq} AND user_id = #{id}
+    WHERE hotdeal_comment_id = #{seq} AND user_id = #{useq}
 </update>
 
 <delete id="delComment" parameterType="map">
@@ -109,12 +113,23 @@ WHERE hotdeal_id = #{seq}
 </select>
 
 <select id="moreComment" parameterType="map" resultType="com.project.trip.board.hotdeal.model.HotDealCommentDTO">
-    SELECT * FROM (
-        SELECT ROWNUM as rn, a.* FROM (
-            SELECT * FROM tblHotDealComment WHERE hotdeal_id = #{bseq} ORDER BY hotdeal_comment_id DESC
-        ) a 
-        WHERE ROWNUM &lt;= #{begin} + 4
-    ) WHERE rn &gt;= #{begin}
+     SELECT * FROM (
+    SELECT ROWNUM AS rn, a.* FROM (
+        SELECT
+            c.hotdeal_comment_id AS seq,
+            c.hotdeal_comment_content AS content,
+            c.user_id AS id,
+            TO_CHAR(c.hotdeal_comment_regdate, 'YYYY-MM-DD HH24:MI:SS') AS regdate,
+            c.hotdeal_id AS bseq,
+            u.nickname AS name
+        FROM tblHotDealComment c
+        LEFT JOIN tblUser u ON c.user_id = u.user_id
+        WHERE c.hotdeal_id = #{bseq}
+        ORDER BY c.hotdeal_comment_id DESC
+    ) a
+    WHERE ROWNUM &lt;= #{begin} + 4
+)
+WHERE rn &gt;= #{begin}
 </select>
 
 	</mapper>

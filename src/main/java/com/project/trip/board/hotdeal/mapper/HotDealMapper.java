@@ -24,14 +24,17 @@ public interface HotDealMapper {
 
 	
 	
-	int editComment(HotDealCommentDTO dto);
 
 	int delComment(@Param("seq") String seq, @Param("userId") String userId);
 
-	List<HotDealCommentDTO> moreComment(@Param("bseq") String bseq,@Param("begin") int begin);
 
-	int addcomment(HotDealCommentDTO dto);
 
-	HotDealCommentDTO getComment(@Param("seq") String seq);
+	HotDealCommentDTO getComment(@Param("seq") Long seq);
+
+	int addComment(HotDealCommentDTO dto);
+
+	List<HotDealCommentDTO> moreComment(Map<String, Object> params);
+
+	int editComment(HotDealCommentDTO dto);
 
 }

@@ -8,11 +8,11 @@ import lombok.ToString;
 @Setter
 @ToString
 public class HotDealCommentDTO {
-	private String seq;
+	private Long seq;
 	private String content;
 	private String id;
 	private String regdate;
 	private String bseq;
-	
+	private String useq;
 	private String name;
 }

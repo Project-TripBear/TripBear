@@ -47,10 +47,10 @@
 <td>
 <a href="/trip/hotdeal/view?seq=${dto.seq}&column=${map.column}&word=${map.word}">
 <c:if test="${dto.img != null}">
-<img src="/trip/asset/place/${dto.img}" id="imgPlace">
+<img src="${pageContext.request.contextPath}/resources/img/hotdeal/${dto.img}" id="imgPlace">
 </c:if>
 <c:if test="${dto.img == null}">
-<img src="/trip/asset/place/default.png" id="imgPlace">
+<img src="${pageContext.request.contextPath}/resources/img/hotdeal/default.png" id="imgPlace">
 </c:if>
 [${dto.status}]${dto.subject}
 </a>
