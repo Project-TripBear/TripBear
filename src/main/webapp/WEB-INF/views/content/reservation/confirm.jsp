@@ -112,6 +112,9 @@
 				<input type="hidden" name="rentalStart" value="${param.rentalStart}">
 				<input type="hidden" name="rentalEnd" value="${param.rentalEnd}">
 				<input type="hidden" name="carId" value="${param.carId}">
+				
+				<input type="hidden" name="userId" value="${param.userId}">
+				<input type="hidden" name="userRouteId" value="${param.userRouteId}">
 
 				<!-- 버튼 -->
 				<div class="btn-wrap">

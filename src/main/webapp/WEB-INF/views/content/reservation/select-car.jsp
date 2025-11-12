@@ -131,6 +131,10 @@
                     <input type="hidden" name="roomId" value="${roomId}">
                     <input type="hidden" name="rentalStart" value="${checkin}">
                     <input type="hidden" name="rentalEnd" value="${checkout}">
+                    
+                    <input type="hidden" name="userId" value="${param.userId}">
+    				<input type="hidden" name="userRouteId" value="${param.userRouteId}">
+                    
                     <button type="submit" class="select-btn">이 차량 선택</button>
                 </form>
             </div>

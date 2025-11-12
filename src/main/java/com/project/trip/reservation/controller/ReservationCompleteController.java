@@ -26,9 +26,9 @@ public class ReservationCompleteController {
     @PostMapping("/complete")
     public ModelAndView complete(HttpServletRequest req) throws Exception {
 
-        // ✅ 테스트용 userRouteId 하드코딩
-        long userId = 1L; // 임시 회원 ID
-        long userRouteId = 1L; // AI 추천 루트 (테스트용)
+    	// ✅ 로그인 또는 전달된 userId, userRouteId 받기
+        long userId = Long.parseLong(req.getParameter("userId"));
+        long userRouteId = Long.parseLong(req.getParameter("userRouteId"));
         int statusId = 1; // 예약요청 상태
 
         // ✅ 파라미터 받기
@@ -39,8 +39,8 @@ public class ReservationCompleteController {
         String checkout = req.getParameter("checkout");
         String rentalStart = req.getParameter("rentalStart");
         String rentalEnd = req.getParameter("rentalEnd");
-        String accomNotes   = req.getParameter("accomNotes");
-        String carNotes     = req.getParameter("carNotes");
+        String accomNotes = req.getParameter("accomNotes");
+        String carNotes = req.getParameter("carNotes");
         String people = req.getParameter("people");
         String pickupLocation = req.getParameter("pickupLocation");
         String dropoffLocation = req.getParameter("dropoffLocation");

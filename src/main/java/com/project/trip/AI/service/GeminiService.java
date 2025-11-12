@@ -1,10 +1,16 @@
 package com.project.trip.AI.service;
 
-import com.project.trip.AI.model.AiRouteRequestDTO;
-import com.project.trip.AI.model.RouteDTO;
+import org.springframework.stereotype.Service;
 
-public interface GeminiService {
+//public interface GeminiService {
+//
+//	RouteDTO generateRoute(AiRouteRequestDTO preferences);
+//
+//}
 
-	RouteDTO generateRoute(AiRouteRequestDTO preferences);
-
+@Service
+public class GeminiService {
+    public String test() {
+        return "Gemini test";
+    }
 }

@@ -79,8 +79,4 @@
     <!-- transaction-manager="transactionManager"는 위에서 정의한 bean의 id와 일치시킵니다. -->
     <tx:annotation-driven transaction-manager="transactionManager"/>
 	
-<<<<<<< HEAD
-=======
-	
->>>>>>> 8ea9d92cadbe5a36e9f1633d148d0d2c9e97bb3f
 </beans>
