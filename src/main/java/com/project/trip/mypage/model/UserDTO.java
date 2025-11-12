@@ -23,25 +23,4 @@ public class UserDTO {
 	private String healthGoals;
 	private String auth;
 
-
-
-
-
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
