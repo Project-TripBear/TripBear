@@ -16,13 +16,13 @@ public class RouteDTO {
 	private long userId;
 	private long conversationId;
 	
-	private String AiRouteTile;
-	private int AiRouteDays;
-	private Date AiRouteCreated;
-	private String AiRouteRegion;
-	private String AiRouteStartDate;
-	private String AiRouteEndDate;
-	private String weather_consideration;
+	private String aiRouteTile;
+	private int aiRouteDays;
+	private Date aiRouteCreated;
+	private String aiRouteRegion;
+	private String aiRouteStartDate;
+	private String aiRouteEndDate;
+	private String weatherConsideration;
 	
 	private List<RouteStopDTO> stops;
 }
