@@ -131,7 +131,7 @@
 
     <!-- 게시글 등록 -->
     <insert id="add" parameterType="RoutePostDTO">
-        <selectKey keyProperty="routepostId" resultType="string" order="BEFORE">
+        <selectKey keyProperty="routepostId" resultType="int" order="BEFORE">
             SELECT seqRoutePost.NEXTVAL FROM dual
         </selectKey>
         INSERT INTO tblRoutePost (

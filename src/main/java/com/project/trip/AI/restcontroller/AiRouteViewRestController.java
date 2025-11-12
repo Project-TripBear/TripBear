@@ -7,7 +7,7 @@ import com.project.trip.AI.model.RouteDTO;
 import com.project.trip.AI.service.AiRouteViewService;
 
 @RestController
-@RequestMapping("/ai")
+@RequestMapping("/api/ai")
 public class AiRouteViewRestController {
 
     @Autowired

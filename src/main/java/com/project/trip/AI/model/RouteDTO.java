@@ -25,4 +25,8 @@ public class RouteDTO {
 	private String weather_consideration;
 	
 	private List<RouteStopDTO> stops;
+	
+	//모빌리티 정보 js로 넘기는 json
+	private List<Object> mobilityRoutes;
+
 }

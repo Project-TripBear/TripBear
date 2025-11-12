@@ -8,15 +8,16 @@
     <!-- ① AI 루트 기본 정보 -->
     <select id="getAiRoute" parameterType="long" resultType="RouteDTO">
         SELECT
-            ai_route_id        AS aiRouteId,
-            user_id            AS userId,
-            conversation_id    AS conversationId,
-            ai_route_title     AS aiRouteTitle,
-            ai_route_days      AS aiRouteDays,
-            ai_route_region    AS aiRouteRegion,
-            ai_route_startdate AS aiRouteStartDate,
-            ai_route_enddate   AS aiRouteEndDate,
-            ai_route_created   AS aiRouteCreated
+            ai_route_id           AS aiRouteId,
+            user_id               AS userId,
+            conversation_id       AS conversationId,
+            ai_route_title        AS aiRouteTitle,
+            ai_route_days         AS aiRouteDays,
+            ai_route_region       AS aiRouteRegion,
+            ai_route_startdate    AS aiRouteStartDate,
+            ai_route_enddate      AS aiRouteEndDate,
+            ai_route_created      AS aiRouteCreated,
+            weather_consideration AS weatherConsideration
         FROM tblAiRoute
         WHERE ai_route_id = #{aiRouteId}
     </select>
@@ -25,20 +26,22 @@
     <!-- ② 스탑 목록 조회 (헬스케어 포함) -->
     <select id="getStops" parameterType="long" resultType="RouteStopDTO">
         SELECT
-            s.ai_route_stop_id      AS aiRouteStopId,
-            s.ai_route_id           AS aiRouteId,
-            s.ai_route_day          AS aiRouteDay,
-            s.ai_route_stop_order   AS aiRouteStopOrder,
-            s.ai_route_lat          AS aiRouteLat,
-            s.ai_route_long         AS aiRouteLong,
-            s.ai_route_description  AS aiRouteDescription,
-            s.activity_code         AS activityCode,
-            s.duration_category     AS durationInMinutes,
-            s.restaurant_category   AS restaurantCategory,
-            s.transportation_mode   AS transportationMode,
-            h.healthcare_id         AS healthcareId,
-            h.healthcare_distance_km AS walkingDistanceKm,
-            h.healthcare_steps_count AS walkingStepsCount,
+            s.ai_route_stop_id         AS aiRouteStopId,
+            s.ai_route_id              AS aiRouteId,
+            s.ai_route_day             AS aiRouteDay,
+            s.ai_route_stop_order      AS aiRouteStopOrder,
+            s.ai_route_lat             AS aiRouteLat,
+            s.ai_route_long            AS aiRouteLong,
+            s.ai_route_description     AS aiRouteDescription,
+            s.activity_code            AS activityCode,
+            s.duration_in_minutes      AS durationInMinutes,
+            s.restaurant_category      AS restaurantCategory,
+            s.walking_distance_km      AS walkingDistanceKm,
+            s.walking_steps_count      AS walkingStepsCount,
+            s.transportation_mode      AS transportationMode,
+            h.healthcare_id            AS healthcareId,
+            h.healthcare_distance_km   AS healthcareDistanceKm,
+            h.healthcare_steps_count   AS healthcareStepsCount,
             h.healthcare_calories_burned AS healthcareCaloriesBurned
         FROM tblAiRouteStop s
         LEFT JOIN tblHealthCareLog h
@@ -51,17 +54,19 @@
     <!-- ③ 특정 스탑 상세조회 -->
     <select id="getStopDetail" parameterType="long" resultType="RouteStopDTO">
         SELECT
-            ai_route_stop_id    AS aiRouteStopId,
-            ai_route_id         AS aiRouteId,
-            ai_route_day        AS aiRouteDay,
-            ai_route_stop_order AS aiRouteStopOrder,
-            ai_route_lat        AS aiRouteLat,
-            ai_route_long       AS aiRouteLong,
+            ai_route_stop_id     AS aiRouteStopId,
+            ai_route_id          AS aiRouteId,
+            ai_route_day         AS aiRouteDay,
+            ai_route_stop_order  AS aiRouteStopOrder,
+            ai_route_lat         AS aiRouteLat,
+            ai_route_long        AS aiRouteLong,
             ai_route_description AS aiRouteDescription,
-            activity_code       AS activityCode,
-            duration_category   AS durationInMinutes,
-            restaurant_category AS restaurantCategory,
-            transportation_mode AS transportationMode
+            activity_code        AS activityCode,
+            duration_in_minutes  AS durationInMinutes,
+            restaurant_category  AS restaurantCategory,
+            walking_distance_km  AS walkingDistanceKm,
+            walking_steps_count  AS walkingStepsCount,
+            transportation_mode  AS transportationMode
         FROM tblAiRouteStop
         WHERE ai_route_stop_id = #{aiRouteStopId}
     </select>

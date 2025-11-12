@@ -10,13 +10,13 @@
         INSERT INTO tblUserRoute (
             user_route_id,
             user_id,
-            ai_route_id,
+            source_ai_route_id,
             user_route_title,
             user_route_days,
             user_route_region,
             user_route_startdate,
             user_route_enddate,
-            user_route_created
+            user_route_saved
         )
         SELECT
             seqUserRoute.NEXTVAL,
@@ -25,8 +25,8 @@
             ai_route_title,
             ai_route_days,
             ai_route_region,
-            al_route_startdate,
-            al_route_enddate,
+            ai_route_startdate,
+            ai_route_enddate,
             SYSDATE
         FROM tblAiRoute
         WHERE ai_route_id = #{aiRouteId}
@@ -63,7 +63,7 @@
             ai_route_long,
             ai_route_description,
             activity_code,
-            duration_category,
+            duration_in_minutes,       <!-- //실제 AI 테이블 컬럼명에 맞게 변경 / uesr랑 다름 -->
             restaurant_category,
             transportation_mode
         FROM tblAiRouteStop

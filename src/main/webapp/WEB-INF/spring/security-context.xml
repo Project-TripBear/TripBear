@@ -31,6 +31,9 @@
 		<security:intercept-url pattern="/resources/**" access="permitAll" />
 		
 		<security:intercept-url pattern="/" access="permitAll" />
+		
+		<!--ai 관련기능 권한 추가(구윤) -->
+		<security:intercept-url pattern="trip/ai/**" access="hasAuthority('ACTIVE')" />
 
 
 				

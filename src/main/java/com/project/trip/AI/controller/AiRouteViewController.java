@@ -23,7 +23,7 @@ public class AiRouteViewController {
     public String viewAiRoute(@RequestParam("id") Long aiRouteId, Model model) {
         RouteDTO route = aiRouteViewService.getAiRoute(aiRouteId);
         model.addAttribute("route", route);
-        return "ai/aiMapView";
+        return "ai.aiMapView";
     }
 
     @GetMapping("/route/{id}")
