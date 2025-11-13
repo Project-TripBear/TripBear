@@ -15,8 +15,7 @@
                 <span>작성자: ${dto.nickname}</span>
 
                 <span>
-                    작성일: 
-                    <fmt:formatDate value="${dto.question_board_regdate}" pattern="yyyy-MM-dd HH:mm"/>
+                    작성일: <fmt:formatDate value="${dto.question_board_regdate}" pattern="yyyy-MM-dd HH:mm"/>
                 </span>
 
                 <span>조회수: ${dto.question_board_view_count}</span>
@@ -53,13 +52,11 @@
             <button type="button" class="btn btn-cancel" onclick="location.href='<c:url value="/qnaboard/list"/>';">목록</button>
 			
 			<!-- 로그인한 경우에만 principal.udto.seq 읽기 -->
-            <sec:authorize access="isAuthenticated()">
+			<c:set var="currentUserId" value="0" />  <!-- 기본값 -->
+			
+			<sec:authorize access="isAuthenticated()">
 			    <sec:authentication property="principal.udto.seq" var="currentUserId" />
 			</sec:authorize>
-			<!-- 비로그인 시 currentUserId 기본값 -->
-			<c:if test="${empty currentUserId}">
-			    <c:set var="currentUserId" value="0"/>
-			</c:if>
 
             <c:if test="${dto.user_id == currentUserId}">
                 <button type="button" class="btn btn-primary" onclick="location.href='<c:url value="/qnaboard/edit?seq=${dto.question_board_id}"/>';">수정</button>
@@ -89,7 +86,11 @@
                         <p style="margin:0 0 5px; font-weight:600; color:var(--primary-dark);">
                             ${comment.nickname}
                             <span style="font-size:0.8em; color:var(--text-light); margin-left:10px;">
-                                <fmt:formatDate value="${comment.question_answer_regdate}" pattern="MM-dd HH:mm"/>
+
+                                <!-- 🔥 여기가 수정된 부분!!! -->
+                                <fmt:parseDate value="${comment.question_answer_regdate}" pattern="yyyy-MM-dd HH:mm:ss" var="parsedRegdate" />
+                                <fmt:formatDate value="${parsedRegdate}" pattern="MM-dd HH:mm"/>
+
                             </span>
                         </p>
 

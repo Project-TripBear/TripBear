@@ -39,7 +39,8 @@
                     <td>${dto.question_board_id}</td>
 
                     <td class="title">
-                        <a href="<c:url value='/qnaboard/view?seq=${dto.question_board_id}'/>">
+                        <a href="<c:url value='/qnaboard/view?seq=${dto.question_board_id}'/>" 
+   class="post-title">
                             <span class="category-tag">[${dto.question_category_name}]</span>
                             ${dto.question_board_title}
 
