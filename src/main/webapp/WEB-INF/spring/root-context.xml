@@ -20,8 +20,8 @@
 
 		<property name="driverClassName" value="oracle.jdbc.OracleDriver"/>
 
-		<property name="jdbcUrl" 
-                  value="jdbc:oracle:thin:@TripBearDB_high?tns_admin=/Users/bunohoq/dev/Wallet_TripBearDB"/>
+		 <property name="jdbcUrl" 
+                  value="jdbc:oracle:thin:@TripBearDB_high?tns_admin=C:/dev/Wallet_TripBearDB"/>
 		
 		<property name="username" value="tripbear"/>
 		<property name="password" value="Java123456789"/>

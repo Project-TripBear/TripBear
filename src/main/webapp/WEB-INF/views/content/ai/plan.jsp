@@ -430,7 +430,7 @@
             // 2. 서버에 AJAX POST 요청
 			const base = '${pageContext.request.contextPath}';
 			
-            fetch(`${base}/ai/generate`, {
+            fetch( base + '/ai/generate', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json', 
@@ -446,13 +446,13 @@
 			    if (!res.ok) {
 			      // 401/403/302 등 상태를 그대로 보여주자
 			      const text = await res.text();
-			      throw new Error(`HTTP ${res.status}. Body: ${text.slice(0,200)}`);
+			      throw new Error('HTTP ' + res.status + '. Body: ' + text.slice(0, 200));
 			    }
 
 			    if (!ctype.includes('application/json')) {
 			      // 시큐리티 302 → 로그인 페이지 HTML, 혹은 에러 HTML이 온 경우
 			      const text = await res.text();
-			      throw new Error(`JSON 아님. 서버가 HTML 반환(리다이렉트/에러 가능). 일부: ${text.slice(0,200)}`);
+			      throw new Error('JSON 아님. 서버가 HTML 반환. 일부: ' + text.slice(0, 200));
 			    }
 
 			    return res.json();
@@ -460,7 +460,7 @@
 			  .then((data) => {
 			    if (data.success && data.routeId) {
 			      // 4) 성공 이동
-			      window.location.href = `${base}/ai/result?routeId=${data.routeId}`;
+			    	window.location.href = base + '/ai/result?routeId=' + data.routeId;
 			    } else {
 			      loadingContainer.style.display = 'none';
 			      alert('루트 생성 실패: ' + (data.message || '알 수 없는 오류'));
