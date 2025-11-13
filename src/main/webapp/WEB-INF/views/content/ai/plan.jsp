@@ -222,7 +222,7 @@
         const progressBar = document.getElementById('progressBar');
         const generalQuestionContainer = document.getElementById('general-questions');
         const healthcareQuestionContainer = document.getElementById('healthcare-questions');
-        const aiPlanContainer = document.getElementById('ai-plan-container');
+        const aiPlanContainer = document.getElopipementById('ai-plan-container');
         const loadingContainer = document.getElementById('loading-container');
         const dateSelectionStep = document.getElementById('date-selection-step');
         const dateSelectionGuide = document.getElementById('date-selection-guide');
@@ -460,7 +460,7 @@
 			  .then((data) => {
 			    if (data.success && data.routeId) {
 			      // 4) 성공 이동
-			    	window.location.href = base + '/ai/result?routeId=' + data.routeId;
+			    	window.location.href = base + '/ai/mapview?id=' + data.routeId;
 			    } else {
 			      loadingContainer.style.display = 'none';
 			      alert('루트 생성 실패: ' + (data.message || '알 수 없는 오류'));
