@@ -50,14 +50,18 @@
 			)
 		values (
 			seq_tblNoticePost.nextVal,
-			#{adminId}, #{noticeHeader}, #{noticeContent}, 0 ,sysdate)
+			#{adminId}, 
+			#{noticeHeader, jdbcType=VARCHAR}, 
+			#{noticeContent, jdbcType=VARCHAR}, 
+			0 ,
+			sysdate)
 	</insert>
 	
 	<update id="update" parameterType="NoticeDTO">
 		update tblNoticePost
 			set
-				notice_header = #{noticeHeader},
-				notice_content = #{noticeContent}
+				notice_header = #{noticeHeader, jdbcType=VARCHAR},
+				notice_content = #{noticeContent, jdbcType=VARCHAR}
 			where
 				notice_post_id = #{noticePostId}
 	</update>
@@ -66,4 +70,4 @@
 		delete from tblNoticePost
 			where notice_post_id = #{noticePostId}
 	</delete>
-	</mapper>
+</mapper>

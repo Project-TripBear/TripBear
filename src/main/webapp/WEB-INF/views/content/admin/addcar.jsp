@@ -1,17 +1,26 @@
 <%-- 파일 경로: /WEB-INF/views/content/admin/addcar.jsp --%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> 
 
-<%-- 이 페이지 전용 CSS --%>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
 
 <h1><i class="fa-solid fa-car"></i> 신규 렌터카 등록</h1>
 
-<%-- accomadd.jsp와 동일한 form-container, form-section 클래스 사용 --%>
 <div class="form-container">
-    <form method="POST" action="${pageContext.request.contextPath}/admin/car/add" class="form-container" onsubmit="return removeCommasBeforeSubmit(this)">
+    <form method="POST" action="${pageContext.request.contextPath}/admin/car/add" onsubmit="return removeCommasBeforeSubmit(this)">
         
         <div class="form-section card">
             <h3 class="form-section-title">1. 차량 기본 정보</h3>
+            
+            <div class="form-group">
+                <label for="placeLocationId">등록 지역 (차고지)</label>
+                <select id="placeLocationId" name="placeLocationId" required>
+                    <option value="">-- 지역 선택 --</option>
+                    <c:forEach items="${locations}" var="loc">
+                        <option value="${loc.id}">${loc.name}</option>
+                    </c:forEach>
+                </select>
+            </div>
             
             <div class="form-group">
                 <label for="carName">차량 이름 (모델명)</label>
@@ -59,8 +68,8 @@
             </div>
             
             <div class="form-group">
-                <label for="carImageUrl">차량 이미지 URL</label>
-                <input type="text" id="carImageUrl" name="carImageUrl" placeholder="https://...">
+                <label for="carImage">차량 이미지 URL</label>
+                <input type="text" id="carImage" name="carImage" placeholder="https://...">
             </div>
             
             <div class="form-group">
@@ -81,14 +90,15 @@
 
 <script>
     function formatPrice(input) {
-        let value = input.value.replace(/[^\d]/g, ''); 
+        let value = input.value.replace(/[^\d]/g, '');
         if (value === '') { input.value = ''; return; }
         input.value = Number(value).toLocaleString('en-US');
     }
     function removeCommasBeforeSubmit(form) {
         const priceInput = form.querySelector('#pricePerDay');
         if (priceInput) {
-            priceInput.value = priceInput.value.replace(/,/g, ''); 
+            // 전송 전에 콤마를 제거하여 서버에서 Integer로 변환할 수 있도록 합니다.
+            priceInput.value = priceInput.value.replace(/,/g, '');
         }
         return true; 
     }

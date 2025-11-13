@@ -7,14 +7,14 @@
 	<meta charset="UTF-8">
 	
 </head>
-<body>
+
+<div class="page-findid-container">
 	
-	
-	<div id="main">
+	<div id="main"> 
 		<h1>아이디 찾기</h1>
 		
 		<form>
-		<table class="borad-title">
+		<table class="board-title">
 			
 			<tr>
 				<th>이름</th>
@@ -24,31 +24,30 @@
 			<tr>
 				<th>이메일</th>
 				<td>
-					<div>
+					<div class="email-send-box">
 						<input type="email" name="email" id="email" required class="long">
-						<input type="button" value="인증 메일 보내기" id="btnMail">
+						<input type="button" value="인증 메일 보내기" id="btnMail" class="btn-mail-send">
 					</div>
-					<div style="margin-top: 10px;">
+					<div class="validation-box">
 						<input type="text" id="validNumber" class="short" disabled maxlength="5">
-						<input type="button" value="입력하기" id="btnValid" disabled>
+						<input type="button" value="입력하기" id="btnValid" disabled class="btn-valid-check">
 						<span id="remainTime" style="display: none;">05:00</span>
 					</div>
 				</td>
 			</tr>
 			
-			
 		</table>
 		
-		<div>
-			<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/main/index.do';">돌아가기</button>
-			<button type="button" class="btn" id="btnIdSearch">아이디 찾기</button>
-
+		<div class="action-buttons">
+			<button type="button" class="btn btn-primary" id="btnIdSearch">아이디 찾기</button>
+			<button type="button" class="btn btn-secondary" onclick="location.href='${pageContext.request.contextPath}/member/login';">돌아가기</button>
 		</div>
 		
 		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
 	</form>
 	</div>
 	
+</div>
 	
 	<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 	

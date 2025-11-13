@@ -20,6 +20,16 @@ public interface MemberMapper {
 
 	void userDel(String seq);
 
+	Integer getMyBoardCount(String username);
+
+	Integer getMyCommentCount(String username);
+
+	Integer getMyLikeTotalCount(String username);
+
+	Integer getMyScrapTotalCount(String username);
+
+	UserDTO getUserByUsername(String username);
+
 
 
 }

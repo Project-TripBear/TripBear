@@ -2,11 +2,15 @@ package com.project.trip.reservation.controller;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.project.trip.mypage.model.CustomUser;
+import com.project.trip.mypage.model.UserDTO;
 import com.project.trip.reservation.mapper.ReservationMapper;
 import com.project.trip.reservation.model.AccomReservationDTO;
 import com.project.trip.reservation.model.CarReservationDTO;
@@ -25,10 +29,14 @@ public class ReservationCompleteController {
 
     @PostMapping("/complete")
     public ModelAndView complete(HttpServletRequest req) throws Exception {
-
-        // ✅ 테스트용 userRouteId 하드코딩
-        long userId = 1L; // 임시 회원 ID
-        long userRouteId = 1L; // AI 추천 루트 (테스트용)
+    	
+    	// ✅ 로그인 세션에서 회원정보 가져오기
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        CustomUser loginUser = (CustomUser) auth.getPrincipal();
+        UserDTO user = loginUser.getUdto();
+        
+        long userId = Long.parseLong(user.getSeq()); // 문자열 → long
+        long userRouteId = 1L; // 만약 추후 AI 루트 기능 연동 시 따로 불러올 예정
         int statusId = 1; // 예약요청 상태
 
         // ✅ 파라미터 받기
@@ -39,8 +47,8 @@ public class ReservationCompleteController {
         String checkout = req.getParameter("checkout");
         String rentalStart = req.getParameter("rentalStart");
         String rentalEnd = req.getParameter("rentalEnd");
-        String accomNotes   = req.getParameter("accomNotes");
-        String carNotes     = req.getParameter("carNotes");
+        String accomNotes = req.getParameter("accomNotes");
+        String carNotes = req.getParameter("carNotes");
         String people = req.getParameter("people");
         String pickupLocation = req.getParameter("pickupLocation");
         String dropoffLocation = req.getParameter("dropoffLocation");

@@ -1,6 +1,7 @@
+// 파일 경로: com.project.trip.admin.car.service.AdminCarServiceImpl.java
+
 package com.project.trip.admin.car.service;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,27 +20,21 @@ public class AdminCarServiceImpl implements AdminCarService {
 
     private final AdminCarMapper carMapper;
 
-    /** 렌터카 목록 조회 (필터링 포함) */
     @Override
     public List<carDTO> getAllCars(String[] fuelTypes, int minPrice, int maxPrice, String sortOrder) {
-        // 여러 개의 파라미터를 Map으로 변환하여 Mapper에 전달
         Map<String, Object> params = new HashMap<>();
         params.put("fuelTypes", fuelTypes);
         params.put("minPrice", minPrice);
         params.put("maxPrice", maxPrice);
         params.put("sortOrder", sortOrder);
-
-        // Mapper 메서드 호출
         return carMapper.getAllCars(params);
     }
 
-    /** DB에 등록된 최대 가격 조회 */
     @Override
     public int getMaxPrice() {
         return carMapper.getMaxPrice();
     }
 
-    /** 렌터카 상세 정보 조회 */
     @Override
     public carDTO getCarDetail(int carId) {
         return carMapper.selectCarDetail(carId);
@@ -49,13 +44,21 @@ public class AdminCarServiceImpl implements AdminCarService {
     @Override
     @Transactional
     public int addCar(carDTO dto) {
-        return carMapper.insertCar(dto); // Mapper에서 정의한 insertCar 호출
+        
+        // ★★★ [핵심] ★★★
+        // 폼(addcar.jsp)에서 지역 ID를 받지 않으므로,
+        // 형님이 주신 데이터(1: 서울)를 기반으로 기본값을 강제 설정합니다.
+        dto.setPlaceLocationId(1); 
+        
+        return carMapper.insertCar(dto);
     }
 
     /** 렌터카 정보 수정 */
     @Override
     @Transactional
     public int editCar(carDTO dto) {
+        // 수정(edit) 시에는 폼에서 placeLocationId가 넘어온다고 가정하므로
+        // 여기서는 기본값을 설정하지 않습니다.
         return carMapper.updateCar(dto);
     }
 
@@ -65,4 +68,8 @@ public class AdminCarServiceImpl implements AdminCarService {
     public int deleteCar(int carId) {
         return carMapper.deleteCar(carId);
     }
+    @Override
+    public List<Map<String, Object>> getAllLocations() {
+        return carMapper.getAllLocations();
+    }	
 }

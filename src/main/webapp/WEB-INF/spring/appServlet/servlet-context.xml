@@ -15,9 +15,9 @@
 	<resources mapping="/resources/**" location="/resources/" />
 
 	<!-- 외부 프로퍼티 설정 -->
-	<context:property-placeholder location="classpath:application.properties" />
-
-	<!-- 컴포넌트 스캔 (Controller 포함 모든 패키지) -->
+<!-- 	<context:property-placeholder location="classpath:application.properties" />
+ -->
+	<!-- 컴포넌트 스캔 (Controller 포함 모든 	패키지) -->
 	<context:component-scan base-package="com.project.trip" />
 	<context:component-scan base-package="com.test.tiles.controller" />
 	<context:component-scan base-package="com.test.project.controller" />

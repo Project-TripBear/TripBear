@@ -9,7 +9,7 @@
 </head>
 <body>
 	
-	
+	<%-- 
 	<nav class="board-sub-header">
     <div class="sub-header-inner">
         <a href="/trip/member/boardactivities">내가 쓴 게시글</a>
@@ -74,7 +74,55 @@
 		
 		
 	</div>
-	
+	 --%>
+	 
+	 <div class="page-scrapactivities-container"> <nav class="board-sub-header">
+        <div class="sub-header-inner">
+            <a href="/trip/member/boardactivities">내가 쓴 게시글</a>
+            <a href="/trip/member/commentactivities">내가 쓴 댓글</a>
+            <a href="/trip/member/likeactivities">좋아요</a>
+            <a href="/trip/member/scrapactivities" class="active">스크랩</a> </div>
+    </nav>
+    
+    <div id="main">
+        <h1>스크랩한 게시글</h1>
+        
+        <c:if test="${map.search == 'y'}">
+        <div id="labelSearch">
+            '${map.word}'(으)로 검색한 결과 ${map.totalCount}건이 있습니다.            
+        </div>
+        </c:if>
+        
+        <table id="list" class="activity-list-table"> 
+            <thead>
+                <tr>
+                    <th>게시판이름</th>
+                    <th>제목</th>
+                    <th>날짜</th>
+                </tr>
+            </thead>
+            <tbody>
+                <c:if test="${list.size() == 0}">
+                <tr>
+                    <td colspan="3" class="no-data-cell">게시물이 없습니다.</td> </tr>
+                </c:if>
+                <c:forEach items="${list}" var="dto">
+                    <tr>
+                        <td class="board-title-cell">${dto.boradTitle}</td>
+                        <td class="post-subject-cell">
+                            <a href="/trip/board/${dto.boradCode}.do?seq=${dto.seq}&column=${map.column}&word=${map.word}">
+                                ${dto.subject}
+                            </a>
+                        </td>
+                        <td class="regdate-cell">${dto.regdate}</td>
+                    </tr>
+                </c:forEach>
+            </tbody>
+        </table>
+
+        <div id="pagebar" class="pagebar-container">${pagebar}</div>
+    </div>
+</div>
 	<script>
 	
 		<c:if test="${map.search == 'y'}">

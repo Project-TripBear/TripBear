@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.project.trip.board.find.mapper.FindBoardMapper">
+
+<select id="getList" parameterType="map" resultType="findboardDTO">
+    SELECT * FROM 
+        (SELECT a.*, ROWNUM as rnum FROM 
+            (SELECT fb.*, u.nickname, 
+                (SELECT COUNT(*) FROM tblFindComment WHERE find_board_id = fb.find_board_id) as commentCount, 
+                (SELECT COUNT(*) FROM tblFindLikes WHERE find_board_id = fb.find_board_id) as likeCount 
+            FROM tblFindBoard fb 
+                INNER JOIN tblUser u ON fb.user_id = u.user_id 
+            WHERE fb.find_board_report_status != 'N' <include refid="searchCondition"/>
+            
+            ORDER BY fb.find_board_id DESC) a)
+    WHERE rnum BETWEEN #{start} AND #{end}
+</select>
+
+    <sql id="searchCondition">
+        <if test="searchKeyword != null and searchKeyword != ''">
+            <choose>
+                <when test="searchType == 'title_content'">
+                    AND (fb.find_board_title LIKE '%' || #{searchKeyword} || '%' OR fb.find_board_content LIKE '%' || #{searchKeyword} || '%')
+                </when>
+                <when test="searchType == 'nickname'">
+                    AND u.nickname LIKE '%' || #{searchKeyword} || '%'
+                </when>
+            </choose>
+        </if>
+    </sql>
+
+    <select id="getTotalCount" parameterType="map" resultType="int">
+        SELECT COUNT(*) FROM tblFindBoard fb
+            INNER JOIN tblUser u ON fb.user_id = u.user_id 
+        WHERE (fb.find_board_report_status IS NULL OR fb.find_board_report_status != 'N')
+        <include refid="searchCondition"/>
+    </select>
+    
+ <insert id="addPost" parameterType="findboardDTO">
+    INSERT INTO tblFindBoard (
+        find_board_id, user_id, find_board_title, find_board_content, find_board_report_status
+        ) VALUES (
+        seq_find_board.NEXTVAL, #{user_id}, #{find_board_title}, #{find_board_content}, 'Y'
+        )
+  </insert>
+<update id="updatePost" parameterType="findboardDTO">
+    UPDATE tblFindBoard SET 
+        find_board_title = #{find_board_title}, 
+        find_board_content = #{find_board_content}, 
+        find_board_update = SYSDATE
+        WHERE find_board_id = #{find_board_id}
+</update>
+    <delete id="deletePost" parameterType="int">
+        DELETE FROM tblFindBoard WHERE find_board_id = #{boardSeq}
+    </delete>
+
+   <select id="getPost" parameterType="int" resultType="findboardDTO">
+    SELECT fb.*, u.nickname
+    FROM tblFindBoard fb
+        INNER JOIN tblUser u ON fb.user_id = u.user_id
+    WHERE fb.find_board_id = #{_parameter}
+</select>
+
+    
+    <update id="updateViewCount" parameterType="int">
+        UPDATE tblFindBoard SET find_board_view_count = find_board_view_count + 1 WHERE find_board_id = #{boardSeq}
+    </update>
+
+    <select id="getLikeCount" parameterType="int" resultType="int">
+        SELECT COUNT(*) FROM tblFindLikes WHERE find_board_id = #{boardSeq}
+    </select>
+    <select id="checkLike" parameterType="map" resultType="int">
+        SELECT COUNT(*) FROM tblFindLikes WHERE find_board_id = #{boardSeq} AND user_id = #{userId}
+    </select>
+    <insert id="addLike" parameterType="map">
+        INSERT INTO tblFindLikes (find_board_id, user_id) VALUES (#{boardSeq}, #{userId})
+    </insert>
+    <delete id="removeLike" parameterType="map">
+        DELETE FROM tblFindLikes WHERE find_board_id = #{boardSeq} AND user_id = #{userId}
+    </delete>
+
+    <select id="getScrapCount" parameterType="int" resultType="int">
+        SELECT COUNT(*) FROM tblFindScrap WHERE find_board_id = #{boardSeq}
+    </select>
+    <select id="checkScrap" parameterType="map" resultType="int">
+        SELECT COUNT(*) FROM tblFindScrap WHERE find_board_id = #{boardSeq} AND user_id = #{userId}
+    </select>
+    <insert id="addScrap" parameterType="map">
+        INSERT INTO tblFindScrap (find_scrap_id, find_board_id, user_id) VALUES (seq_find_scrap.NEXTVAL, #{boardSeq}, #{userId})
+    </insert>
+    <delete id="removeScrap" parameterType="map">
+        DELETE FROM tblFindScrap WHERE find_board_id = #{boardSeq} AND user_id = #{userId}
+    </delete>
+
+    <insert id="addReport" parameterType="map">
+        INSERT INTO tblReports (report_id, report_target_type, report_target_id, user_id, reported_user_id, report_reason_type)
+        VALUES (seq_reports.NEXTVAL, 'findboard', #{boardSeq}, #{reporterId}, #{reportedUserId}, #{reason})
+    </insert>
+    <update id="updateReportStatus" parameterType="int">
+        UPDATE tblFindBoard SET find_board_report_status = 'PENDING' WHERE find_board_id = #{boardSeq}
+    </update>
+    
+    <select id="getPopularKeywords" resultType="map">
+        SELECT keyword, COUNT(*) as count
+        FROM tblFindBoard,
+            TABLE(
+                CAST(
+                    MULTISET(
+                        SELECT REGEXP_SUBSTR(find_board_keyword, '[^,]+', 1, LEVEL) FROM DUAL CONNECT BY LEVEL &lt;= LENGTH(find_board_keyword) - LENGTH(REPLACE(find_board_keyword, ',')) + 1
+                    ) AS SYS.ODCIVARCHAR2LIST
+                )
+            ) keyword
+        WHERE find_board_keyword IS NOT NULL
+        GROUP BY keyword
+        ORDER BY count DESC
+    </select>
+    
+    <select id="getCommentList" parameterType="int" resultType="findcommentDTO">
+    SELECT 
+        fc.*, u.nickname
+    FROM tblFindComment fc
+    INNER JOIN tblUser u ON fc.user_id = u.user_id
+    WHERE fc.find_board_id = #{boardSeq}
+    ORDER BY fc.find_comment_id ASC
+</select>
+
+<select id="getCommentAuthor" parameterType="int" resultType="int">
+    SELECT user_id FROM tblFindComment WHERE find_comment_id = #{commentId}
+</select>
+
+<insert id="addComment" parameterType="findcommentDTO">
+    INSERT INTO tblFindComment 
+        (find_comment_id, find_board_id, user_id, find_comment_content)
+    VALUES 
+        (seq_find_comment.NEXTVAL, #{find_board_id}, #{user_id}, #{find_comment_content})
+</insert>
+
+<update id="updateComment" parameterType="findcommentDTO">
+    UPDATE tblFindComment SET 
+        find_comment_content = #{find_comment_content}
+    WHERE find_comment_id = #{find_comment_id}
+</update>
+
+<delete id="deleteComment" parameterType="int">
+    DELETE FROM tblFindComment WHERE find_comment_id = #{commentId}
+</delete>
+
+
+</mapper>

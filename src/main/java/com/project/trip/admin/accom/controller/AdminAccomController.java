@@ -53,7 +53,7 @@ public class AdminAccomController {
         model.addAttribute("maxPriceFromDB", maxPriceFromDB);
 
         // accomlist.jsp를 Tiles 뷰 이름으로 반환
-        return "content/admin/accomlist"; 
+        return "admin/accomlist"; 
     }
 
     /**
@@ -62,7 +62,7 @@ public class AdminAccomController {
     @GetMapping("/add")
     public String addAccomForm() {
         // accomadd.jsp를 Tiles 뷰 이름으로 반환
-        return "content/admin/accomadd";
+        return "admin/accomadd";
     }
     
     /**
@@ -90,7 +90,7 @@ public class AdminAccomController {
     public String viewAccom(@RequestParam("roomId") int roomId, Model model) {
         accomAllInfoDTO dto = accomService.getAccommodationDetails(roomId);
         model.addAttribute("dto", dto);
-        return "content/admin/accomview"; // accomview.jsp 뷰 이름
+        return "admin/accomview"; // accomview.jsp 뷰 이름
     }
 
     /**
@@ -105,7 +105,7 @@ public class AdminAccomController {
         
         model.addAttribute("dto", dto);
         
-        return "content/admin/accomedit"; // accomedit.jsp 뷰 이름
+        return "admin/accomedit"; // accomedit.jsp 뷰 이름
     }
 
     /**

@@ -262,6 +262,39 @@
     WHERE car_reservation_id = #{carseq}
 </update>
 
+<!-- 여행 루트 목록 -->
+<select id="getUserRouteTotalCount" parameterType="map" resultType="int">
+    SELECT COUNT(*) AS cnt 
+    FROM tblUserRoute 
+    WHERE user_id = #{seq}
+    <if test='search == "y"'>
+        AND ${column} LIKE '%' || #{word} || '%'
+    </if>
+</select>
+
+<select id="UserRouteList" parameterType="map" resultType="com.project.trip.mypage.model.UserRouteViewDTO">
+    SELECT * FROM (
+        SELECT a.*, ROWNUM AS rnum 
+        FROM (
+            SELECT 
+                user_route_id AS seq,
+                user_id AS useq,
+                user_route_title AS userroutetitle,
+                user_route_days AS userroutedays,
+                TO_CHAR(user_route_startdate, 'YYYY-MM-DD') AS userroutestartdate,
+                TO_CHAR(user_route_enddate, 'YYYY-MM-DD') AS userrouteenddate,
+                user_route_region AS userrouteregion
+            FROM tblUserRoute 
+            WHERE user_id = #{seq}
+            <if test='search == "y"'>
+                AND ${column} LIKE '%' || #{word} || '%'
+            </if>
+            ORDER BY user_route_id DESC
+        ) a
+    ) 
+    WHERE rnum BETWEEN #{begin} AND #{end}
+</select>
+
 </mapper>
 
 

@@ -7,13 +7,13 @@
 	<meta charset="UTF-8">
 </head>
 <body>
+	<div class="page-findpw-container">
 	
-	
-	<div id="main">
+	<div id="main"> 
 		<h1>비밀번호 찾기</h1>
 		
 		<form>
-		<table class="borad-title">
+		<table class="board-title">
 			
 			<tr>
 				<th>아이디</th>
@@ -23,24 +23,23 @@
 			<tr>
 				<th>이메일</th>
 				<td>
-					<div>
-						<input type="email" name="email" id="email" required class="long">
-						
-						</div>
-					
+					<div class="email-box"> <input type="email" name="email" id="email" required class="long">
+					</div>
 					</td>
 			</tr>
 			
 		</table>
 		
-		<div>
-			<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/member/login';">돌아가기</button>
-			<button type="button" class="btn" id="btnPwSearch">임시 비밀번호 발급</button>
-		</div>
+		<div class="action-buttons">
+		    <button type="button" class="btn btn-primary" id="btnPwSearch">임시 비밀번호 발급</button>
+    <button type="button" class="btn btn-secondary" onclick="location.href='${pageContext.request.contextPath}/member/login';">돌아가기</button>
+</div>
 		
 		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
 	</form>
 	</div>
+	
+</div>
 	
 	
 	<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -88,7 +87,7 @@
 	                location.href = contextPath + '/member/login'; // 로그인 페이지로 이동
 	            } else {
 	                // 실패
-	                alert('일치하는 회원 정보가 없습니다. 아이디와 이메일을 다시 확인해주세요.');
+	                alert('일치하는 회원 정보가 없거나 사용이 불가능한 계정입니다. 다시 확인해주세요.');
 	            }
 	        },
 	        error: function(a, b, c) {

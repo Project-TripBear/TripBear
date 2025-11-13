@@ -5,7 +5,7 @@
 <!-- views > content > member > add.jsp -->
 <h2>회원 가입</h2>
 
-<form method="POST" action="/trip/member/registerok">
+<%-- <form method="POST" action="/trip/member/registerok">
 	<table class="borad-title">
 		<tr>
 			<th>아이디</th>
@@ -16,6 +16,12 @@
 			<td><input type="password" name="pw" id="pw" required
 				class="short"></td>
 		</tr>
+		
+		<tr>
+			<th>암호 확인</th>
+			<td><input type="password" id="pw_check" required
+				class="short"></td>
+			</tr>
 		<tr>
 			<th>이름</th>
 			<td><input type="text" name="name" id="name" required
@@ -57,11 +63,6 @@
 				class="short"></td>
 		</tr>
 
-		<!-- <tr>
-				<th>주소</th>
-				<td><input type="text" name="address" id="address" class="long"></td>
-			</tr> -->
-
 		<tr>
 			<th>주소</th>
 			<td><input type="text" name="address" id="address"
@@ -87,7 +88,7 @@
 		<tr>
 			<th>몸무게</th>
 			<td><input type="number" name="weight" id="weight" class="short"
-				min="0"  placeholder="숫자만 입력">kg</td>
+				min="0" placeholder="숫자만 입력">kg</td>
 		</tr>
 
 		<tr>
@@ -101,8 +102,99 @@
 	</div>
 	<input type="hidden" name="${_csrf.parameterName}"
 		value="${_csrf.token}">
-</form>
+</form> --%>
+<div class="page-register-container"> <h2>회원 가입</h2>
 
+    <form method="POST" action="/trip/member/registerok" id="registerForm"> <table class="vertical register-form-table"> <tr>
+                <th>아이디</th>
+                <td>
+                    <input type="text" name="id" id="id" required class="short form-control">
+                    <span id="idMessage" class="validation-message"></span> </td>
+            </tr>
+            
+            <tr>
+                <th>암호</th>
+                <td><input type="password" name="pw" id="pw" required class="short form-control"></td>
+            </tr>
+            
+            <tr>
+                <th>암호 확인</th>
+                <td><input type="password" id="pw_check" required class="short form-control"></td>
+            </tr>
+            <tr>
+                <th>이름</th>
+                <td><input type="text" name="name" id="name" required class="short form-control"></td>
+            </tr>
+            <tr>
+                <th>주민등록번호</th>
+                <td>
+                    <div class="input-group">
+                        <input type="text" name="ssn" id="ssn" required class="long form-control" maxlength="14" placeholder="xxxxxx-xxxxxxx">
+                    </div>
+                </td>
+            </tr>
+            
+            <tr>
+                <th>이메일</th>
+                <td>
+                    <div class="input-group email-input-group"> <input type="email" name="email" id="email" required class="long form-control">
+                        <input type="button" value="인증 메일 보내기" id="btnMail" class="btn btn-secondary btn-small">
+                    </div>
+                    <div class="input-group validation-group">
+                        <input type="text" id="validNumber" class="short form-control" disabled maxlength="5"> 
+                        <input type="button" value="입력하기" id="btnValid" disabled class="btn btn-secondary btn-small"> 
+                        <span id="remainTime" class="validation-timer">05:00</span>
+                    </div>
+                </td>
+            </tr>
+
+            <tr>
+                <th>전화번호</th>
+                <td><input type="text" name="phoneNumber" id="phoneNumber" class="long form-control"></td>
+            </tr>
+            <tr>
+                <th>닉네임</th>
+                <td><input type="text" name="nickName" id="nickName" class="short form-control"></td>
+            </tr>
+
+            <tr>
+                <th>주소</th>
+                <td>
+                    <div class="input-group address-input-group">
+                        <input type="text" name="address" id="address" placeholder="주소 검색 버튼을 눌러주세요." readonly class="long form-control input-address">
+                        <button type="button" id="btn-address-search" class="btn btn-primary btn-small">주소 검색</button>
+                    </div>
+                </td>
+            </tr>
+
+            <tr>
+                <th>성별</th>
+                <td>
+                    <label class="radio-label"><input type="radio" name="gender" value="m" required> 남자</label> 
+                    <label class="radio-label"><input type="radio" name="gender" value="f"> 여자</label>
+                </td>
+            </tr>
+
+            <tr>
+                <th>키</th>
+                <td><input type="number" name="height" id="height" class="short form-control" min="0" placeholder="숫자만 입력">cm</td>
+            </tr>
+            <tr>
+                <th>몸무게</th>
+                <td><input type="number" name="weight" id="weight" class="short form-control" min="0" placeholder="숫자만 입력">kg</td>
+            </tr>
+
+            <tr>
+                <th>건강목표</th>
+                <td><input type="text" name="healthGoals" id="healthGoals" class="long form-control"></td>
+            </tr>
+        </table>
+        
+        <div class="action-buttons-group"> <button type="submit" class="btn btn-primary">가입하기</button>
+        </div>
+        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
+    </form>
+</div>
 
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -115,17 +207,17 @@
 
 // '주소 검색' 버튼 클릭 이벤트
 document.getElementById('btn-address-search').addEventListener('click', function() {
-    new daum.Postcode({
-        oncomplete: function(data) {
-            let addr = '';
-            if (data.userSelectedType === 'R') {
-                addr = data.roadAddress;
-            } else {
-                addr = data.jibunAddress;
-            }
-            document.getElementById("address").value = addr;
-        }
-    }).open();
+    new daum.Postcode({
+        oncomplete: function(data) {
+            let addr = '';
+            if (data.userSelectedType === 'R') {
+                addr = data.roadAddress;
+            } else {
+                addr = data.jibunAddress;
+            }
+            document.getElementById("address").value = addr;
+        }
+    }).open();
 });
 
 /* // 주민등록번호 유효성 검사 함수
@@ -139,7 +231,7 @@ function checkSSN(ssn) {
 	}
 	let checkDigit = 11 - (sum % 11);
 	if (checkDigit >= 10) checkDigit = checkDigit % 10;
-	return checkDigit === parseInt(ssnStr.charAt(12), 10); 
+	return checkDigit === parseInt(ssnStr.charAt(12), 10); 
 
 // 주민등록번호 입력 시 자동 하이픈(-) 추가
 $('#ssn').on('input', function() {
@@ -185,7 +277,7 @@ $('#id').on('blur', function() {
 	const $msg = $('#idMessage');
 	
 	// (★) 가입하기 버튼을 찾습니다. (이 코드는 form 태그 안에 <button>이 하나만 있다고 가정)
-	const $submitBtn = $('form button'); 
+	const $submitBtn = $('form button'); 
 	
 	const contextPath = '${pageContext.request.contextPath}';
 	const csrfToken = $('input[name="${_csrf.parameterName}"]').val();
@@ -249,7 +341,7 @@ $('#btnMail').click(() => {
 		
 	if ($('#email').val().trim() != '') {
 		
-        const contextPath = '${pageContext.request.contextPath}';
+        const contextPath = '${pageContext.request.contextPath}';
 		const csrfToken = $('input[name="${_csrf.parameterName}"]').val();
 		const csrfHeader = '${_csrf.parameterName}';
 		
@@ -344,12 +436,12 @@ $('#btnValid').click(() => {
 			
 			if (result.result > 0) {
 				 alert('인증에 성공했습니다.');
-	             isEmailValid = true; 
-	             
-	             clearInterval(timer);
-	             $('#remainTime').hide();
-	             $('#validNumber').prop('disabled', true); 
-	             $('#btnValid').prop('disabled', true);
+	             isEmailValid = true; 
+	             
+	             clearInterval(timer);
+	             $('#remainTime').hide();
+	             $('#validNumber').prop('disabled', true); 
+	             $('#btnValid').prop('disabled', true);
 				
 			} else {
 				alert('인증 번호가 틀립니다.');
@@ -362,6 +454,20 @@ $('#btnValid').click(() => {
 // '가입하기' 버튼 클릭 시 최종 유효성 검사
 $('form').submit((event) => {
 	
+	// ================== [ 추가된 로직 ] ==================
+	// 0. 비밀번호 일치 확인
+	const pw = $('#pw').val();
+	const pwCheck = $('#pw_check').val();
+	
+	if (pw !== pwCheck) {
+		alert('비밀번호가 일치하지 않습니다. 다시 확인해주세요.');
+		event.preventDefault(); // 폼 제출 중단
+		$('#pw_check').focus(); // 비밀번호 확인 필드에 포커스
+		return false; // 함수 종료
+	}
+	// ===================================================
+	
+	
 	// 1. 아이디 중복 확인
 	if (!isIdValid) {
 		alert('아이디 중복 확인을 통과하지 못했습니다.');
@@ -373,7 +479,7 @@ $('form').submit((event) => {
 	// 2. 이메일 인증 확인
 	if (!isEmailValid) {
 		alert('이메일 인증을 진행하세요.');
-		event.preventDefault(); 
+		event.preventDefault(); 
 		return false;
 	}
 	
@@ -388,12 +494,3 @@ $('form').submit((event) => {
 });
 
 </script>
-
-
-
-
-
-
-
-
-

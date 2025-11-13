@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.project.trip.admin.main.mapper.AdminMainMapper">
+
+    <!-- 1. 총 회원 수 -->
+    <select id="getTotalMembers" resultType="int">
+        SELECT COUNT(user_id) FROM tblUser WHERE deleted_at IS NULL
+    </select>
+
+    <!-- 2. 금일 신규 회원 수 -->
+    <select id="getNewMembersToday" resultType="int">
+        SELECT COUNT(user_id) FROM tblUser WHERE TRUNC(regdate) = TRUNC(SYSDATE)
+    </select>
+
+    <!-- 3. 현재 처리 대기 중인 신고 건수 -->
+    <select id="getPendingReportsCount" resultType="int">
+        SELECT COUNT(report_id) FROM tblReports WHERE report_status = 'PENDING'
+    </select>
+    
+    <!-- 4. 금일 신규 등록 숙소/렌터카 수 -->
+    <select id="getNewAccomCarCountToday" resultType="int">
+        SELECT 
+            (SELECT COUNT(room_id) FROM tblAccomRoom WHERE TRUNC(room_regdate) = TRUNC(SYSDATE)) +
+            (SELECT COUNT(car_id) FROM tblRentalCar WHERE TRUNC(car_regdate) = TRUNC(SYSDATE))
+        FROM dual
+    </select>
+    
+  <select id="getLatestReports" resultType="reportDTO">
+    SELECT 
+        r.report_id AS reportId,
+        r.user_id AS reporterId,  r.report_target_type AS reportTargetType,
+        r.report_target_id AS reportTargetId,
+        r.report_reason_type AS reportReasonType,
+        r.report_regdate AS reportRegdate,
+        r.report_status AS reportStatus,
+        u_reporter.nickname AS reporterNickname,
+        -- u_reported.nickname AS reportedUserNickname,  ❌ 신고당한 유저 닉네임 조인 제거
+        CASE
+            WHEN r.report_target_type = 'findboard' THEN fb.find_board_title
+            WHEN r.report_target_type = 'question' THEN qb.question_board_title  WHEN r.report_target_type = 'review' THEN rev.review_board_title    WHEN r.report_target_type = 'hotdeal' THEN hd.hotdeal_title
+            ELSE '알 수 없는 게시글'
+        END AS postTitle
+    FROM tblReports r
+    INNER JOIN tblUser u_reporter ON r.user_id = u_reporter.user_id  LEFT JOIN tblFindBoard fb ON r.report_target_type = 'findboard' AND r.report_target_id = fb.find_board_id
+    LEFT JOIN tblQuestionBoard qb ON r.report_target_type = 'question' AND r.report_target_id = qb.question_board_id  LEFT JOIN tblReviewBoard rev ON r.report_target_type = 'review' AND r.report_target_id = rev.review_post_id      LEFT JOIN tblHotDealPost hd ON r.report_target_type = 'hotdeal' AND r.report_target_id = hd.hotdeal_id
+    WHERE r.report_status = 'PENDING' ORDER BY r.report_regdate DESC
+    FETCH FIRST 5 ROWS ONLY
+</select>
+</mapper>

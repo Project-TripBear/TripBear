@@ -20,12 +20,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.trip.mypage.mapper.MemberMapper;
 import com.project.trip.mypage.mapper.MyPageMapper;
 import com.project.trip.mypage.model.AccomReservationViewDTO;
 import com.project.trip.mypage.model.BoardDTO;
 import com.project.trip.mypage.model.CarReservationViewDTO;
 import com.project.trip.mypage.model.UserDTO;
+import com.project.trip.mypage.model.UserRouteViewDTO;
 
 import lombok.RequiredArgsConstructor;
 
@@ -875,5 +877,56 @@ public class MyPageController {
 	            e.printStackTrace();
 	            return "error";
 	        }
+	    }
+	    
+	    @GetMapping("/member/userroute")
+	    public String userRoute(
+	            @RequestParam(value = "page", required = false, defaultValue = "1") int page,
+	            @RequestParam(value = "ajax", required = false) String ajax,
+	            Authentication authentication,
+	            Model model,
+	            HttpServletResponse response) throws Exception {
+	        
+	        String username = authentication.getName();
+	        UserDTO userInfo = membermapper.get(username);
+	        String seq = String.valueOf(userInfo.getSeq());
+	        
+	        // 페이징 설정
+	        int pageSize = 5; // 한 페이지에 5개
+	        int begin = ((page - 1) * pageSize) + 1;
+	        int end = begin + pageSize - 1;
+	        
+	        // Map 설정
+	        Map<String, String> map = new HashMap<>();
+	        map.put("seq", seq);
+	        map.put("begin", String.valueOf(begin));
+	        map.put("end", String.valueOf(end));
+	        map.put("search", "n");
+	        
+	        // 루트 목록 조회
+	        List<UserRouteViewDTO> list = pagemapper.UserRouteList(map);
+	        
+	        // AJAX 요청인 경우 JSON으로 반환
+	        if ("true".equals(ajax)) {
+	            response.setContentType("application/json");
+	            response.setCharacterEncoding("UTF-8");
+	            
+	            // Jackson 라이브러리로 JSON 변환
+	            ObjectMapper mapper = new ObjectMapper();
+	            String jsonResult = mapper.writeValueAsString(list);
+	            
+	            response.getWriter().print(jsonResult);
+	            return null; // View를 반환하지 않음
+	        }
+	        
+	        // 일반 요청인 경우
+	        int totalCount = pagemapper.getUserRouteTotalCount(map);
+	        int totalPage = (int) Math.ceil((double) totalCount / pageSize);
+	        
+	        model.addAttribute("list", list);
+	        model.addAttribute("nowPage", page);
+	        model.addAttribute("totalPage", totalPage);
+	        
+	        return "mypage.member.userroute";
 	    }
 }
