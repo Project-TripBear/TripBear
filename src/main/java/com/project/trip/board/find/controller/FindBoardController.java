@@ -120,9 +120,11 @@ public class FindBoardController {
         return "find.view";
     }
 
-    // --- 4-1. 게시글 수정 GET ---
     @GetMapping("/edit")
-    public String editFindBoardForm(@RequestParam("seq") int boardSeq, Model model, Authentication authentication, RedirectAttributes rttr) {
+    public String editFindBoardForm(@RequestParam("seq") int boardSeq, 
+                                    Model model, 
+                                    Authentication authentication, 
+                                    RedirectAttributes rttr) {
         
         Integer userId = getLoggedInUserId(authentication);
 
@@ -132,8 +134,13 @@ public class FindBoardController {
         }
 
         findboardDTO dto = findBoardService.getPostById(boardSeq);
-        
-        // 작성자 ID 비교: DTO의 user_id는 String, userId는 Integer이므로 비교 시 String으로 변환
+
+        // 🔥 여기 추가! dto null 체크
+        if (dto == null) {
+            rttr.addFlashAttribute("msg", "존재하지 않는 게시글입니다.");
+            return "redirect:/findboard/list";
+        }
+
         if (dto.getUser_id() == null || !dto.getUser_id().equals(String.valueOf(userId))) { 
             rttr.addFlashAttribute("msg", "수정 권한이 없습니다.");
             return "redirect:/findboard/view?seq=" + boardSeq;
@@ -142,7 +149,7 @@ public class FindBoardController {
         model.addAttribute("dto", dto);
         return "find.edit";
     }
-
+    
     // --- 4-2. 게시글 수정 POST ---
     @PostMapping("/edit")
     public String editFindBoardProcess(
