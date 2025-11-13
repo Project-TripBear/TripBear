@@ -1,6 +1,9 @@
 package com.project.trip.AI.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -13,7 +16,12 @@ import com.project.trip.AI.model.AiRouteRequestDTO;
 import com.project.trip.AI.model.RouteDTO;
 import com.project.trip.AI.model.WeatherDTO;
 import com.project.trip.AI.model.gemini.GeminiApiResponse;
+import com.project.trip.AI.model.gemini.GeminiApiResponse.Content;
 import com.project.trip.AI.model.gemini.GeminiApiResponse.Part;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Service
 public class GeminiServiceImpl implements GeminiService{
@@ -23,7 +31,16 @@ public class GeminiServiceImpl implements GeminiService{
 	
 	private Gson gson = new Gson();
 
-	private String GEMINI_API_KEY = "";
+	@Value("${gemini.api.key}")
+	private String GEMINI_API_KEY;
+	
+	@Data
+	@NoArgsConstructor
+	@AllArgsConstructor
+	static class GeminiRequest {
+		
+		private List<Content> contents;
+	}
 	
 	@Override
 	public RouteDTO generateRoute(AiRouteRequestDTO preferences, WeatherDTO weather) {
@@ -33,17 +50,25 @@ public class GeminiServiceImpl implements GeminiService{
 		
 		try {
 			
-			String escapedPrompt = prompt.replace("\"", "\\\"").replace("\n", "\\n");
-			String requestBody = String.format("{\"contents\":[{\"parts\":[{\"text\": \"%s\"}]}]}", escapedPrompt);
-			
-			HttpHeaders headers = new HttpHeaders();
-			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-			HttpEntity<String> entity = new HttpEntity<>(requestBody, headers);
-			
-			ResponseEntity<String> response = restTemplate.postForEntity(geminiApiUrl, entity, String.class);
-			
-			String jsonResponse = response.getBody();
-			RouteDTO route = parseGeminiResponse(jsonResponse);
+			Part part = new Part(); // (from GeminiApiResponse.java)
+            part.setText(prompt);
+            
+            Content content = new Content(); // (from GeminiApiResponse.java)
+            content.setParts(List.of(part));
+            
+            GeminiRequest geminiRequest = new GeminiRequest(List.of(content));
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON); 
+
+            // 객체(geminiRequest)를 전달하면 RestTemplate이 JSON으로 자동 변환
+            HttpEntity<GeminiRequest> entity = new HttpEntity<>(geminiRequest, headers);
+            ResponseEntity<String> response = restTemplate.postForEntity(geminiApiUrl, entity, String.class);
+
+            String jsonResponse = response.getBody();
+            
+        
+            RouteDTO route = parseGeminiResponse(jsonResponse);
 			
 			if (route == null) {
 		
@@ -77,7 +102,10 @@ public class GeminiServiceImpl implements GeminiService{
 				
 				return gson.fromJson(extractedJsonText, RouteDTO.class);
 				
-			} 
+			} else if (jsonResponse.contains("error")) {
+                 System.err.println("-----Gemini API가 오류 응답 반환-----");
+                 System.err.println(jsonResponse);
+            }
 			
 		} catch (Exception e) {
 			e.printStackTrace();
