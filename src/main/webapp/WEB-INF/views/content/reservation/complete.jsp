@@ -10,8 +10,8 @@
     </div>
 
     <div class="btn-box">
-        <a href="${pageContext.request.contextPath}/mypage/reservation-list" class="link-btn">내 예약 내역 보기</a>
-        <a href="${pageContext.request.contextPath}/" class="link-btn">홈으로 가기</a>
+        <a href="${pageContext.request.contextPath}/member/carreservation" class="link-btn">내 예약 내역 보기</a>
+        <a href="${pageContext.request.contextPath}/main" class="link-btn">홈으로 가기</a>
     </div>
 </div>
 

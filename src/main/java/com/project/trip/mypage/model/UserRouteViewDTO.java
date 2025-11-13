@@ -12,4 +12,6 @@ public class UserRouteViewDTO {
     private String userroutedays;       // user_route_days
     private String userroutestartdate;  // user_route_startdate
     private String userrouteenddate;    // user_route_enddate
+    
+    private String userrouteregion;		//예약 url에 보낼 데이터
 }

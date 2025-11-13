@@ -5,21 +5,19 @@
 
 <mapper namespace="com.project.trip.board.find.mapper.FindBoardMapper">
 
-    <select id="getList" parameterType="map" resultType="findboardDTO">
-        SELECT * FROM 
-            (SELECT a.*, ROWNUM as rnum FROM 
-                (SELECT fb.*, u.nickname, 
-                    (SELECT COUNT(*) FROM tblFindComment WHERE find_board_id = fb.find_board_id) as commentCount, 
-                    (SELECT COUNT(*) FROM tblFindLikes WHERE find_board_id = fb.find_board_id) as likeCount 
-                FROM tblFindBoard fb 
-                    INNER JOIN tblUser u ON fb.user_id = u.user_id 
-                WHERE (fb.find_board_report_status IS NULL OR fb.find_board_report_status != 'N')
-                
-                <include refid="searchCondition"/>
-                
-                ORDER BY fb.find_board_id DESC) a)
-        WHERE rnum BETWEEN #{start} AND #{end}
-    </select>
+<select id="getList" parameterType="map" resultType="findboardDTO">
+    SELECT * FROM 
+        (SELECT a.*, ROWNUM as rnum FROM 
+            (SELECT fb.*, u.nickname, 
+                (SELECT COUNT(*) FROM tblFindComment WHERE find_board_id = fb.find_board_id) as commentCount, 
+                (SELECT COUNT(*) FROM tblFindLikes WHERE find_board_id = fb.find_board_id) as likeCount 
+            FROM tblFindBoard fb 
+                INNER JOIN tblUser u ON fb.user_id = u.user_id 
+            WHERE fb.find_board_report_status != 'N' <include refid="searchCondition"/>
+            
+            ORDER BY fb.find_board_id DESC) a)
+    WHERE rnum BETWEEN #{start} AND #{end}
+</select>
 
     <sql id="searchCondition">
         <if test="searchKeyword != null and searchKeyword != ''">
@@ -41,34 +39,31 @@
         <include refid="searchCondition"/>
     </select>
     
-    <insert id="addPost" parameterType="findboardDTO">
-        INSERT INTO tblFindBoard (
-            find_board_id, user_id, find_board_title, find_board_content, find_board_report_status, find_board_image, find_board_keyword
+ <insert id="addPost" parameterType="findboardDTO">
+    INSERT INTO tblFindBoard (
+        find_board_id, user_id, find_board_title, find_board_content, find_board_report_status
         ) VALUES (
-            seq_find_board.NEXTVAL, #{user_id}, #{find_board_title}, #{find_board_content}, 'Y', #{find_board_image, jdbcType=VARCHAR}, #{find_board_keyword, jdbcType=VARCHAR}
+        seq_find_board.NEXTVAL, #{user_id}, #{find_board_title}, #{find_board_content}, 'Y'
         )
-    </insert>
-    
-    <update id="updatePost" parameterType="findboardDTO">
-        UPDATE tblFindBoard SET 
-            find_board_title = #{find_board_title}, 
-            find_board_content = #{find_board_content}, 
-            find_board_update = SYSDATE,
-            find_board_image = #{find_board_image, jdbcType=VARCHAR},
-            find_board_keyword = #{find_board_keyword, jdbcType=VARCHAR}
+  </insert>
+<update id="updatePost" parameterType="findboardDTO">
+    UPDATE tblFindBoard SET 
+        find_board_title = #{find_board_title}, 
+        find_board_content = #{find_board_content}, 
+        find_board_update = SYSDATE
         WHERE find_board_id = #{find_board_id}
-    </update>
-
+</update>
     <delete id="deletePost" parameterType="int">
         DELETE FROM tblFindBoard WHERE find_board_id = #{boardSeq}
     </delete>
 
-    <select id="getPost" parameterType="int" resultType="findboardDTO">
-        SELECT fb.*, u.nickname
-        FROM tblFindBoard fb 
-            INNER JOIN tblUser u ON fb.user_id = u.user_id 
-        WHERE fb.find_board_id = #{boardSeq}
-    </select>
+   <select id="getPost" parameterType="int" resultType="findboardDTO">
+    SELECT fb.*, u.nickname
+    FROM tblFindBoard fb
+        INNER JOIN tblUser u ON fb.user_id = u.user_id
+    WHERE fb.find_board_id = #{_parameter}
+</select>
+
     
     <update id="updateViewCount" parameterType="int">
         UPDATE tblFindBoard SET find_board_view_count = find_board_view_count + 1 WHERE find_board_id = #{boardSeq}
@@ -122,5 +117,36 @@
         GROUP BY keyword
         ORDER BY count DESC
     </select>
+    
+    <select id="getCommentList" parameterType="int" resultType="findcommentDTO">
+    SELECT 
+        fc.*, u.nickname
+    FROM tblFindComment fc
+    INNER JOIN tblUser u ON fc.user_id = u.user_id
+    WHERE fc.find_board_id = #{boardSeq}
+    ORDER BY fc.find_comment_id ASC
+</select>
+
+<select id="getCommentAuthor" parameterType="int" resultType="int">
+    SELECT user_id FROM tblFindComment WHERE find_comment_id = #{commentId}
+</select>
+
+<insert id="addComment" parameterType="findcommentDTO">
+    INSERT INTO tblFindComment 
+        (find_comment_id, find_board_id, user_id, find_comment_content)
+    VALUES 
+        (seq_find_comment.NEXTVAL, #{find_board_id}, #{user_id}, #{find_comment_content})
+</insert>
+
+<update id="updateComment" parameterType="findcommentDTO">
+    UPDATE tblFindComment SET 
+        find_comment_content = #{find_comment_content}
+    WHERE find_comment_id = #{find_comment_id}
+</update>
+
+<delete id="deleteComment" parameterType="int">
+    DELETE FROM tblFindComment WHERE find_comment_id = #{commentId}
+</delete>
+
 
 </mapper>

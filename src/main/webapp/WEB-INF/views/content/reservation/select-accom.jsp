@@ -174,11 +174,11 @@ body {
 								<!-- 다음 단계: 차량 선택 페이지로 이동 -->
 								<form method="get"
 									action="${pageContext.request.contextPath}/reservation/select-car">
-									<input type="hidden" name="region" value="${region}" /> <input
-										type="hidden" name="checkin" value="${checkin}" /> <input
-										type="hidden" name="checkout" value="${checkout}" /> <input
-										type="hidden" name="people" value="${people}" /> <input
-										type="hidden" name="roomId" value="${r.roomId}" />
+									<input type="hidden" name="region" value="${region}" /> 
+									<input type="hidden" name="checkin" value="${checkin}" /> 
+									<input type="hidden" name="checkout" value="${checkout}" /> 
+									<input type="hidden" name="people" value="${people}" /> 
+									<input type="hidden" name="roomId" value="${r.roomId}" />
 									<button class="btn primary" type="submit">이 방 선택</button>
 								</form>
 							</div>

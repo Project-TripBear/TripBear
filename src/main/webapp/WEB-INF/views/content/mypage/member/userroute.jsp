@@ -71,8 +71,10 @@
                                 </div>
                             </div>
                             
-                            <form action="${pageContext.request.contextPath}/reservation/accomList.do" method="get" class="route-booking-form"> <input type="hidden" name="start_date" value="${dto.userroutestartdate}">
-                                <input type="hidden" name="end_date" value="${dto.userrouteenddate}">
+                            <form action="${pageContext.request.contextPath}/reservation/select-accom" method="get" class="route-booking-form"> 
+                            	<input type="hidden" name="region" value="${dto.userrouteregion}">
+                            	<input type="hidden" name="checkin" value="${dto.userroutestartdate}">
+                                <input type="hidden" name="checkout" value="${dto.userrouteenddate}">
                                 <input type="hidden" name="people" value="${dto.userroutedays}">
                                 <button type="submit" class="btn btn-primary btn-book">예약하기</button> </form>
                             

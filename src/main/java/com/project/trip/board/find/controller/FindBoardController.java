@@ -1,47 +1,61 @@
-// 파일 경로: com.project.trip.board.find.controller.FindBoardController.java (수정본)
-
 package com.project.trip.board.find.controller;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
-// (imports ...)
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
+// ★★★ [삭제] MultipartFile 관련 Import 제거 ★★★
+// ★★★ [삭제] @Value 관련 Import 제거 ★★★
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.beans.factory.annotation.Value;
-// ★★★ Spring Security의 인증 객체 import ★★★
 import org.springframework.security.core.Authentication;
 
 import com.project.trip.board.find.model.findboardDTO;
 import com.project.trip.board.find.model.findcommentDTO;
 import com.project.trip.board.find.service.FindBoardService;
-
-// ★★★ 형님의 CustomUser 클래스 import ★★★
 import com.project.trip.mypage.model.CustomUser;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j; // 로깅을 위해 추가
 
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/findboard")
+@Slf4j // 로깅 활성화
 public class FindBoardController {
 
     private final FindBoardService findBoardService;
 
-    @Value("${app.uploadPath}")
-    private String uploadPath;
-
+    // ★★★ [핵심 수정] 로그인 사용자 ID를 Integer 타입으로 안전하게 가져오는 유틸리티 메서드 ★★★
+    private Integer getLoggedInUserId(Authentication authentication) {
+        if (authentication == null || authentication.getPrincipal() == null) {
+            return null; // 비로그인 상태
+        }
+        
+        CustomUser customUser = (CustomUser) authentication.getPrincipal();
+        // UserDTO.seq는 String 타입이므로 getUdto().getSeq() 사용
+        String seqStr = customUser.getUdto().getSeq(); 
+        
+        if (seqStr == null || seqStr.trim().isEmpty()) {
+            // seq 값이 없거나 공백인 경우, 오류 발생 방지를 위해 null 반환
+            log.warn("Authentication principal exists, but user ID (seq) is null or empty.");
+            return null; 
+        }
+        
+        try {
+            // String을 Integer로 변환 시도 (NumberFormatException 방지)
+            return Integer.parseInt(seqStr.trim()); 
+        } catch (NumberFormatException e) {
+            // seq에 숫자가 아닌 값이 들어온 경우
+            log.error("Failed to parse user ID (seq) '{}' to Integer.", seqStr, e);
+            return null; 
+        }
+    }
+    
     // --- 1. 목록 조회 ---
     @GetMapping("/list")
     public String getFindBoardList(
@@ -50,14 +64,20 @@ public class FindBoardController {
             @RequestParam(value = "searchType", required = false) String searchType,
             @RequestParam(value = "searchKeyword", required = false) String searchKeyword
     ) {
-        // ... (서비스 로직)
+        // ★★★ [목록 출력 오류 해결] 서비스 호출 및 결과 Map을 Model에 추가 ★★★
+        Map<String, Object> resultMap = findBoardService.getPostList(currentPage, searchType, searchKeyword);
+        
+        model.addAttribute("list", resultMap.get("list"));
+        model.addAttribute("totalCount", resultMap.get("totalCount"));
+        model.addAttribute("paging", resultMap.get("paging")); 
+        model.addAttribute("searchMap", resultMap.get("map"));
+        
         return "find.list"; 
     }
     
-    // --- 2. 게시글 등록 GET ---
+    // --- 2-1. 게시글 등록 GET ---
     @GetMapping("/add")
     public String addFindBoardForm() {
-        // (Spring Security가 이미 보호하므로 세션 체크 삭제됨)
         return "find.add";
     }
 
@@ -65,19 +85,21 @@ public class FindBoardController {
     @PostMapping("/add")
     public String addFindBoardProcess(
             findboardDTO dto, 
-            @RequestParam("attachFile") MultipartFile file, 
-            Authentication authentication, // ★★★ (수정) Authentication 사용
+            // ★★★ [삭제] @RequestParam("attachFile") MultipartFile file 제거 ★★★
+            Authentication authentication, 
             RedirectAttributes rttr) {
         
-        // ★★★ (수정) 500 오류 해결: principal에서 UserDTO의 'seq' 가져오기 ★★★
-        CustomUser customUser = (CustomUser) authentication.getPrincipal();
-        Integer userId = Integer.parseInt(customUser.getUdto().getSeq());
+        Integer userId = getLoggedInUserId(authentication);
         
-        dto.setUser_id(userId);
+        if (userId == null) {
+            rttr.addFlashAttribute("msg", "로그인 정보가 유효하지 않아 게시글을 등록할 수 없습니다.");
+            return "redirect:/login"; // 비로그인 시 로그인 페이지로 리다이렉트 (필요한 경우)
+        }
         
-        // ... (파일 업로드 로직) ...
+        // DTO의 user_id는 String이므로, Integer를 String으로 변환하여 설정
+        dto.setUser_id(String.valueOf(userId)); 
         
-        findBoardService.addPost(dto);
+        findBoardService.addPost(dto); // ★★★ [삭제] 파일/키워드 처리 로직 제거됨 ★★★
         rttr.addFlashAttribute("msg", "게시글이 등록되었습니다.");
         return "redirect:/findboard/list";
     }
@@ -86,12 +108,8 @@ public class FindBoardController {
     @GetMapping("/view")
     public String viewFindBoard(@RequestParam("seq") int boardSeq, Model model, Authentication authentication) {
         
-        Integer userId = null;
-        if (authentication != null) {
-            // ★★★ (수정) 로그인한 사용자의 seq 가져오기 ★★★
-            CustomUser customUser = (CustomUser) authentication.getPrincipal();
-            userId = Integer.parseInt(customUser.getUdto().getSeq());
-        }
+        // ★★★ [수정] 안전 메서드 사용: Integer 타입으로 좋아요/스크랩 확인용 userId 전달 ★★★
+        Integer userId = getLoggedInUserId(authentication); 
         
         findboardDTO dto = findBoardService.getPostDetail(boardSeq, userId);
         List<findcommentDTO> commentList = findBoardService.getCommentList(boardSeq);
@@ -102,17 +120,21 @@ public class FindBoardController {
         return "find.view";
     }
 
-    // --- 4. 게시글 수정 GET ---
+    // --- 4-1. 게시글 수정 GET ---
     @GetMapping("/edit")
     public String editFindBoardForm(@RequestParam("seq") int boardSeq, Model model, Authentication authentication, RedirectAttributes rttr) {
         
-        // ★★★ (수정) 로그인한 사용자의 seq 가져오기 ★★★
-        CustomUser customUser = (CustomUser) authentication.getPrincipal();
-        Integer userId = Integer.parseInt(customUser.getUdto().getSeq());
+        Integer userId = getLoggedInUserId(authentication);
+
+        if (userId == null) {
+            rttr.addFlashAttribute("msg", "로그인이 필요합니다.");
+            return "redirect:/findboard/view?seq=" + boardSeq;
+        }
 
         findboardDTO dto = findBoardService.getPostById(boardSeq);
         
-        if (dto.getUser_id() != userId) {
+        // 작성자 ID 비교: DTO의 user_id는 String, userId는 Integer이므로 비교 시 String으로 변환
+        if (dto.getUser_id() == null || !dto.getUser_id().equals(String.valueOf(userId))) { 
             rttr.addFlashAttribute("msg", "수정 권한이 없습니다.");
             return "redirect:/findboard/view?seq=" + boardSeq;
         }
@@ -125,26 +147,40 @@ public class FindBoardController {
     @PostMapping("/edit")
     public String editFindBoardProcess(
             findboardDTO dto, 
-            @RequestParam("attachFile") MultipartFile newFile,
+            // ★★★ [삭제] @RequestParam("attachFile") MultipartFile newFile 제거 ★★★
+            Authentication authentication,
             RedirectAttributes rttr) {
+    	
+    	if (dto == null || dto.getUser_id() == null || dto.getFind_board_id() == 0) {
+            rttr.addFlashAttribute("msg", "수정 정보가 누락되었습니다.");
+            return "redirect:/findboard/list"; 
+        }
+        // 작성자 검증을 위해 현재 로그인 ID를 다시 가져옴 (선택 사항이나 보안상 권장)
+        Integer sessionUserId = getLoggedInUserId(authentication);
         
-        // ... (파일 수정 로직) ...
+        if (sessionUserId == null || !dto.getUser_id().equals(String.valueOf(sessionUserId))) {
+            rttr.addFlashAttribute("msg", "수정 권한이 없습니다.");
+            return "redirect:/findboard/view?seq=" + dto.getFind_board_id();
+        }
         
-        findBoardService.updatePost(dto);
+        findBoardService.updatePost(dto); // ★★★ [삭제] 파일/키워드 처리 로직 제거됨 ★★★
         rttr.addFlashAttribute("msg", "게시글이 수정되었습니다.");
-        return "redirect:/findboard/view?seq=" + dto.getFind_board_id();
+        return "redirect:/findboard/view?seq=" + dto.getFind_board_id(); // 👈 이 부분에서 find_board_id가 null이면 NPE 발생    }
     }
-    
     // --- 5. 게시글 삭제 ---
     @GetMapping("/delete")
     public String deleteFindBoard(@RequestParam("seq") int boardSeq, Authentication authentication, RedirectAttributes rttr) {
 
-        // ★★★ (수정) 로그인한 사용자의 seq 가져오기 ★★★
-        CustomUser customUser = (CustomUser) authentication.getPrincipal();
-        Integer userId = Integer.parseInt(customUser.getUdto().getSeq());
+        Integer userId = getLoggedInUserId(authentication);
         
+        if (userId == null) {
+            rttr.addFlashAttribute("msg", "로그인이 필요합니다.");
+            return "redirect:/findboard/view?seq=" + boardSeq;
+        }
+
         findboardDTO dto = findBoardService.getPostById(boardSeq);
-        if (dto.getUser_id() != userId) {
+        // 작성자 ID 비교
+        if (dto.getUser_id() == null || !dto.getUser_id().equals(String.valueOf(userId))) { 
             rttr.addFlashAttribute("msg", "삭제 권한이 없습니다.");
             return "redirect:/findboard/view?seq=" + boardSeq;
         }
@@ -153,14 +189,18 @@ public class FindBoardController {
         rttr.addFlashAttribute("msg", "게시글이 삭제되었습니다.");
         return "redirect:/findboard/list";
     }
-    
+
     // --- 6. 좋아요 토글 ---
     @GetMapping("/like")
     public String toggleLike(@RequestParam("seq") int boardSeq, Authentication authentication, RedirectAttributes rttr) {
 
-        // ★★★ (수정) 로그인한 사용자의 seq 가져오기 ★★★
-        CustomUser customUser = (CustomUser) authentication.getPrincipal();
-        Integer userId = Integer.parseInt(customUser.getUdto().getSeq());
+        // Service/Mapper는 Integer를 요구하므로 Integer 타입으로 사용
+        Integer userId = getLoggedInUserId(authentication);
+        
+        if (userId == null) {
+            rttr.addFlashAttribute("msg", "로그인이 필요합니다.");
+            return "redirect:/findboard/view?seq=" + boardSeq;
+        }
         
         findBoardService.toggleLike(boardSeq, userId);
         return "redirect:/findboard/view?seq=" + boardSeq;
@@ -170,37 +210,43 @@ public class FindBoardController {
     @GetMapping("/scrap")
     public String toggleScrap(@RequestParam("seq") int boardSeq, Authentication authentication, RedirectAttributes rttr) {
 
-        // ★★★ (수정) 로그인한 사용자의 seq 가져오기 ★★★
-        CustomUser customUser = (CustomUser) authentication.getPrincipal();
-        Integer userId = Integer.parseInt(customUser.getUdto().getSeq());
+        // Service/Mapper는 Integer를 요구하므로 Integer 타입으로 사용
+        Integer userId = getLoggedInUserId(authentication);
+        
+        if (userId == null) {
+            rttr.addFlashAttribute("msg", "로그인이 필요합니다.");
+            return "redirect:/findboard/view?seq=" + boardSeq;
+        }
         
         findBoardService.toggleScrap(boardSeq, userId);
         return "redirect:/findboard/view?seq=" + boardSeq;
     }
-
-    // --- 8. 신고 폼 GET ---
-    @GetMapping("/report")
+ // --- 8. 신고 폼 GET ---
+    @GetMapping("/report") // ★★★ 이 부분이 반드시 @GetMapping 이어야 합니다. ★★★
     public String reportForm(@RequestParam("boardSeq") int boardSeq, @RequestParam("reportedUserId") int reportedUserId, Model model) {
-        // ... (모델 추가)
+        // ... (필요한 모델 추가 로직)
+        model.addAttribute("boardSeq", boardSeq);
+        model.addAttribute("reportedUserId", reportedUserId);
         return "find.report"; 
     }
-
     // --- 8-2. 신고 POST ---
     @PostMapping("/report")
     public String reportProcess(@RequestParam int boardSeq, 
                                 @RequestParam int reportedUserId, 
                                 @RequestParam String reason, 
-                                Authentication authentication, 
-                                RedirectAttributes rttr) {
+                                Authentication authentication) { // RedirectAttributes 제거
         
-        // ★★★ (수정) 로그인한 사용자의 seq 가져오기 (reporterId) ★★★
-        CustomUser customUser = (CustomUser) authentication.getPrincipal();
-        Integer reporterId = Integer.parseInt(customUser.getUdto().getSeq());
+        Integer reporterId = getLoggedInUserId(authentication);
+
+        if (reporterId == null) {
+            return "forward:/WEB-INF/views/inc/report_failure_alert.jsp"; 
+        }
 
         try {
             findBoardService.addReport(boardSeq, reporterId, reportedUserId, reason);
             return "forward:/WEB-INF/views/inc/report_success_alert.jsp"; 
         } catch (Exception e) {
+            log.error("Error during reporting process: {}", e.getMessage(), e);
             return "forward:/WEB-INF/views/inc/report_failure_alert.jsp"; 
         }
     }
@@ -209,11 +255,15 @@ public class FindBoardController {
     @PostMapping("/addcomment")
     public String addCommentProcess(findcommentDTO dto, Authentication authentication) {
 
-        // ★★★ (수정) 로그인한 사용자의 seq 가져오기 ★★★
-        CustomUser customUser = (CustomUser) authentication.getPrincipal();
-        Integer userId = Integer.parseInt(customUser.getUdto().getSeq());
+        Integer userId = getLoggedInUserId(authentication);
         
-        dto.setUser_id(userId);
+        if (userId == null) {
+            // 로그인 필요 시, 처리 방식에 따라 리다이렉트 변경 가능
+            return "redirect:/findboard/view?seq=" + dto.getFind_board_id();
+        }
+        
+        // findcommentDTO의 user_id는 int 타입이므로, Integer를 바로 설정
+        dto.setUser_id(userId); 
         findBoardService.addComment(dto);
         
         return "redirect:/findboard/view?seq=" + dto.getFind_board_id();
@@ -223,9 +273,12 @@ public class FindBoardController {
     @PostMapping("/editcomment")
     public String editCommentProcess(findcommentDTO dto, @RequestParam("boardSeq") int boardSeq, Authentication authentication, RedirectAttributes rttr) {
 
-        // ★★★ (수정) 로그인한 사용자의 seq 가져오기 ★★★
-        CustomUser customUser = (CustomUser) authentication.getPrincipal();
-        Integer sessionUserId = Integer.parseInt(customUser.getUdto().getSeq());
+        Integer sessionUserId = getLoggedInUserId(authentication);
+
+        if (sessionUserId == null) {
+            rttr.addFlashAttribute("msg", "로그인이 필요합니다.");
+            return "redirect:/findboard/view?seq=" + boardSeq;
+        }
 
         int commentAuthorId = findBoardService.getCommentAuthor(dto.getFind_comment_id());
         
@@ -242,9 +295,12 @@ public class FindBoardController {
     @GetMapping("/deletecomment")
     public String deleteCommentProcess(@RequestParam int commentId, @RequestParam int boardSeq, Authentication authentication, RedirectAttributes rttr) {
         
-        // ★★★ (수정) 로그인한 사용자의 seq 가져오기 ★★★
-        CustomUser customUser = (CustomUser) authentication.getPrincipal();
-        Integer sessionUserId = Integer.parseInt(customUser.getUdto().getSeq());
+        Integer sessionUserId = getLoggedInUserId(authentication);
+
+        if (sessionUserId == null) {
+            rttr.addFlashAttribute("msg", "로그인이 필요합니다.");
+            return "redirect:/findboard/view?seq=" + boardSeq;
+        }
 
         int commentAuthorId = findBoardService.getCommentAuthor(commentId);
         
@@ -257,10 +313,6 @@ public class FindBoardController {
         return "redirect:/findboard/view?seq=" + boardSeq;
     }
     
-    // --- 12. 키워드 대시보드 ---
-    @GetMapping("/dashboard")
-    public String getKeywordDashboard(Model model) {
-        // ... (서비스 로직)
-        return "find.dashboard";
-    }
+    // ★★★ [삭제] 12. 키워드 대시보드 관련 메서드 제거 ★★★
+    // @GetMapping("/dashboard") ...
 }

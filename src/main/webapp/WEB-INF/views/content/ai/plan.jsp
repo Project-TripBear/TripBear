@@ -2,11 +2,12 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI 여행 루트 계획</title>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/route.css">
+<title>AI 여행 루트 계획</title>
     
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/asset/css/route.css">
+    <meta name="_csrf" content="${_csrf.token}">
+    <meta name="_csrf_header" content="${_csrf.headerName}">
+   
 </head>
 <body class="ai-plan-page">
     <%@ include file="/WEB-INF/views/inc/header.jsp" %>
@@ -213,6 +214,9 @@
         
     <script>
     document.addEventListener('DOMContentLoaded', function() {
+    	
+    	const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
         
     	const userChoices = {};
         const progressBar = document.getElementById('progressBar');
@@ -229,9 +233,9 @@
         const nextMonthBtn = document.getElementById('next-month');
         let currentDate = new Date();
         
-        const totalGeneralSteps = 9;
+        const totalGeneralSteps = 10;
         const totalHealthcareSteps = 4;
-        
+      
         function renderCalendar(year, month) {
             calendarDates.innerHTML = '';
             
@@ -424,38 +428,50 @@
             progressBar.style.width = '100%';
 
             // 2. 서버에 AJAX POST 요청
-            fetch('/trip/ai/generate', {
+			const base = '${pageContext.request.contextPath}';
+			
+            fetch( base + '/ai/generate', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json', 
+					[csrfHeader]: csrfToken,            
+					'X-Requested-With': 'XMLHttpRequest'
                 },
+				credentials: 'same-origin',
                 body: JSON.stringify(userChoices)
             })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Server responded with a status: ' + response.status);
-                }
-                return response.json();
-            })
-            .then(data => {
-                // 3. (중요) 성공 시, 응답으로 받은 'routeId'를 쿼리스트링으로 붙여 이동합니다.
-                if (data.success && data.routeId) {
-                    console.log('AI 루트 생성 성공. ID:', data.routeId);
-                    // (주의) '/trip'은 본인의 Context Path에 맞게 확인하세요.
-                    window.location.href = '/trip/ai/result?routeId=' + data.routeId;
-                } else {
-                    // 4. 서버 로직상 실패 시
-                    loadingContainer.style.display = 'none';
-                    alert('루트 생성에 실패했습니다: ' + (data.message || '알 수 없는 오류'));
-                }
-            })
-            .catch(error => {
-                // 5. 네트워크 오류 등 요청 자체가 실패했을 때
-                console.error('Error:', error);
-                loadingContainer.style.display = 'none';
-                alert('서버와 통신 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
-            });
-        }
+			  .then(async (res) => {
+			    const ctype = res.headers.get('content-type') || '';
+
+			    if (!res.ok) {
+			      // 401/403/302 등 상태를 그대로 보여주자
+			      const text = await res.text();
+			      throw new Error('HTTP ' + res.status + '. Body: ' + text.slice(0, 200));
+			    }
+
+			    if (!ctype.includes('application/json')) {
+			      // 시큐리티 302 → 로그인 페이지 HTML, 혹은 에러 HTML이 온 경우
+			      const text = await res.text();
+			      throw new Error('JSON 아님. 서버가 HTML 반환. 일부: ' + text.slice(0, 200));
+			    }
+
+			    return res.json();
+			  })
+			  .then((data) => {
+			    if (data.success && data.routeId) {
+			      // 4) 성공 이동
+			    	window.location.href = base + '/ai/result?routeId=' + data.routeId;
+			    } else {
+			      loadingContainer.style.display = 'none';
+			      alert('루트 생성 실패: ' + (data.message || '알 수 없는 오류'));
+			    }
+			  })
+			  .catch((err) => {
+			    console.error(err);
+			    loadingContainer.style.display = 'none';
+			    alert('서버 통신 오류: ' + err.message);
+			  });
+			}
         renderCalendar(currentDate.getFullYear(), currentDate.getMonth());
     });
     </script>

@@ -112,7 +112,7 @@
 				<input type="hidden" name="rentalStart" value="${param.rentalStart}">
 				<input type="hidden" name="rentalEnd" value="${param.rentalEnd}">
 				<input type="hidden" name="carId" value="${param.carId}">
-
+				
 				<!-- 버튼 -->
 				<div class="btn-wrap">
 					<button type="submit" class="confirm-btn">예약 확정하기</button>

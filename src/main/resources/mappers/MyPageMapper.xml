@@ -282,7 +282,8 @@
                 user_route_title AS userroutetitle,
                 user_route_days AS userroutedays,
                 TO_CHAR(user_route_startdate, 'YYYY-MM-DD') AS userroutestartdate,
-                TO_CHAR(user_route_enddate, 'YYYY-MM-DD') AS userrouteenddate
+                TO_CHAR(user_route_enddate, 'YYYY-MM-DD') AS userrouteenddate,
+                user_route_region AS userrouteregion
             FROM tblUserRoute 
             WHERE user_id = #{seq}
             <if test='search == "y"'>
