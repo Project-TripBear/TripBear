@@ -161,6 +161,8 @@ public class QnABoardController {
         }
 
         model.addAttribute("dto", dto);
+        model.addAttribute("categoryList", qnaBoardService.getCategoryList());
+        
         return "qna.edit";
     }
 
@@ -182,9 +184,11 @@ public class QnABoardController {
             return "redirect:/qnaboard/view?seq=" + dto.getQuestion_board_id();
         }
 
+        System.out.println("카테고리 들어온 값: " + dto.getQuestion_category_id());
+        
         qnaBoardService.updatePost(dto);
         rttr.addFlashAttribute("msg", "게시글이 수정되었습니다.");
-
+        
         return "redirect:/qnaboard/view?seq=" + dto.getQuestion_board_id();
     }
 

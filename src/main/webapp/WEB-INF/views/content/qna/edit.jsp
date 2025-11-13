@@ -5,7 +5,7 @@
 
 <main>
     <div class="notice-form-container">
-        <h2>동행 찾기 게시글 수정</h2>
+        <h2>Q&A 게시글 수정</h2>
         
         <form action="<c:url value="/qnaboard/edit"/>" method="POST" enctype="multipart/form-data">
             <sec:csrfInput />
@@ -15,6 +15,20 @@
             
             <input type="hidden" name="user_id" value="${dto.user_id}">
             <%-- <input type="hidden" name="qna_board_image" value="${dto.qna_board_image}"> (제거됨) --%>
+            
+            <!-- 카테고리 선택 -->
+			<div class="form-group">
+			    <label>카테고리</label>
+			    <select name="question_category_id" class="form-control" required>
+				    <c:forEach items="${categoryList}" var="cat">
+				        <option value="${cat.question_category_id}"
+				            ${cat.question_category_id == dto.question_category_id ? 'selected' : ''}>
+				            ${cat.question_category_name}
+				        </option>
+				    </c:forEach>
+				</select>
+
+			</div>
             
             <div class="form-group">
                 <label for="title">제목</label>
