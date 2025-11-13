@@ -66,35 +66,28 @@ public class RoutePostServiceImpl implements RoutePostService {
         mapper.increaseViewCount(routepostId);
     }
 
-    // ===== 좋아요 =====
+ // ===== 좋아요 토글 =====
     @Override
-    public boolean isLiked(Map<String, Object> map) {
-        return mapper.isLiked(map) > 0;
+    public boolean toggleLike(Map<String, Object> map) {
+        if (mapper.checkLike(map) > 0) {
+            mapper.removeLike(map);
+            return false;   // 좋아요 취소됨
+        } else {
+            mapper.addLike(map);
+            return true;    // 좋아요 추가됨
+        }
     }
 
+    // ===== 스크랩 토글 =====
     @Override
-    public int addLike(Map<String, Object> map) {
-        return mapper.addLike(map);
+    public boolean toggleScrap(Map<String, Object> map) {
+        if (mapper.checkScrap(map) > 0) {
+            mapper.removeScrap(map);
+            return false;   // 스크랩 취소됨
+        } else {
+            mapper.addScrap(map);
+            return true;    // 스크랩 추가됨
+        }
     }
 
-    @Override
-    public int removeLike(Map<String, Object> map) {
-        return mapper.removeLike(map);
-    }
-
-    // ===== 스크랩 =====
-    @Override
-    public boolean isScrapped(Map<String, Object> map) {
-        return mapper.isScrapped(map) > 0;
-    }
-
-    @Override
-    public int addScrap(Map<String, Object> map) {
-        return mapper.addScrap(map);
-    }
-
-    @Override
-    public int removeScrap(Map<String, Object> map) {
-        return mapper.removeScrap(map);
-    }
 }

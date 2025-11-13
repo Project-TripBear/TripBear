@@ -35,16 +35,15 @@ public interface RoutePostMapper {
     // 조회수 증가
     void increaseViewCount(int routepostId);
     
-    //좋아요
-    int isLiked(Map<String, Object> map);
+    // ===== 좋아요 =====
+    int checkLike(Map<String, Object> map);
     int addLike(Map<String, Object> map);
     int removeLike(Map<String, Object> map);
-    
-    //스크랩
-    int isScrapped(Map<String, Object> map);
+
+    // ===== 스크랩 =====
+    int checkScrap(Map<String, Object> map);
     int addScrap(Map<String, Object> map);
     int removeScrap(Map<String, Object> map);
-
 
 
 }

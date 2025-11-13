@@ -23,14 +23,8 @@ public interface RoutePostService {
     // ===== 조회수 =====
     void increaseViewCount(int routepostId);
 
-    // ===== 좋아요 =====
-    boolean isLiked(Map<String, Object> map);
-    int addLike(Map<String, Object> map);
-    int removeLike(Map<String, Object> map);
+    boolean toggleLike(Map<String, Object> map);
+    boolean toggleScrap(Map<String, Object> map);
 
-    // ===== 스크랩 =====
-    boolean isScrapped(Map<String, Object> map);
-    int addScrap(Map<String, Object> map);
-    int removeScrap(Map<String, Object> map);
 	
 }

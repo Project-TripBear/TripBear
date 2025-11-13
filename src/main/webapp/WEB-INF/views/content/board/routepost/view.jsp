@@ -87,7 +87,7 @@
 const routepostId = "${post.routepostId}";
 const userId = "${userId}"; // 숫자
 const userName = "${userName}"; // 아이디
-
+const contextPath = "${pageContext.request.contextPath}";
 // ✅ 댓글 목록 불러오기
 function loadComments() {
   $.getJSON("${pageContext.request.contextPath}/api/routepost/comment/list/" + routepostId, function(list) {
@@ -197,39 +197,42 @@ $(document).on("click", ".btn-cancel", function() {
 });
 
 
-// ✅ 좋아요
 $("#btn-like").click(function() {
-  const liked = $(this).hasClass("active");
-  $.ajax({
-    url: "${pageContext.request.contextPath}/api/routepost/like",
-    type: liked ? "DELETE" : "POST",
-    contentType: "application/json",
-    data: JSON.stringify({ routepostId, userId }),
-    success: function(res) {
-      if (res > 0) {
-        $("#btn-like").toggleClass("active")
-          .text(liked ? "🤍 추천" : "❤️ 추천됨");
-      }
-    }
-  });
+
+    $.ajax({
+        url: contextPath + "/api/routepost/like/toggle",
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify({ routepostId, userId }),
+        success: function(res) {
+            if (res === true) {
+                $("#btn-like").addClass("active").text("❤️ 추천됨");
+            } else {
+                $("#btn-like").removeClass("active").text("🤍 추천");
+            }
+        }
+    });
 });
+
 
 // ✅ 스크랩
 $("#btn-scrap").click(function() {
-  const scrapped = $(this).hasClass("active");
-  $.ajax({
-    url: "${pageContext.request.contextPath}/api/routepost/scrap",
-    type: scrapped ? "DELETE" : "POST",
-    contentType: "application/json",
-    data: JSON.stringify({ routepostId, userId }),
-    success: function(res) {
-      if (res > 0) {
-        $("#btn-scrap").toggleClass("active")
-          .text(scrapped ? "📁 스크랩" : "✅ 스크랩됨");
-      }
-    }
-  });
+
+    $.ajax({
+        url: contextPath + "/api/routepost/scrap/toggle",
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify({ routepostId, userId }),
+        success: function(res) {
+            if (res === true) {
+                $("#btn-scrap").addClass("active").text("✅ 스크랩됨");
+            } else {
+                $("#btn-scrap").removeClass("active").text("📁 스크랩");
+            }
+        }
+    });
 });
+
 
 //✅ 초기 로드 + CSRF 헤더 세팅
 $(function() {
