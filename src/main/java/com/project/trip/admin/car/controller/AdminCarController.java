@@ -2,11 +2,12 @@
 
 package com.project.trip.admin.car.controller;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
-
+import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.project.trip.admin.car.model.carDTO;
@@ -51,7 +53,7 @@ public class AdminCarController {
         model.addAttribute("sortOrder", sortOrder);
         model.addAttribute("maxPriceFromDB", maxPriceFromDB);
 
-        return "content/admin/carlist"; 
+        return "admin/carlist"; 
     }
 
     // 렌터카 등록 폼 페이지로 이동
@@ -64,22 +66,53 @@ public class AdminCarController {
         
         return "admin/addcar"; 
     }
-
-    // 렌터카 등록 처리
+    // ✅ 렌터카 등록 처리 (파일 업로드 포함)
     @PostMapping("/add")
-    public String addCarProcess(carDTO dto, RedirectAttributes rttr) {
+    public String addCarProcess(
+            carDTO dto,
+            @RequestParam("carImageFile") MultipartFile imgFile,
+            HttpServletRequest request,
+            RedirectAttributes rttr) {
+
         try {
+            // 1. 파일이 올라왔으면 저장
+            if (imgFile != null && !imgFile.isEmpty()) {
+
+                // 실제 업로드 경로 (webapp/resources/img/car)
+                String uploadDir = request.getServletContext().getRealPath("/resources/img/car");
+
+                // 디렉토리 없으면 생성
+                File dir = new File(uploadDir);
+                if (!dir.exists()) {
+                    dir.mkdirs();
+                }
+
+                // 저장할 파일명 (중복 방지용 타임스탬프)
+                String fileName = System.currentTimeMillis() + "_" + imgFile.getOriginalFilename();
+
+                File saveFile = new File(dir, fileName);
+
+                // 실제 파일 저장
+                imgFile.transferTo(saveFile);
+
+                // DB에는 파일명만 저장
+                dto.setCarImage(fileName);
+            }
+
+            // 2. 서비스 호출해서 DB 저장
             carService.addCar(dto);
+
+            // 3. 성공 메시지
             rttr.addFlashAttribute("msg", "신규 차량이 성공적으로 등록되었습니다.");
+
             return "redirect:/admin/car/list";
-            
+
         } catch (Exception e) {
-            rttr.addFlashAttribute("msg", "차량 등록 중 오류가 발생했습니다.");
             e.printStackTrace();
+            rttr.addFlashAttribute("msg", "차량 등록 중 오류가 발생했습니다.");
             return "redirect:/admin/car/add";
         }
     }
-    
     // 렌터카 삭제 처리
     @PostMapping("/delete")
     public String deleteCarProcess(@RequestParam("carId") int carId, RedirectAttributes rttr) {

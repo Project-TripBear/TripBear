@@ -87,68 +87,78 @@
 
 <section id="car-list-section">
     <div class="car-card-grid">
-    <c:choose>
-        <c:when test="${not empty list}">
-            <c:forEach items="${list}" var="car">
-                <div class="car-card">
-					<a href="${pageContext.request.contextPath}/admin/car/view?carId=${car.carId}" class="car-image-link">	
-                    <div class="car-image-wrapper">
-                 
-                        <c:choose>
-                            <c:when test="${not empty car.carImage}">
-                                <img src="${car.carImage}" 
-                                     alt="${car.carName} 이미지" 
-                                     class="car-image"
-                                     onerror="this.parentElement.classList.add('img-error'); this.style.display='none';">
-                            </c:when>
-							<c:otherwise>
-							    <div class="img-error"></div>
-							</c:otherwise>
-                        </c:choose>
-                        
-                        <c:choose>
-                            <c:when test="${car.carStatus == 'n'}">
-                                <span class="status-badge reserved">예약 불가</span>
-                            </c:when>
-                            <c:otherwise>
-                                <span class="status-badge available">예약 가능</span>
-                            </c:otherwise>
-                        </c:choose>
-                    </div>
-					</a>
 
-                    <div class="car-info">
-					<a href="${pageContext.request.contextPath}/admin/car/view?carId=${car.carId}" class="accom-name-link">
-	
-	                         <h3 class="car-name">${car.carName}
-                                <span class="car-type">(${car.carType})</span>
-                            </h3>
+        <c:choose>
+            <c:when test="${not empty list}">
+                <c:forEach items="${list}" var="car">
+
+                    <div class="car-card">
+
+                        <a href="${pageContext.request.contextPath}/admin/car/view?carId=${car.carId}" class="car-image-link">
+                            <div class="car-image-wrapper">
+
+                                <c:choose>
+                                    <c:when test="${not empty car.carImage}">
+                                        <img src="${pageContext.request.contextPath}/resources/img/car/${car.carImage}"
+                                             alt="${car.carName} 이미지"
+                                             class="car-image"
+                                             onerror="this.parentElement.classList.add('img-error'); this.style.display='none';">
+                                    </c:when>
+                                    <c:otherwise>
+                                        <div class="img-error"></div>
+                                    </c:otherwise>
+                                </c:choose>
+
+                                <c:choose>
+                                    <c:when test="${car.carStatus == 'n'}">
+                                        <span class="status-badge reserved">예약 불가</span>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <span class="status-badge available">예약 가능</span>
+                                    </c:otherwise>
+                                </c:choose>
+
+                            </div>
                         </a>
-                        
-                        <p class="car-detail"><i class="fa-solid fa-gas-pump"></i> 연료: ${car.fuelType}</p>
-                        <p class="car-detail"><i class="fa-solid fa-user-group"></i> 좌석: ${car.carSeats}인승</p>
-                        <p class="car-price"><i class="fa-solid fa-won-sign"></i> 
-                            <fmt:formatNumber value="${car.pricePerDay}" pattern="#,###원"/> / 일
-                         </p>
+
+                        <div class="car-info">
+                            <a href="${pageContext.request.contextPath}/admin/car/view?carId=${car.carId}" class="accom-name-link">
+                                <h3 class="car-name">
+                                    ${car.carName}
+                                    <span class="car-type">(${car.carType})</span>
+                                </h3>
+                            </a>
+
+                            <p class="car-detail"><i class="fa-solid fa-gas-pump"></i> 연료: ${car.fuelType}</p>
+                            <p class="car-detail"><i class="fa-solid fa-user-group"></i> 좌석: ${car.carSeats}인승</p>
+                            <p class="car-price"><i class="fa-solid fa-won-sign"></i>
+                                <fmt:formatNumber value="${car.pricePerDay}" pattern="#,###원"/> / 일
+                            </p>
+                        </div>
+
+                        <div class="action-buttons">
+                            <a href="${pageContext.request.contextPath}/admin/car/edit?carId=${car.carId}" class="btn secondary">수정</a>
+                            <form method="POST"
+                                  action="${pageContext.request.contextPath}/admin/car/delete"
+                                  onsubmit="return confirm('[${car.carName}] 차량을 정말 삭제하시겠습니까?');">
+                                <input type="hidden" name="carId" value="${car.carId}">
+                                <button type="submit" class="btn danger">삭제</button>
+                            </form>
+                        </div>
+
                     </div>
 
-                    <div class="action-buttons">
-					<a href="${pageContext.request.contextPath}/admin/car/edit?carId=${car.carId}" class="btn secondary">수정</a>
-                        <form method="POST" action="${pageContext.request.contextPath}/admin/car/delete" onsubmit="return confirm('[${car.carName}] 차량을 정말 삭제하시겠습니까?');">
-                            <input type="hidden" name="carId" value="${car.carId}">
-                            <button type="submit" class="btn danger">삭제</button>
-                        </form>
-                    </div>
+                </c:forEach>
+            </c:when>
+
+            <c:otherwise>
+                <div class="no-results">
+                    <i class="fa-solid fa-magnifying-glass-minus"></i>
+                    <p>조건에 맞는 렌터카가 없습니다.</p>
                 </div>
-            </c:forEach>
-        </c:when>
-        <c:otherwise>
-            <div class="no-results">
-                <i class="fa-solid fa-magnifying-glass-minus"></i>
-                <p>조건에 맞는 렌터카가 없습니다.</p>
-            </div>
-        </c:otherwise>
-    </c:choose>
+            </c:otherwise>
+        </c:choose>
+
     </div>
 </section>
 	

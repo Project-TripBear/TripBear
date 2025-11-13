@@ -59,26 +59,32 @@ public class AdminReportController {
      * URL: /admin/report/process
      * JSP에서 전송하는 파라미터: reportId, action, targetType, targetId
      */
-    @PostMapping("/report/process") // 기존: /processReport.do
+    @PostMapping("/report/process")
     public String processReport(
             @RequestParam("reportId") int reportId,
-            @RequestParam("action") String action, // approve 또는 reject
+            @RequestParam("action") String processType,
             @RequestParam(value = "targetType", required = false) String targetType,
             @RequestParam(value = "targetId", required = false, defaultValue = "0") int targetId,
             RedirectAttributes rttr) {
-        
+
         try {
+
+            // 여기서 매핑 통일
+            String action = processType.equals("HIDE") ? "approve" : "reject";
+
             reportService.processReport(reportId, action, targetType, targetId);
-            
-            String msg = "approve".equals(action) ? "게시글이 숨김 처리되었습니다." : "신고가 반려 처리되었습니다.";
+
+            String msg = action.equals("approve")
+                    ? "게시글이 숨김 처리되었습니다."
+                    : "신고가 반려 처리되었습니다.";
+
             rttr.addFlashAttribute("msg", msg);
-            
+
         } catch (Exception e) {
             rttr.addFlashAttribute("msg", "신고 처리 중 오류가 발생했습니다.");
             e.printStackTrace();
         }
-        
-        // 처리 후 대기 목록으로 리다이렉트 (변경된 URL 사용)
-        return "redirect:/admin/report/list"; 
+
+        return "redirect:/admin/report/list";
     }
 }

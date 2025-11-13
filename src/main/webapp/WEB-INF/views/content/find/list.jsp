@@ -72,7 +72,7 @@
     
     <%-- 글쓰기 버튼 --%>
     <div class="table-options">
-        <sec:authorize access="hasAuthority('ACTIVE')">
+            <sec:authorize access="hasAuthority('ACTIVE')">
             <button type="button" class="btn btn-primary" onclick="location.href='<c:url value='/findboard/add'/>';">글쓰기</button>
         </sec:authorize>
     </div>
