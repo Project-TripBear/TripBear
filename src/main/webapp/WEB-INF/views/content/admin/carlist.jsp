@@ -141,6 +141,8 @@
                             <form method="POST"
                                   action="${pageContext.request.contextPath}/admin/car/delete"
                                   onsubmit="return confirm('[${car.carName}] 차량을 정말 삭제하시겠습니까?');">
+                                      <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
+                                  
                                 <input type="hidden" name="carId" value="${car.carId}">
                                 <button type="submit" class="btn danger">삭제</button>
                             </form>

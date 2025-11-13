@@ -148,29 +148,51 @@ public class AdminCarController {
         return "admin/editcar"; 
     }
 
-    /**
-     * 4. 렌터카 수정 처리 (editCar.java의 doPost 역할)
-     */
     @PostMapping("/edit")
-    public String editCarProcess(carDTO dto, RedirectAttributes rttr) {
+    public String editCarProcess(
+            carDTO dto,
+            @RequestParam("carImageFile") MultipartFile imgFile,
+            @RequestParam("originImage") String originImage,
+            HttpServletRequest request,
+            RedirectAttributes rttr) {
+
         try {
+
+            if (imgFile != null && !imgFile.isEmpty()) {
+
+                String uploadDir = request.getServletContext().getRealPath("/resources/img/car");
+
+                File dir = new File(uploadDir);
+                if (!dir.exists()) {
+                    dir.mkdirs();
+                }
+
+                String fileName = System.currentTimeMillis() + "_" + imgFile.getOriginalFilename();
+
+                File saveFile = new File(dir, fileName);
+                imgFile.transferTo(saveFile);
+
+                dto.setCarImage(fileName);
+
+            } else {
+                // ⭐ 새 파일 없으면 기존 이미지 유지
+                dto.setCarImage(originImage);
+            }
+
             int result = carService.editCar(dto);
-            
+
             if (result > 0) {
                 rttr.addFlashAttribute("msg", "차량 정보가 성공적으로 수정되었습니다.");
             } else {
                 rttr.addFlashAttribute("msg", "수정된 내용이 없거나 차량 ID가 유효하지 않습니다.");
             }
-            
-            // ★★★ [참고] 수정 후 상세 보기 페이지가 있다면 거기로 보내는 것이 좋습니다. ★★★
-            // (지금은 목록으로 다시 보냅니다)
-            // return "redirect:/admin/car/view?carId=" + dto.getCarId();
-            return "redirect:/admin/car/list"; // 목록으로 리다이렉트
-            
+
+            return "redirect:/admin/car/list";
+
         } catch (Exception e) {
-            rttr.addFlashAttribute("msg", "차량 수정 중 오류가 발생했습니다.");
             e.printStackTrace();
-            return "redirect:/admin/car/edit?carId=" + dto.getCarId(); // 실패 시 수정 폼으로
+            rttr.addFlashAttribute("msg", "차량 수정 중 오류가 발생했습니다.");
+            return "redirect:/admin/car/edit?carId=" + dto.getCarId();
         }
     }
     
