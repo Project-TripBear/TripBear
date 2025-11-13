@@ -1,5 +1,7 @@
 package com.project.trip.board.hotdeal.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -16,3 +18,4 @@ public class HotDealCommentDTO {
 	private String useq;
 	private String name;
 }
+

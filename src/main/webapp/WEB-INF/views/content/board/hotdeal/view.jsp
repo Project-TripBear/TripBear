@@ -29,11 +29,14 @@
         </div>
     </div>
     <hr>
-    <c:if test="${not empty dto.img}">
-        <div class="post-image-container">
-            <img src="${pageContext.request.contextPath}/resources/img/hotdeal/${dto.img}" id="imgPlace">
-        </div>
-    </c:if>
+        <div class="images">
+        <c:forEach var="img" items="${images}">
+            <div class="image-item">
+                <img src="/trip/resources/upload/${img.hotdealImageUrl}" 
+                     alt="게시글 이미지">
+            </div>
+        </c:forEach>
+    </div>
     <div class="post-content">
         ${dto.content}
     </div>
@@ -141,7 +144,7 @@
 	    }
 	});
  
- let begin = 1;
+ let begin = 6;
 
 	$('#btnAddComment').click(() => {
 	    const commentContent = $('input[name=content]').val();
@@ -196,42 +199,49 @@
 	});
 
 	function more() {
-	    $.ajax({
+		$.ajax({
 	        url: '/trip/hotdeal/morecomment',
-	        method: 'GET',
+	        method: 'GET', // or 'POST', Controller 설정에 따라
 	        data: {
 	            bseq: ${dto.seq},
 	            begin: begin
 	        },
 	        dataType: 'json',
 	        success: function (result) {
-	        	console.log("Received comments:", result);
-	            console.log("Current user id:", ${dto.seq});
+	            console.log("Received comments:", result);
+	            // JSP 변수 ${id}를 직접 참조하여 현재 로그인 ID를 로그에 출력
+	            console.log("Current user id:", '${id}'); 
+	            
 	            if (result.length > 0) {
 	                result.forEach(obj => {
 	                    console.log("Comment author id:", obj.id);
 
-	                    let temp = `
-	                        <tr>
-	                            <td class="commentContent">
-	                                <div>${obj.content}</div>
-	                                <div>${obj.regdate}</div>
-	                            </td>
-	                            <td class="commentInfo">
-	                                <div>
-	                                    <div>${obj.name}</div>
-	                    `;
-	                    if ('${id}' && ('${id}' == obj.id)) {
-	                        temp += `<div>
-	                                    <span class="material-symbols-outlined" onclick="del(${obj.seq});">delete</span>
-	                                    <span class="material-symbols-outlined" onclick="edit(${obj.seq});">edit_note</span>
-	                                 </div>`;        
+	                    // 1. 버튼 HTML을 담을 변수 초기화
+	                    let buttonHtml = '';
+	    				
+	                    // 2. JSP 변수 '${id}'와 댓글 작성자 ID(obj.id) 비교
+	                    if ('${id}' && ('${id}' === String(obj.id))) { 
+	                        buttonHtml = `
+	                            <span class="material-symbols-outlined" onclick="del(${obj.seq});">delete</span>
+	                            <span class="material-symbols-outlined" onclick="edit(${obj.seq});">edit_note</span>
+	                        `;
 	                    }
-	                    temp += `    </div>
-	                            </td>
-	                        </tr>`;
-	                    $('#comment tbody').append(temp);
+
+	                    // 3. jQuery를 사용하여 DOM 요소 생성
+	                    const contentDiv = $('<div>').text(obj.content);
+	                    const regdateDiv = $('<div>').text(obj.regdate);
+	                    const commentContentTd = $('<td>').addClass('commentContent').append(contentDiv).append(regdateDiv);
+
+	                    const nameDiv = $('<div>').text(obj.name);
+	                    const buttonsDiv = $('<div>').addClass('comment-action-buttons').html(buttonHtml);
+	                    const commentInfoTd = $('<td>').addClass('commentInfo').append($('<div>').append(nameDiv).append(buttonsDiv));
+
+	                    const newRow = $('<tr>').append(commentContentTd).append(commentInfoTd);
+	                    
+	                    // 4. tbody에 추가
+	                    $('#comment tbody').append(newRow);
 	                });
+	                
 	                begin += 5;
 	            } else {
 	                alert('더 이상 가져올 댓글이 없습니다.');
@@ -268,10 +278,9 @@
 	        method: 'POST',
 	        contentType: 'application/json',
 	        data: JSON.stringify({
-	            seq: ${dto.seq},
-	            content: $('#txtComment').val()
-	        }),
-	        dataType: 'json',
+	                    seq: seq,
+	                    content: $('#txtComment').val()
+	                }),	        dataType: 'json',
 	        success: function(result) {
 	            if (result.result == '1') {
 	                div.text($('#txtComment').val());

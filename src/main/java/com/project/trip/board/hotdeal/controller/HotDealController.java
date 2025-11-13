@@ -1,5 +1,6 @@
 package com.project.trip.board.hotdeal.controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -7,20 +8,20 @@ import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.project.trip.board.hotdeal.mapper.HotDealLikeMapper;
 import com.project.trip.board.hotdeal.mapper.HotDealMapper;
 import com.project.trip.board.hotdeal.model.HotDealCommentDTO;
 import com.project.trip.board.hotdeal.model.HotDealDTO;
+import com.project.trip.board.hotdeal.model.HotDealImageDTO;
 import com.project.trip.mypage.mapper.MemberMapper;
 import com.project.trip.mypage.model.UserDTO;
 
@@ -149,6 +150,9 @@ public class HotDealController {
 	        boolean isScrapped = false;
 	        String userSeq = null;
 	        String userId = null;
+	        
+	        List<HotDealImageDTO> images = mapper.selectImages(seq);
+	        model.addAttribute("images", images);
 
 	        try {
 	            if (auth != null && auth.isAuthenticated()
@@ -219,6 +223,67 @@ public class HotDealController {
 	            // 에러 페이지나 리다이렉트 처리 선택 가능
 	            return "error.page"; // 필요시 적절한 에러 페이지로 변경
 	        }
+	    }
+	    
+	    
+	    @GetMapping("/hotdeal/add")
+	    public String addForm() {
+	        return "board.hotdeal.add"; // src/main/webapp/WEB-INF/views/board/add.jsp 와 매칭
+	    }
+
+	    @PostMapping("/hotdeal/add")
+	    public String addPost(
+	            @RequestParam("subject") String subject,
+	            @RequestParam("content") String content,
+	            @RequestParam("imgs") MultipartFile[] imgFiles,
+	            @RequestParam("status") String status,
+	            @RequestParam("category") String category,
+	            @RequestParam("itemname") String itemname,
+	            @RequestParam("price") String price,
+	            @RequestParam("url") String url,
+	            Authentication auth,
+	            Model model) throws IOException {
+
+	        String userId = auth.getName();
+	        UserDTO userdto = membermapper.get(userId);
+	        HotDealDTO dto = new HotDealDTO();
+	        dto.setSubject(subject);
+	        dto.setContent(content);
+	        dto.setStatus(status);
+	        dto.setCategory(category);
+	        dto.setItemName(itemname);
+	        dto.setPrice(price);
+	        dto.setUrl(url);
+	        dto.setUseq(userdto.getSeq());
+	        
+	        System.out.println("test123:"+ dto);
+	        	
+	        
+	        // 게시글은 반드시 한 번만 등록
+	        int result = mapper.insertBoard(dto);
+	        // insertBoard()가 useGeneratedKeys="true", keyProperty="seq"로 설정되어야 DTO에 시퀀스가 바로 들어감
+
+	        if (result > 0) {
+	        	Long hotdealId = Long.parseLong(mapper.selectRecentSeq(dto)); 
+	            int imgResultSum = 0;
+	            int imageSeq = 1; // 이미지 순서 컬럼 값(필요시)
+	            for (MultipartFile imgFile : imgFiles) {
+	            	 if (imgFile != null && !imgFile.isEmpty()) {
+	                     String savedFileName = imgFile.getOriginalFilename();
+	                     
+	                     Map<String, Object> param = new HashMap<>();
+	                     param.put("hotdealId", hotdealId);
+	                     param.put("img", savedFileName);
+	                     param.put("hotdealImageSeq", imageSeq++);
+	                     
+	                     mapper.insertBoardImage(param);
+	                 }
+	             }
+	             return "redirect:/hotdeal/list";
+	         }
+	         
+	         model.addAttribute("error", "게시물 등록 실패");
+	         return "board.hotdeal.add";
 	    }
 	 
 	}

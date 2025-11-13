@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Param;
 
 import com.project.trip.board.hotdeal.model.HotDealCommentDTO;
 import com.project.trip.board.hotdeal.model.HotDealDTO;
+import com.project.trip.board.hotdeal.model.HotDealImageDTO;
 
 @Mapper
 public interface HotDealMapper {
@@ -36,5 +37,17 @@ public interface HotDealMapper {
 	List<HotDealCommentDTO> moreComment(Map<String, Object> params);
 
 	int editComment(HotDealCommentDTO dto);
+	
+	 // 게시글 등록
+    int insertBoard(HotDealDTO board);
+
+    // 최근 게시글 Seq 조회 (예: 방금 등록한 게시글 번호)
+    String selectRecentSeq(@Param("board") HotDealDTO board);
+
+    // 이미지 데이터 개별 등록
+	int insertBoardImage(Map<String, Object> param);
+
+	List<HotDealImageDTO> selectImages(String seq);
+
 
 }

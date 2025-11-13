@@ -24,29 +24,31 @@
     <!-- 게시글 목록 조회 -->
     <select id="list" parameterType="map" resultType="com.project.trip.board.hotdeal.model.HotDealDTO">
         SELECT b.* 
-        FROM (
-            SELECT a.*, ROWNUM AS rnum 
-            FROM (
-                SELECT 
-                    p.hotdeal_id AS seq,
-                    p.hotdeal_title AS subject,
-                    p.user_id AS id,
-                    p.hotdeal_view_count AS readcount,
-                    TO_CHAR(p.hotdeal_regdate, 'YYYY-MM-DD HH24:MI:SS') AS regdate,
-                    u.nickname AS name,
-                    s.hotdeal_status AS status,
-                    i.hotdeal_image_url AS img
-                FROM tblHotDealPost p
-                LEFT JOIN tblUser u ON p.user_id = u.user_id
-                LEFT JOIN tblHotDealStatus s ON p.hotdeal_status_id = s.hotdeal_status_id
-                LEFT JOIN tblHotDealImage i ON p.hotdeal_id = i.hotdeal_id
-                <if test='search == "y"'>
-                    WHERE ${column} LIKE '%' || #{word} || '%'
-                </if>
-                ORDER BY p.hotdeal_id DESC
-            ) a
-        ) b
-        WHERE rnum BETWEEN #{begin} AND #{end}
+FROM (
+    SELECT a.*, ROWNUM AS rnum 
+    FROM (
+        SELECT 
+            p.hotdeal_id AS seq,
+            p.hotdeal_title AS subject,
+            p.user_id AS id,
+            p.hotdeal_view_count AS readcount,
+            TO_CHAR(p.hotdeal_regdate, 'YYYY-MM-DD HH24:MI:SS') AS regdate,
+            u.nickname AS name,
+            s.hotdeal_status AS status,
+            (SELECT MIN(hotdeal_image_url) 
+             FROM tblHotDealImage 
+             WHERE hotdeal_id = p.hotdeal_id 
+             AND ROWNUM = 1) AS img
+        FROM tblHotDealPost p
+        LEFT JOIN tblUser u ON p.user_id = u.user_id
+        LEFT JOIN tblHotDealStatus s ON p.hotdeal_status_id = s.hotdeal_status_id
+        <if test='search == "y"'>
+            WHERE ${column} LIKE '%' || #{word} || '%'
+        </if>
+        ORDER BY p.hotdeal_id DESC
+    ) a
+) b
+WHERE rnum BETWEEN #{begin} AND #{end}
     </select>
 	 <!-- 총 게시물 수 조회 -->
 	<update id="updateReadcount" parameterType="string">
@@ -92,8 +94,11 @@ WHERE hotdeal_id = #{seq}
     
     
     <insert id="addComment" parameterType="com.project.trip.board.hotdeal.model.HotDealCommentDTO">
-    INSERT INTO tblHotDealComment (hotdeal_comment_id, hotdeal_id, user_id, hotdeal_comment_content, hotdeal_comment_regdate) 
-    VALUES (seq_comment.nextval, #{bseq}, #{id}, #{content}, SYSDATE)
+    <selectKey keyProperty="seq" resultType="long" order="BEFORE">
+        SELECT seq_comment.nextval FROM DUAL
+    </selectKey>
+    INSERT INTO tblHotDealComment (hotdeal_comment_id, hotdeal_id, user_id, hotdeal_comment_content, hotdeal_comment_regdate,hotdeal_comment_status) 
+    VALUES (seq_comment.nextval, #{bseq}, #{useq}, #{content}, SYSDATE, 'A')
 </insert>
 
 <update id="editComment" parameterType="com.project.trip.board.hotdeal.model.HotDealCommentDTO">
@@ -107,29 +112,66 @@ WHERE hotdeal_id = #{seq}
     WHERE hotdeal_comment_id = #{seq} AND user_id = #{userId}
 </delete>
 
-<select id="getComment" parameterType="string" resultType="com.project.trip.board.hotdeal.model.HotDealCommentDTO">
-    SELECT * FROM tblHotDealComment 
-    WHERE hotdeal_comment_id = #{seq}
+<select id="getComment" parameterType="long" resultType="com.project.trip.board.hotdeal.model.HotDealCommentDTO">
+
+    SELECT
+    hotdeal_comment_id AS seq, 
+    hotdeal_id AS bseq, 
+    user_id AS useq,
+    hotdeal_comment_content AS content,
+    hotdeal_comment_regdate AS regdate,
+    (SELECT username FROM tblUser WHERE user_id = tblHotDealComment.user_id) AS id,
+    (SELECT nickname FROM tblUser WHERE user_id = tblHotDealComment.user_id) AS name
+    FROM tblHotDealComment 
+    WHERE hotdeal_comment_id = #{param1, jdbcType=NUMERIC}
 </select>
 
 <select id="moreComment" parameterType="map" resultType="com.project.trip.board.hotdeal.model.HotDealCommentDTO">
      SELECT * FROM (
-    SELECT ROWNUM AS rn, a.* FROM (
-        SELECT
-            c.hotdeal_comment_id AS seq,
-            c.hotdeal_comment_content AS content,
-            c.user_id AS id,
-            TO_CHAR(c.hotdeal_comment_regdate, 'YYYY-MM-DD HH24:MI:SS') AS regdate,
-            c.hotdeal_id AS bseq,
-            u.nickname AS name
-        FROM tblHotDealComment c
-        LEFT JOIN tblUser u ON c.user_id = u.user_id
-        WHERE c.hotdeal_id = #{bseq}
-        ORDER BY c.hotdeal_comment_id DESC
-    ) a
-    WHERE ROWNUM &lt;= #{begin} + 4
-)
-WHERE rn &gt;= #{begin}
+        SELECT 
+            ROWNUM AS rn, T1.* FROM (
+            SELECT
+                c.hotdeal_comment_id AS seq,
+                c.hotdeal_comment_content AS content,
+                c.user_id AS id,
+                TO_CHAR(c.hotdeal_comment_regdate, 'YYYY-MM-DD HH24:MI:SS') AS regdate,
+                c.hotdeal_id AS bseq,
+                u.nickname AS name
+            FROM tblHotDealComment c
+            LEFT JOIN tblUser u ON c.user_id = u.user_id
+            WHERE c.hotdeal_id = #{bseq, jdbcType=NUMERIC}  
+            ORDER BY c.hotdeal_comment_id DESC  ) T1 
+    )
+    WHERE rn BETWEEN #{begin, jdbcType=INTEGER} AND #{begin, jdbcType=INTEGER} + 4
+</select>
+
+<insert id="insertBoard" parameterType="com.project.trip.board.hotdeal.model.HotDealDTO" useGeneratedKeys="true" keyProperty="seq">
+        insert into tblHotDealPost 
+        (hotdeal_id, user_id, hotdeal_category_id, hotdeal_status_id, hotdeal_title, hotdeal_content, hotdeal_name, hotdeal_price, hotdeal_url, hotdeal_view_count, hotdeal_report_count, hotdeal_report_status, hotdeal_regdate) 
+        values (seqHotDealPost.nextVal,#{useq} ,#{category}, #{status}, #{subject}, #{content}, #{itemName},#{price} ,#{url} ,#{useq}, 0, 'N', sysdate)
+        
+
+    </insert>
+
+    <select id="selectRecentSeq" parameterType="com.project.trip.board.hotdeal.model.HotDealDTO" resultType="String">
+        SELECT MAX(hotdeal_id) FROM tblHotDealPost
+
+    </select>
+
+    <insert id="insertBoardImage" parameterType="map">
+  INSERT INTO tblHotDealImage (hotdeal_image_id, hotdeal_id, hotdeal_image_url, hotdeal_image_seq)
+  VALUES (seqHotDealImage.nextVal, #{hotdealId}, #{img}, #{hotdealImageSeq})
+</insert>
+
+<select id="selectImages" parameterType="string" resultType="com.project.trip.board.hotdeal.model.HotDealImageDTO">
+    SELECT 
+        hotdeal_image_id as hotdealImageId,
+        hotdeal_id as hotdealId,
+        hotdeal_image_url as hotdealImageUrl,
+        hotdeal_image_seq as hotdealImageSeq
+    FROM tblHotDealImage
+    WHERE hotdeal_id = #{seq}
+    ORDER BY hotdeal_image_seq
 </select>
 
 	</mapper>
