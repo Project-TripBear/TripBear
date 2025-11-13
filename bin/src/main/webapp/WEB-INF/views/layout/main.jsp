@@ -6,8 +6,10 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
-<link rel="stylesheet" href="http://bit.ly/3WJ5ilK" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- <link rel="stylesheet" href="http://bit.ly/3WJ5ilK" /> -->
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/notice.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
 </head>
 <body>
 	<!-- main.jsp  -->
@@ -15,9 +17,7 @@
 	
 	<tiles:insertAttribute name="content" />
 	
+	<script src="${pageContext.request.contextPath}/resources/js/main.js"></script>
 	
-	
-	
-
 </body>
 </html>

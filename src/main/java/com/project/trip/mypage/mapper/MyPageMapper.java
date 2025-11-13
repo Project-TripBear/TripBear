@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Param;
 import com.project.trip.mypage.model.AccomReservationViewDTO;
 import com.project.trip.mypage.model.BoardDTO;
 import com.project.trip.mypage.model.CarReservationViewDTO;
+import com.project.trip.mypage.model.UserRouteViewDTO;
 
 
 public interface MyPageMapper {
@@ -46,6 +47,10 @@ public interface MyPageMapper {
 		        @Param("carseq") String carseq
 		    );
 	void addCarCancel(String carseq);
+
+	List<UserRouteViewDTO> UserRouteList(Map<String, String> map);
+
+	int getUserRouteTotalCount(Map<String, String> map);
 
 
 

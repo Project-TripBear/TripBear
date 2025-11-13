@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.project.trip.board.routepost.mapper.RoutePostCommentMapper">
+
+    <!-- 🟩 댓글 목록 -->
+    <select id="list" parameterType="string" resultType="RoutePostCommentDTO">
+        SELECT 
+            c.routepost_comment_id      AS routepostCommentId,
+            c.user_id                   AS userId,
+            u.nickname                  AS nickname,
+            c.routepost_id              AS routepostId,
+            c.routepost_content         AS routepostContent,
+            TO_CHAR(c.routepost_regdate, 'YYYY-MM-DD HH24:MI:SS') AS routepostRegdate,
+            c.routepost_comment_report_count AS routepostCommentReportCount,
+            c.comment_status            AS commentStatus
+        FROM tblRoutePostComment c
+            JOIN tblUser u ON c.user_id = u.user_id
+        WHERE c.routepost_id = #{routepostId}
+          AND c.comment_status = 'A'
+        ORDER BY c.routepost_regdate ASC
+    </select>
+
+    <!-- 🟩 댓글 등록 -->
+    <insert id="add" parameterType="RoutePostCommentDTO">
+        INSERT INTO tblRoutePostComment (
+            routepost_comment_id,
+            user_id,
+            routepost_id,
+            routepost_content,
+            routepost_regdate,
+            routepost_comment_report_count,
+            comment_status
+        ) VALUES (
+            seqRoutePostComment.NEXTVAL,
+            #{userId},
+            #{routepostId},
+            #{routepostContent},
+            SYSDATE,
+            0,
+            'A'
+        )
+    </insert>
+
+    <!-- 🟩 댓글 삭제 (상태 변경) -->
+    <update id="del" parameterType="string">
+        UPDATE tblRoutePostComment
+        SET comment_status = 'D'
+        WHERE routepost_comment_id = #{routepostCommentId}
+    </update>
+
+    <!-- 🟩 댓글 개수 -->
+    <select id="count" parameterType="string" resultType="int">
+        SELECT COUNT(*)
+        FROM tblRoutePostComment
+        WHERE routepost_id = #{routepostId}
+          AND comment_status = 'A'
+    </select>
+
+</mapper>

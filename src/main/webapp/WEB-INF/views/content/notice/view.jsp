@@ -28,9 +28,9 @@
             <button type="button" class="btn" onclick="location.href='<c:url value="/notice/list"/>';">목록</button>
 
             <sec:authorize access="hasRole('ROLE_ADMIN')">
-                <button type="button" class="btn" onclick="location.href='<c:url value="/notice/edit?id=${notice.noticePostId}"/>';">수정</button>
+                <button type="button" class="btn" onclick="location.href='<c:url value="/admin/notice/edit?id=${notice.noticePostId}"/>';">수정</button>
 
-                <form action="<c:url value="/notice/delete"/>" method="POST" style="display:inline;" onsubmit="return confirm('정말 삭제하시겠습니까?');">
+                <form action="<c:url value="/admin/notice/delete"/>" method="POST" style="display:inline;" onsubmit="return confirm('정말 삭제하시겠습니까?');">
                     <sec:csrfInput />
                     <input type="hidden" name="id" value="${notice.noticePostId}" />
                     <button type="submit" class="btn btn-danger">삭제</button>

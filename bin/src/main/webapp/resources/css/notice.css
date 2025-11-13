@@ -19,6 +19,7 @@
     --radius: 20px; /* 둥근 모서리 반경 증가 */
 }
 
+
 /* === 전체 레이OUT === */
 body {
     font-family: 'Noto Sans KR', sans-serif;
@@ -217,6 +218,92 @@ body {
     background-color: #f1f3f5;
     color: var(--text);
     text-decoration: none; /* 호버 시 밑줄 제거 */
+}
+
+.notice-form-container { 
+    max-width: 800px; /* 폼의 최대 너비를 지정 */
+    margin: 40px auto; /* 중앙 정렬 */
+    padding: 40px;
+    background-color: var(--surface); /* 배경색 흰색 */
+    border-radius: var(--radius); /* 둥근 모서리 */
+    box-shadow: var(--shadow-soft); /* 부드러운 그림자 */
+}
+
+.notice-form-container h2 {
+    text-align: center;
+    font-size: 2rem;
+    color: var(--primary-dark);
+    margin-bottom: 30px;
+    border-bottom: 2px solid var(--border);
+    padding-bottom: 15px;
+}
+
+/* --- 폼 그룹 및 라벨 --- */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--text);
+    font-size: 1.1rem;
+}
+
+/* --- 입력 컨트롤 (Input, Textarea) --- */
+.form-control {
+    /* 너비를 100%로 설정하여 컨테이너에 꽉 차도록 합니다. */
+    width: calc(100% - 24px); 
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-size: 1rem;
+    color: var(--text);
+    background-color: var(--bg);
+    transition: border-color 0.3s, box-shadow 0.3s;
+    box-sizing: border-box; /* 패딩이 너비에 포함되도록 설정 */
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(108, 154, 139, 0.1);
+    background-color: var(--surface);
+}
+
+textarea.form-control {
+    resize: vertical; /* 세로 크기 조절 허용 */
+    min-height: 150px;
+}
+
+/* --- 버튼 영역 (등록, 수정, 삭제, 취소) --- */
+.form-actions {
+    display: flex;
+    justify-content: flex-end; /* 버튼을 오른쪽으로 정렬 */
+    gap: 15px; /* 버튼 사이 간격 */
+    margin-top: 40px;
+}
+
+/* form-actions 내부의 버튼 스타일 (notice.css 기존 .btn 스타일 활용) */
+.form-actions .btn {
+    padding: 10px 24px;
+    border-radius: 30px;
+    font-weight: 700;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+/* 취소 버튼 디자인 */
+.form-actions .btn-cancel {
+    background-color: #E9ECEF;
+    color: var(--text-light);
+}
+.form-actions .btn-cancel:hover {
+    background-color: #dee2e6;
+    color: var(--text);
 }
 
 /* ========================================================= */

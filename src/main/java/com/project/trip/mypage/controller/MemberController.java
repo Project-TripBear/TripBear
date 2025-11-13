@@ -2,18 +2,15 @@ package com.project.trip.mypage.controller;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 
-import javax.servlet.http.HttpSession;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.project.trip.mypage.mapper.MemberMapper;
 import com.project.trip.mypage.model.UserDTO;
@@ -84,6 +81,28 @@ public class MemberController {
 	}
 	
 	
+	
+	@GetMapping("/member/myactivitiessummary")
+	@ResponseBody
+	public Map<String, Integer> getMyActivitiesSummary(Authentication auth) {
+	    String username = auth.getName();
+	    
+	    // username 기반으로 DTO 조회
+	    UserDTO dto = mapper.getUserByUsername(username);
+	    
+	    Map<String, Integer> summary = new HashMap<>();
+	    String seq = dto.getSeq();
+	    
+	    summary.put("boardCount", mapper.getMyBoardCount(seq));
+	    summary.put("commentCount", mapper.getMyCommentCount(seq));
+	    summary.put("likeCount", mapper.getMyLikeTotalCount(seq));
+	    summary.put("scrapCount", mapper.getMyScrapTotalCount(seq));
+	    
+	    return summary;
+	}
+	
+	
+
 	
 	 
 	
