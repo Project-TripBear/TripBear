@@ -68,7 +68,13 @@ public class HotDealCommentController {
 
         dto.setUseq(userDto.getSeq());
 
+        
+        // 추가 디버그 로그
+        System.out.println("userDto.getSeq(): " + userDto.getSeq());
+        System.out.println("userDto.getSeq() type: " + (userDto.getSeq() != null ? userDto.getSeq().getClass().getName() : "null"));
+        
         System.out.println("수정 DTO: " + dto);
+        System.out.println("dto.getUseq(): " + dto.getUseq());
 
         int result = mapper.editComment(dto);
         

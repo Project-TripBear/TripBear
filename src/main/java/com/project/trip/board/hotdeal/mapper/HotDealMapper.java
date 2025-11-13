@@ -49,5 +49,15 @@ public interface HotDealMapper {
 
 	List<HotDealImageDTO> selectImages(String seq);
 
+	int updateBoard(HotDealDTO dto);
+
+	void deleteImage(String imageId);
+
+	int selectMaxImageSeq(String seq);
+
+	void deleteAllImages(String seq);
+
+	int deleteBoard(String seq);
+
 
 }

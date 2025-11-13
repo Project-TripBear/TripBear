@@ -15,9 +15,10 @@
 <div id="main">
 <div class="post-container">
     <div class="post-header">
-    id: ${id}<br>
+     <!-- 테스트용-->
+   <%--  id: ${id}<br>
 작성자(dto.id): ${dto.id}<br>
-작성자(dto.seq): ${dto.seq}<br>
+작성자(dto.seq): ${dto.seq}<br> --%>
         <span class="category">${dto.category}</span>
         <h2 class="subject">${dto.subject}</h2>
         <div class="post-meta">
@@ -75,7 +76,7 @@
                 <c:forEach items="${clist}" var="cdto">
                     <tr>
                         <td class="commentContent">
-                        작성자(cdto.id): ${cdto.id}<br>
+                        <%-- 작성자(cdto.id): ${cdto.seq}<br> --%>
                             <div>${cdto.content}</div>
                             <div>${cdto.regdate}</div>
                         </td>
@@ -123,8 +124,8 @@
         </div>
         <div>
             <c:if test="${id != null && id == dto.id}">
-                <button type="button" class="edit primary" onclick="location.href='/trip/board/edit.do?seq=${dto.seq}';">수정하기</button>
-                <button type="button" class="del primary" onclick="location.href='/trip/board/del.do?seq=${dto.seq}';">삭제하기</button>
+                <button type="button" class="edit primary" onclick="location.href='/trip/hotdeal/edit.do?seq=${dto.seq}';">수정하기</button>
+                <button type="button" class="del primary" onclick="location.href='/trip/hotdeal/del.do?seq=${dto.seq}';">삭제하기</button>
             </c:if>
         </div>
     </div>
@@ -146,7 +147,7 @@
  
  let begin = 6;
 
-	$('#btnAddComment').click(() => {
+ $('#btnAddComment').click(() => {
 	    const commentContent = $('input[name=content]').val();
 	    const boardSeq = ${dto.seq};
 
@@ -165,33 +166,55 @@
 	        }),
 	        dataType: 'json',
 	        success: function(result) {
-	            let temp = `
-	                <tr>
-	                    <td class="commentContent">
-	                        <div>${result.dto.content}</div>
-	                        <div>${result.dto.regdate}</div>
-	                    </td>
-	                    <td class="commentInfo">
-	                        <div>
-	                            <div>${result.dto.name}</div>
-	                            <div>
-	                                <span class="material-symbols-outlined" onclick="del(${result.dto.seq});">delete</span>
-	                                <span class="material-symbols-outlined" onclick="edit(${result.dto.seq});">edit_note</span>
-	                            </div>
-	                        </div>
-	                    </td>
-	                </tr>
-	            `;
+	            // === 1단계: 서버 응답 확인 ===
+	            console.log("=== SERVER RESPONSE ===");
+	            console.log("Full result:", result);
+	            console.log("result.result:", result.result);
+	            console.log("result.dto:", result.dto);
+	            
+	            if (result.dto) {
+	                console.log("dto.seq:", result.dto.seq);
+	                console.log("dto.content:", result.dto.content);
+	                console.log("dto.name:", result.dto.name);
+	                console.log("dto.regdate:", result.dto.regdate);
+	            } else {
+	                console.error("result.dto is NULL!");
+	                alert("댓글 등록 실패: 서버에서 데이터를 반환하지 않았습니다.");
+	                return; // 여기서 종료
+	            }
+	            
+	            // === 2단계: DOM 생성 (result.dto가 있을 때만) ===
+	            let temp = '<tr>' +
+	                '<td class="commentContent">' +
+	                    '<div>' + result.dto.content + '</div>' +
+	                    '<div>' + result.dto.regdate + '</div>' +
+	                '</td>' +
+	                '<td class="commentInfo">' +
+	                    '<div>' +
+	                        '<div>' + result.dto.name + '</div>' +
+	                        '<div>' +
+	                            '<span class="material-symbols-outlined" onclick="del(' + result.dto.seq + ');">delete</span>' +
+	                            '<span class="material-symbols-outlined" onclick="edit(' + result.dto.seq + ');">edit_note</span>' +
+	                        '</div>' +
+	                    '</div>' +
+	                '</td>' +
+	            '</tr>';
+	            
+	            console.log("Generated HTML:", temp);
+	            
 	            $('#comment tbody').prepend(temp);
 	            $('input[name=content]').val('');
+	            console.log("Comment added successfully!");
 	        },
 	        error: function(xhr, status, error) {
-	            console.log("AJAX 통신 오류:", xhr, status, error);
+	            console.error("=== AJAX ERROR ===");
+	            console.error("Status:", status);
+	            console.error("Error:", error);
+	            console.error("Response:", xhr.responseText);
 	            alert("댓글 등록에 실패했습니다.");
 	        }
 	    });
 	});
-
 	$('#btnMoreComment').click(() => {
 	    $('#loading').show();
 	    
@@ -210,7 +233,8 @@
 	        success: function (result) {
 	            console.log("Received comments:", result);
 	            // JSP 변수 ${id}를 직접 참조하여 현재 로그인 ID를 로그에 출력
-	            console.log("Current user id:", '${id}'); 
+	            console.log("Current user id:", '${useq}');
+
 	            
 	            if (result.length > 0) {
 	                result.forEach(obj => {
@@ -220,7 +244,7 @@
 	                    let buttonHtml = '';
 	    				
 	                    // 2. JSP 변수 '${id}'와 댓글 작성자 ID(obj.id) 비교
-	                    if ('${id}' && ('${id}' === String(obj.id))) { 
+	                    if ('${useq}' && ('${useq}' === String(obj.id))) { 
 	                        buttonHtml = `
 	                            <span class="material-symbols-outlined" onclick="del(${obj.seq});">delete</span>
 	                            <span class="material-symbols-outlined" onclick="edit(${obj.seq});">edit_note</span>
@@ -258,7 +282,7 @@
 	    $('.commentEditRow').remove();
 	    let content = $(event.target).parents('tr').children().eq(0).children().eq(0).text();
 
-	    $(event.target).parents('tr').after(`
+	    $(event.target).parents('tr').after(/* `
 	        <tr class="commentEditRow">
 	            <td><input type="text" name="content" class="full" required value="${content}" id="txtComment"></td>
 	            <td class="commentEdit">
@@ -266,31 +290,53 @@
 	                <span class="material-symbols-outlined" onclick="$(event.target).parents('tr').remove();">close</span>
 	            </td>
 	        </tr>
-	    `);
+	    ` */
+	    		'<tr class="commentEditRow">' +
+	            '<td><input type="text" name="content" class="full" required value="' + content.replace(/"/g, '&quot;') + '" id="txtComment"></td>' +
+	            '<td class="commentEdit">' +
+	                '<span class="material-symbols-outlined" onclick="editComment(' + seq + ');">edit_square</span>' +
+	                '<span class="material-symbols-outlined" onclick="$(event.target).parents(\'tr\').remove();">close</span>' +
+	            '</td>' +
+	        '</tr>');
 	}
 
 	function editComment(seq) {
-	    let div = $(event.target).parents('tr').prev().children().eq(0).children().eq(0);
-	    let tr = $(event.target).parents('tr');
-
+	    let editRow = $(event.target).parents('tr');
+	    let commentRow = editRow.prev();
+	    let newContent = $('#txtComment').val().trim();
+	    
+	    if (!newContent) {
+	        alert('댓글 내용을 입력해주세요.');
+	        return;
+	    }
+	    
+	    console.log("Updating comment seq:", seq, "with content:", newContent);
+	    
 	    $.ajax({
 	        url: '/trip/hotdeal/editcomment',
 	        method: 'POST',
 	        contentType: 'application/json',
 	        data: JSON.stringify({
-	                    seq: seq,
-	                    content: $('#txtComment').val()
-	                }),	        dataType: 'json',
+	            seq: seq,
+	            content: newContent
+	        }),
+	        dataType: 'json',
 	        success: function(result) {
+	            console.log("Server response:", result);
 	            if (result.result == '1') {
-	                div.text($('#txtComment').val());
-	                tr.remove();
+	                // commentContent의 첫 번째 div (댓글 내용)를 찾아서 업데이트
+	                commentRow.find('.commentContent div').first().text(newContent);
+	                
+	                // 수정 입력 행 제거
+	                editRow.remove();
+	                console.log("Comment updated successfully");
 	            } else {
 	                alert('댓글 수정을 실패했습니다.');
 	            }
 	        },
 	        error: function(xhr, status, error) {
-	            console.log(xhr, status, error);
+	            console.log("AJAX error:", xhr.responseText, status, error);
+	            alert('댓글 수정 중 오류가 발생했습니다.');
 	        }
 	    });
 	}

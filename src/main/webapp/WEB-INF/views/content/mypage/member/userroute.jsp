@@ -65,7 +65,7 @@
                         <div class="route-card-item"> <div class="route-item-content" onclick="location.href='/trip/route/userRouteView.do?id=${dto.seq}'">
                                 <div class="route-title">${dto.userroutetitle}</div>
                                 <div class="route-details">
-                                    <span><i class="fas fa-users"></i> 인원수: ${dto.userroutedays}</span>
+                                    <span><i class="fa-solid fa-calendar"></i> 여행일자: ${dto.userroutedays}</span>
                                     <span><i class="far fa-calendar-alt"></i> 시작: ${dto.userroutestartdate}</span>
                                     <span><i class="far fa-calendar-alt"></i> 종료: ${dto.userrouteenddate}</span>
                                 </div>
