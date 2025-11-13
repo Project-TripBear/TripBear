@@ -15,8 +15,10 @@
 <div id="main">
 <div class="post-container">
     <div class="post-header">
-    id: ${id}<br>
+     <!-- 테스트용-->
+   <%--  id: ${id}<br>
 작성자(dto.id): ${dto.id}<br>
+작성자(dto.seq): ${dto.seq}<br> --%>
         <span class="category">${dto.category}</span>
         <h2 class="subject">${dto.subject}</h2>
         <div class="post-meta">
@@ -28,11 +30,14 @@
         </div>
     </div>
     <hr>
-    <c:if test="${not empty dto.img}">
-        <div class="post-image-container">
-            <img src="/trip/asset/place/${dto.img}" id="imgPlace">
-        </div>
-    </c:if>
+        <div class="images">
+        <c:forEach var="img" items="${images}">
+            <div class="image-item">
+                <img src="/trip/resources/upload/${img.hotdealImageUrl}" 
+                     alt="게시글 이미지">
+            </div>
+        </c:forEach>
+    </div>
     <div class="post-content">
         ${dto.content}
     </div>
@@ -45,13 +50,17 @@
     <c:if test="${not empty dto.seq}">
         <div class="post-actions">
             <c:choose>
-                <c:when test="${isLiked}">
-                    <button type="button" class="like active" id="btnLike" onclick="like(${dto.seq});">좋아요 취소 ❤️</button>
-                </c:when>
-                <c:otherwise>
-                    <button type="button" class="like" id="btnLike" onclick="like(${dto.seq});">좋아요 👍</button>
-                </c:otherwise>
-            </c:choose>
+    <c:when test="${isLiked}">
+        <button type="button" class="like active" id="btnLike" onclick="like(${dto.seq});">
+            좋아요 취소 ❤️ (${likeCount})
+        </button>
+    </c:when>
+    <c:otherwise>
+        <button type="button" class="like" id="btnLike" onclick="like(${dto.seq});">
+            좋아요 👍 (${likeCount})
+        </button>
+    </c:otherwise>
+</c:choose>
             <c:choose>
                 <c:when test="${isScrapped}">
                     <button type="button" class="scrap active" id="btnScrap" onclick="scrap(${dto.seq});">스크랩 취소 📘</button>
@@ -71,6 +80,7 @@
                 <c:forEach items="${clist}" var="cdto">
                     <tr>
                         <td class="commentContent">
+                        <%-- 작성자(cdto.id): ${cdto.seq}<br> --%>
                             <div>${cdto.content}</div>
                             <div>${cdto.regdate}</div>
                         </td>
@@ -92,7 +102,7 @@
     </div>
 
     <div id="loading" style="text-align: center; display: none;">
-        <img src="/trip/asset/images/loading.gif">
+        <img src="${pageContext.request.contextPath}/resources/img/hotdeal/loading.gif" />
     </div>
 
     <div style="text-align: center; margin-top: 15px;">
@@ -107,6 +117,8 @@
                     <td><button type="button" class="comment" id="btnAddComment">댓글 쓰기</button></td>
                 </tr>
             </table>
+            		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
+            
         </form>
     </c:if>
 
@@ -116,375 +128,334 @@
         </div>
         <div>
             <c:if test="${id != null && id == dto.id}">
-                <button type="button" class="edit primary" onclick="location.href='/trip/board/edit.do?seq=${dto.seq}';">수정하기</button>
-                <button type="button" class="del primary" onclick="location.href='/trip/board/del.do?seq=${dto.seq}';">삭제하기</button>
+                <button type="button" class="edit primary" onclick="location.href='/trip/hotdeal/edit.do?seq=${dto.seq}';">수정하기</button>
+                <button type="button" class="del primary" onclick="location.href='/trip/hotdeal/del.do?seq=${dto.seq}';">삭제하기</button>
             </c:if>
         </div>
     </div>
 </div>
 </div>
 	<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=c7aebadc3646802527c08622383bc565"></script>
-	<script>
-	
-		/* $('#btnAddComment').click(() => {
-			
-			
-			$.ajax({
-				type: 'POST',
-				url: '/trip/board/addcomment.do',
-				data: {
-					content: $('input[name=content]').val(),
-					bseq: ${dto.seq}
-				},
-				dataType: 'json',
-				success: function(result) {
-					
-				},
-				error: function(a,b,c) {
-					console.log(a,b,c);
-				}
-			}); 
-			
-			
-			$.post('/trip/board/addcomment.do', {
-				content: $('input[name=content]').val(),
-				bseq: ${dto.seq}
-			}, function(result) {
-				
-				//alert(result.result);
-				//alert(result.dto);
-				//댓글 목록 갱신
-				
-				//새로 작성한 댓글을 화면에 동적 추가
-				let temp = `
-				
-					<tr>
-						<td class="commentContent">
-							<div>\${result.dto.content}</div>
-							<div>\${result.dto.regdate}</div>
-						</td>
-						<td class="commentInfo">
-							<div>
-								<div>\${result.dto.name}</div>
-								<div>
-									<span class="material-symbols-outlined" onclick="del(\${result.dto.seq});">delete</span>
-									<span class="material-symbols-outlined" onclick="edit(\${result.dto.seq});">edit_note</span>
-								</div>
-							</div>
-						</td>
-					</tr>
-				
-				`;
-				
-				$('#comment tbody').prepend(temp);
-				
-				$('input[name=content]').val('');
-				
-				
-			}, 'json').fail(function(a,b,c) {
-				console.log(a,b,c);
-			});
-			
-		}); */
-		
-		$('#btnAddComment').click(() => {
-			
-		    // 사용자가 입력한 댓글 내용과 게시글 번호를 가져옵니다.
-		    const commentContent = $('input[name=content]').val();
-		    const boardSeq = ${dto.seq};
+<!-- 	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=c7aebadc3646802527c08622383bc565"></script>
+ -->	<script>
+ 
+ $.ajaxSetup({
+	    beforeSend: function(xhr) {
+	        const token = $("meta[name='_csrf']").attr("content");
+	        const header = $("meta[name='_csrf_header']").attr("content");
+	        if(token && header) {
+	            xhr.setRequestHeader(header, token);
+	        }
+	    }
+	});
+ 
+ let begin = 6;
 
-		    // 혹시 모를 공백 입력을 방지하기 위해 앞뒤 공백을 제거합니다.
-		    if (commentContent.trim() === '') {
-		        alert('댓글 내용을 입력해주세요.');
-		        return; // 댓글 내용이 없으면 여기서 실행을 멈춥니다.
-		    }
+ $('#btnAddComment').click(() => {
+	    const commentContent = $('input[name=content]').val();
+	    const boardSeq = ${dto.seq};
 
-		    // $.post를 사용해 서버로 데이터를 전송합니다.
-		    $.post('/trip/hotdeal/addcomment', {
-		        content: commentContent,
-		        bseq: boardSeq
-		    }, function(result) {
-		        
-		        // --- 이 부분이 바로 '새로고침' 역할을 하는 부분입니다 ---
-		        // 서버로부터 성공적으로 추가된 댓글 정보(result.dto)를 받아
-		        // HTML 형식으로 만듭니다.
-		        let temp = `
-		            <tr>
-		                <td class="commentContent">
-		                    <div>\${result.dto.content}</div>
-		                    <div>\${result.dto.regdate}</div>
-		                </td>
-		                <td class="commentInfo">
-		                    <div>
-		                        <div>\${result.dto.name}</div>
-		                        <div>
-		                            <span class="material-symbols-outlined" onclick="del(\${result.dto.seq});">delete</span>
-		                            <span class="material-symbols-outlined" onclick="edit(\${result.dto.seq});">edit_note</span>
-		                        </div>
-		                    </div>
-		                </td>
-		            </tr>
-		        `;
-		        
-		        // 새로 만든 댓글 HTML을 기존 댓글 목록('#comment')의 맨 앞에 추가합니다.
-		        $('#comment tbody').prepend(temp);
-		        
-		        // 댓글 입력창을 깨끗하게 비워줍니다.
-		        $('input[name=content]').val('');
-		        
-		    }, 'json').fail(function(a, b, c) {
-		        // 혹시 서버와 통신이 실패하면 콘솔에 에러를 출력합니다.
-		        console.log("AJAX 통신 오류:", a, b, c);
-		        alert("댓글 등록에 실패했습니다.");
-		    });
-		    
-		});
-		
-		//처음: 1~10
-		//버튼: 11~15
-		//버튼: 16~20
-		//버튼: 21~25
-		
-		let begin = 6;
-		
-		$('#btnMoreComment').click(() => {
-			
-			$('#loading').show();
-			
-			setTimeout(more, 1500);
-			
-		});
-		
-		function more() {
-			
-			$.get('/trip/hotdeal/morecomment', {
-				bseq: ${dto.seq},
-				begin: begin
-			}, function (result) {
-				
-				if (result.length > 0) {
-					
-					//댓글 5개를 화면에 출력
-					result.forEach(obj => {
-						
-						let temp = `
-							
-							<tr>
-								<td class="commentContent">
-									<div>\${obj.content}</div>
-									<div>\${obj.regdate}</div>
-								</td>
-								<td class="commentInfo">
-									<div>
-										<div>\${obj.name}</div>
-							`;
-							
-							//익명: if ('') > false
-							//인증: if ('hong') > true
-							
-							if ('${id}' && ('${id}' == obj.id)) {
-							temp += `	<div>
-											<span class="material-symbols-outlined" onclick="del(\${obj.seq});">delete</span>
-											<span class="material-symbols-outlined" onclick="edit(\${obj.seq});">edit_note</span>
-										</div>
-							`;		
-							}
-										
-							temp += `</div>
-								</td>
-							</tr>
-						
-						`;
-						
-						$('#comment tbody').append(temp);
-						
-					});//for
-					
-					
-					
-					
-					begin += 5;
-					
-				} else {
-					alert('더 이상 가져올 댓글이 없습니다.');
-				}
-				
-				$('#loading').hide();
-				
-			}, 'json')
-			.fail(function(a,b,c) {
-				console.log(a,b,c);
-			});
-		}
-		
-		
-		function edit(seq) {
-			
-			$('.commentEditRow').remove();
-			
-			//let content = '수정할 댓글입니다.';
-			let content = $(event.target).parents('tr').children().eq(0).children().eq(0).text();
-			
-			$(event.target).parents('tr').after(`
-					
-				<tr class="commentEditRow">
-					<td><input type="text" name="content" class="full" required value="\${content}" id="txtComment"></td>
-					<td class="commentEdit">
-						<span class="material-symbols-outlined" onclick="editComment(\${seq});">edit_square</span>
-						<span class="material-symbols-outlined" onclick="$(event.target).parents('tr').remove();">close</span>
-					</td>
-				</tr>
-					
-			`);
-			
-		}
-		
-		function editComment(seq) {
-			
-			//alert(seq);
-			//alert($('#txtComment').val());
-			
-			let div = $(event.target).parents('tr').prev().children().eq(0).children().eq(0);
-			let tr = $(event.target).parents('tr');
-			
-			
-			$.post('/trip/hotdeal/editcomment', {
-				seq: seq,
-				content: $('#txtComment').val()
-			}, function (result) {
-				
-				if (result.result == '1') {
-					//alert('성공');
-					div.text($('#txtComment').val());
-					tr.remove();
-					
-				} else {
-					alert('댓글 수정을 실패했습니다.');
-				}
-				
-			}, 'json')
-			.fail(function (a,b,c) {
-				console.log(a,b,c);
-			});
-			
-		}
-		
-		function del(seq) {
-			
-			$('.commentEditRow').remove();
-			
-			let tr = $(event.target).parents('tr');
-			
-			if (confirm('삭제하겠습니까?')) {
-				
-				//$.ajax();
-				
-				$.post('/trip/hotdeal/delcomment', {
-					seq: seq
-				}, function (result) {
-					
-					if (result.result == '1') {
-						//alert('성공');
-						
-						//$(event.target).parents('tr').remove();
-						//console.log(event.target);
-						tr.remove(); //클로저
-						
-					} else {
-						alert('댓글 삭제를 실패했습니다.');
-					}
-					
-				}, 'json')
-				.fail(function(a,b,c) {
-					console.log(a,b,c);
-				});
-				
-			}
-			
-		}
-		
-		
-		function like(seq) {
-		    const btnLike = $('#btnLike');
-		    let isLiked = btnLike.hasClass('active');
+	    if (commentContent.trim() === '') {
+	        alert('댓글 내용을 입력해주세요.');
+	        return;
+	    }
 
-		    $.ajax({
-		        type: 'POST',
-		        url: '/trip/hotdeal/like',
-		        data: {
-		            bseq: seq 
-		        },
-		        success: function(result) {
-		            console.log('서버 DB 변경 성공!');
-		            if (isLiked) {
-		                btnLike.removeClass('active');
-		                btnLike.html('좋아요 👍');
-		            } else {
-		                btnLike.addClass('active');
-		                btnLike.html('좋아요 취소 ❤️');
-		            }
-		        },
-		        error: function(a, b, c) {
-		            console.log("AJAX 에러 발생:", a, b, c);
-		        }
-		    });
-		}
+	    $.ajax({
+	        url: '/trip/hotdeal/addcomment',
+	        method: 'POST',
+	        contentType: 'application/json',
+	        data: JSON.stringify({
+	            content: commentContent,
+	            bseq: boardSeq
+	        }),
+	        dataType: 'json',
+	        success: function(result) {
+	            // === 1단계: 서버 응답 확인 ===
+	            console.log("=== SERVER RESPONSE ===");
+	            console.log("Full result:", result);
+	            console.log("result.result:", result.result);
+	            console.log("result.dto:", result.dto);
+	            
+	            if (result.dto) {
+	                console.log("dto.seq:", result.dto.seq);
+	                console.log("dto.content:", result.dto.content);
+	                console.log("dto.name:", result.dto.name);
+	                console.log("dto.regdate:", result.dto.regdate);
+	            } else {
+	                console.error("result.dto is NULL!");
+	                alert("댓글 등록 실패: 서버에서 데이터를 반환하지 않았습니다.");
+	                return; // 여기서 종료
+	            }
+	            
+	            // === 2단계: DOM 생성 (result.dto가 있을 때만) ===
+	            let temp = '<tr>' +
+	                '<td class="commentContent">' +
+	                    '<div>' + result.dto.content + '</div>' +
+	                    '<div>' + result.dto.regdate + '</div>' +
+	                '</td>' +
+	                '<td class="commentInfo">' +
+	                    '<div>' +
+	                        '<div>' + result.dto.name + '</div>' +
+	                        '<div>' +
+	                            '<span class="material-symbols-outlined" onclick="del(' + result.dto.seq + ');">delete</span>' +
+	                            '<span class="material-symbols-outlined" onclick="edit(' + result.dto.seq + ');">edit_note</span>' +
+	                        '</div>' +
+	                    '</div>' +
+	                '</td>' +
+	            '</tr>';
+	            
+	            console.log("Generated HTML:", temp);
+	            
+	            $('#comment tbody').prepend(temp);
+	            $('input[name=content]').val('');
+	            console.log("Comment added successfully!");
+	        },
+	        error: function(xhr, status, error) {
+	            console.error("=== AJAX ERROR ===");
+	            console.error("Status:", status);
+	            console.error("Error:", error);
+	            console.error("Response:", xhr.responseText);
+	            alert("댓글 등록에 실패했습니다.");
+	        }
+	    });
+	});
+	$('#btnMoreComment').click(() => {
+	    $('#loading').show();
+	    
+	    setTimeout(more, 1500);
+	});
 
+	function more() {
+		$.ajax({
+	        url: '/trip/hotdeal/morecomment',
+	        method: 'GET', // or 'POST', Controller 설정에 따라
+	        data: {
+	            bseq: ${dto.seq},
+	            begin: begin
+	        },
+	        dataType: 'json',
+	        success: function (result) {
+	            console.log("Received comments:", result);
+	            // JSP 변수 ${id}를 직접 참조하여 현재 로그인 ID를 로그에 출력
+	            console.log("Current user id:", '${useq}');
 
-		function scrap(seq) {
-		    const btnScrap = $('#btnScrap');
-		    let isScrapped = btnScrap.hasClass('active');
+	            
+	            if (result.length > 0) {
+	                result.forEach(obj => {
+	                    console.log("Comment author id:", obj.id);
 
-		    $.ajax({
-		        type: 'POST',
-		        url: '/trip/hotdeal/scrap', // 스크랩 토글 URL
-		        data: { bseq: seq },
-		        success: function(result) {
-		            if (isScrapped) {
-		                btnScrap.removeClass('active');
-		                btnScrap.html('스크랩 📋');
-		            } else {
-		                btnScrap.addClass('active');
-		                btnScrap.html('스크랩 취소 📘');
-		            }
-		        },
-		        error: function(a,b,c) { console.log(a,b,c); }
-		    });
-		}
-		
-		
-		function report(seq) {
-		    const btnScrap = $('#btnBoardReport');
+	                    // 1. 버튼 HTML을 담을 변수 초기화
+	                    let buttonHtml = '';
+	    				
+	                    // 2. JSP 변수 '${id}'와 댓글 작성자 ID(obj.id) 비교
+	                    if ('${useq}' && ('${useq}' === String(obj.id))) { 
+	                        buttonHtml = `
+	                            <span class="material-symbols-outlined" onclick="del(${obj.seq});">delete</span>
+	                            <span class="material-symbols-outlined" onclick="edit(${obj.seq});">edit_note</span>
+	                        `;
+	                    }
 
-		    $.ajax({
-		        type: 'POST',
-		        url: '/trip/hotdeal/report', // 스크랩 토글 URL
-		        data: { bseq: seq },
-		        success: function(result) {
-		        	console.log('성공함');
-		        },
-		        error: function(a,b,c) { console.log(a,b,c); }
-		    });
-		}
-		
-		//... 기존 스크립트 코드 ...
+	                    // 3. jQuery를 사용하여 DOM 요소 생성
+	                    const contentDiv = $('<div>').text(obj.content);
+	                    const regdateDiv = $('<div>').text(obj.regdate);
+	                    const commentContentTd = $('<td>').addClass('commentContent').append(contentDiv).append(regdateDiv);
 
-		/* ▼▼▼ 이 코드를 추가해주세요 ▼▼▼ */
-		// 댓글 입력창에서 키를 누를 때 이벤트 처리
-		$('#addCommentForm input[name=content]').on('keydown', function(event) {
-		    
-		    // 눌린 키가 엔터(Enter) 키인지 확인 (keyCode 13)
-		    if (event.keyCode === 13) {
-		        
-		        // 1. 엔터 키의 기본 동작(폼 전송)을 막습니다.
-		        event.preventDefault(); 
-		        
-		        // 2. '댓글 쓰기' 버튼을 강제로 클릭시킵니다.
-		        $('#btnAddComment').click(); 
-		    }
-		});
-		
+	                    const nameDiv = $('<div>').text(obj.name);
+	                    const buttonsDiv = $('<div>').addClass('comment-action-buttons').html(buttonHtml);
+	                    const commentInfoTd = $('<td>').addClass('commentInfo').append($('<div>').append(nameDiv).append(buttonsDiv));
+
+	                    const newRow = $('<tr>').append(commentContentTd).append(commentInfoTd);
+	                    
+	                    // 4. tbody에 추가
+	                    $('#comment tbody').append(newRow);
+	                });
+	                
+	                begin += 5;
+	            } else {
+	                alert('더 이상 가져올 댓글이 없습니다.');
+	            }
+	            $('#loading').hide();
+	        },
+	        error: function(xhr, status, error) {
+	            console.log(xhr, status, error);
+	        }
+	    });
+	}
+
+	function edit(seq) {
+	    $('.commentEditRow').remove();
+	    let content = $(event.target).parents('tr').children().eq(0).children().eq(0).text();
+
+	    $(event.target).parents('tr').after(/* `
+	        <tr class="commentEditRow">
+	            <td><input type="text" name="content" class="full" required value="${content}" id="txtComment"></td>
+	            <td class="commentEdit">
+	                <span class="material-symbols-outlined" onclick="editComment(${seq});">edit_square</span>
+	                <span class="material-symbols-outlined" onclick="$(event.target).parents('tr').remove();">close</span>
+	            </td>
+	        </tr>
+	    ` */
+	    		'<tr class="commentEditRow">' +
+	            '<td><input type="text" name="content" class="full" required value="' + content.replace(/"/g, '&quot;') + '" id="txtComment"></td>' +
+	            '<td class="commentEdit">' +
+	                '<span class="material-symbols-outlined" onclick="editComment(' + seq + ');">edit_square</span>' +
+	                '<span class="material-symbols-outlined" onclick="$(event.target).parents(\'tr\').remove();">close</span>' +
+	            '</td>' +
+	        '</tr>');
+	}
+
+	function editComment(seq) {
+	    let editRow = $(event.target).parents('tr');
+	    let commentRow = editRow.prev();
+	    let newContent = $('#txtComment').val().trim();
+	    
+	    if (!newContent) {
+	        alert('댓글 내용을 입력해주세요.');
+	        return;
+	    }
+	    
+	    console.log("Updating comment seq:", seq, "with content:", newContent);
+	    
+	    $.ajax({
+	        url: '/trip/hotdeal/editcomment',
+	        method: 'POST',
+	        contentType: 'application/json',
+	        data: JSON.stringify({
+	            seq: seq,
+	            content: newContent
+	        }),
+	        dataType: 'json',
+	        success: function(result) {
+	            console.log("Server response:", result);
+	            if (result.result == '1') {
+	                // commentContent의 첫 번째 div (댓글 내용)를 찾아서 업데이트
+	                commentRow.find('.commentContent div').first().text(newContent);
+	                
+	                // 수정 입력 행 제거
+	                editRow.remove();
+	                console.log("Comment updated successfully");
+	            } else {
+	                alert('댓글 수정을 실패했습니다.');
+	            }
+	        },
+	        error: function(xhr, status, error) {
+	            console.log("AJAX error:", xhr.responseText, status, error);
+	            alert('댓글 수정 중 오류가 발생했습니다.');
+	        }
+	    });
+	}
+
+	function del(seq) {
+	    $('.commentEditRow').remove();
+	    let tr = $(event.target).parents('tr');
+	    if (confirm('삭제하겠습니까?')) {
+	        $.ajax({
+	            url: '/trip/hotdeal/delcomment',
+	            method: 'POST',
+	            contentType: 'application/json',
+	            data: JSON.stringify({ seq: seq }),
+	            dataType: 'json',
+	            success: function(result) {
+	                if (result.result == '1') {
+	                    tr.remove();
+	                } else {
+	                    alert('댓글 삭제를 실패했습니다.');
+	                }
+	            },
+	            error: function(xhr, status, error) {
+	                console.log(xhr, status, error);
+	            }
+	        });
+	    }
+	}
+
+	function like(seq) {
+	    const btnLike = $('#btnLike');
+	    let isLiked = btnLike.hasClass('active');
+
+	    $.ajax({
+	        type: 'POST',
+	        url: '/trip/hotdeal/like',
+	        contentType: 'application/json',
+	        data: JSON.stringify({ bseq: seq }),
+	        dataType: 'json',
+	        success: function(result) {
+	            if (result.result === 'login_required') {
+	                alert('로그인이 필요합니다.');
+	                return;
+	            }
+	            
+	            console.log('서버 DB 변경 성공!');
+	            
+	            if (result.action === 'unliked') {
+	                btnLike.removeClass('active');
+	                btnLike.html('좋아요 👍 (' + result.likeCount + ')');
+	            } else {
+	                btnLike.addClass('active');
+	                btnLike.html('좋아요 취소 ❤️ (' + result.likeCount + ')');
+	            }
+	        },
+	        error: function(xhr, status, error) {
+	            console.log("AJAX 에러 발생:", xhr, status, error);
+	        }
+	    });
+	}
+
+	function scrap(seq) {
+	    const btnScrap = $('#btnScrap');
+	    let isScrapped = btnScrap.hasClass('active');
+
+	    $.ajax({
+	        type: 'POST',
+	        url: '/trip/hotdeal/scrap',
+	        contentType: 'application/json',
+	        data: JSON.stringify({ bseq: seq }),
+	        dataType: 'json',
+	        success: function(result) {
+	            if (result.result === 'login_required') {
+	                alert('로그인이 필요합니다.');
+	                return;
+	            }
+	            
+	            if (result.action === 'unscrapped') {
+	                btnScrap.removeClass('active');
+	                btnScrap.html('스크랩 📋');
+	            } else {
+	                btnScrap.addClass('active');
+	                btnScrap.html('스크랩 취소 📘');
+	            }
+	        },
+	        error: function(xhr, status, error) {
+	            console.log(xhr, status, error);
+	        }
+	    });
+	}
+
+	function report(seq) {
+	    const btnScrap = $('#btnBoardReport');
+
+	    $.ajax({
+	        type: 'POST',
+	        url: '/trip/hotdeal/report',
+	        contentType: 'application/json',
+	        data: JSON.stringify({ bseq: seq }),
+	        dataType: 'json',
+	        success: function(result) {
+	            console.log('성공함');
+	        },
+	        error: function(xhr, status, error) {
+	            console.log(xhr, status, error);
+	        }
+	    });
+	}
+
+	// 댓글 입력창에서 엔터키 이벤트 처리
+	$('#addCommentForm input[name=content]').on('keydown', function(event) {
+	    if (event.keyCode === 13) {
+	        event.preventDefault();
+	        $('#btnAddComment').click();
+	    }
+	});
 	</script>
 	
 		

@@ -28,9 +28,9 @@ public class FindBoardServiceImpl implements FindBoardService {
     private final ReportMapper reportMapper;     // 2. ★★★ [추가] 공용 신고 Mapper
     
     // ★★★ [추가] 파일 업로드 경로 설정 (프로퍼티 또는 상수) ★★★
-	/*
-	 * @Value("${app.uploadPath}") private String uploadPath;
-	 */
+	
+	 @Value("${app.uploadPath}") private String uploadPath;
+	 
 
     // 1. 목록 조회 및 페이징 (findboardList.java 대체)
     @Override
