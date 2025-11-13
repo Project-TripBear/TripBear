@@ -48,19 +48,21 @@
     DELETE FROM tblUserRoute WHERE USER_ROUTE_ID = #{userRouteId}
   </delete>
 
-  <!-- ✅ 일차/순서 수정 -->
-  <update id="updateStopOrder">
-    UPDATE tblUserRouteStop
-    SET USER_ROUTE_DAY = #{day},
-        USER_ROUTE_STOP_ORDER = #{order}
-    WHERE USER_ROUTE_STOP_ID = #{stopId}
-  </update>
-
   <!-- ✅ 이동수단 수정 -->
   <update id="updateTransportMode">
     UPDATE tblUserRouteStop
     SET TRANSPORTATION_MODE = #{mode}
     WHERE USER_ROUTE_STOP_ID = #{stopId}
   </update>
+  
+  <!-- ✅ 일차/순서 수정 -->
+  <update id="updateStopOrder">
+    UPDATE user_route_stop
+    SET user_route_stop_order = #{order}
+    WHERE user_route_stop_id = #{stopId}
+    AND user_route_day = #{day}
+</update>
+
+  
 
 </mapper>

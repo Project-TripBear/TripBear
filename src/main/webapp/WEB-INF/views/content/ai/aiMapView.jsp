@@ -114,49 +114,58 @@ function clearMap() {
 }
 
 // ✅ 경로 그리기
-async function drawRoute(start, end) {
+const routeColors = [
+  "#4A6CF7",
+  "#FF5722",
+  "#9C27B0",
+  "#009688",
+  "#FBC02D",
+  "#E91E63",
+  "#795548"
+];
+
+//✅ AI 루트 경로 그리기 (index 색상 적용)
+async function drawRoute(start, end, index) {
   try {
-    var mode = (start.activityCode === "WALK" || end.activityCode === "WALK") ? "WALK" : "CAR";
-    var url = window.location.origin + contextPath + "/api/mobility/directions?originX=" +
-      start.aiRouteLong + "&originY=" + start.aiRouteLat +
-      "&destX=" + end.aiRouteLong + "&destY=" + end.aiRouteLat;
+    const url = window.location.origin + contextPath +
+      "/api/mobility/directions?originX=" + start.aiRouteLong +
+      "&originY=" + start.aiRouteLat +
+      "&destX=" + end.aiRouteLong +
+      "&destY=" + end.aiRouteLat;
 
-    var res = await fetch(url);
-    if (!res.ok) throw new Error("HTTP " + res.status);
-    var json = await res.json();
+    const res = await fetch(url);
+    if (!res.ok) return null;
 
-    var vertexes = [];
-    if (json.routes && json.routes[0]?.sections?.[0]?.roads) {
-      json.routes[0].sections[0].roads.forEach(r => vertexes = vertexes.concat(r.vertexes));
-    }
+    const json = await res.json();
+    console.log("AI Mobility 응답:", json);
 
-    var path = [];
-    for (let i = 0; i < vertexes.length; i += 2) {
-      path.push(new kakao.maps.LatLng(vertexes[i + 1], vertexes[i]));
-    }
+    let path = [];
+    const roads = json.routes?.[0]?.sections?.[0]?.roads;
+    if (!roads) return null;
 
-    var color = (mode === "WALK") ? "#FF9500" : "#007AFF";
-    var line = new kakao.maps.Polyline({
-      path, strokeWeight: 5, strokeColor: color, strokeOpacity: 0.9
+    roads.forEach(r => {
+      for (let i = 0; i < r.vertexes.length; i += 2) {
+        path.push(new kakao.maps.LatLng(r.vertexes[i + 1], r.vertexes[i]));
+      }
     });
-    line.setMap(map);
 
-    if (path.length > 0) {
-      var mid = path[Math.floor(path.length / 2)];
-      var label = new kakao.maps.CustomOverlay({
-        position: mid,
-        content: '<div class="route-mode-label" style="color:' + color + ';">' +
-          (mode === "WALK" ? "🚶 도보" : "🚗 차량") + "</div>"
-      });
-      label.setMap(map);
-      return { line, label };
-    }
-    return { line };
+    const polyline = new kakao.maps.Polyline({
+      path,
+      strokeWeight: 4,
+      strokeColor: routeColors[index % routeColors.length],
+      strokeOpacity: 0.9
+    });
+
+    polyline.setMap(map);
+    return polyline;
+
   } catch (err) {
-    console.error("❌ Mobility API 오류:", err);
+    console.error("❌ drawRoute 오류:", err);
     return null;
   }
 }
+
+
 
 // ✅ 여행정보 렌더링
 function renderTravel(stops) {
@@ -242,7 +251,7 @@ async function displayDay(day) {
   }
 
   for (let j = 0; j < stops.length - 1; j++) {
-    var seg = await drawRoute(stops[j], stops[j + 1]);
+	  var seg = await drawRoute(stops[j], stops[j + 1], j);
     if (seg?.line) lines.push(seg.line);
     if (seg?.label) overlays.push(seg.label);
   }

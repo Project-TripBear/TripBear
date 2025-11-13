@@ -88,6 +88,9 @@ h1 {
   <ul id="stop-list"></ul>
 
   <button id="delete-route-btn">이 루트를 삭제하기</button>
+
+  <button id="reserveBtn" class="save-btn">🛏️ 숙소 예약하러 가기</button>
+  
 </div>
 
 <script>
@@ -95,8 +98,21 @@ h1 {
 const pathParts = window.location.pathname.split('/');
 const contextPath = pathParts.length > 1 ? '/' + pathParts[1] : '';
 const userRouteId = new URLSearchParams(window.location.search).get("id");
+let routeData = null;
+
 
 let map, stopsByDay = {}, mapElements = {}, currentDay = 1;
+const routeColors = [
+	  "#4A6CF7",
+	  "#FF5722",
+	  "#9C27B0",
+	  "#009688",
+	  "#FBC02D",
+	  "#E91E63",
+	  "#795548"
+	];
+
+
 
 function initMap(lat, lng) {
   map = new kakao.maps.Map(document.getElementById("map"), {
@@ -115,28 +131,44 @@ function getActivityStyle(code) {
   return styles[code] || { color: "#999", icon: "📌" };
 }
 
-async function drawRoute(start, end) {
-  try {
-    const url = contextPath + "/api/mobility/directions?originX=" +
-      start.userRouteLong + "&originY=" + start.userRouteLat +
-      "&destX=" + end.userRouteLong + "&destY=" + end.userRouteLat;
-    const res = await fetch(url);
-    if (!res.ok) return null;
-    const json = await res.json();
-    let path = [];
-    const roads = json.routes?.[0]?.sections?.[0]?.roads;
-    if (roads) roads.forEach(r => {
-      for (let i = 0; i < r.vertexes.length; i += 2)
-        path.push(new kakao.maps.LatLng(r.vertexes[i + 1], r.vertexes[i]));
-    });
-    const line = new kakao.maps.Polyline({ path, strokeWeight: 4, strokeColor: "#4a6cf7" });
-    line.setMap(map);
-    return line;
-  } catch (e) {
-    console.error("Mobility API 오류", e);
-    return null;
-  }
-}
+async function drawRoute(start, end, index) {
+	  try {
+	    const url = contextPath + "/api/mobility/directions?originX=" +
+	      start.userRouteLong + "&originY=" + start.userRouteLat +
+	      "&destX=" + end.userRouteLong + "&destY=" + end.userRouteLat;
+
+	    const res = await fetch(url);
+	    if (!res.ok) return null;
+
+	    const json = await res.json();
+	    console.log("Mobility API 응답:", json);
+
+	    let path = [];
+	    const roads = json.routes?.[0]?.sections?.[0]?.roads;
+	    if (!roads) return null;
+
+	    roads.forEach(r => {
+	      for (let i = 0; i < r.vertexes.length; i += 2) {
+	        path.push(new kakao.maps.LatLng(r.vertexes[i + 1], r.vertexes[i]));
+	      }
+	    });
+
+	    const line = new kakao.maps.Polyline({
+	      path,
+	      strokeWeight: 4,
+	      strokeColor: routeColors[index % routeColors.length],
+	      strokeOpacity: 0.9
+	    });
+
+	    line.setMap(map);
+	    return line;
+
+	  } catch (e) {
+	    console.error("Mobility API 오류", e);
+	    return null;
+	  }
+	}
+
 
 function clearMap() {
   Object.values(mapElements).forEach(v => {
@@ -145,6 +177,28 @@ function clearMap() {
   });
   mapElements = {};
 }
+
+function renderDayButtons() {
+	  const btnBox = document.getElementById("day-buttons");
+	  btnBox.innerHTML = "";
+
+	  Object.keys(stopsByDay).sort((a,b)=>a-b).forEach(day => {
+	    const btn = document.createElement("button");
+	    btn.className = "day-btn";
+	    btn.textContent = "Day " + day;
+	    btn.dataset.day = day;
+	    btnBox.appendChild(btn);
+	  });
+
+	  btnBox.onclick = async (e) => {
+	    if (!e.target.matches(".day-btn")) return;
+	    document.querySelectorAll(".day-btn").forEach(b => b.classList.remove("active"));
+	    e.target.classList.add("active");
+	    currentDay = e.target.dataset.day;
+	    await displayDay(currentDay);
+	  };
+	}
+
 
 async function displayDay(day) {
   clearMap();
@@ -167,7 +221,7 @@ async function displayDay(day) {
   });
 
   for (let j = 0; j < stops.length - 1; j++) {
-    const seg = await drawRoute(stops[j], stops[j + 1]);
+	  const seg = await drawRoute(stops[j], stops[j + 1], j);
     if (seg) lines.push(seg);
   }
 
@@ -209,14 +263,30 @@ function renderEditableStops(stops) {
   });
 
   Sortable.create(list, {
-    animation:150,
-    onEnd: async evt => {
-      const stopId = evt.item.dataset.id;
-      const newOrder = evt.newIndex + 1;
-      const res = await fetch(contextPath + "/api/user/route/stop/" + stopId + "?day=" + currentDay + "&order=" + newOrder, {method:"PATCH"});
-      if (res.ok) await refreshDay(currentDay);
-    }
-  });
+	  animation: 150,
+	  onEnd: async evt => {
+	    const items = [...document.querySelectorAll("#stop-list .travel-card")];
+
+	    // order 재정렬 목록 생성
+	    const orderedStops = items.map((li, index) => ({
+	      stopId: li.dataset.id,
+	      order: index + 1
+	    }));
+
+	    // 전체 order 업데이트 API 호출
+	    const res = await fetch("trip/api/user/route/stop/reorder", {
+	      method: "POST",
+	      headers: { "Content-Type": "application/json" },
+	      body: JSON.stringify({
+	        day: currentDay,
+	        stops: orderedStops
+	      })
+	    });
+
+	    if (res.ok) await refreshDay(currentDay);
+	  }
+	});
+
 }
 
 document.addEventListener("change", async e => {
@@ -235,18 +305,41 @@ document.addEventListener("change", async e => {
 });
 
 async function refreshDay(day){
-  const res = await fetch(contextPath + "/api/user/route/" + userRouteId);
-  const data = await res.json();
-  stopsByDay = data.stops.reduce((acc,s)=>{
-    (acc[s.userRouteDay]=acc[s.userRouteDay]||[]).push(s);
-    return acc;
-  },{});
-  await displayDay(day);
-}
+	  const res = await fetch(contextPath + "/api/user/route/" + userRouteId);
+	  const data = await res.json();
+		
+	  stopsByDay = data.stops.reduce((acc,s)=>{
+	    (acc[s.userRouteDay] = acc[s.userRouteDay] || []).push(s);
+	    return acc;
+	  },{});
+
+	  // ★ 정렬 추가
+	  Object.keys(stopsByDay).forEach(d => {
+	    stopsByDay[d].sort((a,b) => a.userRouteStopOrder - b.userRouteStopOrder);
+	  });
+
+	  // ★ Day 버튼 재생성
+	  renderDayButtons();
+
+	  // 현재 day가 없어진 경우 첫 day로 이동
+	  if (!stopsByDay[day]) {
+	    day = Object.keys(stopsByDay)[0];
+	  }
+
+	  currentDay = day;
+
+	  // 새로 생성된 day 버튼에 active 추가
+	  document.querySelector(`[data-day="${day}"]`)?.classList.add("active");
+
+	  await displayDay(day);
+	}
+
 
 window.addEventListener("DOMContentLoaded", async ()=>{
   const res = await fetch(contextPath + "/api/user/route/" + userRouteId);
   const data = await res.json();
+  
+  routeData = data; 
   if (!data.stops || data.stops.length === 0) {
     document.getElementById("map").innerHTML = "<h4>저장된 경로가 없습니다.</h4>";
     return;
@@ -289,6 +382,39 @@ document.getElementById("delete-route-btn").addEventListener("click", async ()=>
     location.href=contextPath+"/mypage";
   } else alert("삭제 실패");
 });
+
+document.getElementById("reserveBtn").addEventListener("click", () => {
+
+	  if (!routeData) {
+	    alert("경로 정보를 불러오지 못했습니다.");
+	    return;
+	  }
+
+	  var region = routeData.userRouteRegion;
+	  var checkin = formatDate(routeData.userRouteStartdate);
+	  var checkout = formatDate(routeData.userRouteEnddate);
+
+	  // ❗ 백틱 제거한 형태
+	  var url = "/trip/reservation/select-accom"
+	          + "?userRouteId=" + routeData.userRouteId
+	          + "&region=" + encodeURIComponent(region)
+	          + "&checkin=" + checkin
+	          + "&checkout=" + checkout;
+
+	  window.location.href = url;
+	});
+
+	function formatDate(d) {
+	  var date = new Date(d);
+	  var month = String(date.getMonth() + 1).padStart(2, "0");
+	  var day = String(date.getDate()).padStart(2, "0");
+	  return date.getFullYear() + "-" + month + "-" + day;
+	}
+
+
+
+
+
 </script>
 </body>
 </html>

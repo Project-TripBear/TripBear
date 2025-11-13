@@ -1,11 +1,15 @@
 package com.project.trip.AI.service;
 
 import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import com.project.trip.AI.mapper.UserRouteMapper;
+import com.project.trip.AI.model.StopOrderDTO;
 import com.project.trip.AI.model.UserRouteDTO;
 import com.project.trip.AI.model.UserRouteStopDTO;
+
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -30,13 +34,25 @@ public class UserRouteServiceImpl implements UserRouteService {
         return mapper.deleteUserRouteById(userRouteId);
     }
 
-    @Override
-    public int updateStopOrder(Long stopId, int day, int order) {
-        return mapper.updateStopOrder(stopId, day, order);
-    }
 
     @Override
     public int updateTransportMode(Long stopId, String mode) {
         return mapper.updateTransportMode(stopId, mode);
     }
+    
+    @Transactional
+    @Override
+    public int updateStopOrder(Long stopId, int day, int order) {
+        return mapper.updateStopOrder(stopId, order, day);
+    }
+
+    @Transactional
+    @Override
+    public void updateStopOrders(int day, List<StopOrderDTO> stops) {
+        for (StopOrderDTO s : stops) {
+            mapper.updateStopOrder(s.getStopId(), s.getOrder(), day);
+        }
+    }
+
+    
 }

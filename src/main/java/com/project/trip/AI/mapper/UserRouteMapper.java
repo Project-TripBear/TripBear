@@ -14,14 +14,16 @@ public interface UserRouteMapper {
     int deleteStopsByUserRouteId(Long userRouteId);
     int deleteUserRouteById(Long userRouteId);
 
-    int updateStopOrder(
-            @Param("stopId") Long stopId,
-            @Param("day") int day,
-            @Param("order") int order
-        );
+    int updateStopOrder(@Param("stopId") Long stopId,
+            @Param("order") int order,
+            @Param("day") int day);
 
-        int updateTransportMode(
+
+    int updateTransportMode(
             @Param("stopId") Long stopId,
             @Param("mode") String mode
-        );
+   
+    	);
+    
+
 }

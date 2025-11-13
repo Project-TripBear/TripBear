@@ -1,8 +1,17 @@
 package com.project.trip.AI.restcontroller;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
+import com.project.trip.AI.model.ReorderRequest;
 import com.project.trip.AI.model.UserRouteDTO;
 import com.project.trip.AI.service.UserRouteService;
 
@@ -55,4 +64,13 @@ public class UserRouteRestController {
             ? ResponseEntity.ok("이동수단 변경 완료")
             : ResponseEntity.notFound().build();
     }
+    
+    @PostMapping("/stop/reorder")
+    public ResponseEntity<?> reorderStops(@RequestBody ReorderRequest req) {
+        userRouteService.updateStopOrders(req.getDay(), req.getStops());
+        return ResponseEntity.ok().build();
+    }
+
+
+    
 }
