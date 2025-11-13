@@ -15,18 +15,46 @@
 	</resultMap> -->
 	
 	 <!-- 총 게시물 수 조회 -->
-   	 <select id="likeCheck" resultType="int" parameterType="map">
-        SELECT COUNT(*)
-        FROM tblHotDealLikes
-        WHERE user_id = #{userId}
-          AND hotdeal_id = #{hotdealId}
+   	  <select id="likeCheck" resultType="int">
+        SELECT COUNT(*) 
+        FROM tblHotDealLikes 
+        WHERE user_id = #{userSeq} 
+        AND hotdeal_id = #{bseq}
     </select>
     
-    <select id="scrapCheck" resultType="int" parameterType="map">
-        SELECT COUNT(*)
-        FROM tblHotDealScrap
-        WHERE user_id = #{userId}
-          AND hotdeal_id = #{hotdealId}
+    <insert id="likeAdd">
+        INSERT INTO tblHotDealLikes (user_id, hotdeal_id) 
+        VALUES (#{userSeq}, #{bseq})
+    </insert>
+    
+    <delete id="likeDel">
+        DELETE FROM tblHotDealLikes 
+        WHERE user_id = #{userSeq} 
+        AND hotdeal_id = #{bseq}
+    </delete>
+    
+    <select id="getLikeCount" resultType="int">
+        SELECT COUNT(*) 
+        FROM tblHotDealLikes 
+        WHERE hotdeal_id = #{bseq}
     </select>
+    
+    <select id="scrapCheck" resultType="int">
+        SELECT COUNT(*) 
+        FROM tblHotDealScrap 
+        WHERE user_id = #{userSeq} 
+        AND hotdeal_id = #{bseq}
+    </select>
+    
+    <insert id="scrapAdd">
+        INSERT INTO tblHotDealScrap (hotdeal_scrap_id, user_id, hotdeal_id) 
+        VALUES (seqHotDealScrap.nextVal, #{userSeq}, #{bseq})
+    </insert>
+    
+    <delete id="scrapDel">
+        DELETE FROM tblHotDealScrap 
+        WHERE user_id = #{userSeq} 
+        AND hotdeal_id = #{bseq}
+    </delete>
 
 	</mapper>
