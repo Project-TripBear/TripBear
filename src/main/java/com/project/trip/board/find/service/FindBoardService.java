@@ -11,8 +11,7 @@ import com.project.trip.board.find.model.findcommentDTO;
 public interface FindBoardService {
 
     // 1. 목록 및 페이징
-    Map<String, Object> getPostList(int currentPage, String searchType, String searchKeyword);
-    
+	Map<String, Object> getPostList(int currentPage, String searchType, String searchKeyword);    
     // 2. 등록/수정/삭제
     void addPost(findboardDTO dto); // 파일 업로드 처리 포함
     void updatePost(findboardDTO dto); // 파일 업로드 처리 포함
@@ -36,6 +35,5 @@ public interface FindBoardService {
     // 6. 신고 (트랜잭션)
     int addReport(int boardSeq, int reporterId, int reportedUserId, String reason);
     
-    // 7. ★★★ [추가 기능] 키워드 시각화 데이터 ★★★
-    List<Map<String, Object>> getPopularKeywords();
+ 
 }

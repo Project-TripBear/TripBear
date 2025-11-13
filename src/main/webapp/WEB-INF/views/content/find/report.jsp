@@ -4,7 +4,7 @@
 <h1 class="report-title">게시글 신고</h1>
 
 <form method="POST" action="<c:url value="/findboard/report"/>">
-    <input type="hidden" name="boardSeq" value="${boardSeq}">
+    <sec:csrfInput /> <input type="hidden" name="boardSeq" value="${boardSeq}">
     <input type="hidden" name="reportedUserId" value="${reportedUserId}">
     
     <div class="report-form-group">
@@ -17,6 +17,6 @@
             <option value="기타">기타</option>
         </select>
     </div>
-  
+    
     <button type="submit" class="report-submit-btn">신고하기</button>
 </form>

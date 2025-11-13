@@ -42,6 +42,8 @@
         <security:intercept-url pattern="/resources/**" access="permitAll" />
         <security:intercept-url pattern="/member/login" access="permitAll" />
         <security:intercept-url pattern="/" access="permitAll" />
+        
+        <security:intercept-url pattern="/findboard/report**" access="hasAuthority('ACTIVE')" />
 
         <security:intercept-url pattern="/member/mypage" access="hasAuthority('ACTIVE')" />
         <security:intercept-url pattern="/*/add" access="hasAuthority('ACTIVE')" />

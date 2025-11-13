@@ -69,12 +69,7 @@ public class FindBoardServiceImpl implements FindBoardService {
     public void addPost(findboardDTO dto) {
         // ★★★ 파일 처리 로직 (MultipartFile을 Controller에서 DTO에 담아 넘겨야 함) ★★★
         // DTO에 파일 처리 로직이 들어갈 경우, 매개변수 변경이 필요. 여기서는 DTO에 이미 파일 경로가 설정되었다고 가정.
-        
-        // 키워드를 저장하기 전에 공백 제거 및 소문자 변환 등의 전처리 수행
-        if (dto.getFind_board_keyword() != null) {
-            String processedKeyword = dto.getFind_board_keyword().replaceAll("\\s", "").toLowerCase();
-            dto.setFind_board_keyword(processedKeyword);
-        }
+       
         
         mapper.addPost(dto);
     }
@@ -83,12 +78,7 @@ public class FindBoardServiceImpl implements FindBoardService {
     @Override
     public void updatePost(findboardDTO dto) {
         // ★★★ 파일 처리 로직 (DTO에 이미 파일 경로가 설정되었다고 가정) ★★★
-        
-        if (dto.getFind_board_keyword() != null) {
-            String processedKeyword = dto.getFind_board_keyword().replaceAll("\\s", "").toLowerCase();
-            dto.setFind_board_keyword(processedKeyword);
-        }
-        
+       
         mapper.updatePost(dto);
     }
 
@@ -182,12 +172,7 @@ public class FindBoardServiceImpl implements FindBoardService {
         return 1; // 트랜잭션 성공 시
     }
 
-    // 7. ★★★ [추가 기능] 키워드 시각화 데이터 ★★★
-    @Override
-    public List<Map<String, Object>> getPopularKeywords() {
-        return mapper.getPopularKeywords();
-    }
-    
+
     // ... 나머지 댓글 관련 Service 메서드 구현 생략 ...
     @Override
     public int getCommentAuthor(int commentId) {

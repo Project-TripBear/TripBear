@@ -32,7 +32,7 @@
             </c:if>	
             
             <%-- 데이터 루프 --%>
-            <c:forEach items="${list}" var="dto">
+    	 <c:forEach items="${list}" var="dto">
             <tr>
                 <td>${dto.find_board_id}</td>
                 <td class="title">
@@ -40,12 +40,12 @@
                         ${dto.find_board_title} 
                         <%-- 댓글 수 표시 (style 속성 제거) --%>
                         <c:if test="${dto.commentCount > 0}">
-                             <span class="comment-count">[${dto.commentCount}]</span>
+                            <span class="comment-count">[${dto.commentCount}]</span>
                         </c:if>
                     </a>
                 </td>
                 <td>${dto.nickname}</td>
-                <td>${dto.displayTime}</td> 
+                <td>${dto.find_board_regdate}</td>  <%-- ★★★ [수정] displayTime -> find_board_regdate로 수정 ★★★ --%>
                 <td>${dto.find_board_view_count}</td>
                 <td>${dto.likeCount}</td>
             </tr>
