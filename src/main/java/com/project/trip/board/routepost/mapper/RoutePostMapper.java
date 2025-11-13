@@ -12,7 +12,7 @@ public interface RoutePostMapper {
     List<RoutePostDTO> list(Map<String, Object> map);
 
     // 게시글 상세보기
-    RoutePostDTO get(String routepostId);
+    RoutePostDTO get(int routepostId);
 
     // 게시글 등록
     int add(RoutePostDTO dto);
@@ -24,7 +24,7 @@ public interface RoutePostMapper {
     int del(int routepostId);
 
     // 게시글 이미지 목록
-    List<RoutePostImageDTO> getImages(String routepostId);
+    List<RoutePostImageDTO> getImages(int routepostId);
 
     // 이미지 등록
     int addImage(RoutePostImageDTO imgDto);
@@ -33,7 +33,7 @@ public interface RoutePostMapper {
     int delImages(int routepostId);
     
     // 조회수 증가
-    void increaseViewCount(String routepostId);
+    void increaseViewCount(int routepostId);
     
     //좋아요
     int isLiked(Map<String, Object> map);

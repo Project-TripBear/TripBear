@@ -10,18 +10,18 @@ public interface RoutePostService {
 
     // ===== 게시글 =====
 	List<RoutePostDTO> list(Map<String, Object> map);
-    RoutePostDTO get(String routepostId);
+    RoutePostDTO get(int routepostId);
     int add(RoutePostDTO dto);
     int edit(RoutePostDTO dto);
     int del(int routepostId);
 
     // ===== 이미지 =====
-    List<RoutePostImageDTO> getImages(String routepostId);
+    List<RoutePostImageDTO> getImages(int routepostId);
     int addImage(RoutePostImageDTO imgDto);
     int delImages(int i);
 
     // ===== 조회수 =====
-    void increaseViewCount(String routepostId);
+    void increaseViewCount(int routepostId);
 
     // ===== 좋아요 =====
     boolean isLiked(Map<String, Object> map);

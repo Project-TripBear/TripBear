@@ -28,7 +28,7 @@
 
 		<property name="maximumPoolSize" value="5"/>
 		<property name="connectionTimeout" value="30000"/>
-		<property name="idleTimeout" value="600000"/>
+		<property name="idleTimeout" value="200000"/>
 		<property name="maxLifetime" value="1800000"/>
 	</bean>
 

@@ -6,7 +6,7 @@ import lombok.Data;
 public class RoutePostCommentDTO {
 
 	private long routepostCommentId;
-    private String userId;
+    private int userId;
     private int routepostId;
     private String routepostContent;
     private String routepostRegdate;

@@ -23,7 +23,7 @@ public class RoutePostServiceImpl implements RoutePostService {
     }
 
     @Override
-    public RoutePostDTO get(String routepostId) {
+    public RoutePostDTO get(int routepostId) {
         return mapper.get(routepostId);
     }
 
@@ -46,7 +46,7 @@ public class RoutePostServiceImpl implements RoutePostService {
 
     // ===== 이미지 =====
     @Override
-    public List<RoutePostImageDTO> getImages(String routepostId) {
+    public List<RoutePostImageDTO> getImages(int routepostId) {
         return mapper.getImages(routepostId);
     }
 
@@ -62,7 +62,7 @@ public class RoutePostServiceImpl implements RoutePostService {
 
     // ===== 조회수 =====
     @Override
-    public void increaseViewCount(String routepostId) {
+    public void increaseViewCount(int routepostId) {
         mapper.increaseViewCount(routepostId);
     }
 

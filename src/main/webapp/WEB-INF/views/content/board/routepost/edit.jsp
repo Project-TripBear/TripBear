@@ -6,11 +6,10 @@
 <head>
 <meta charset="UTF-8">
 <title>게시글 수정 ✏️</title>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/asset/css/routepost.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/routepost.css">
 </head>
 
 <body>
-<%@ include file="/WEB-INF/views/inc/header.jsp" %>
 
 <div class="container">
   <h2>게시글 수정 ✏️</h2>

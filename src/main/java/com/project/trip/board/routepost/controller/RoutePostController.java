@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -56,7 +55,7 @@ public class RoutePostController {
 
  // 게시글 상세보기
     @GetMapping("/view/{routepostId}")
-    public String view(@PathVariable String routepostId,
+    public String view(@PathVariable int routepostId,
                        Model model,
                        Authentication authentication) {
 
@@ -97,30 +96,36 @@ public class RoutePostController {
     @PostMapping(value = "/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public String add(@ModelAttribute RoutePostDTO dto,
                       @RequestParam(value = "images", required = false) MultipartFile[] images,
-                      HttpServletRequest req) throws Exception {
-    	
-    	dto.setUserId("hong");
-    	
-        // 1️⃣ 게시글 등록
-        int result = postService.add(dto);
+                      HttpServletRequest req,
+                      Authentication authentication) throws Exception {
 
-        // 2️⃣ 업로드 폴더 경로 지정
-        String uploadPath = req.getServletContext().getRealPath("/asset/upload/routepost");
+        // 1) 로그인 유저 정보
+        CustomUser user = (CustomUser) authentication.getPrincipal();
+        long uid = Long.parseLong(user.getUdto().getSeq());
+        dto.setUserId(uid);
+
+        // 2) 게시글 DB insert
+        postService.add(dto);
+
+        // 3) 로컬 이미지 저장 경로
+        String uploadPath = "C:/tripbear/routepost/";
 
         File folder = new File(uploadPath);
         if (!folder.exists()) folder.mkdirs();
 
-        // 3️⃣ 이미지 파일 저장 + DB 등록
+        // 4) 이미지 저장 + DB 저장
         if (images != null && images.length > 0) {
             for (MultipartFile file : images) {
                 if (!file.isEmpty()) {
+
                     String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
                     File dest = new File(uploadPath, fileName);
                     file.transferTo(dest);
 
                     RoutePostImageDTO imgDto = new RoutePostImageDTO();
-                    imgDto.setRoutepostId(dto.getRoutepostId());  // 게시글 PK
-                    imgDto.setRoutepostImageUrl(fileName);        // 파일명
+                    imgDto.setRoutepostId(dto.getRoutepostId());
+                    imgDto.setRoutepostImageUrl(fileName);
+
                     postService.addImage(imgDto);
                 }
             }
@@ -130,9 +135,10 @@ public class RoutePostController {
     }
 
 
+
     // 게시글 수정 폼
     @GetMapping("/edit/{routepostId}")
-    public String editForm(@PathVariable String routepostId, Model model) {
+    public String editForm(@PathVariable int routepostId, Model model) {
         RoutePostDTO dto = postService.get(routepostId);
         model.addAttribute("dto", dto);
         return "board.routepost.edit";
@@ -149,7 +155,7 @@ public class RoutePostController {
         // 기존 이미지 삭제
         postService.delImages(dto.getRoutepostId());
 
-        String uploadPath = req.getServletContext().getRealPath("/asset/upload/routepost");
+        String uploadPath = "C:/tripbear/routepost/";
 
         File folder = new File(uploadPath);
         if (!folder.exists()) folder.mkdirs();

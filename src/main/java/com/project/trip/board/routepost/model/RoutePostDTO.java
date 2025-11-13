@@ -8,11 +8,11 @@ import lombok.Data;
 public class RoutePostDTO {
 	
 	private int routepostId;
-    private String userId;
+    private long userId;
     private String routepostTitle;
     private String routepostContent;
     private String routepostSatisfaction;
-    private String routepostStatus;
+    private String routepostReportStatus;
     private int routepostViewCount;
     private int routepostReportCount;
     private int likeCount;

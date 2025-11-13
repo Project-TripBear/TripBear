@@ -6,7 +6,7 @@
 <head>
   <meta charset="UTF-8">
   <title>${post.routepostTitle}</title>
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/asset/css/routepost.css">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/routepost.css">
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <style>
     .comment-item { border-bottom: 1px solid #ddd; padding: 10px 0; }
@@ -17,7 +17,6 @@
 </head>
 
 <body>
-<%@ include file="/WEB-INF/views/inc/header.jsp" %>
 
 <div class="container">
 
@@ -43,7 +42,7 @@
       <div class="image-area">
         <c:forEach var="img" items="${images}">
           <img class="routepost-img"
-               src="${pageContext.request.contextPath}/asset/upload/routepost/${img.routepostImageUrl}"
+              src="${pageContext.request.contextPath}/upload/routepost/${img.routepostImageUrl}"
                alt="게시글 이미지">
         </c:forEach>
       </div>
