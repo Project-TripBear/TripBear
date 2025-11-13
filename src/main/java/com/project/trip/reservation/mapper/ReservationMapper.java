@@ -22,12 +22,6 @@ public interface ReservationMapper {
 
     // 3) 차량예약 INSERT (선택)
     int insertCarReservation(CarReservationDTO dto);
-
-	CarReservationDTO findCarByReservationId(Long reservationId);
-
-	ReservationDTO findReservationById(Long reservationId);
-
-	AccomReservationDTO findAccomByReservationId(Long reservationId);
 	
 	List<AccomRoomCardDTO> selectRoomsByRegion(String region);
 
@@ -46,5 +40,11 @@ public interface ReservationMapper {
 	List<?> getFuelTypes();
 
 	List<?> getSeats();
+
+    ReservationDTO findReservationById(Long reservationId);
+
+    AccomReservationDTO findAccomByReservationId(Long reservationId);
+
+    CarReservationDTO findCarByReservationId(Long reservationId);
     
 }
