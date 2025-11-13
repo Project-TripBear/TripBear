@@ -11,7 +11,13 @@ import com.project.trip.board.qna.model.QnACommentDTO;
 public interface QnABoardService {
 
     // 1. 목록 및 페이징
-	Map<String, Object> getPostList(int currentPage, String searchType, String searchKeyword);    
+	Map<String, Object> getPostList(
+	        int currentPage,
+	        String searchType,
+	        String searchKeyword,
+	        String category   // 🔥 이거 추가!
+	);
+    
     // 2. 등록/수정/삭제
     void addPost(QnABoardDTO dto); // 파일 업로드 처리 포함
     void updatePost(QnABoardDTO dto); // 파일 업로드 처리 포함
@@ -34,6 +40,7 @@ public interface QnABoardService {
 
     // 6. 신고 (트랜잭션)
     int addReport(int boardSeq, int reporterId, int reportedUserId, String reason);
+	Object getCategoryList();
     
  
 }

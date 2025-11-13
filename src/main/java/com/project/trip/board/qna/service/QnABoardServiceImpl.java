@@ -1,7 +1,10 @@
-// 파일 경로: com.project.trip.board.find.service.FindBoardServiceImpl.java (신규 생성)
-
 package com.project.trip.board.qna.service;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,101 +13,111 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.project.trip.board.qna.mapper.QnABoardMapper;
+import com.project.trip.board.qna.model.PagingDTO;
 import com.project.trip.board.qna.model.QnABoardDTO;
 import com.project.trip.board.qna.model.QnACommentDTO;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j; // 로깅을 위한 Lombok 추가
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j // 로깅 활성화
+@Slf4j
 public class QnABoardServiceImpl implements QnABoardService {
 
     private final QnABoardMapper mapper;
 
-    // ★★★ [추가] 파일 업로드 경로 설정 (프로퍼티 또는 상수) ★★★
-	/*
-	 * @Value("${app.uploadPath}") private String uploadPath;
-	 */
-
-    // 1. 목록 조회 및 페이징 (findboardList.java 대체)
+    /**  
+     * 📌 게시글 목록 + 검색 + 카테고리 + 페이징
+     */
     @Override
-    public Map<String, Object> getPostList(int currentPage, String searchType, String searchKeyword) {
-        
-        // 1. 페이징 계산
+    public Map<String, Object> getPostList(int currentPage, String searchType, String searchKeyword, String category) {
+
         int postPerPage = 10;
         int end = currentPage * postPerPage;
         int start = end - postPerPage + 1;
-        
+
         Map<String, Object> map = new HashMap<>();
         map.put("start", start);
         map.put("end", end);
         map.put("searchType", searchType);
         map.put("searchKeyword", searchKeyword);
-        
-        // 2. DAO(Mapper) 호출
+        map.put("category", category);   // 🔥 추가
+
+        // DB 조회
         List<QnABoardDTO> list = mapper.getList(map);
         int totalCount = mapper.getTotalCount(map);
 
-        // 3. 페이징 HTML 생성 (PagingUtil 클래스가 있다고 가정)
-        // String paging = PagingUtil.generatePagingHtml(currentPage, totalCount, postPerPage, searchType, searchKeyword);
-        
-        // 4. 결과 Map에 담아 반환
+        // 페이징
+        int totalPage = (int) Math.ceil(totalCount / (double) postPerPage);
+        int blockSize = 10;
+
+        int startPage = ((currentPage - 1) / blockSize) * blockSize + 1;
+        int endPage = startPage + blockSize - 1;
+        if (endPage > totalPage) endPage = totalPage;
+
+        boolean prev = startPage > 1;
+        boolean next = endPage < totalPage;
+
+        // 작성일 계산
+        for (QnABoardDTO dto : list) {
+
+            Date regDate = dto.getQuestion_board_regdate();
+            if (regDate != null) {
+
+                LocalDateTime reg = Instant.ofEpochMilli(regDate.getTime())
+                        .atZone(ZoneId.systemDefault())
+                        .toLocalDateTime();
+
+                LocalDateTime now = LocalDateTime.now();
+                long hours = ChronoUnit.HOURS.between(reg, now);
+
+                dto.setRegHourDiff(hours);
+                dto.setRegDateFormatted(reg.toLocalDate().toString());
+            }
+        }
+
+        PagingDTO paging = new PagingDTO();
+        paging.setPage(currentPage);
+        paging.setTotalPage(totalPage);
+        paging.setStartPage(startPage);
+        paging.setEndPage(endPage);
+        paging.setPrev(prev);
+        paging.setNext(next);
+
         Map<String, Object> result = new HashMap<>();
         result.put("list", list);
         result.put("totalCount", totalCount);
-        result.put("currentPage", currentPage);
-        // result.put("paging", paging); // 페이징 HTML은 Controller 또는 JSP에서 처리하도록 단순화
+        result.put("paging", paging);
         result.put("map", map);
-        
+
         return result;
     }
-    
-    // 2. 게시글 등록 (addFindboard.java 대체)
+
+
+    // ---------------- 아래 기존 기능 그대로 유지 ---------------- //
+
     @Override
     public void addPost(QnABoardDTO dto) {
-        // ★★★ 파일 처리 로직 (MultipartFile을 Controller에서 DTO에 담아 넘겨야 함) ★★★
-        // DTO에 파일 처리 로직이 들어갈 경우, 매개변수 변경이 필요. 여기서는 DTO에 이미 파일 경로가 설정되었다고 가정.
-       
-        
         mapper.addPost(dto);
     }
     
-    // 2-2. 게시글 수정 (editfindBoard.java의 POST 대체)
     @Override
     public void updatePost(QnABoardDTO dto) {
-        // ★★★ 파일 처리 로직 (DTO에 이미 파일 경로가 설정되었다고 가정) ★★★
-       
         mapper.updatePost(dto);
     }
 
-    // 2-3. 게시글 삭제 (deletefindBoard.java 대체)
     @Override
-    @Transactional // 트랜잭션 적용
+    @Transactional
     public void deletePost(int boardSeq) {
-        // FK 제약 조건으로 인해 관련 데이터(댓글, 좋아요, 스크랩)를 먼저 삭제하는 트랜잭션 필요
-        // 1. 댓글 삭제
-        // mapper.deleteCommentsByBoardId(boardSeq); 
-        // 2. 좋아요 삭제
-        // mapper.deleteLikesByBoardId(boardSeq);
-        // 3. 스크랩 삭제
-        // mapper.deleteScrapsByBoardId(boardSeq);
-        
-        // 4. 게시글 삭제 (실제로는 외래키 옵션 CASCADE DELETE를 사용하는 것이 더 효율적)
         mapper.deletePost(boardSeq);
     }
 
-    // 3. 상세 조회 (viewfindBoard.java 대체)
     @Override
     public QnABoardDTO getPostDetail(int boardSeq, Integer userId) {
-        // 1. 조회수 증가
         mapper.updateViewCount(boardSeq);
-        
-        // 2. 게시글 정보 가져오기
         QnABoardDTO dto = mapper.getPost(boardSeq);
 
-        // 3. 좋아요/스크랩 정보 설정
         if (dto != null && userId != null) {
             dto.setLikeCount(mapper.getLikeCount(boardSeq));
             dto.setLiked(mapper.checkLike(boardSeq, userId) > 0);
@@ -114,45 +127,40 @@ public class QnABoardServiceImpl implements QnABoardService {
         return dto;
     }
     
-    // 3-2. 순수 게시물 정보 조회
     @Override
     public QnABoardDTO getPostById(int boardSeq) {
         return mapper.getPost(boardSeq);
     }
 
-    // 4. 댓글 목록 조회
     @Override
     public List<QnACommentDTO> getCommentList(int boardSeq) {
         return mapper.getCommentList(boardSeq);
     }
 
-    // 5. 좋아요 토글 (likefindBoard.java 대체)
     @Override
     public boolean toggleLike(int boardSeq, int userId) {
         if (mapper.checkLike(boardSeq, userId) > 0) {
             mapper.removeLike(boardSeq, userId);
-            return false; // 취소됨
+            return false;
         } else {
             mapper.addLike(boardSeq, userId);
-            return true; // 추가됨
+            return true;
         }
     }
 
-    // 5-2. 스크랩 토글 (scrapfindBoard.java 대체)
     @Override
     public boolean toggleScrap(int boardSeq, int userId) {
         if (mapper.checkScrap(boardSeq, userId) > 0) {
             mapper.removeScrap(boardSeq, userId);
-            return false; // 취소됨
+            return false;
         } else {
             mapper.addScrap(boardSeq, userId);
-            return true; // 추가됨
+            return true;
         }
     }
     
-    // 6. 신고 등록 (reportfindBoard.java 대체)
     @Override
-    @Transactional // 신고 내역 INSERT와 게시글 상태 UPDATE는 하나의 트랜잭션으로 처리
+    @Transactional
     public int addReport(int boardSeq, int reporterId, int reportedUserId, String reason) {
         Map<String, Object> params = new HashMap<>();
         params.put("boardSeq", boardSeq);
@@ -160,32 +168,35 @@ public class QnABoardServiceImpl implements QnABoardService {
         params.put("reportedUserId", reportedUserId);
         params.put("reason", reason);
         
-        // 1. 신고 내역 등록
         mapper.addReport(params);
-        
-        // 2. 게시글 상태 변경
         mapper.updateReportStatus(boardSeq);
         
-        return 1; // 트랜잭션 성공 시
+        return 1;
     }
 
-
-    // ... 나머지 댓글 관련 Service 메서드 구현 생략 ...
     @Override
     public int getCommentAuthor(int commentId) {
         return mapper.getCommentAuthor(commentId);
     }
-    // ...
+
     @Override
     public void addComment(QnACommentDTO dto) {
         mapper.addComment(dto);
     }
+
     @Override
     public void updateComment(QnACommentDTO dto) {
         mapper.updateComment(dto);
     }
+
     @Override
     public void deleteComment(int commentId) {
         mapper.deleteComment(commentId);
     }
+    
+    @Override
+    public List<QnABoardDTO> getCategoryList() {
+        return mapper.getCategoryList();
+    }
+
 }

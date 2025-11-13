@@ -54,4 +54,5 @@ public interface QnABoardMapper {
     
     // 8. ★★★ [추가 기능] 키워드 추출 및 저장용 (대시보드 시각화 데이터 준비) ★★★
     List<Map<String, Object>> getPopularKeywords();
+	List<QnABoardDTO> getCategoryList();
 }

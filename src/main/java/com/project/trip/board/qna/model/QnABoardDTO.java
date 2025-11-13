@@ -1,5 +1,7 @@
 package com.project.trip.board.qna.model;
 
+import java.util.Date;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -19,6 +21,13 @@ public class QnABoardDTO {
     private int question_board_report_count;
     private String question_board_answer_status;
     private String question_board_status;
+    
+    private Date question_board_regdate;
+    private Date question_board_update;
+    
+    private long regHourDiff;         // 몇 시간 전인지
+    private String regDateFormatted;  // yyyy-MM-dd
+
     private int question_category_id;		//QnA카테고리 번호
     private String question_category_name;	//QnA카테고리 이름
 

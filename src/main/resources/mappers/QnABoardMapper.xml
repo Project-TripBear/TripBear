@@ -6,62 +6,103 @@
 <mapper namespace="com.project.trip.board.qna.mapper.QnABoardMapper">
 
 <select id="getList" parameterType="map" resultType="QnABoardDTO">
-    SELECT * FROM 
-        (SELECT a.*, ROWNUM as rnum FROM 
-            (SELECT fb.*, u.nickname, 
-                (SELECT COUNT(*) FROM tblQuestionAnswer WHERE question_board_id = fb.question_board_id) as commentCount, 
-                (SELECT COUNT(*) FROM tblQuestionLikes WHERE question_board_id = fb.question_board_id) as likeCount 
+    SELECT * 
+    FROM ( 
+    	SELECT a.*, ROWNUM as rnum 
+    	FROM (
+    		SELECT 
+    			fb.*, u.nickname, 
+                (SELECT COUNT(*) FROM tblQuestionAnswer 
+	                WHERE question_board_id = fb.question_board_id) as commentCount, 
+                (SELECT COUNT(*) FROM tblQuestionLike 
+                	WHERE question_board_id = fb.question_board_id) as likeCount,
+                 qc.question_category_name
             FROM tblQuestionBoard fb 
-                INNER JOIN tblUser u ON fb.user_id = u.user_id 
-            WHERE fb.question_board_status != 'n' <include refid="searchCondition"/>
-            
-            ORDER BY fb.question_board_id DESC) a)
-    WHERE rnum BETWEEN #{start} AND #{end}
+            INNER JOIN tblUser u 
+            	ON fb.user_id = u.user_id 
+            INNER JOIN tblQuestionCategory qc
+            	ON fb.question_category_id = qc.question_category_id
+            WHERE fb.question_board_status != 'n' 
+            <include refid="searchCondition"/>
+            ORDER BY fb.question_board_id DESC
+		) a
+	) b
+    WHERE b.rnum BETWEEN #{start} AND #{end}
 </select>
 
-    <sql id="searchCondition">
-        <if test="searchKeyword != null and searchKeyword != ''">
-            <choose>
-                <when test="searchType == 'title_content'">
-                    AND (fb.question_board_title LIKE '%' || #{searchKeyword} || '%' OR fb.question_board_content LIKE '%' || #{searchKeyword} || '%')
-                </when>
-                <when test="searchType == 'nickname'">
-                    AND u.nickname LIKE '%' || #{searchKeyword} || '%'
-                </when>
-            </choose>
-        </if>
-    </sql>
+<sql id="searchCondition">
+    <!-- 🔥 카테고리 필터 -->
+    <if test="category != null and category != ''">
+        AND fb.question_category_id = #{category}
+    </if>
 
-    <select id="getTotalCount" parameterType="map" resultType="int">
-        SELECT COUNT(*) FROM tblQuestionBoard fb
-            INNER JOIN tblUser u ON fb.user_id = u.user_id 
-        WHERE (fb.question_board_status IS NULL OR fb.question_board_status != 'n')
-        <include refid="searchCondition"/>
-    </select>
+    <!-- 🔍 검색 -->
+    <if test="searchKeyword != null and searchKeyword != ''">
+        <choose>
+            <when test="searchType == 'title_content'">
+                AND (
+                    fb.question_board_title LIKE '%' || #{searchKeyword} || '%' 
+                    OR 
+                    fb.question_board_content LIKE '%' || #{searchKeyword} || '%'
+                )
+            </when>
+
+            <when test="searchType == 'nickname'">
+                AND u.nickname LIKE '%' || #{searchKeyword} || '%'
+            </when>
+        </choose>
+    </if>
+</sql>
+
+
+<select id="getTotalCount" parameterType="map" resultType="int">
+    SELECT COUNT(*)
+    FROM tblQuestionBoard fb
+    INNER JOIN tblUser u ON fb.user_id = u.user_id
+    WHERE (fb.question_board_status != 'n')
+    <include refid="searchCondition"/>
+</select>
+
     
  <insert id="addPost" parameterType="QnABoardDTO">
     INSERT INTO tblQuestionBoard (
-        question_board_id, user_id, question_board_title, question_board_content, question_board_status
-        ) VALUES (
-        seq_question_board.NEXTVAL, #{user_id}, #{question_board_title}, #{question_board_content}, 'y'
-        )
+	    question_board_id, 
+	    user_id, 
+	    question_board_title, 
+	    question_board_content, 
+	    question_board_status,
+	    question_category_id
+	) VALUES (
+	    seq_question_board.NEXTVAL, 
+	    #{user_id}, 
+	    #{question_board_title}, 
+	    #{question_board_content}, 
+	    'y',
+	    #{question_category_id}
+	)
   </insert>
+  
 <update id="updatePost" parameterType="QnABoardDTO">
     UPDATE tblQuestionBoard SET 
-        question_board_title = #{question_board_title}, 
-        question_board_content = #{question_board_content}, 
-        question_board_update = SYSDATE
-        WHERE question_board_id = #{question_board_id}
+	    question_board_title = #{question_board_title}, 
+	    question_board_content = #{question_board_content}, 
+	    question_board_update = SYSDATE,
+	    question_category_id = #{question_category_id}
+	WHERE question_board_id = #{question_board_id}
 </update>
-    <delete id="deletePost" parameterType="int">
-        DELETE FROM tblQuestionBoard WHERE question_board_id = #{boardSeq}
-    </delete>
 
-   <select id="getPost" parameterType="int" resultType="QnABoardDTO">
-    SELECT fb.*, u.nickname
-    FROM tblQuestionBoard fb
-        INNER JOIN tblUser u ON fb.user_id = u.user_id
-    WHERE fb.question_board_id = #{_parameter}
+<delete id="deletePost" parameterType="int">
+    DELETE FROM tblQuestionBoard 
+    WHERE question_board_id = #{boardSeq}
+</delete>
+
+
+<select id="getPost" parameterType="int" resultType="QnABoardDTO">
+    SELECT fb.*, u.nickname, qc.question_category_name
+	FROM tblQuestionBoard fb
+	    INNER JOIN tblUser u ON fb.user_id = u.user_id
+	    INNER JOIN tblQuestionCategory qc ON fb.question_category_id = qc.question_category_id
+	WHERE fb.question_board_id = #{_parameter}
 </select>
 
     
@@ -69,58 +110,87 @@
         UPDATE tblQuestionBoard SET question_board_view_count = question_board_view_count + 1 WHERE question_board_id = #{boardSeq}
     </update>
 
-    <select id="getLikeCount" parameterType="int" resultType="int">
-        SELECT COUNT(*) FROM tblQuestionLikes WHERE find_board_id = #{boardSeq}
-    </select>
-    <select id="checkLike" parameterType="map" resultType="int">
-        SELECT COUNT(*) FROM tblQuestionLikes WHERE question_board_id = #{boardSeq} AND user_id = #{userId}
-    </select>
-    <insert id="addLike" parameterType="map">
-        INSERT INTO tblQuestionLikes (question_board_id, user_id) VALUES (#{boardSeq}, #{userId})
-    </insert>
-    <delete id="removeLike" parameterType="map">
-        DELETE FROM tblQuestionLikes WHERE question_board_id = #{boardSeq} AND user_id = #{userId}
-    </delete>
+<select id="getLikeCount" parameterType="int" resultType="int">
+    SELECT COUNT(*) 
+    FROM tblQuestionLike
+    WHERE question_board_id = #{boardSeq}
+</select>
 
-    <select id="getScrapCount" parameterType="int" resultType="int">
-        SELECT COUNT(*) FROM tblQuesitonScrap WHERE question_board_id = #{boardSeq}
-    </select>
-    <select id="checkScrap" parameterType="map" resultType="int">
-        SELECT COUNT(*) FROM tblQuestionScrap WHERE question_board_id = #{boardSeq} AND user_id = #{userId}
-    </select>
-    <insert id="addScrap" parameterType="map">
-        INSERT INTO tblQuestionScrap (question_scrap_id, question_board_id, user_id) VALUES (seq_question_scrap.NEXTVAL, #{boardSeq}, #{userId})
-    </insert>
-    <delete id="removeScrap" parameterType="map">
-        DELETE FROM tblQuestionScrap WHERE question_board_id = #{boardSeq} AND user_id = #{userId}
-    </delete>
+<select id="checkLike" parameterType="map" resultType="int">
+    SELECT COUNT(*) 
+    FROM tblQuestionLike 
+    WHERE question_board_id = #{boardSeq} 
+      AND user_id = #{userId}
+</select>
 
-    <!-- <insert id="addReport" parameterType="map">
-        INSERT INTO tblReports (report_id, report_target_type, report_target_id, user_id, reported_user_id, report_reason_type)
-        VALUES (seq_reports.NEXTVAL, 'qnaboard', #{boardSeq}, #{reporterId}, #{reportedUserId}, #{reason})
-    </insert>
-    <update id="updateReportStatus" parameterType="int">
-        UPDATE tblQuestionBoard SET question_board_status = 'PENDING' WHERE question_board_id = #{boardSeq}
-    </update> -->
+<insert id="addLike" parameterType="map">
+    INSERT INTO tblQuestionLike (question_board_id, user_id) 
+    VALUES (#{boardSeq}, #{userId})
+</insert>
+
+<delete id="removeLike" parameterType="map">
+    DELETE FROM tblQuestionLike 
+    WHERE question_board_id = #{boardSeq} 
+      AND user_id = #{userId}
+</delete>
+
+
+<select id="getScrapCount" parameterType="int" resultType="int">
+    SELECT COUNT(*) 
+    FROM tblQuestionScrap 
+    WHERE question_board_id = #{boardSeq}
+</select>
+
+<select id="checkScrap" parameterType="map" resultType="int">
+    SELECT COUNT(*) 
+    FROM tblQuestionScrap 
+    WHERE question_board_id = #{boardSeq} 
+      AND user_id = #{userId}
+</select>
+
+<insert id="addScrap" parameterType="map">
+    INSERT INTO tblQuestionScrap (
+        question_scrap_id, 
+        question_board_id, 
+        user_id
+    ) VALUES (
+        seq_question_scrap.NEXTVAL, 
+        #{boardSeq}, 
+        #{userId}
+    )
+</insert>
+
+<delete id="removeScrap" parameterType="map">
+    DELETE FROM tblQuestionScrap 
+    WHERE question_board_id = #{boardSeq} 
+      AND user_id = #{userId}
+</delete>
+
     
-    <select id="getPopularKeywords" resultType="map">
-        SELECT keyword, COUNT(*) as count
-        FROM tblQuestionBoard,
-            TABLE(
-                CAST(
-                    MULTISET(
-                        SELECT REGEXP_SUBSTR(question_board_keyword, '[^,]+', 1, LEVEL) FROM DUAL CONNECT BY LEVEL &lt;= LENGTH(question_board_keyword) - LENGTH(REPLACE(question_board_keyword, ',')) + 1
-                    ) AS SYS.ODCIVARCHAR2LIST
-                )
-            ) keyword
-        WHERE question_board_keyword IS NOT NULL
-        GROUP BY keyword
-        ORDER BY count DESC
-    </select>
+<select id="getPopularKeywords" resultType="map">
+    SELECT keyword, COUNT(*) AS count
+    FROM (
+        SELECT 
+            REGEXP_SUBSTR(fb.question_board_keyword, '[^,]+', 1, LEVEL) AS keyword
+        FROM tblQuestionBoard fb
+        WHERE fb.question_board_keyword IS NOT NULL
+          AND fb.question_board_keyword != ''
+        CONNECT BY REGEXP_SUBSTR(fb.question_board_keyword, '[^,]+', 1, LEVEL) IS NOT NULL
+           AND PRIOR fb.question_board_id = fb.question_board_id
+           AND PRIOR SYS_GUID() IS NOT NULL
+    )
+    GROUP BY keyword
+    ORDER BY count DESC
+</select>
     
-    <select id="getCommentList" parameterType="int" resultType="QnACommentDTO">
+<select id="getCommentList" parameterType="int" resultType="QnACommentDTO">
     SELECT 
-        fc.*, u.nickname
+        fc.question_answer_id        AS question_answer_id,
+        fc.question_board_id         AS question_board_id,
+        fc.user_id                   AS user_id,
+        fc.question_answer_content   AS question_answer_content,
+        fc.question_answer_regdate   AS question_answer_regdate,
+        u.nickname                   AS nickname
     FROM tblQuestionAnswer fc
     INNER JOIN tblUser u ON fc.user_id = u.user_id
     WHERE fc.question_board_id = #{boardSeq}
@@ -128,25 +198,34 @@
 </select>
 
 <select id="getCommentAuthor" parameterType="int" resultType="int">
-    SELECT user_id FROM tblQuestionAnswer WHERE question_answer_id = #{commentId}
+    SELECT user_id 
+    FROM tblQuestionAnswer 
+    WHERE question_answer_id = #{_parameter}
 </select>
 
 <insert id="addComment" parameterType="QnACommentDTO">
     INSERT INTO tblQuestionAnswer 
-        (question_answer_id, question_board_id, user_id, question_answer_content)
+        (question_answer_id, question_board_id, user_id, question_answer_content, question_answer_regdate)
     VALUES 
-        (seq_question_answer.NEXTVAL, #{question_board_id}, #{user_id}, #{question_answer_content})
+        (seq_question_answer.NEXTVAL, #{question_board_id}, #{user_id}, #{question_answer_content}, SYSDATE)
 </insert>
 
 <update id="updateComment" parameterType="QnACommentDTO">
-    UPDATE tblQuestionAnswer SET 
-        question_answer_content = #{question_answer_content}
+    UPDATE tblQuestionAnswer 
+    SET question_answer_content = #{question_answer_content}
     WHERE question_answer_id = #{question_answer_id}
 </update>
 
 <delete id="deleteComment" parameterType="int">
-    DELETE FROM tblQuestionAnswer WHERE question_answer_id = #{commentId}
+    DELETE FROM tblQuestionAnswer 
+    WHERE question_answer_id = #{_parameter}
 </delete>
+
+<select id="getCategoryList" resultType="com.project.trip.board.qna.model.QnABoardDTO">
+    SELECT question_category_id, question_category_name
+    FROM tblQuestionCategory
+    ORDER BY question_category_id
+</select>
 
 
 </mapper>

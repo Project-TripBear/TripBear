@@ -1,532 +1,192 @@
 /* =========================================================
-🌿 QnA BOARD THEME - 통합 스타일 (최종 완성)
-========================================================= */
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap');
+   Q&A 리스트 화면 스타일 (list.jsp 전용)
+   author: Seongho 💚
+   ========================================================= */
 
-:root {
-    --primary: #6C9A8B;
-    --primary-dark: #517D6F;
-    --accent: #FF8C69;
-    --bg: #F8F9FA;
-    --surface: #FFFFFF;
-    --border: #E9ECEF;
-    --text: #212529;
-    --text-light: #6C757D;
-    --shadow-soft: 0 8px 30px rgba(0,0,0,0.06);
-    --radius: 20px;
-}
-
-/* === 기본 설정 === */
-body {
-    font-family: 'Noto Sans KR', sans-serif;
-    background-color: var(--bg);
-    color: var(--text);
-    line-height: 1.7;
-    letter-spacing: -0.5px;
-}
-
-/* =========================================================
-🌿 QnA 상세페이지(view.jsp)
-========================================================= */
-.qna-view {
-    max-width: 900px;
-    margin: 60px auto;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 40px;
-    box-shadow: var(--shadow-soft);
-}
-
-.qna-view-title {
-    font-size: 2rem;
-    font-weight: 800;
-    color: var(--text);
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-.qna-view-meta {
-    font-size: 0.95rem;
-    color: var(--text-light);
-    border-bottom: 1px solid var(--border);
-    padding-bottom: 12px;
-    margin-bottom: 20px;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    line-height: 1.6;
-}
-
-/* 본문 내용 */
-.qna-content {
-    font-size: 1rem;
-    line-height: 1.8;
-    color: var(--text);
-    margin-bottom: 30px;
-}
-
-/* 카테고리 & 상태 */
-.badge-answer {
-    display: inline-block;
-    padding: 4px 10px;
-    border-radius: 12px;
-    font-size: 0.85rem;
-    font-weight: 700;
-    margin-left: 6px;
-}
-.answered { background: var(--primary); color: #fff; }
-.badge-answer.unanswered {
-    background: #FF8C69 !important; /* 진한 주황색 */
-    color: #fff !important;
-}
-
-/* 본문 박스 */
-.qna-view-content {
-    background: var(--surface);
-    padding: 30px;
-    border-radius: var(--radius);
-    box-shadow: var(--shadow-soft);
-    margin-bottom: 30px;
-}
-
-/* =========================================================
-🌿 하단 버튼 정렬 (좋아요, 수정/삭제/목록)
-========================================================= */
-.qna-actions {
-    display: flex;
-    gap: 12px;
-    justify-content: flex-start;
-    margin: 25px 0;
-}
-.qna-actions button {
-    border: 1px solid var(--border);
-    background: var(--surface);
-    border-radius: 20px;
-    padding: 8px 18px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: 0.2s;
-}
-.qna-actions button:hover {
-    background: #f9f9f9;
-}
-
-.qna-btns {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    margin-top: 25px;
-}
-.qna-btns button {
-    border: 1px solid var(--border);
-    background: var(--surface);
-    border-radius: 8px;
-    padding: 10px 18px;
-    height: 42px;
-    cursor: pointer;
-    transition: 0.2s;
-    font-weight: 600;
-}
-.qna-btns button:hover {
-    background: var(--primary);
-    color: #fff;
-    border-color: var(--primary);
-}
-.qna-btns .btn-list {
-    background: var(--primary);
-    color: #fff;
-}
-.qna-btns .btn-list:hover {
-    background: var(--primary-dark);
-}
-
-/* =========================================================
-🌿 댓글 영역
-========================================================= */
-.qna-comments {
-    margin-top: 50px;
-}
-
-.qna-comments h3 {
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: var(--primary-dark);
-    margin-bottom: 16px;
-}
-
-/* 개별 댓글 */
-.comment-item {
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 15px 18px;
-    margin-bottom: 14px;
-    background: #fff;
-    box-shadow: var(--shadow-soft);
-}
-.comment-meta {
-    font-size: 0.85rem;
-    color: var(--text-light);
-    margin-bottom: 6px;
-}
-.comment-meta strong {
-    color: var(--text);
-    font-weight: 600;
-}
-.comment-text {
-    font-size: 0.95rem;
-    margin-bottom: 10px;
-    line-height: 1.6;
-}
-
-/* 댓글 버튼 */
-.comment-actions {
-    text-align: right;
-    margin-top: 4px;
-}
-.comment-actions button {
-    background: none;
-    border: none;
-    color: var(--primary-dark);
-    font-weight: 500;
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: 0.2s;
-    padding: 3px 6px;
-}
-.comment-actions button:hover {
-    text-decoration: underline;
-}
-
-/* 댓글 작성 폼 */
-.qna-add-comment {
-    margin-top: 25px;
-    display: flex;
-    gap: 10px;
-}
-.qna-add-comment textarea {
-    flex-grow: 1;
-    padding: 12px;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    resize: vertical;
-    min-height: 90px;
-    font-size: 0.95rem;
-    line-height: 1.6;
-    font-family: inherit;
-}
-.qna-add-comment .btn-submit-comment {
-    background-color: var(--primary);
-    color: white;
-    border: none;
-    padding: 12px 22px;
-    border-radius: 10px;
-    cursor: pointer;
-    font-weight: 600;
-    font-size: 0.95rem;
-    height: auto;
-    transition: background-color 0.2s;
-}
-.qna-add-comment .btn-submit-comment:hover {
-    background-color: var(--primary-dark);
-}
-
-/* 댓글 인라인 수정 */
-.comment-edit-box {
-    margin-top: 10px;
-}
-.comment-edit-box textarea.edit-textarea {
+/* ---------------------- 전체 컨테이너 ---------------------- */
+.card-container {
     width: 100%;
-    height: 80px;
-    border-radius: 10px;
-    border: 1px solid var(--border);
-    padding: 10px 12px;
-    resize: none;
-    font-size: 0.95rem;
-    line-height: 1.6;
-    background: #fff;
-}
-.comment-edit-box .edit-btns {
-    margin-top: 8px;
-    display: flex;
-    gap: 8px;
-    justify-content: flex-end;
-}
-.comment-edit-box .edit-btns button {
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 6px 12px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: 0.2s;
-}
-.comment-edit-box .btn-save {
-    background: var(--primary);
-    color: #fff;
-    border-color: var(--primary);
-}
-.comment-edit-box .btn-save:hover {
-    background: var(--primary-dark);
-}
-.comment-edit-box .btn-cancel:hover {
-    background: #f9f9f9;
+    max-width: 70%;
+    margin: 0 auto;
+    padding: 20px;
 }
 
-/* =========================================================
-🌿 QnA 목록(list.jsp)
-========================================================= */
-.qna-list {
-    max-width: 1000px;
-    margin: 60px auto;
-    padding: 0 20px;
+@media screen and (max-width: 1000px) {
+    .card-container {
+        max-width: 95%;
+    }
 }
 
-/* 제목 */
-.qna-list-title {
+/* ------------------------- 타이틀 ------------------------- */
+.content-header {
+    width: 70%;
+    margin: 0 auto;
+    padding: 30px 0 10px 0;
     text-align: center;
-    font-size: 2.2rem;
-    font-weight: 800;
-    margin-bottom: 30px;
-    color: #000;
 }
 
-/* 검색창 */
-.qna-search-form {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 14px 20px;
-    margin-bottom: 25px;
-    box-shadow: var(--shadow-soft);
-}
-.qna-search-form select,
-.qna-search-form input[type="text"] {
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 8px 10px;
-    font-size: 0.95rem;
-}
-.qna-search-form button {
-    background-color: var(--primary);
-    color: white;
-    border: none;
-    padding: 9px 18px;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-.qna-search-form button:hover {
-    background-color: var(--primary-dark);
-}
-/* 질문 등록 버튼 */
-.qna-search-form .write-btn .btn {
-    background-color: var(--accent);
-}
-.qna-search-form .write-btn .btn:hover {
-    background-color: #ff744a;
-}
-
-/* 표 */
-.qna-table {
+/* ------------------------- 테이블 ------------------------- */
+.notice-table {
     width: 100%;
     border-collapse: collapse;
-    background: var(--surface);
-    box-shadow: var(--shadow-soft);
-    border-top: 2px solid var(--primary);
-    border-radius: var(--radius);
-    overflow: hidden;
-    table-layout: auto;
-}
-.qna-table thead {
-    background: var(--primary);
-    color: #fff;
-}
-.qna-table th {
-    padding: 14px 12px;
-    font-weight: 700;
-    text-align: center;
-}
-.qna-table td {
-    padding: 14px 12px;
-    border-bottom: 1px solid var(--border);
-    font-size: 0.95rem;
-    vertical-align: middle;
-}
-.qna-table colgroup col:nth-child(1) { width: 45%; } /* 제목 */
-.qna-table colgroup col:nth-child(2) { width: 15%; } /* 작성자 */
-.qna-table colgroup col:nth-child(3) { width: 15%; } /* 작성일 */
-.qna-table colgroup col:nth-child(4) { width: 25%; } /* 조회수/좋아요/스크랩 */
-
-
-.qna-table td.title {
-    text-align: left;
-    padding-left: 30px;
-}
-.qna-table td.title a {
-    text-decoration: none;
-    color: var(--text);
-    font-weight: 500;
-    line-height: 1.6;
-}
-.qna-table td.title a:hover {
-    color: var(--primary-dark);
-}
-.qna-table .badge-answer {
-    display: inline-block;
-    margin-left: 8px;
-    padding: 3px 8px;
+    background: white;
     border-radius: 10px;
-    font-size: 0.8rem;
-    font-weight: 700;
-    vertical-align: middle;
+    overflow: hidden;
 }
 
-.qna-table td:nth-child(2),
-.qna-table td:nth-child(3) {
+.notice-table thead {
+    background: #f5f7fa;
+}
+
+.notice-table th {
+    padding: 14px;
     text-align: center;
-}
-.qna-table td:nth-child(4) {
-    text-align: right;
-    padding-right: 30px;
-}
-.qna-table tbody tr:hover {
-    background-color: #f9f9f9;
+    font-weight: 600;
+    color: #333;
+    background: #f2f4f7;
 }
 
-/* 페이지바 */
-#pagebar {
+.notice-table td {
+    padding: 14px;
     text-align: center;
-    margin: 25px 0;
-}
-#pagebar a, #pagebar strong {
-    display: inline-block;
-    margin: 0 4px;
-    padding: 8px 12px;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    color: var(--text);
-    text-decoration: none;
-    transition: 0.2s;
-}
-#pagebar a:hover {
-    background: var(--primary);
-    color: #fff;
-}
-#pagebar strong {
-    background: var(--primary);
-    color: #fff;
+    border-bottom: 1px solid #e6e6e6;
+    color: #333;
 }
 
-/* === 하단 버튼 한 줄 정렬 === */
-.qna-bottom-actions {
-    display: flex;
-    justify-content: space-between; /* 좌우 정렬 */
-    align-items: center;
-    margin-top: 25px;
-    flex-wrap: wrap;
-    gap: 10px;
+.notice-table td.title {
+    text-align: left;
+    padding-left: 20px;
 }
 
-/* 좋아요 / 스크랩 버튼 */
-.qna-interaction {
-    display: flex;
-    gap: 10px;
+.notice-table tbody tr:hover {
+    background: #f9f9f9;
 }
 
-.qna-interaction button {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    border: 1px solid var(--border);
-    border-radius: 25px;
-    padding: 8px 16px;
-    background: var(--surface);
-    color: var(--text-light);
-    cursor: pointer;
+/* 카테고리 태그 */
+.category-tag {
+    font-size: 13px;
+    color: #FF8C69;
     font-weight: 600;
-    transition: all 0.25s ease;
+    margin-right: 6px;
 }
 
-.qna-interaction button:hover {
-    background: #f8f8f8;
+/* 댓글 개수 */
+.comment-count {
+    color: #FF8C69;
+    font-weight: bold;
 }
 
-.qna-interaction button i {
-    font-size: 1.1rem;
-    transition: transform 0.2s ease, color 0.3s ease;
-}
-
-.qna-interaction button:hover i {
-    transform: scale(1.1);
-}
-
-/* 좋아요 (활성) */
-.btn-like.active {
-    background: #ffeaea;
-    border-color: #ff6b6b;
-    color: #e03131;
-}
-.btn-like.active i {
-    color: #e03131;
-}
-
-/* 스크랩 (활성) */
-.btn-scrap.active {
-    background: #e6f0ed;
-    border-color: var(--primary);
-    color: var(--primary-dark);
-}
-.btn-scrap.active i {
-    color: var(--primary);
-}
-
-/* 수정/삭제/목록 버튼 */
-
-/* === 목록으로 버튼 오렌지 스타일 === */
-.btn-primary-list{
-    background-color: #ff8c69 !important;  /* 기본 오렌지색 */
-    color: #fff !important;                /* 글자색 흰색 */
-    border: none !important;
-    border-radius: 25px;
-    padding: 10px 20px;
-    font-weight: 600;
-    box-shadow: 0 3px 6px rgba(255, 152, 0, 0.3);
-    transition: all 0.2s ease-in-out;
-}
-
-.btn-primary-list:hover {
-    background-color: #ff744a !important;  /* hover 시 조금 더 진한 오렌지 */
-    transform: translateY(-2px);
-    box-shadow: 0 5px 10px rgba(255, 152, 0, 0.4);
-}
-
-.qna-btns {
-    display: flex;
-    gap: 8px;
+/* ------------------------- 필터 영역 ------------------------- */
+.filter-wrapper {
+    width: 100%;
+    max-width: 70%;
+    margin: 20px auto 10px auto;
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
     align-items: center;
+    gap: 20px;
 }
 
-.qna-btns button {
-    border: 1px solid var(--border);
-    background: var(--surface);
+
+/* 왼쪽 카테고리 */
+.filter-left {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.category-select {
+    width: 160px;
+    padding: 9px 12px;
     border-radius: 8px;
-    padding: 8px 14px;
-    cursor: pointer;
-    transition: 0.2s;
+    border: 1px solid #ccc;
+    font-size: 14px;
+}
+
+/* 가운데 검색 */
+.filter-center {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.search-select {
+    padding: 9px 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+
+.filter-center input {
+    padding: 9px 12px;
+    width: 220px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+
+.btn-search {
+    background-color: #6C9A8B;
+    color: white;
+    padding: 9px 20px;
+    border-radius: 8px;
+    border: none;
     font-weight: 600;
+    cursor: pointer;
 }
 
-.qna-btns button:hover {
-    background: var(--primary);
-    color: #fff;
-    border-color: var(--primary);
+.btn-search:hover {
+    background-color: #5a8377;
 }
 
-.qna-btns .btn-list {
-    background: var(--primary);
-    color: #fff;
+/* 오른쪽 글쓰기 버튼 */
+.btn-write {
+    background-color: #FF8C69 !important;
+    color: white;
+    padding: 9px 26px;
+    border-radius: 8px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    justify-self: end;
+}
+
+.btn-write:hover {
+    background-color: #ff7a52 !important;
+    transform: translateY(-2px);
+}
+
+/* ------------------------- 페이징 ------------------------- */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 5px 0;
+    gap: 8px;
+}
+
+.pagination a {
+    all: unset;
+    cursor: pointer;
+    padding: 2px 6px;
+    font-size: 16px;
+    color: #444;
+}
+
+.pagination a.active {
+    font-weight: 700;
+    color: #FF8C69 !important; /* 주황색 강조 */
+    background: none !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.pagination a:hover {
+    color: #FF8C69 !important;
+}
+
+
+/* ------------------- 공통: 데이터 없음 ------------------- */
+.no-data {
+    padding: 40px;
+    text-align: center;
+    color: #777;
+    font-size: 15px;
 }
