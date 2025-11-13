@@ -21,6 +21,7 @@ public class PlaceDTO {
     private double latitude;     
     private double longitude;
     private String placeMainImageUrl;
+    private double distance;
     
     private TouristSpotDTO touristSpotDetail;
     private EventDTO eventDetail;

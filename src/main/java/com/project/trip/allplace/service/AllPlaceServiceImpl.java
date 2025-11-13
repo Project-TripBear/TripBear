@@ -1,5 +1,6 @@
 package com.project.trip.allplace.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,10 +14,10 @@ import com.project.trip.allplace.model.EventDTO;
 import com.project.trip.allplace.model.KeywordDTO;
 import com.project.trip.allplace.model.KeywordLinkDTO;
 import com.project.trip.allplace.model.PlaceDTO;
-import com.project.trip.allplace.model.RestaurantDTO; 
+import com.project.trip.allplace.model.RestaurantDTO;
 import com.project.trip.allplace.model.TourApiResponseVO;
 import com.project.trip.allplace.model.TourIntroEventVO;
-import com.project.trip.allplace.model.TourIntroRestaurantVO; 
+import com.project.trip.allplace.model.TourIntroRestaurantVO;
 import com.project.trip.allplace.model.TourIntroVO;
 import com.project.trip.allplace.model.TourItemVO;
 import com.project.trip.allplace.model.TouristSpotDTO;
@@ -203,7 +204,65 @@ public class AllPlaceServiceImpl implements AllPlaceService {
     }
     
     
-    
+    @Override
+    public List<PlaceDTO> searchByAreaAll(long locationId, String contentTypeId,
+                                          String arrange, int rows, int maxPages) {
+
+        List<PlaceDTO> out = new ArrayList<>();
+        int pageNo = 1;
+
+        while (pageNo <= maxPages) {
+
+            TourApiResponseVO res = tourApiService
+                    .searchByArea(String.valueOf(locationId), contentTypeId, arrange, pageNo, rows);
+
+            if (res == null || res.getResponse() == null || res.getResponse().getBody() == null)
+                break;
+
+            TourApiResponseVO.Body body = res.getResponse().getBody();
+            List<TourItemVO> items =
+                    (body.getItems() != null && body.getItems().getItem() != null)
+                            ? body.getItems().getItem()
+                            : java.util.Collections.emptyList();
+
+            if (items.isEmpty()) break;
+
+            for (TourItemVO item : items) {
+
+                // 지도에 찍을 좌표 체크 
+                double lat = parseDoubleSafe(item.getLatitude());
+                double lon = parseDoubleSafe(item.getLongitude());
+
+                if (lat == 0 || lon == 0) continue;
+
+                // API → DTO 직접 매핑 (DB 저장 X)
+                PlaceDTO dto = new PlaceDTO();
+                dto.setPlaceApiId(item.getContentId());
+                dto.setName(item.getTitle());
+                dto.setAddress(item.getAddress());
+                dto.setLatitude(lat);
+                dto.setLongitude(lon);
+                dto.setPlaceMainImageUrl(item.getFirstImage());
+
+                out.add(dto);
+            }
+
+            // 페이지 종료 조건
+            if (items.size() < rows) break;
+
+            pageNo++;
+        }
+
+        return out;
+    }
+
+    // 안전하게 Double 변환
+    private double parseDoubleSafe(String val) {
+        try { return Double.parseDouble(val); }
+        catch (Exception e) { return 0.0; }
+    }
+
+
     
     
 

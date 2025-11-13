@@ -24,7 +24,7 @@ public interface AllPlaceService {
 	
     public TourApiResponseVO searchByArea(long locationId, String contentTypeId, String arrange);
     
-    
+    List<PlaceDTO> searchByAreaAll(long locationId, String contentTypeId, String arrange, int rows, int maxPages);
 
     
 }

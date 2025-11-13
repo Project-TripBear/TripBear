@@ -1,6 +1,5 @@
 package com.project.trip.allplace.service;
 
-
 import java.util.List;
 
 import com.project.trip.allplace.model.PlaceDTO;
@@ -12,25 +11,22 @@ import com.project.trip.allplace.model.TourItemVO;
 
 public interface TourApiService {
 
-	public TourItemVO getPlaceDetail(String contentId);
-	
-	public TourIntroVO getPlaceIntro(String contentId, String contentTypeId);
+    // (기존)
+    TourApiResponseVO searchByKeyword(String keyword, String arrange, String contentTypeId);
+    TourApiResponseVO searchFestival(String eventStartDate, String arrange);
+    TourApiResponseVO searchByArea(String areaCode, String contentTypeId, String arrange, int pageNo, int rows);
+    List<TourItemVO> searchByAreaAllRaw(String areaCode, String contentTypeId, String arrange, int rows, int maxPages);
+    TourItemVO getPlaceDetail(String contentId);
 
-	public TourIntroEventVO getEventIntro(String contentId, String contentTypeId);
-	
-	public TourIntroRestaurantVO getRestaurantIntro(String contentId, String contentTypeId);
-	/**
-	 * 3. (키워드검색) API 호출
-	 * - arrange 파라미터 추가
-	 * - 한글 키워드 인코딩 오류 해결
-	 */
-	TourApiResponseVO searchByKeyword(String keyword, String arrange, String contentTypeId);
-	
-	public TourApiResponseVO searchFestival(String eventStartDate, String arrange);
-	
-	public TourApiResponseVO searchByArea(String areaCode, String contentTypeId, String arrange);
-	
-	List<PlaceDTO> searchByAreaAll(long locationId, String contentTypeId, String arrange, int rows, int maxPages);
-
-	
+    // (기존 - intro API)
+    TourIntroVO getPlaceIntro(String contentId, String contentTypeId);
+    TourIntroEventVO getEventIntro(String contentId, String contentTypeId);
+    TourIntroRestaurantVO getRestaurantIntro(String contentId, String contentTypeId);
+    
+    // --- [신규 추가] ---
+    // AllPlaceServiceImpl.java의 282라인이 호출하기 위해 필요합니다.
+    TourApiResponseVO searchByArea(String areaCode, String contentTypeId, String arrange);
+    
+    //지도 idle사용
+    public TourApiResponseVO searchByLocation(String lat, String lng, String radius, String contentTypeId);
 }

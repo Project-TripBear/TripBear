@@ -1,83 +1,210 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%-- 
-    [Tiles Content - AJAX 방식]
-    이 파일은 레이아웃의 'content' 부분에 삽입됩니다.
-    <head>나 <body> 태그가 없습니다.
---%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<%-- 1. 이 페이지에서만 사용할 스타일 --%>
-<style>
-    .map_wrap {position:relative;width:100%;height:70vh;}
-    .info_window {padding:5px; width: 220px; font-size: 12px; line-height: 1.4;}
-    .info_window_title {font-weight: bold; font-size: 14px;}
-    .info_window_addr {color: #666;}
-    .info_window_link {color: blue;}
-</style>
+<!-- ★ contextPath 안전 전달 -->
+<div id="ctx" data-context-path="${pageContext.request.contextPath}"></div>
 
-<%-- 2. 실제 지도가 표시될 영역 --%>
-<div class="map_wrap">
-    <div id="map" style="width:100%;height:100%;position:relative;overflow:hidden;"></div> 
+<!-- ★ 사이드바/지도 CSS -->
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/mapsidebar.css">
+
+<div class="map-container">
+
+    <!-- LEFT SIDEBAR -->
+    <div class="sidebar">
+
+        <div class="sidebar-header">
+            <input type="text" id="search-input" placeholder="장소 검색 (개발 예정)">
+
+            <div class="button-group">
+                <div class="group-btn active" data-type="12">관광지</div>
+                <div class="group-btn" data-type="39">음식점</div>
+                <div class="group-btn" data-type="all">전체</div>
+            </div>
+        </div>
+
+        <div class="place-list-container" id="place-list"></div>
+    </div>
+
+    <!-- MAP -->
+    <div id="map"></div>
 </div>
 
-<%-- 3. 카카오맵 API 스크립트 로드 (header.jsp에 없으면 유지) --%>
-<script type="text/javascript" 
-        src="//dapi.kakao.com/v2/maps/sdk.js?appkey=09d09e9035bb509e8f002c6fab6b12ac&libraries=services"></script>
+<script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=09d09e9035bb509e8f002c6fab6b12ac&libraries=services,clusterer"></script>
 
-<%-- 4. 지도 및 AJAX 로직 --%>
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-    const contextPath = "<%= request.getContextPath() %>"; // 항상 "/trip"
-    console.log("contextPath:", contextPath);
+document.addEventListener("DOMContentLoaded", function () {
+
+    /* =====================================================
+       ⭐ contextPath — 절대 안전하게 가져오기
+       ===================================================== */
+    const contextPath = document.getElementById("ctx").dataset.contextPath;
+    console.log("🔥 contextPath =", contextPath);
 
     const mapContainer = document.getElementById('map');
-    const mapOption = {
+
+    const map = new kakao.maps.Map(mapContainer, {
         center: new kakao.maps.LatLng(37.566826, 126.9786567),
         level: 7
-    };
-    const map = new kakao.maps.Map(mapContainer, mapOption);
-    const markers = [];
+    });
 
-    // ✅ 문자열 보간 대신 연결로 수정
-    const apiUrl = contextPath + "/allplace/mapok?areaCode=1&contentTypeId=12";
-    console.log("fetch URL:", apiUrl);
+    /* ---------- Marker Images ---------- */
+    const markerImageSpot = new kakao.maps.MarkerImage(
+        contextPath + '/resources/img/icon/travel.png',
+        new kakao.maps.Size(30, 35),
+        { offset: new kakao.maps.Point(15, 35) }
+    );
 
-    fetch(apiUrl)
-        .then(response => {
-            if (!response.ok) throw new Error('데이터 로드 실패: ' + response.status);
-            if (response.status === 204) return [];
-            return response.json();
-        })
-        .then(placeData => {
-            console.log("받은 데이터:", placeData);
-            if (!placeData || placeData.length === 0) {
-                console.warn("표시할 관광지 데이터가 없습니다.");
-                return;
-            }
+    const markerImageFood = new kakao.maps.MarkerImage(
+        contextPath + '/resources/img/icon/restaurant.png',
+        new kakao.maps.Size(30, 35),
+        { offset: new kakao.maps.Point(15, 35) }
+    );
 
-            placeData.forEach(place => {
-                if (!place.latitude || !place.longitude) return;
+    const markerImageMyLocation = new kakao.maps.MarkerImage(
+        contextPath + '/resources/img/icon/free-icon-my-location-7233773.png',
+        new kakao.maps.Size(30, 30),
+        { offset: new kakao.maps.Point(15, 15) }
+    );
 
-                const marker = new kakao.maps.Marker({
-                    position: new kakao.maps.LatLng(place.latitude, place.longitude)
-                });
-                marker.setMap(map);
+    /* ---------- Clusterer ---------- */
+    const clusterer = new kakao.maps.MarkerClusterer({
+        map: map,
+        averageCenter: true,
+        minLevel: 7
+    });
 
-                const iwContent = `
-                    <div class="info_window">
-                        <img src="${place.placeMainImageUrl || ''}" width="100%" height="80" style="border-radius:6px;"><br>
-                        <strong class="info_window_title">${place.name}</strong><br>
-                        <span class="info_window_addr">${place.address}</span><br>
-                        <a href="${contextPath}/allplace/detail/${place.placeId}" target="_blank" class="info_window_link">상세보기</a>
-                    </div>`;
+    let markers = [];
+    let idleTimer = null;
+    let selectedType = "12,39";
 
-                const infowindow = new kakao.maps.InfoWindow({ content: iwContent, removable: true });
-                kakao.maps.event.addListener(marker, 'click', () => infowindow.open(map, marker));
+    /* ---------- 필터 버튼 ---------- */
+    document.querySelectorAll(".group-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+            document.querySelectorAll(".group-btn").forEach(b => b.classList.remove("active"));
+            btn.classList.add("active");
+
+            let type = btn.dataset.type;
+            selectedType = (type === "all" ? "12,39" : type);
+
+            updateMarkers();
+        });
+    });
+
+    /* ---------- 내 위치 ---------- */
+    let myLocationMarker = null;
+
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(pos => {
+
+            const loc = new kakao.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+
+            myLocationMarker = new kakao.maps.Marker({
+                position: loc,
+                image: markerImageMyLocation
             });
 
-            if (placeData[0]) {
-                map.setCenter(new kakao.maps.LatLng(placeData[0].latitude, placeData[0].longitude));
-            }
-        })
-        .catch(error => console.error('지도 데이터 요청 오류:', error));
+            myLocationMarker.setMap(map);
+            map.setCenter(loc);
+
+            updateMarkers();
+        }, () => updateMarkers());
+    } else {
+        updateMarkers();
+    }
+
+    /* ---------- idle throttle ---------- */
+    kakao.maps.event.addListener(map, "idle", function () {
+        if (idleTimer) clearTimeout(idleTimer);
+        idleTimer = setTimeout(updateMarkers, 150);
+    });
+
+    /* =====================================================
+       ⭐ updateMarkers — 지도 + 사이드바 핵심 기능
+       ===================================================== */
+    function updateMarkers() {
+
+        const center = map.getCenter();
+        const lat = center.getLat();
+        const lng = center.getLng();
+        const radius = 3000;
+
+        const apiUrl =
+            contextPath +
+            "/allplace/mapok?lat=" + lat +
+            "&lng=" + lng +
+            "&radius=" + radius +
+            "&contentTypeId=" + selectedType;
+
+        console.log("🔥 FETCH =>", apiUrl);
+
+        fetch(apiUrl)
+            .then(res => res.status === 204 ? [] : res.json())
+            .then(data => {
+
+                /* 지도 초기화 */
+                clusterer.clear();
+                markers = [];
+
+                /* 리스트 초기화 */
+                const listContainer = document.getElementById("place-list");
+                listContainer.innerHTML = "";
+
+                if (!data || data.length === 0) {
+                    listContainer.innerHTML = "<p style='padding:15px;color:#666;'>데이터 없음</p>";
+                    return;
+                }
+                data.forEach(place => {
+                	 
+                    if (!place.latitude || !place.longitude) return;
+
+                    let markerImg =
+                        place.placeTypeId === 3 ? markerImageFood : markerImageSpot;
+
+                    const marker = new kakao.maps.Marker({
+                        position: new kakao.maps.LatLng(place.latitude, place.longitude),
+                        image: markerImg
+                    });
+
+                    markers.push(marker);
+
+                    kakao.maps.event.addListener(marker, "click", () => {
+                        window.open(contextPath + "/allplace/view/" + place.placeApiId, "_blank");
+                    });
+
+                    /* ---------- 리스트 생성 ---------- */
+                    const nameText = (place.name && place.name !== "false") ? place.name : "이름 없음";
+                    const addressText = (place.address && place.address !== "false") ? place.address : "";
+
+                    /* ---------- 이미지 처리 ---------- */
+                    let imgUrl = place.placeMainImageUrl;
+                    if (!imgUrl || imgUrl === "false") {
+                        imgUrl = contextPath + "/resources/img/icon/noimage.png";
+                    }
+
+                    const row = document.createElement("div");
+                    row.className = "place-item";
+
+                    row.innerHTML = `
+                        <img src="\${imgUrl}">
+                        <div class="place-info">
+                            <h4>\${nameText}</h4>
+                            <p>\${addressText}</p>
+                        </div>
+                    `;
+
+
+                    row.addEventListener("click", () => {
+                        window.open(contextPath + "/allplace/view/" + place.placeApiId, "_blank");
+                    });
+
+                    listContainer.appendChild(row);
+
+
+                });
+
+                clusterer.addMarkers(markers);
+            })
+            .catch(err => console.error("❌ API ERROR:", err));
+    }
 });
 </script>

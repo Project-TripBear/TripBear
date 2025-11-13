@@ -3,16 +3,11 @@
 
 <%-- 
   [Tiles Content]
-  컨트롤러로부터 'place' (PlaceDTO) 객체만 전달받습니다. (날씨 제거됨)
+  컨트롤러로부터 'place' (PlaceDTO) 객체만 전달받습니다.
+(날씨 제거됨)
 --%>
 
-<head>
-    <style>
-        .detail-container { max-width: 900px; margin: 20px auto; padding: 20px; }
-        .detail-main-image { width: 100%; height: auto; border-radius: 8px; }
-        .details-content { margin-top: 20px; }
-    </style>
-</head>
+<%-- (삭제) <head> ... <style> ... </style> </head> --%>
 
 <div class="detail-container">
 
@@ -25,32 +20,38 @@
 
     <div class="details-content">
         <c:choose>
-            <%-- 2-1. 관광지 (touristSpotDetail) --%>
+            <%-- 2-1.
+관광지 (touristSpotDetail) --%>
             <c:when test="${not empty place.touristSpotDetail}">
                 <h2>관광지 정보</h2>
                 <ul>
                     <li><strong>운영시간:</strong> <c:out value="${place.touristSpotDetail.openingHours}" default="정보 없음" /></li>
-                    <li><strong>입장료:</strong> <c:out value="${place.touristSpotDetail.admissionFee}" default="정보 없음" /></li>
+                    <li><strong>입장료:</strong> <c:out value="${place.touristSpotDetail.admissionFee}" default="정보 없음" 
+/></li>
                     <li><strong>연락처:</strong> <c:out value="${place.touristSpotDetail.contactInfo}" default="정보 없음" /></li>
                 </ul>
             </c:when>
             
-            <%-- 2-2. 축제/행사 (eventDetail) --%>
+            <%-- 2-2.
+축제/행사 (eventDetail) --%>
             <c:when test="${not empty place.eventDetail}">
                 <h2>축제/행사 정보</h2>
                 <ul>
                     <li><strong>시작일:</strong> <c:out value="${place.eventDetail.eventStart}" default="정보 없음" /></li>
-                    <li><strong>종료일:</strong> <c:out value="${place.eventDetail.eventEnd}" default="정보 없음" /></li>
+                    <li><strong>종료일:</strong> <c:out value="${place.eventDetail.eventEnd}" default="정보 없음" 
+/></li>
                     <li><strong>홈페이지:</strong> <a href="${place.eventDetail.eventLink}" target="_blank">바로가기</a></li>
                 </ul>
             </c:when>
 
-            <%-- 2-3. 음식점 (restaurantDetail) --%>
+            <%-- 2-3.
+음식점 (restaurantDetail) --%>
             <c:when test="${not empty place.restaurantDetail}">
                 <h2>음식점 정보</h2>
                 <ul>
                     <li><strong>취급메뉴:</strong> <c:out value="${place.restaurantDetail.restaurantCategory}" default="정보 없음" /></li>
-                    <li><strong>대표메뉴:</strong> <c:out value="${place.restaurantDetail.restaurantPrice}" default="정보 없음" /></li>
+                    <li><strong>대표메뉴:</strong> <c:out value="${place.restaurantDetail.restaurantPrice}" default="정보 없음" 
+/></li>
                     <li><strong>전화번호:</strong> <c:out value="${place.restaurantDetail.restaurantCall}" default="정보 없음" /></li>
                 </ul>
             </c:when>
