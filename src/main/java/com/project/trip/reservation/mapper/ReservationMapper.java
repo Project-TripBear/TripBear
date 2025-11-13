@@ -40,5 +40,11 @@ public interface ReservationMapper {
 	List<?> getFuelTypes();
 
 	List<?> getSeats();
+
+    ReservationDTO findReservationById(Long reservationId);
+
+    AccomReservationDTO findAccomByReservationId(Long reservationId);
+
+    CarReservationDTO findCarByReservationId(Long reservationId);
     
 }
