@@ -1,6 +1,8 @@
 // com.project.trip.board.find.model.findcommentDTO.java
 package com.project.trip.board.qna.model;
 
+import java.util.Date;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -15,7 +17,7 @@ public class QnACommentDTO {
     private int user_id;
     private int question_board_id;
     private String question_answer_content;
-    private String question_answer_regdate;
+    private Date question_answer_regdate;
     
     // 화면 표시용 추가 데이터
     private String nickname; // 댓글 작성자 닉네임

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.project.trip.board.qna.model.QnABoardDTO;
@@ -336,60 +337,56 @@ public class QnABoardController {
 
 
     /* -------------------------------
-       🔹 10. 댓글 수정
-    -------------------------------- */
-    @PostMapping("/editcomment")
-    public String editCommentProcess(
-            QnACommentDTO dto,
-            @RequestParam("boardSeq") int boardSeq,
-            Authentication authentication,
-            RedirectAttributes rttr) {
+    🔹 10. 댓글 수정 (AJAX)
+ -------------------------------- */
+	 @PostMapping("/editcomment")
+	 @ResponseBody
+	 public String editCommentProcess(
+	         QnACommentDTO dto,
+	         Authentication authentication) {
+	
+	     Integer userId = getLoggedInUserId(authentication);
+	     if (userId == null) {
+	         return "NOT_LOGIN";   // Ajax 응답
+	     }
+	
+	     int commentAuthorId = qnaBoardService.getCommentAuthor(dto.getQuestion_answer_id());
+	     if (userId != commentAuthorId) {
+	         return "NO_PERMISSION";  // Ajax 응답
+	     }
+	
+	     qnaBoardService.updateComment(dto);
+	     return "OK";  // 성공
+	 }
 
-        Integer userId = getLoggedInUserId(authentication);
-
-        if (userId == null) {
-            rttr.addFlashAttribute("msg", "로그인이 필요합니다.");
-            return "redirect:/qnaboard/view?seq=" + boardSeq;
-        }
-
-        int commentAuthorId = qnaBoardService.getCommentAuthor(dto.getQuestion_answer_id());
-
-        if (userId != commentAuthorId) {
-            rttr.addFlashAttribute("msg", "수정 권한이 없습니다.");
-        } else {
-            qnaBoardService.updateComment(dto);
-        }
-
-        return "redirect:/qnaboard/view?seq=" + boardSeq;
-    }
 
 
 
     /* -------------------------------
        🔹 11. 댓글 삭제
     -------------------------------- */
-    @GetMapping("/deletecomment")
-    public String deleteCommentProcess(
-            @RequestParam int commentId,
-            @RequestParam int boardSeq,
-            Authentication authentication,
-            RedirectAttributes rttr) {
+	 @GetMapping("/deletecomment")
+	 public String deleteCommentProcess(
+	         @RequestParam int commentId,
+	         @RequestParam int boardSeq,
+	         Authentication authentication,
+	         RedirectAttributes rttr) {
 
-        Integer userId = getLoggedInUserId(authentication);
+	     Integer userId = getLoggedInUserId(authentication);
 
-        if (userId == null) {
-            rttr.addFlashAttribute("msg", "로그인이 필요합니다.");
-            return "redirect:/qnaboard/view?seq=" + boardSeq;
-        }
+	     if (userId == null) {
+	         rttr.addFlashAttribute("msg", "로그인이 필요합니다.");
+	         return "redirect:/qnaboard/view?seq=" + boardSeq;
+	     }
 
-        int commentAuthorId = qnaBoardService.getCommentAuthor(commentId);
+	     int commentAuthorId = qnaBoardService.getCommentAuthor(commentId);
 
-        if (userId != commentAuthorId) {
-            rttr.addFlashAttribute("msg", "삭제 권한이 없습니다.");
-        } else {
-            qnaBoardService.deleteComment(commentId);
-        }
+	     if (userId != commentAuthorId) {
+	         rttr.addFlashAttribute("msg", "삭제 권한이 없습니다.");
+	     } else {
+	         qnaBoardService.deleteComment(commentId);
+	     }
 
-        return "redirect:/qnaboard/view?seq=" + boardSeq;
-    }
+	     return "redirect:/qnaboard/view?seq=" + boardSeq;
+	 }
 }
