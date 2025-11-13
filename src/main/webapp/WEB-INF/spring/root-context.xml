@@ -14,7 +14,11 @@
             http://www.springframework.org/schema/context 
             http://www.springframework.org/schema/context/spring-context.xsd"> 
     
+<<<<<<< HEAD
 <context:property-placeholder location="classpath:application.properties" />
+=======
+    <context:property-placeholder location="classpath:application.properties" />
+>>>>>>> feature/gemini
 
     <bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
         <property name="driverClassName" value="oracle.jdbc.OracleDriver"/>
