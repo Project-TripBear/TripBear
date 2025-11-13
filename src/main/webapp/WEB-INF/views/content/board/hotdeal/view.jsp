@@ -50,13 +50,17 @@
     <c:if test="${not empty dto.seq}">
         <div class="post-actions">
             <c:choose>
-                <c:when test="${isLiked}">
-                    <button type="button" class="like active" id="btnLike" onclick="like(${dto.seq});">좋아요 취소 ❤️</button>
-                </c:when>
-                <c:otherwise>
-                    <button type="button" class="like" id="btnLike" onclick="like(${dto.seq});">좋아요 👍</button>
-                </c:otherwise>
-            </c:choose>
+    <c:when test="${isLiked}">
+        <button type="button" class="like active" id="btnLike" onclick="like(${dto.seq});">
+            좋아요 취소 ❤️ (${likeCount})
+        </button>
+    </c:when>
+    <c:otherwise>
+        <button type="button" class="like" id="btnLike" onclick="like(${dto.seq});">
+            좋아요 👍 (${likeCount})
+        </button>
+    </c:otherwise>
+</c:choose>
             <c:choose>
                 <c:when test="${isScrapped}">
                     <button type="button" class="scrap active" id="btnScrap" onclick="scrap(${dto.seq});">스크랩 취소 📘</button>
@@ -376,13 +380,19 @@
 	        data: JSON.stringify({ bseq: seq }),
 	        dataType: 'json',
 	        success: function(result) {
+	            if (result.result === 'login_required') {
+	                alert('로그인이 필요합니다.');
+	                return;
+	            }
+	            
 	            console.log('서버 DB 변경 성공!');
-	            if (isLiked) {
+	            
+	            if (result.action === 'unliked') {
 	                btnLike.removeClass('active');
-	                btnLike.html('좋아요 👍');
+	                btnLike.html('좋아요 👍 (' + result.likeCount + ')');
 	            } else {
 	                btnLike.addClass('active');
-	                btnLike.html('좋아요 취소 ❤️');
+	                btnLike.html('좋아요 취소 ❤️ (' + result.likeCount + ')');
 	            }
 	        },
 	        error: function(xhr, status, error) {
@@ -402,7 +412,12 @@
 	        data: JSON.stringify({ bseq: seq }),
 	        dataType: 'json',
 	        success: function(result) {
-	            if (isScrapped) {
+	            if (result.result === 'login_required') {
+	                alert('로그인이 필요합니다.');
+	                return;
+	            }
+	            
+	            if (result.action === 'unscrapped') {
 	                btnScrap.removeClass('active');
 	                btnScrap.html('스크랩 📋');
 	            } else {

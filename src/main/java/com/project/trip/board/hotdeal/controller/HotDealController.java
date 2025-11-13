@@ -8,12 +8,14 @@ import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -153,6 +155,9 @@ public class HotDealController {
 	        
 	        List<HotDealImageDTO> images = mapper.selectImages(seq);
 	        model.addAttribute("images", images);
+	        
+	        int likeCount = likemapper.getLikeCount(seq);
+	        model.addAttribute("likeCount", likeCount);
 
 	        try {
 	            if (auth != null && auth.isAuthenticated()
@@ -431,8 +436,85 @@ public class HotDealController {
 	            return "board.hotdeal.del";
 	        }
 	    }
-	 
+	    
+	    @PostMapping("/hotdeal/like")
+	    public ResponseEntity<Map<String, Object>> toggleLike(
+	            @RequestBody Map<String, String> request, 
+	            Authentication auth) {
+	        
+	        Map<String, Object> response = new HashMap<>();
+	        
+	        if (auth == null || !auth.isAuthenticated()) {
+	            response.put("result", "login_required");
+	            return ResponseEntity.ok(response);
+	        }
+	        
+	        String userId = auth.getName();
+	        String bseq = request.get("bseq");
+	        
+	        UserDTO userDto = membermapper.get(userId);
+	        String userSeq = userDto.getSeq();
+	        
+	        // 좋아요 체크
+	        int isLiked = likemapper.likeCheck(userSeq, bseq);
+	        
+	        if (isLiked == 1) {
+	            // 좋아요 취소
+	        	likemapper.likeDel(userSeq, bseq);
+	            response.put("action", "unliked");
+	        } else {
+	            // 좋아요 추가
+	        	likemapper.likeAdd(userSeq, bseq);
+	            response.put("action", "liked");
+	        }
+	        
+	        // 좋아요 개수 조회
+	        int likeCount = likemapper.getLikeCount(bseq);
+	        
+	        response.put("result", "success");
+	        response.put("likeCount", likeCount);
+	        
+	        return ResponseEntity.ok(response);
+	    }
+
+	    @PostMapping("/hotdeal/scrap")
+	    public ResponseEntity<Map<String, Object>> toggleScrap(
+	            @RequestBody Map<String, String> request, 
+	            Authentication auth) {
+	        
+	        Map<String, Object> response = new HashMap<>();
+	        
+	        if (auth == null || !auth.isAuthenticated()) {
+	            response.put("result", "login_required");
+	            return ResponseEntity.ok(response);
+	        }
+	        
+	        String userId = auth.getName();
+	        String bseq = request.get("bseq");
+	        
+	        UserDTO userDto = membermapper.get(userId);
+	        String userSeq = userDto.getSeq();
+	        
+	        // 스크랩 체크
+	        int isScrapped = likemapper.scrapCheck(userSeq, bseq);
+	        
+	        if (isScrapped == 1) {
+	            // 스크랩 취소
+	        	likemapper.scrapDel(userSeq, bseq);
+	            response.put("action", "unscrapped");
+	        } else {
+	            // 스크랩 추가
+	        	likemapper.scrapAdd(userSeq, bseq);
+	            response.put("action", "scrapped");
+	        }
+	        
+	        response.put("result", "success");
+	        
+	        return ResponseEntity.ok(response);
+	    }
 	}
+	 
+	
 
 	
 
