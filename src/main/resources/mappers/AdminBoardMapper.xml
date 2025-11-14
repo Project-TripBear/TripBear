@@ -19,91 +19,88 @@
     <select id="getTotalBoardCount" resultType="int">
         SELECT COUNT(*)
         FROM (
-            SELECT notice.notice_post_id FROM tblNoticePost notice
-            UNION ALL
-            SELECT qb.question_board_id FROM tblQuestionBoard qb
-            UNION ALL
-            SELECT rb.review_post_id FROM tblReviewBoard rb
-            UNION ALL
-            SELECT fb.find_board_id FROM tblFindBoard fb
-        ) combined_boards
+            SELECT notice_post_id FROM tblNoticePost UNION ALL
+            SELECT question_board_id FROM tblQuestionBoard UNION ALL
+            SELECT review_post_id FROM tblReviewBoard UNION ALL
+            SELECT find_board_id FROM tblFindBoard UNION ALL
+            SELECT hotdeal_id FROM tblHotDealPost UNION ALL
+            SELECT routepost_id FROM tblRoutePost ) combined_boards
     </select>
     
     <select id="getIntegratedBoardList" parameterType="java.util.Map" resultMap="integratedBoardResult">
         SELECT
-            seq_id,
-            boardType,
-            title,
-            nickname,
-            regdate,
-            viewCount,
-            commentCount,
-            likeCount
+            seq_id, boardType, title, nickname, regdate, viewCount, commentCount, likeCount
         FROM (
             SELECT
                 combined_boards.*,
                 ROW_NUMBER() OVER (ORDER BY regdate DESC) AS RNUM
             FROM (
-                -- ▼▼▼ 기존 통합 쿼리 시작 ▼▼▼
-                -- 1. 공지사항 (tblNoticePost)
                 SELECT
                     notice.notice_post_id AS seq_id,
-                    '공지' AS boardType,
+                    'tblNotice' AS boardType, -- ★ boardType 수정
                     notice.notice_header AS title,
                     a.admin_name AS nickname,
                     notice.notice_regdate AS regdate,
                     notice.notice_view_count AS viewCount,
                     0 AS commentCount,
                     0 AS likeCount
-                FROM tblNoticePost notice
-                LEFT JOIN tblAdmin a ON notice.admin_id = a.admin_id
+                FROM tblNoticePost notice LEFT JOIN tblAdmin a ON notice.admin_id = a.admin_id
                 
                 UNION ALL
 
-                -- 2. QnA (tblQuestionBoard)
                 SELECT
                     qb.question_board_id AS seq_id,
-                    'QnA' AS boardType,
+                    'tblQuestionBoard' AS boardType, -- ★ boardType 수정
                     qb.question_board_title AS title,
                     u.nickname AS nickname,
                     qb.question_board_regdate AS regdate,
                     qb.question_board_view_count AS viewCount,
-                    qb.question_board_comment_count AS commentCount,
-                    qb.question_board_like_count AS likeCount
-                FROM tblQuestionBoard qb
-                LEFT JOIN tblUser u ON qb.user_id = u.user_id
+                    qb.question_board_comment_count AS commentCount, -- ★ DDL 컬럼 사용
+                    qb.question_board_like_count AS likeCount -- ★ DDL 컬럼 사용
+                FROM tblQuestionBoard qb LEFT JOIN tblUser u ON qb.user_id = u.user_id
                 
                 UNION ALL
 
-                -- 3. 후기 게시판 (tblReviewBoard)
                 SELECT
                     rb.review_post_id AS seq_id,
-                    '후기' AS boardType,
+                    'tblReviewBoard' AS boardType, -- ★ boardType 수정
                     rb.review_board_title AS title,
                     u.nickname AS nickname,
                     rb.review_board_regdate AS regdate,
-                    rb.review_board_count AS viewCount,
-                    (SELECT COUNT(*) FROM tblReviewComment WHERE review_post_id = rb.review_post_id) AS commentCount,
-                    (SELECT COUNT(*) FROM tblReviewLike WHERE review_post_id = rb.review_post_id) AS likeCount
-                FROM tblReviewBoard rb
-                LEFT JOIN tblUser u ON rb.user_id = u.user_id
+                    rb.review_board_count AS viewCount, -- ★ DDL 컬럼명 (view_count 아님)
+                    (SELECT COUNT(*) FROM tblReviewComment WHERE review_post_id = rb.review_post_id) AS commentCount, (SELECT COUNT(*) FROM tblReviewLike WHERE review_post_id = rb.review_post_id) AS likeCount FROM tblReviewBoard rb LEFT JOIN tblUser u ON rb.user_id = u.user_id
 
                 UNION ALL
                 
-                -- 4. 동행 찾기 게시판 (tblFindBoard)
                 SELECT
                     fb.find_board_id AS seq_id,
-                    '동행' AS boardType,
+                    'tblFindBoard' AS boardType, -- ★ boardType 수정
                     fb.find_board_title AS title,
                     u.nickname AS nickname,
                     fb.find_board_regdate AS regdate,
                     fb.find_board_view_count AS viewCount,
-                    (SELECT COUNT(*) FROM tblFindComment WHERE find_board_id = fb.find_board_id) AS commentCount,
-                    (SELECT COUNT(*) FROM tblFindLikes WHERE find_board_id = fb.find_board_id) AS likeCount
-                FROM tblFindBoard fb
-                LEFT JOIN tblUser u ON fb.user_id = u.user_id
-                
-                -- ▲▲▲ 기존 통합 쿼리 끝 ▲▲▲
+                    (SELECT COUNT(*) FROM tblFindComment WHERE find_board_id = fb.find_board_id) AS commentCount, (SELECT COUNT(*) FROM tblFindLikes WHERE find_board_id = fb.find_board_id) AS likeCount FROM tblFindBoard fb LEFT JOIN tblUser u ON fb.user_id = u.user_id
+
+                UNION ALL -- 5. 핫딜 (tblHotDealPost)
+                SELECT
+                    hd.hotdeal_id AS seq_id,
+                    'tblHotDealPost' AS boardType,
+                    hd.hotdeal_title AS title,
+                    u.nickname AS nickname,
+                    hd.hotdeal_regdate AS regdate,
+                    hd.hotdeal_view_count AS viewCount,
+                    (SELECT COUNT(*) FROM tblHotDealComment WHERE hotdeal_id = hd.hotdeal_id) AS commentCount, (SELECT COUNT(*) FROM tblHotDealLikes WHERE hotdeal_id = hd.hotdeal_id) AS likeCount FROM tblHotDealPost hd LEFT JOIN tblUser u ON hd.user_id = u.user_id
+
+                UNION ALL -- 6. 경로 (tblRoutePost)
+                SELECT
+                    rp.routepost_id AS seq_id, -- ★ DDL 컬럼명 수정
+                    'tblRoutePost' AS boardType,
+                    rp.routepost_title AS title,
+                    u.nickname AS nickname,
+                    rp.routepost_regdate AS regdate,
+                    rp.routepost_view_count AS viewCount,
+                    (SELECT COUNT(*) FROM tblRoutePostComment WHERE routepost_id = rp.routepost_id) AS commentCount, (SELECT COUNT(*) FROM tblRoutePostLikes WHERE routepost_id = rp.routepost_id) AS likeCount FROM tblRoutePost rp LEFT JOIN tblUser u ON rp.user_id = u.user_id
+
             ) combined_boards
         )
         WHERE RNUM BETWEEN #{startRow} AND #{endRow}
