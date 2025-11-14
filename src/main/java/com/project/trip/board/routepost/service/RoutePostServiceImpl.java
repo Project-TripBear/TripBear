@@ -6,9 +6,9 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.project.trip.board.routepost.mapper.RoutePostMapper;
 import com.project.trip.board.routepost.model.RoutePostDTO;
 import com.project.trip.board.routepost.model.RoutePostImageDTO;
-import com.project.trip.board.routepost.mapper.RoutePostMapper;
 
 @Service
 public class RoutePostServiceImpl implements RoutePostService {
@@ -89,5 +89,16 @@ public class RoutePostServiceImpl implements RoutePostService {
             return true;    // 스크랩 추가됨
         }
     }
+    
+    @Override
+    public boolean checkLike(Map<String, Object> map) {
+        return mapper.checkLike(map) > 0;
+    }
+
+    @Override
+    public boolean checkScrap(Map<String, Object> map) {
+        return mapper.checkScrap(map) > 0;
+    }
+
 
 }

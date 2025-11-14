@@ -241,9 +241,47 @@ $(function() {
   $(document).ajaxSend(function(e, xhr) {
     xhr.setRequestHeader(header, token);
   });
-
+  
+  loadLikeScrapStatus();
   loadComments();
 });
+
+function loadLikeScrapStatus() {
+
+    // 로그인 안 한 경우 API 호출하지 않음
+    if (!userId || userId === "") return;
+
+    // ❤️ 좋아요 상태 로드
+    $.get(contextPath + "/api/routepost/like/status",
+        { routepostId: routepostId, userId: userId },
+        function(res) {
+
+            const liked = (res === true || res === "true" || res === 1);
+
+            if (liked) {
+                $("#btn-like").addClass("active").text("❤️ 추천됨");
+            } else {
+                $("#btn-like").removeClass("active").text("🤍 추천");
+            }
+        }
+    );
+
+    // 📁 스크랩 상태 로드
+    $.get(contextPath + "/api/routepost/scrap/status",
+        { routepostId: routepostId, userId: userId },
+        function(res) {
+
+            const scrapped = (res === true || res === "true" || res === 1);
+
+            if (scrapped) {
+                $("#btn-scrap").addClass("active").text("✅ 스크랩됨");
+            } else {
+                $("#btn-scrap").removeClass("active").text("📁 스크랩");
+            }
+        }
+    );
+}
+
 
 
 </script>

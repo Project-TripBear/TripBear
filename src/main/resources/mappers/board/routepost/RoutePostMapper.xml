@@ -260,5 +260,8 @@
           AND routepost_id = #{routepostId}
     </delete>
     
+    
+    
+    
 
 </mapper>

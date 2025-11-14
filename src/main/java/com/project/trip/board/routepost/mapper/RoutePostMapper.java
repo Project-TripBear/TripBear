@@ -46,4 +46,6 @@ public interface RoutePostMapper {
     int removeScrap(Map<String, Object> map);
 
 
+
+
 }
