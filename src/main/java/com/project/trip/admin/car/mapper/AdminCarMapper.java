@@ -17,4 +17,6 @@ public interface AdminCarMapper {
     int deleteCar(int carId); // 리턴 타입 int로 변경
 
     int updateCar(carDTO dto);
+    
+    List<Map<String, Object>> getAllLocations();
 }

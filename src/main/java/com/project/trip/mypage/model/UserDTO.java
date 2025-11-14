@@ -10,6 +10,7 @@ import lombok.ToString;
 public class UserDTO {
 	private String seq;
 	private String id;
+	private String uid;
 	private String pw;
 	private String ssn;
 	private String phoneNumber;
@@ -22,26 +23,9 @@ public class UserDTO {
 	private String weight;
 	private String healthGoals;
 	private String auth;
-
-
+	private String userStatusId;
 
 
 
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

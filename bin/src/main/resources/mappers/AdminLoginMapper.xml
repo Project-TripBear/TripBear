@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.project.trip.admin.adminpage.mapper.AdminLoginMapper">
+
+    <select id="getAdminByName" parameterType="string" resultType="com.project.trip.admin.adminpage.model.AdminDTO">
+        SELECT 
+            ADMIN_NAME AS admin_name,
+            ADMIN_PASSWORD AS admin_password
+        FROM TBLADMIN
+        WHERE ADMIN_NAME = #{admin_name}
+    </select>
+</mapper>

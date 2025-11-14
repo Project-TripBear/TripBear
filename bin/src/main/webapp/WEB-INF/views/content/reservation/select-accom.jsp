@@ -1,0 +1,261 @@
+<%@ page contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+
+<!-- 예약: 숙소 선택 (지도 60 : 카드 40) -->
+<style>
+body {
+	max-width: 100% !important;
+	width: 100% !important;
+}
+
+#wrap, #container, .container {
+	max-width: 100% !important;
+	width: 100% !important;
+	margin: 0 !important;
+	padding: 0 !important;
+}
+
+.select-layout {
+    display: grid;
+    grid-template-columns: 55% 45%;
+    gap: 12px;
+    height: calc(100vh - 120px);
+}
+
+.map-wrap {
+	border-radius: 16px;
+	overflow: hidden;
+	min-height: 520px;
+}
+
+#map {
+	width: 100%;
+	height: 100%;
+}
+
+.cards {
+	overflow: auto;
+	border-radius: 16px;
+	background: #fff;
+	padding: 12px;
+}
+
+.toolbar {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 8px;
+}
+
+.chip {
+	border: 1px solid #ddd;
+	padding: 6px 10px;
+	border-radius: 999px;
+	cursor: pointer;
+}
+
+.card {
+	display: flex;
+	gap: 12px;
+	padding: 12px;
+	border: 1px solid #eee;
+	border-radius: 12px;
+	margin-bottom: 10px;
+	align-items: center;
+}
+
+.thumb {
+	width: 96px;
+	height: 96px;
+	border-radius: 10px;
+	object-fit: cover;
+	background: #f2f2f2;
+}
+
+.meta h4 {
+	margin: 0 0 4px;
+	font-size: 16px;
+}
+
+.meta .sub {
+	color: #666;
+	font-size: 13px;
+}
+
+.price {
+	font-weight: 700;
+	margin-top: 6px;
+}
+
+.actions {
+	margin-left: auto;
+	display: flex;
+	gap: 8px;
+}
+
+.btn {
+	padding: 8px 12px;
+	border-radius: 10px;
+	border: 1px solid #ddd;
+	background: #fff;
+	cursor: pointer;
+}
+
+.btn.primary {
+	background: #6C9A8B;
+	color: #fff;
+	border-color: #6C9A8B;
+}
+
+.empty {
+	padding: 24px;
+	color: #888;
+	text-align: center;
+}
+</style>
+
+<div class="select-layout">
+	<!-- Left: Map -->
+	<div class="map-wrap">
+		<div id="map"></div>
+	</div>
+
+	<!-- Right: Cards -->
+	<div class="cards">
+		<div class="toolbar">
+			<div>
+				<span class="chip" id="showAll">모두 보기</span>
+			</div>
+			<div class="sub">
+				지역: <b>${region}</b> · 인원: <b>${people}</b>명 · 기간: <b>${checkin}</b>
+				~ <b>${checkout}</b>
+			</div>
+		</div>
+
+		<c:choose>
+			<c:when test="${empty rooms}">
+				<div class="empty">해당 지역의 숙소가 없습니다.</div>
+			</c:when>
+			<c:otherwise>
+				<div id="roomList">
+					<c:forEach var="r" items="${rooms}">
+						<div class="card" data-room-id="${r.roomId}">
+							<img class="thumb"
+								src="${pageContext.request.contextPath}/resources/img/room/${r.imageUrl}" />
+
+							<div class="meta">
+								<h4>${r.accomName}·${r.roomName}</h4>
+								<div class="sub">${r.address}</div>
+								<div class="price">
+									<fmt:formatNumber value="${r.pricePerNight}" pattern="#,###" />
+									원 / 1박
+								</div>
+							</div>
+							<div class="actions">
+								<!-- 다음 단계: 차량 선택 페이지로 이동 -->
+								<form method="get"
+									action="${pageContext.request.contextPath}/reservation/select-car.do">
+									<input type="hidden" name="region" value="${region}" /> <input
+										type="hidden" name="checkin" value="${checkin}" /> <input
+										type="hidden" name="checkout" value="${checkout}" /> <input
+										type="hidden" name="people" value="${people}" /> <input
+										type="hidden" name="roomId" value="${r.roomId}" />
+									<button class="btn primary" type="submit">이 방 선택</button>
+								</form>
+							</div>
+						</div>
+					</c:forEach>
+				</div>
+			</c:otherwise>
+		</c:choose>
+	</div>
+	
+</div>
+
+<!-- Kakao Map SDK (키 바꿔줘!) -->
+<script type="text/javascript"
+	src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=0e065a782a80bd99c2c88184e66bff5a&libraries=services"></script>
+
+<script>
+
+const rooms = JSON.parse('${roomsJson}');
+
+window.kakao.maps.load(function(){
+
+    const mapEl = document.getElementById('map');
+    const map = new kakao.maps.Map(mapEl, {
+        center: new kakao.maps.LatLng(35.1796, 129.0756),
+        level: 7
+    });
+
+    const roomListEl = document.getElementById('roomList');
+    const showAllBtn = document.getElementById('showAll');
+
+    function filterToRoom(roomId) {
+        const cards = roomListEl.querySelectorAll('.card');
+        cards.forEach(c=>{
+            c.style.display = (c.dataset.roomId == roomId) ? 'flex' : 'none';
+        });
+    }
+
+    function showAll() {
+        const cards = roomListEl.querySelectorAll('.card');
+        cards.forEach(c=> c.style.display='flex');
+    }
+
+    // 모두보기 버튼 연결
+    showAllBtn.addEventListener('click', showAll);
+
+    rooms.forEach(r=>{
+        const marker = new kakao.maps.Marker({
+            position : new kakao.maps.LatLng(r.lat, r.lng),
+            map : map
+        });
+
+        kakao.maps.event.addListener(marker,'click',()=>{
+            filterToRoom(r.roomId);
+        });
+    });
+    
+    const markerMap = {};  // roomId -> marker 저장
+
+    rooms.forEach(r=>{
+        const marker = new kakao.maps.Marker({
+            position : new kakao.maps.LatLng(r.lat, r.lng),
+            map : map
+        });
+        markerMap[r.roomId] = marker; // 저장
+
+        kakao.maps.event.addListener(marker,'click',()=>{
+            filterToRoom(r.roomId);
+            map.setCenter(marker.getPosition());
+        });
+    });
+
+    // 카드 클릭 → 마커 중심 이동
+    document.querySelectorAll('.card').forEach(card=>{
+        card.addEventListener('click', ()=>{
+            const id = card.dataset.roomId;
+            map.setCenter(markerMap[id].getPosition());
+        });
+    });
+
+});
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

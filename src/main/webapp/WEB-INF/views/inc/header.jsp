@@ -12,7 +12,7 @@
         <%-- 왼쪽: 로고 --%>
         <div class="header-column">
             <div class="logo">
-                <a href="${pageContext.request.contextPath}/main">LOGO</a>
+                <a href="${pageContext.request.contextPath}/">LOGO</a>
             </div>
         </div>
 
@@ -27,9 +27,12 @@
                     <a href="#">날씨/공기질</a>
                     <a href="#">시기별 축제/행사</a>
                 </div>
-            </div>
 
-            <a href="${pageContext.request.contextPath}/route/mainroute" class="${activeMenu == 'route' ? 'active' : ''}">여행루트</a>
+      
+              </div>
+            <a href="${pageContext.request.contextPath}/ai/plan" class="${activeMenu == 'route' ?
+'active' : ''}">여행루트</a>
+            
 
             <div class="nav-item has-dropdown">
                 <a href="#">게시판</a>
@@ -81,7 +84,9 @@
 <%-- <div id="mobile-menu" class="mobile-menu-panel">
     <div class="menu-header">
         <div class="logo">
+
             <a href="${pageContext.request.contextPath}/main">LOGO</a>
+
         </div>
         <button id="close-menu-btn" class="close-btn" aria-label="메뉴 닫기">
             <i class="fa-solid fa-times"></i>
@@ -100,7 +105,9 @@
             </div>
         </div>
 
-        <a href="${pageContext.request.contextPath}/route/mainroute" class="mobile-nav-item">여행루트</a>
+        <%-- 여행루트 (단일 링크) --%>
+        <a href="${pageContext.request.contextPath}/ai/plan" class="mobile-nav-item">여행루트</a>
+        <%-- 게시판 드롭다운 --%>
 
         <div class="mobile-nav-item has-dropdown">
             <a href="#" class="dropdown-toggle">게시판 <i class="fa-solid fa-chevron-down dropdown-arrow"></i></a>

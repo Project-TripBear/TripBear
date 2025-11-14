@@ -10,7 +10,7 @@
 <body>
 	
 	
-	<nav class="board-sub-header">
+	<%-- <nav class="board-sub-header">
     <div class="sub-header-inner">
         <a href="/trip/member/carreservation.do">렌트카 예약</a>
         <a href="/trip/member/accomreservation.do">숙소 예약</a>
@@ -79,7 +79,50 @@
 		
 	
 		
+	</div> --%>
+	
+	<div class="page-accomreservation-container"> <nav class="board-sub-header">
+        <div class="sub-header-inner">
+            <a href="/trip/member/carreservation.do">렌트카 예약</a>
+            <a href="/trip/member/accomreservation.do" class="active">숙소 예약</a> </div>
+    </nav>
+	
+	<div id="main">
+		<h1>숙소 예약</h1>
+		
+		<c:if test="${map.search == 'y'}">
+		<div id="labelSearch">
+			'${map.word}'(으)로 검색한 결과 ${map.totalCount}건이 있습니다.			
+		</div>
+		</c:if>	
+		
+		<table id="list" class="reservation-list-table"> <thead>
+                <tr>
+                    <th>예약번호</th>
+                    <th>객실명</th>
+                    <th>체크인</th>
+                    <th>체크아웃</th>
+                </tr>
+            </thead>
+            <tbody>
+                <c:if test="${list.size() == 0}">
+                <tr>
+                    <td colspan="4" class="no-data-cell">예약 내역이 없습니다.</td> </tr>
+                </c:if>
+                <c:forEach items="${list}" var="dto">
+                <tr onclick="location.href='/trip/member/accomreservationview?seq=${dto.seq}&accomseq=${dto.accomseq}'" class="data-row">
+                    <td>${dto.seq}</td>
+                    <td>${dto.roomname}</td>
+                    <td>${dto.checkindate}</td>
+                    <td>${dto.checkoutdate}</td>
+                </tr>
+                </c:forEach>
+            </tbody>
+		</table>
+
+		<div id="pagebar" class="pagebar-container">${pagebar}</div>
 	</div>
+</div>
 	
 	<script>
 	

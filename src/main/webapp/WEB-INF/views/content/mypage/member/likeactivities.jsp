@@ -9,7 +9,7 @@
 </head>
 <body>
 	
-	
+	<div class="page-likeactivities-container">
 <nav class="board-sub-header">
     <div class="sub-header-inner">
         <a href="/trip/member/boardactivities">내가 쓴 게시글</a>
@@ -30,7 +30,7 @@
 
 		
 		
-		<table id="list" class="borad-table">
+		<table id="list" class="activity-list-table">
 			<tr>
 				<th>게시판이름</th>
 				<th>제목</th>
@@ -42,6 +42,17 @@
 			</tr>
 			</c:if>
 			<c:forEach items="${list}" var="dto">
+                <tr class="data-row">
+                    <td class="board-title-cell">${dto.boradTitle}</td>
+                    <td class="post-subject-cell">
+                        <a href="/trip/board/${dto.boradCode}.do?seq=${dto.seq}&column=${map.column}&word=${map.word}">
+                            ${dto.subject}
+                        </a>
+                    </td>
+                    <td class="regdate-cell">${dto.regdate}</td>
+                </tr>
+            </c:forEach>
+			<%-- <c:forEach items="${list}" var="dto">
 			
 
 			
@@ -64,14 +75,15 @@
 					${dto.regdate}	
 				</td>
 			</tr>
-			</c:forEach>
+			</c:forEach> --%>
 		</table>
 		
 
-		<div id="pagebar">${pagebar}</div>
+		<div id="pagebar" class="pagebar-container">${pagebar}</div>
 		
 		
 		
+	</div>
 	</div>
 	
 	<script>

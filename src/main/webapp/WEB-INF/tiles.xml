@@ -5,6 +5,12 @@
 	"http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
 	
 <tiles-definitions>
+	
+	<definition name="board.*.*" template="/WEB-INF/views/layout/main.jsp">
+    	<put-attribute name="header" value="/WEB-INF/views/inc/header.jsp"></put-attribute>
+    	<put-attribute name="content" value="/WEB-INF/views/content/board/{1}/{2}.jsp"></put-attribute>
+	</definition>
+
 
 	<definition name="mypage.*.*" template="/WEB-INF/views/layout/main.jsp">
     	<put-attribute name="header" value="/WEB-INF/views/inc/header.jsp"></put-attribute>
@@ -23,7 +29,7 @@
 		<put-attribute name="header" value="/WEB-INF/views/inc/header.jsp"></put-attribute>
 		<put-attribute name="content" value="/WEB-INF/views/content/{1}/{2}.jsp"></put-attribute>
 	</definition>
-	
+
 	<definition name="main" template="/WEB-INF/views/layout/main.jsp">
 		<put-attribute name="header" value="/WEB-INF/views/inc/header.jsp"></put-attribute>
 		<put-attribute name="content" value="/WEB-INF/views/content/index.jsp"></put-attribute>
@@ -31,6 +37,7 @@
 	
 
 
-	
+
+
 
 </tiles-definitions>

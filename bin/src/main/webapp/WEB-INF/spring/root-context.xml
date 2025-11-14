@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
+       xmlns:tx="http://www.springframework.org/schema/tx" 
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
+           http://www.springframework.org/schema/beans
+           https://www.springframework.org/schema/beans/spring-beans.xsd
+           http://mybatis.org/schema/mybatis-spring
+           https://mybatis.org/schema/mybatis-spring.xsd
+
+           http://www.springframework.org/schema/tx
+           http://www.springframework.org/schema/tx/spring-tx.xsd
+           http://www.springframework.org/schema/context 
+           http://www.springframework.org/schema/context/spring-context.xsd"> 
+    <context:property-placeholder location="classpath:application.properties" />
+
+	<bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
+
+		<property name="driverClassName" value="oracle.jdbc.OracleDriver"/>
+<property name="jdbcUrl" 
+          value="jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS=(PROTOCOL=tcps)(HOST=adb.ap-osaka-1.oraclecloud.com)(PORT=1522))(CONNECT_DATA=(SERVICE_NAME=g386346d5207ad8_tripbeardb_high.adb.oraclecloud.com))(SECURITY=(MY_WALLET_DIRECTORY=/Users/seokyong/dev/Wallet_TripBearDB)))"/> 		<property name="username" value="tripbear"/>
+		<property name="password" value="Java123456789"/>
+		<property name="maximumPoolSize" value="5"/>
+		<property name="connectionTimeout" value="30000"/>
+		<property name="idleTimeout" value="600000"/>
+		<property name="maxLifetime" value="1800000"/>
+	</bean>
+
+	<bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
+		<constructor-arg ref="hikariConfig"/>
+	</bean>
+
+	<bean id="sessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"/>
+		<property name="mapperLocations" value="classpath:mappers/**/*.xml"/>
+		<property name="configLocation" value="classpath:config/mybatis-config.xml"/>
+	</bean>
+	
+	<!-- <mybatis-spring:scan 
+        base-package="com.project.trip.allplace.mapper, 
+                      com.project.trip.board.notice.mapper, 
+                      com.project.trip.airoute.mapper,
+                      com.project.trip.admin.accom.mapper,
+                      com.project.trip.admin.board.mapper,
+                      com.project.trip.admin.car.mapper,
+                      com.project.trip.admin.user.mapper,                      
+		      		com.project.trip.mypage.mapper,
+		      		com.project.trip.board.routepost.mapper,
+		      		com.project.trip.reservation.mapper"
+		      		/> -->	
+		      		<mybatis-spring:scan base-package="com.project.trip.**.mapper"/>
+		      		
+		      	
+	
+	<context:component-scan base-package="com.project.trip">
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
+	
+	
+	<bean id="restTemplate" class="org.springframework.web.client.RestTemplate" />
+	
+	<!-- 이 Bean이 PlatformTransactionManager 역할을 합니다. -->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <!-- 위에서 정의한 'dataSource' Bean을 참조합니다. -->
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <!-- 2. @Transactional 어노테이션을 '작동'시키기 위한 설정 -->
+    <!-- transaction-manager="transactionManager"는 위에서 정의한 bean의 id와 일치시킵니다. -->
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+</beans>

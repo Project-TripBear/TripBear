@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.project.trip.admin.main.mapper.AdminMainMapper">
+
+    <select id="getTotalMembers" resultType="int">
+        SELECT COUNT(*) FROM tblUser
+    </select>
+    
+    <select id="getTodayReservations" resultType="int">
+        SELECT COUNT(*) 
+        FROM tblReservation 
+        WHERE TRUNC(reservation_regdate) = TRUNC(SYSDATE)
+    </select>
+    
+    <select id="getPendingReports" resultType="int">
+        SELECT COUNT(*) 
+        FROM tblReports 
+        WHERE report_status = '접수' 
+    </select>
+
+</mapper>

@@ -11,7 +11,7 @@
 <body>
 <!-- view.jsp -->
 
-<nav class="board-sub-header">
+<%-- <nav class="board-sub-header">
     <div class="sub-header-inner">
         <a href="/trip/member/carreservation">렌트카 예약</a>
         <a href="/trip/member/accomreservation">숙소 예약</a>
@@ -67,7 +67,40 @@
 <div>
 <button type="button" class="back" onclick="location.href='/trip/member/carreservation';">돌아가기</button>
 <button type="button" class="back" id="btnCancel" onclick="cancel(${dto.carseq});">예약취소하기</button>
+</div> --%>
+
+<div class="page-carview-container"> <nav class="board-sub-header">
+        <div class="sub-header-inner">
+            <a href="/trip/member/carreservation" class="active">렌트카 예약</a>
+            <a href="/trip/member/accomreservation">숙소 예약</a>
+        </div>
+    </nav>
+
+    <div id="main">
+        <h1>차량 예약 상세 내역</h1> <table id="view" class="vertical view-detail-table"> <tr><th>예약번호</th><td>${dto.seq}</td></tr>
+            <tr><th>차종</th><td>${dto.cartype}</td></tr>
+            <tr><th>차량 모델명</th><td>${dto.carname}</td></tr>
+            <tr><th>유종</th><td>${dto.carfueltype}</td></tr>
+            <tr><th>차량 대여일</th><td>${dto.pickupdate}</td></tr>
+            <tr><th>차량 반납일</th><td>${dto.dropoffdate}</td></tr>
+            <tr><th>차량 픽업 장소</th><td>${dto.pickuplocation}</td></tr>
+            <tr><th>차량 반납 장소</th><td>${dto.dropofflocation}</td></tr>
+            
+            <tr class="highlight-row"> <th>총비용</th>
+                <td><span class="price-value">${dto.cartotalprice}</span> 원</td>
+            </tr>
+            <tr>
+                <th>요청사항</th>
+                <td class="notes-cell">${dto.carnotes}</td>
+            </tr>
+        </table>
+
+        <div class="action-buttons-group"> <button type="button" class="btn btn-secondary" onclick="location.href='/trip/member/carreservation';">돌아가기</button>
+            <button type="button" class="btn btn-danger" id="btnCancel" onclick="cancel(${dto.carseq});">예약 취소하기</button> </div>
+        
+    </div>
 </div>
+
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
 <script>
