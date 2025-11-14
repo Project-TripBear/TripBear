@@ -53,7 +53,7 @@
 				</td>
 				<td>
 				<!-- 글제목 -->
-						<a href="/trip/board/${dto.boradCode}.do?seq=${dto.seq}&column=${map.column}&word=${map.word}">
+						<a href="/trip/${dto.boradCode}/view?seq=${dto.seq}&column=${map.column}&word=${map.word}">
 						${dto.subject}</a>
 
 					

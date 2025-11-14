@@ -160,7 +160,7 @@ WHERE hotdeal_id = #{seq}
 
     <insert id="insertBoardImage" parameterType="map">
   INSERT INTO tblHotDealImage (hotdeal_image_id, hotdeal_id, hotdeal_image_url, hotdeal_image_seq)
-  VALUES (seqHotDealImage.nextVal, #{hotdealId}, #{img}, #{hotdealImageSeq})
+  VALUES (seqHotDealImage.nextVal, #{hotdealId}, #{img, jdbcType=VARCHAR}, #{hotdealImageSeq})
 </insert>
 
 <select id="selectImages" parameterType="string" resultType="com.project.trip.board.hotdeal.model.HotDealImageDTO">
@@ -203,6 +203,21 @@ WHERE hotdeal_id = #{seq}
 <!-- 게시글의 모든 이미지 삭제 -->
 <delete id="deleteAllImages" parameterType="string">
     DELETE FROM tblHotDealImage
+    WHERE hotdeal_id = #{seq}
+</delete>
+
+<delete id="deleteComment" parameterType="string">
+    DELETE FROM tblhotdealcomment
+    WHERE hotdeal_id = #{seq}
+</delete>
+
+<delete id="deleteLike" parameterType="string">
+    DELETE FROM tblhotdeallikes
+    WHERE hotdeal_id = #{seq}
+</delete>
+
+<delete id="deleteScrap" parameterType="string">
+    DELETE FROM tblhotdealscrap
     WHERE hotdeal_id = #{seq}
 </delete>
 
