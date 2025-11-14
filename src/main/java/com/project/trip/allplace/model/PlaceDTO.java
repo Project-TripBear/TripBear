@@ -1,5 +1,7 @@
 package com.project.trip.allplace.model;
 
+import java.util.List;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -22,6 +24,8 @@ public class PlaceDTO {
     private double longitude;
     private String placeMainImageUrl;
     private double distance;
+    
+    private List<String> hashtags;
     
     private TouristSpotDTO touristSpotDetail;
     private EventDTO eventDetail;

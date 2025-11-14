@@ -26,5 +26,8 @@ public interface AllPlaceService {
     
     List<PlaceDTO> searchByAreaAll(long locationId, String contentTypeId, String arrange, int rows, int maxPages);
 
-    
+	List<PlaceDTO> getRecommendPlaces(PlaceDTO base);
+
+	List<String> getHashtags(long placeId);
+
 }

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.project.trip.allplace.mapper.PlaceMapper;
 import com.project.trip.allplace.model.PlaceDTO;
 import com.project.trip.allplace.model.TourApiResponseVO;
 import com.project.trip.allplace.model.TourItemVO;
@@ -138,6 +139,15 @@ public class AllPlaceController {
             model.addAttribute("errorMessage", "장소 정보를 찾을 수 없습니다.");
             return "common/error";
         }
+        
+        // ⭐ 주변 추천 장소 조회
+        List<PlaceDTO> recommend = allPlaceService.getRecommendPlaces(place);
+        model.addAttribute("recommendList", recommend);
+
+        // ⭐ 해시태그 조회
+        List<String> hashtags = allPlaceService.getHashtags(placeId);
+        place.setHashtags(hashtags);
+
 
         model.addAttribute("place", place);
         return "allplace.detail";
@@ -162,8 +172,9 @@ public class AllPlaceController {
     public ResponseEntity<List<PlaceDTO>> getSpotsForMapOk(
             @RequestParam("lat") double lat,
             @RequestParam("lng") double lng,
-            @RequestParam(value = "radius", defaultValue = "3000") double radius,
-            @RequestParam(value = "contentTypeId", defaultValue = "12,39") String contentTypeId) {
+            @RequestParam(value = "radius", defaultValue = "20000") double radius,
+            @RequestParam(value = "contentTypeId", defaultValue = "12,39") String contentTypeId,
+            @RequestParam(value = "keyword", required = false) String keyword){
 
         log.info("[Controller] /mapok 요청 lat=" + lat + ", lng=" + lng);
 
@@ -223,14 +234,56 @@ public class AllPlaceController {
 
             out.add(dto);
         }
-
+        
+        
+        
         // 가까운 순 → 30개
         out.sort(Comparator.comparingDouble(PlaceDTO::getDistance));
-        if (out.size() > 30)
-            out = out.subList(0, 30);
+        if (out.size() > 300)
+            out = out.subList(0, 300);
 
         return new ResponseEntity<>(out, HttpStatus.OK);
     }
+    
+    @GetMapping("/searchLocation")
+    @ResponseBody
+    public ResponseEntity<List<PlaceDTO>> searchLocation(@RequestParam("keyword") String keyword) {
+
+        // 전국 검색 (반경 매우 크게 잡음)
+        TourApiResponseVO api = tourApiService.searchByKeyword(keyword, "A", "12,39");
+
+        if (api == null ||
+            api.getResponse() == null ||
+            api.getResponse().getBody() == null ||
+            api.getResponse().getBody().getItems() == null ||
+            api.getResponse().getBody().getItems().getItem() == null) {
+
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        List<TourItemVO> items = api.getResponse().getBody().getItems().getItem();
+        List<PlaceDTO> result = new ArrayList<>();
+
+        for (TourItemVO item : items) {
+            double lat = safeDouble(item.getLatitude());
+            double lon = safeDouble(item.getLongitude());
+            if (lat == 0 || lon == 0) continue;
+
+            PlaceDTO dto = new PlaceDTO();
+            dto.setPlaceApiId(item.getContentId());
+            dto.setName(item.getTitle());
+            dto.setAddress(item.getAddress());
+            dto.setLatitude(lat);
+            dto.setLongitude(lon);
+            dto.setPlaceMainImageUrl(item.getFirstImage());
+
+            result.add(dto);
+        }
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+
 
 
     /* --- 헬퍼 함수들 --- */

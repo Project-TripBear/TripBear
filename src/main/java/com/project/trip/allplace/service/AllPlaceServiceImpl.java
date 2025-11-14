@@ -176,6 +176,12 @@ public class AllPlaceServiceImpl implements AllPlaceService {
         return tourApiService.searchByKeyword(keyword, arrange, contentTypeId); 
     }
     
+    @Override
+    public List<String> getHashtags(long placeId) {
+        return placeMapper.findHashtagsByPlaceId(placeId);
+    }
+
+    
     @Transactional
     @Override
     public void addHashtagToPlace(long placeId, String keywordName) {
@@ -262,6 +268,21 @@ public class AllPlaceServiceImpl implements AllPlaceService {
         catch (Exception e) { return 0.0; }
     }
 
+    @Override
+    public List<PlaceDTO> getRecommendPlaces(PlaceDTO base) {
+
+        List<PlaceDTO> list = placeMapper.findRecommendPlaces(
+            base.getPlaceLocationId(),
+            base.getPlaceTypeId(),
+            base.getPlaceId()
+        );
+
+        // 최대 6개만
+        if (list.size() > 6) {
+            return list.subList(0, 6);
+        }
+        return list;
+    }
 
     
     

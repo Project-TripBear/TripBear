@@ -5,6 +5,16 @@
 
 <mapper namespace="com.project.trip.allplace.mapper.PlaceMapper">
 
+	<select id="findRecommendPlaces" resultType="PlaceDTO">
+    SELECT *
+    FROM tblPlace
+    WHERE place_location_id = #{locationId}
+      AND place_type_id = #{typeId}
+      AND place_id != #{placeId}
+    ORDER BY RAND()
+    LIMIT 6
+	</select>
+
     <select id="findPlaceByContentId" 
             parameterType="string" 
             resultType="placeDTO">
