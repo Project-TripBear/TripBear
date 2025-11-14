@@ -3,8 +3,10 @@ package com.project.trip.board.hotdeal.controller;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpSession;
 
@@ -184,9 +186,32 @@ public class HotDealController {
 	            }
 
 	            // 조회수 증가 처리
-	            if ("n".equals(session.getAttribute("read"))) {
-	                mapper.updateReadcount(seq);
-	                session.setAttribute("read", "y");
+//	            if ("n".equals(session.getAttribute("read"))) {
+//	                mapper.updateReadcount(seq);
+//	                session.setAttribute("read", "y");
+//	            }
+	            
+	            try {
+	                // 1. 세션에서 "viewedPosts"라는 이름의 Set을 가져옵니다.
+	                @SuppressWarnings("unchecked") // 타입 변환 경고 무시
+	                Set<String> viewedPosts = (Set<String>) session.getAttribute("viewedPosts");
+
+	                // 2. Set이 세션에 없으면(null), 새로 만듭니다.
+	                if (viewedPosts == null) {
+	                    viewedPosts = new HashSet<>();
+	                }
+
+	                // 3. 이 Set에 현재 게시물 번호(seq)가 포함되어 있지 *않다면*
+	                if (!viewedPosts.contains(seq)) {
+	                    mapper.updateReadcount(seq);      // DB 조회수 증가
+	                    viewedPosts.add(seq);               // Set에 현재 게시물 번호 추가
+	                    session.setAttribute("viewedPosts", viewedPosts); // Set을 세션에 다시 저장
+	                }
+	                // 4. Set에 이미 seq가 있다면 (새로고침 등) 아무것도 하지 않습니다.
+
+	            } catch (Exception e) {
+	                // 조회수 처리 중 오류가 발생해도 페이지 로드는 계속되어야 하므로 로그만 남깁니다.
+	                System.err.println("조회수 증가 처리 중 오류 발생: " + e.getMessage());
 	            }
 
 	            // 게시글 조회
@@ -422,8 +447,14 @@ public class HotDealController {
 	            return "redirect:/hotdeal/list";
 	        }
 	        
+	        
+	        
 	        // 1. 이미지 먼저 삭제 (외래키 제약조건 때문에)
+	        mapper.deleteComment(seq);
+	        mapper.deleteLike(seq);
+	        mapper.deleteScrap(seq);
 	        mapper.deleteAllImages(seq);
+	        
 	        
 	        // 2. 게시글 삭제
 	        int result = mapper.deleteBoard(seq);

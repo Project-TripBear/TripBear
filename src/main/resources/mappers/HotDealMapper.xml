@@ -206,6 +206,21 @@ WHERE hotdeal_id = #{seq}
     WHERE hotdeal_id = #{seq}
 </delete>
 
+<delete id="deleteComment" parameterType="string">
+    DELETE FROM tblhotdealcomment
+    WHERE hotdeal_id = #{seq}
+</delete>
+
+<delete id="deleteLike" parameterType="string">
+    DELETE FROM tblhotdeallikes
+    WHERE hotdeal_id = #{seq}
+</delete>
+
+<delete id="deleteScrap" parameterType="string">
+    DELETE FROM tblhotdealscrap
+    WHERE hotdeal_id = #{seq}
+</delete>
+
 <!-- 게시글 삭제 -->
 <delete id="deleteBoard" parameterType="string">
     DELETE FROM tblHotDealPost
