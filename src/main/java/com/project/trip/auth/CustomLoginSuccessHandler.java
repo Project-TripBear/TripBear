@@ -5,6 +5,7 @@ import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -13,8 +14,8 @@ import org.springframework.security.web.savedrequest.SavedRequest;
 
 public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler {
 	
-	//로그인 직전 접속했던 기록 제공
 	private HttpSessionRequestCache requestCache = new HttpSessionRequestCache();
+	private String defaultTargetUrl = "/trip/";
 	
 
 	@Override
@@ -23,55 +24,49 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler {
 		
 		System.out.println("로그인을 성공하셨습니다.");
 		
+		String targetUrl = determineTargetUrl(request, response);
 		
+		// 사용된 SavedRequest 제거
+		requestCache.removeRequest(request, response);
 		
-		//1.모든 사용자 > 시작 페이지로 이동
-		//response.sendRedirect("/java/index.do");
+		response.sendRedirect(targetUrl);
+	}
+	
+	private String determineTargetUrl(HttpServletRequest request, HttpServletResponse response) {
 		
-//		//2.권한별 조치
-//		//- 회원 > "member.do"
-//		//- 관리자 > "admin.do"
-//		
-//		//현재 로그인을 성공한 유저의 권한??
-//		List<String> roleNames = new ArrayList<String>();
-//		
-//		//System.out.println(authentication);
-//		
-//		authentication.getAuthorities().forEach(authority -> {
-//			//System.out.println(authority);
-//			roleNames.add(authority.getAuthority());
-//		});
-//		
-//		if (roleNames.contains("ROLE_ADMIN")) {
-//			response.sendRedirect("/java/admin.do");
-//			return;
-//		}
-//		
-//		if (roleNames.contains("ROLE_MEMBER")) {
-//			response.sendRedirect("/java/member.do");
-//			return;
-//		}
-//		
-//		
-//		
-//		
-//		response.sendRedirect("/java/index.do");
-//		
-//		
-//		
-//		
-//	
-		//3. 로그인 전 요청했던 URL로 이동하기
+		// 1순위: SavedRequest (Spring Security가 저장한 원래 요청 URL)
 		SavedRequest savedRequest = requestCache.getRequest(request, response);
-		
 		if (savedRequest != null) {
-			//로그인 전 URL 존재
-			response.sendRedirect(savedRequest.getRedirectUrl());
-		} else {
-			response.sendRedirect("/trip/"); //***
-			
+			String targetUrl = savedRequest.getRedirectUrl();
+			System.out.println("SavedRequest URL: " + targetUrl);
+			return targetUrl;
 		}
-	
-	
-}
+		
+		// 2순위: 세션에 저장된 이전 URL (직접 저장한 경우)
+		HttpSession session = request.getSession(false);
+		if (session != null) {
+			String redirectUrl = (String) session.getAttribute("REDIRECT_URL_AFTER_LOGIN");
+			if (redirectUrl != null && !redirectUrl.isEmpty()) {
+				session.removeAttribute("REDIRECT_URL_AFTER_LOGIN");
+				System.out.println("Session saved URL: " + redirectUrl);
+				return redirectUrl;
+			}
+		}
+		
+		// 3순위: Referer 헤더
+		String referer = request.getHeader("referer");
+		if (referer != null && !referer.isEmpty()) {
+			// 로그인 관련 URL이 아닌 경우에만 사용
+			if (!referer.contains("/login") && 
+			    !referer.contains("/logout") &&
+			    !referer.contains("/auth")) {
+				System.out.println("Referer URL: " + referer);
+				return referer;
+			}
+		}
+		
+		// 4순위: 기본 URL
+		System.out.println("Default URL: " + defaultTargetUrl);
+		return defaultTargetUrl;
+	}
 }

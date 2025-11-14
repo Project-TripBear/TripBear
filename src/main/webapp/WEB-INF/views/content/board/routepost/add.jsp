@@ -4,7 +4,7 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>여행 추천 루트 게시글 작성 ✈️</title>
+<title>게시글 작성 ✈️</title>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/routepost.css">
 </head>
 

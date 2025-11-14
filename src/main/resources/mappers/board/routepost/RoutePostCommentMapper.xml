@@ -53,7 +53,7 @@
     
     <!-- 댓글 수정  -->
     <update id="edit" parameterType="RoutePostCommentDTO">
-    UPDATE routepost_comment
+    UPDATE tblRoutePostComment
     SET routepost_content = #{routepostContent}
     WHERE routepost_comment_id = #{routepostCommentId}
   </update>

@@ -46,7 +46,7 @@
                 <c:forEach items="${list}" var="dto">
                 <tr class="comment-post-row"> <td class="board-title-cell">${dto.boradTitle}</td>
                     <td class="post-subject-cell">
-                        <a href="/trip/board/${dto.boradCode}.do?seq=${dto.seq}">
+                        <a href="/trip/${dto.boradCode}/view?seq=${dto.seq}">
                             ${dto.subject}
                         </a>
                     </td>

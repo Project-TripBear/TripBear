@@ -19,6 +19,8 @@
 	
 	    <bean id="bCryptPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" />
 		
+		
+		 <bean id="sessionUrlSavingFilter" class="com.project.trip.auth.SessionUrlSavingFilter" />
 		<!-- restapi 보안 구윤추가 -->
 		<security:http pattern="/api/**" security="none" />
 
@@ -32,7 +34,7 @@
     
     <!-- 그 외 모든 /admin/** 는 관리자 권한 필요 -->
     <security:intercept-url pattern="/admin/**" access="hasAuthority('ROLE_ADMIN')" />
-
+	<security:intercept-url pattern="/upload/**" access="permitAll" />	
     <security:access-denied-handler ref="customAccessDeniedHandler"/>
 
 
@@ -54,6 +56,7 @@
 	        <security:intercept-url pattern="/member/login" access="permitAll" />
 	        <security:intercept-url pattern="/" access="permitAll" />
 	        
+	        
 	        <security:intercept-url pattern="/findboard/report**" access="hasAuthority('ACTIVE')" />
 	      
 	        <security:intercept-url pattern="/ai/plan" access="permitAll" />
@@ -67,6 +70,7 @@
 	
 	        <security:access-denied-handler ref="customAccessDeniedHandler"/>
 	
+	<security:custom-filter before="FORM_LOGIN_FILTER" ref="sessionUrlSavingFilter"/>
 
 	        <security:logout logout-url="/member/logout"
 	                         invalidate-session="true"
