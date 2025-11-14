@@ -137,31 +137,59 @@ public class RoutePostController {
 
 
 
-    // 게시글 수정 폼
     @GetMapping("/edit/{routepostId}")
-    public String editForm(@PathVariable int routepostId, Model model) {
+    public String editForm(@PathVariable int routepostId,
+                           Model model,
+                           Authentication authentication) {
+
+        // 게시글 정보
         RoutePostDTO dto = postService.get(routepostId);
+        List<RoutePostImageDTO> images = postService.getImages(routepostId);
+
         model.addAttribute("dto", dto);
+        model.addAttribute("imageList", images);
+
+        // 로그인 정보 넘기기 (수정/삭제 버튼 제어용)
+        if (authentication != null && authentication.isAuthenticated()
+            && !"anonymousUser".equals(authentication.getPrincipal())) {
+
+            CustomUser user = (CustomUser) authentication.getPrincipal();
+
+            model.addAttribute("userId", user.getUdto().getSeq());
+            model.addAttribute("userName", user.getUsername());
+        } else {
+            model.addAttribute("userId", null);
+            model.addAttribute("userName", null);
+        }
+
         return "board.routepost.edit";
     }
 
-    // 게시글 수정 처리
+
+
     @PostMapping(value = "/edit", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public String edit(@ModelAttribute RoutePostDTO dto,
                        @RequestParam(value = "images", required = false) MultipartFile[] images,
+                       @RequestParam(value = "deleteImageIds", required = false) String deleteImageIds,
                        HttpServletRequest req) throws Exception {
 
+        // 1) 게시글 기본 정보 업데이트
         postService.edit(dto);
 
-        // 기존 이미지 삭제
-        postService.delImages(dto.getRoutepostId());
+        // 2) 삭제할 이미지 처리
+        if (deleteImageIds != null && !deleteImageIds.trim().isEmpty()) {
+            String[] ids = deleteImageIds.split(",");
+            for (String id : ids) {
+                postService.deleteImageById(Integer.parseInt(id));
+            }
+        }
 
+        // 3) 새 이미지 업로드 처리
         String uploadPath = "C:/tripbear/routepost/";
-
         File folder = new File(uploadPath);
         if (!folder.exists()) folder.mkdirs();
 
-        if (images != null && images.length > 0) {
+        if (images != null) {
             for (MultipartFile file : images) {
                 if (!file.isEmpty()) {
                     String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
@@ -171,6 +199,7 @@ public class RoutePostController {
                     RoutePostImageDTO imgDto = new RoutePostImageDTO();
                     imgDto.setRoutepostId(dto.getRoutepostId());
                     imgDto.setRoutepostImageUrl(fileName);
+
                     postService.addImage(imgDto);
                 }
             }
@@ -178,6 +207,8 @@ public class RoutePostController {
 
         return "redirect:/routepost/view/" + dto.getRoutepostId();
     }
+
+
 
 
     // 게시글 삭제

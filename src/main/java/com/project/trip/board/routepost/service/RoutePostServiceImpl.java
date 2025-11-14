@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.project.trip.board.routepost.mapper.RoutePostMapper;
 import com.project.trip.board.routepost.model.RoutePostDTO;
@@ -15,6 +16,9 @@ public class RoutePostServiceImpl implements RoutePostService {
 
     @Autowired
     private RoutePostMapper mapper;
+    
+    @Autowired
+    private RoutePostCommentService commentMapper;
 
     // ===== 게시글 =====
     @Override
@@ -38,11 +42,25 @@ public class RoutePostServiceImpl implements RoutePostService {
     }
 
     @Override
+    @Transactional
     public int del(int routepostId) {
-        // 게시글 삭제 전 이미지 삭제 (연관 데이터 정리)
-        mapper.delImages(routepostId);
+
+        // 1) 댓글 삭제
+        mapper.deleteAllComments(routepostId);
+
+        // 2) 좋아요 삭제
+        mapper.deleteAllLikes(routepostId);
+
+        // 3) 스크랩 삭제
+        mapper.deleteAllScrap(routepostId);
+
+        // 4) 이미지 삭제
+        mapper.deleteAllImages(routepostId);
+
+        // 5) 마지막으로 게시글 삭제
         return mapper.del(routepostId);
     }
+
 
     // ===== 이미지 =====
     @Override
@@ -99,6 +117,12 @@ public class RoutePostServiceImpl implements RoutePostService {
     public boolean checkScrap(Map<String, Object> map) {
         return mapper.checkScrap(map) > 0;
     }
+    
+    @Override
+    public void deleteImageById(int imageId) {
+        mapper.deleteImageById(imageId);
+    }
+
 
 
 }
