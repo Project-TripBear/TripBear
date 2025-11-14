@@ -44,16 +44,20 @@
         <constructor-arg ref="hikariConfig"/>
     </bean>
 
-    <bean id="sessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
-        <property name="dataSource" ref="dataSource"/>
-        
-        <property name="mapperLocations" value="classpath:mappers/**/*.xml"/>
-        <property name="configLocation" value="classpath:config/mybatis-config.xml"/>
-    </bean>
-    
-    <mybatis-spring:scan base-package="com.project.trip.**.mapper"/>
-        
-    <context:component-scan base-package="com.project.trip">
+	
+
+
+	<bean id="sessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"/>
+		<property name="mapperLocations" value="classpath:mappers/**/*.xml"/>
+		<property name="configLocation" value="classpath:config/mybatis-config.xml"/>
+	</bean>
+	
+	<mybatis-spring:scan base-package="com.project.trip.**.mapper"/>
+		
+	
+	<context:component-scan base-package="com.project.trip">
+
         <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
     </context:component-scan>
     
@@ -65,5 +69,4 @@
 
     <tx:annotation-driven transaction-manager="transactionManager"/>
 	
-    
 </beans>

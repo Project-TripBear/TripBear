@@ -16,6 +16,11 @@ public class CustomUser extends User {
 
 	private UserDTO udto;
 	
+	public CustomUser() {
+	        super("anonymous", "anonymous", List.of());
+	        this.udto = new UserDTO();
+	    }
+	
 	public CustomUser(String username, String password,
 						Collection<? extends GrantedAuthority> authorities) {
 			super(username, password, authorities);

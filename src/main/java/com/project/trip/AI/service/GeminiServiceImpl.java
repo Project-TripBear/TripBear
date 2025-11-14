@@ -26,6 +26,7 @@ import com.project.trip.AI.model.gemini.GeminiApiResponse.Part;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 public class GeminiServiceImpl implements GeminiService {
@@ -61,6 +62,12 @@ public class GeminiServiceImpl implements GeminiService {
 
         String trimmedKey = GEMINI_API_KEY.trim();
         System.out.println("[DEBUG] GEMINI_API_KEY trim 적용: [" + trimmedKey + "]");
+
+        String envKey = System.getenv("GEMINI_API_KEY");
+        String propKey = System.getProperty("GEMINI_API_KEY");
+        
+        System.out.println("[DEBUG] GEMINI_API_KEY (env): [" + envKey + "]");
+        System.out.println("[DEBUG] GEMINI_API_KEY (system property): [" + propKey + "]");
 
         String geminiApiUrl =
                 "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key="
@@ -237,14 +244,18 @@ public class GeminiServiceImpl implements GeminiService {
         prompt.append("- 각 필드의 규칙은 다음과 같습니다.\n");
         prompt.append("  1. aiRouteDay: 여행 며칠차인지 (1부터 시작하는 정수).\n");
         prompt.append("  2. aiRouteStopOrder: 해당 날짜 내 방문 순서 (1부터 시작하는 정수).\n");
-        prompt.append("  3. aiRouteDescription: 실제 존재하는 장소명 또는 식당명.\n");
-        prompt.append("  4. aiRouteLat / aiRouteLong: 해당 장소의 위도/경도 값. **반드시 소수점 6자리까지 출력할 것.**\n");
-        prompt.append("     예: 35.123456 / 129.123456 형식. 절대 5자리 이하 또는 7자리 이상으로 출력하지 말 것.\n");
+        prompt.append("  3. aiRouteDescription: **반드시 실제 존재하는 장소명 또는 식당명만 사용.**\n");
+        prompt.append("     절대 '광안리 맛집', '제주 카페거리', '서면 핫플', '부산 전망좋은 카페' 등과 같은 키워드형 장소명을 쓰지 말 것.\n");
+        prompt.append("     반드시 실제 상호명(예: '오조해녀의집', '연돈', '명진전복', '우진해장국') 또는 실재 명소명(예: '사려니숲길', '만장굴')만 사용.\n");
+        prompt.append("  4. aiRouteLat / aiRouteLong: 반드시 소수점 6자리로 출력.\n");
+        prompt.append("     - 예: 35.123456 / 129.123456 형식\n");
+        prompt.append("     - 소수점 5자리 이하, 7자리 이상 절대 금지\n");
+        prompt.append("     - 항상 6자리로 '0'을 포함해 패딩해서 출력\n");
         prompt.append("  5. activityCode: VIEWING, WALK_SLOW, WALK_NORMAL, WALK_FAST, HIKE_LIGHT, SHOPPING, EATING 중 하나.\n");
         prompt.append("  6. durationInMinutes: 해당 장소에서 머무는 시간 (분 단위 정수).\n");
-        prompt.append("  7. transportationMode: 이전 장소에서 이동수단. WALK, CAR, BICYCLE 중 하나.\n");
-        prompt.append("  8. restaurantCategory: 식당일 경우 음식 종류(예: '한식', '일식', '샐러드'), 식당이 아니면 null.\n");
-        prompt.append("  9. 모든 여행일마다 점심과 저녁, 총 2개의 식당(EATING)을 반드시 포함해야 합니다.\n\n");
+        prompt.append("  7. transportationMode: WALK, CAR, BICYCLE 중 하나. 첫 장소는 null.\n");
+        prompt.append("  8. restaurantCategory: 식당일 경우 음식 종류(예: '한식', '일식', '샐러드'), 아니면 null.\n");
+        prompt.append("  9. 모든 여행일마다 점심/저녁 = EATING 2개 반드시 포함.\n\n");
 
         // 4. 예산
         prompt.append("### 조건 3: 예산(budget) 반영\n");

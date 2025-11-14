@@ -1,9 +1,16 @@
 package com.project.trip.board.routepost.restcontroller;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.project.trip.board.routepost.service.RoutePostService;
 
@@ -14,36 +21,45 @@ public class RoutePostRestController {
     @Autowired
     private RoutePostService postService;
 
-    // ===== 좋아요 =====
-    @PostMapping("/like")
-    public int addLike(@RequestBody Map<String, Object> map) {
-        return postService.addLike(map);
+ // ===== 좋아요 토글 =====
+    @PostMapping("/like/toggle")
+    public boolean toggleLike(@RequestBody Map<String, Object> map) {
+        return postService.toggleLike(map);
     }
 
-    @DeleteMapping("/like")
-    public int removeLike(@RequestBody Map<String, Object> map) {
-        return postService.removeLike(map);
+    // ===== 스크랩 토글 =====
+    @PostMapping("/scrap/toggle")
+    public boolean toggleScrap(@RequestBody Map<String, Object> map) {
+        return postService.toggleScrap(map);
+    }
+    
+    @GetMapping("/api/routepost/like/status")
+    @ResponseBody
+    public boolean likeStatus(@RequestParam int routepostId,
+                              @RequestParam int userId) {
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("routepostId", routepostId);
+        map.put("userId", userId);
+
+        return postService.checkLike(map);
     }
 
-    // ===== 스크랩 =====
-    @PostMapping("/scrap")
-    public int addScrap(@RequestBody Map<String, Object> map) {
-        return postService.addScrap(map);
+    @GetMapping("/api/routepost/scrap/status")
+    @ResponseBody
+    public boolean scrapStatus(@RequestParam int routepostId,
+                               @RequestParam int userId) {
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("routepostId", routepostId);
+        map.put("userId", userId);
+
+        return postService.checkScrap(map);
     }
 
-    @DeleteMapping("/scrap")
-    public int removeScrap(@RequestBody Map<String, Object> map) {
-        return postService.removeScrap(map);
-    }
 
-    // ===== 좋아요/스크랩 상태 확인 (선택사항) =====
-    @PostMapping("/like/check")
-    public boolean checkLike(@RequestBody Map<String, Object> map) {
-        return postService.isLiked(map);
-    }
 
-    @PostMapping("/scrap/check")
-    public boolean checkScrap(@RequestBody Map<String, Object> map) {
-        return postService.isScrapped(map);
-    }
+    
+    
+    
 }
