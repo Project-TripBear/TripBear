@@ -21,4 +21,7 @@ public class carDTO {
     
     private String carImage;
     private String carStatus;
+    
+    private String originImage;
+
 }

@@ -7,11 +7,18 @@
 <h1><i class="fa-solid fa-car"></i> 신규 렌터카 등록</h1>
 
 <div class="form-container">
-    <form method="POST" action="${pageContext.request.contextPath}/admin/car/add" onsubmit="return removeCommasBeforeSubmit(this)">
-        
+    <form method="POST"
+          action="${pageContext.request.contextPath}/admin/car/add"
+          enctype="multipart/form-data"
+          onsubmit="return removeCommasBeforeSubmit(this)">
+
+   	 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
+
+
+        <!-- 1. 차량 기본 정보 -->
         <div class="form-section card">
             <h3 class="form-section-title">1. 차량 기본 정보</h3>
-            
+
             <div class="form-group">
                 <label for="placeLocationId">등록 지역 (차고지)</label>
                 <select id="placeLocationId" name="placeLocationId" required>
@@ -21,18 +28,19 @@
                     </c:forEach>
                 </select>
             </div>
-            
+
             <div class="form-group">
                 <label for="carName">차량 이름 (모델명)</label>
                 <input type="text" id="carName" name="carName" placeholder="예: 더 뉴 아반떼" required>
             </div>
-            
+
             <div class="form-group">
                 <label for="carNumber">차량 번호</label>
                 <input type="text" id="carNumber" name="carNumber" placeholder="예: 12가 3456" required>
             </div>
 
             <div class="form-grid-2col">
+
                 <div class="form-group">
                     <label for="carType">차종</label>
                     <select id="carType" name="carType">
@@ -41,6 +49,7 @@
                         <option value="승합차">승합차</option>
                     </select>
                 </div>
+
                 <div class="form-group">
                     <label for="fuelType">연료 종류</label>
                     <select id="fuelType" name="fuelType">
@@ -50,28 +59,34 @@
                         <option value="LPG">LPG</option>
                     </select>
                 </div>
+
             </div>
         </div>
 
+        <!-- 2. 차량 상세 정보 -->
         <div class="form-section card">
             <h3 class="form-section-title">2. 차량 상세 정보</h3>
-            
+
             <div class="form-grid-2col">
+
                 <div class="form-group">
                     <label for="carSeats">탑승 인원 (명)</label>
                     <input type="number" id="carSeats" name="carSeats" value="5" required min="1">
                 </div>
+
                 <div class="form-group">
                     <label for="pricePerDay">1일 대여 요금 (원)</label>
-                    <input type="text" id="pricePerDay" name="pricePerDay" required onkeyup="formatPrice(this)" placeholder="숫자만 입력">
+                    <input type="text" id="pricePerDay" name="pricePerDay"
+                           required onkeyup="formatPrice(this)" placeholder="숫자만 입력">
                 </div>
+
             </div>
-            
+
             <div class="form-group">
-                <label for="carImage">차량 이미지 URL</label>
-                <input type="text" id="carImage" name="carImage" placeholder="https://...">
+                <label for="carImageFile">차량 이미지 업로드</label>
+                <input type="file" id="carImageFile" name="carImageFile" accept="image/*">
             </div>
-            
+
             <div class="form-group">
                 <label>차량 상태 (기본값 'y')</label>
                 <div class="radio-group">
@@ -81,25 +96,33 @@
             </div>
         </div>
 
+        <!-- 버튼 -->
         <div class="button-container">
-            <button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/admin/car/list'">취소</button>
+            <button type="button" class="btn"
+                    onclick="location.href='${pageContext.request.contextPath}/admin/car/list'">
+                취소
+            </button>
             <button type="submit" class="btn primary">등록하기</button>
         </div>
+
     </form>
 </div>
 
 <script>
     function formatPrice(input) {
         let value = input.value.replace(/[^\d]/g, '');
-        if (value === '') { input.value = ''; return; }
+        if (value === '') {
+            input.value = '';
+            return;
+        }
         input.value = Number(value).toLocaleString('en-US');
     }
+
     function removeCommasBeforeSubmit(form) {
         const priceInput = form.querySelector('#pricePerDay');
         if (priceInput) {
-            // 전송 전에 콤마를 제거하여 서버에서 Integer로 변환할 수 있도록 합니다.
             priceInput.value = priceInput.value.replace(/,/g, '');
         }
-        return true; 
+        return true;
     }
 </script>

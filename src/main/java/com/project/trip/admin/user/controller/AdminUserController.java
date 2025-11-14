@@ -48,7 +48,7 @@ public class AdminUserController {
         model.addAttribute("userlist", userlist);
         model.addAttribute("paging", paging); 
         
-        return "content/admin/userlist"; 
+        return "admin/userlist"; 
     }
     
 

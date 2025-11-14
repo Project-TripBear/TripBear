@@ -99,10 +99,7 @@
         INSERT INTO tblReports (report_id, report_target_type, report_target_id, user_id, reported_user_id, report_reason_type)
         VALUES (seq_reports.NEXTVAL, 'findboard', #{boardSeq}, #{reporterId}, #{reportedUserId}, #{reason})
     </insert>
-    <update id="updateReportStatus" parameterType="int">
-        UPDATE tblFindBoard SET find_board_report_status = 'PENDING' WHERE find_board_id = #{boardSeq}
-    </update>
-    
+	   
     <select id="getPopularKeywords" resultType="map">
         SELECT keyword, COUNT(*) as count
         FROM tblFindBoard,
@@ -138,10 +135,10 @@
         (seq_find_comment.NEXTVAL, #{find_board_id}, #{user_id}, #{find_comment_content})
 </insert>
 
-<update id="updateComment" parameterType="findcommentDTO">
-    UPDATE tblFindComment SET 
-        find_comment_content = #{find_comment_content}
-    WHERE find_comment_id = #{find_comment_id}
+<update id="updateReportStatus" parameterType="int">
+    UPDATE tblFindBoard 
+    SET find_board_report_status = 'P' 
+    WHERE find_board_id = #{boardSeq}
 </update>
 
 <delete id="deleteComment" parameterType="int">
