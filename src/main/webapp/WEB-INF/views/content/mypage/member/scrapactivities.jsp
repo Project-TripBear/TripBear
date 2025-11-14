@@ -110,7 +110,7 @@
                     <tr>
                         <td class="board-title-cell">${dto.boradTitle}</td>
                         <td class="post-subject-cell">
-                            <a href="/trip/board/${dto.boradCode}.do?seq=${dto.seq}&column=${map.column}&word=${map.word}">
+                            <a href="/trip/${dto.boradCode}/view?seq=${dto.seq}&column=${map.column}&word=${map.word}">
                                 ${dto.subject}
                             </a>
                         </td>
