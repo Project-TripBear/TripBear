@@ -24,7 +24,7 @@ import com.project.trip.allplace.model.TourItemVO;
 import com.project.trip.allplace.model.WeatherVO;
 import com.project.trip.allplace.service.AllPlaceService;
 import com.project.trip.allplace.service.TourApiService;
-import com.project.trip.allplace.service.WeatherService;
+import com.project.trip.allplace.service.KrWeatherService;
 
 import lombok.extern.log4j.Log4j;
 
@@ -37,7 +37,7 @@ public class AllPlaceController {
     private AllPlaceService allPlaceService;
 
     @Autowired
-    private WeatherService weatherService;
+    private KrWeatherService weatherService;
 
     @Autowired
     private TourApiService tourApiService;

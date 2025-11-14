@@ -1,38 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <!DOCTYPE tiles-definitions PUBLIC 
-    "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN" 
-    "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
-
+	"-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN" 
+	"http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+	
 <tiles-definitions>
+	
+	<definition name="board.*.*" template="/WEB-INF/views/layout/main.jsp">
+    	<put-attribute name="header" value="/WEB-INF/views/inc/header.jsp"></put-attribute>
+    	<put-attribute name="content" value="/WEB-INF/views/content/board/{1}/{2}.jsp"></put-attribute>
+	</definition>
 
-    <!-- ✅ 기본 레이아웃 -->
-    <definition name="main" template="/WEB-INF/views/layout/main.jsp">
-        <put-attribute name="header" value="/WEB-INF/views/inc/header.jsp"/>
-        <put-attribute name="content" value="/WEB-INF/views/content/index.jsp"/>
-    </definition>
 
-    <!-- ✅ 일반 페이지 -->
-    <definition name="*.*" template="/WEB-INF/views/layout/main.jsp">
-        <put-attribute name="header" value="/WEB-INF/views/inc/header.jsp"/>
-        <put-attribute name="content" value="/WEB-INF/views/content/{1}/{2}.jsp"/>
-    </definition>
+	<definition name="mypage.*.*" template="/WEB-INF/views/layout/main.jsp">
+    	<put-attribute name="header" value="/WEB-INF/views/inc/header.jsp"></put-attribute>
+    	<put-attribute name="content" value="/WEB-INF/views/content/mypage/{1}/{2}.jsp"></put-attribute>
+	</definition>
+	
 
-    <!-- ✅ 마이페이지 (mypage/*/* 전용) -->
-    <definition name="mypage.*.*" template="/WEB-INF/views/layout/main.jsp">
-        <put-attribute name="header" value="/WEB-INF/views/inc/header.jsp"/>
-        <put-attribute name="content" value="/WEB-INF/views/content/mypage/{1}/{2}.jsp"/>
-    </definition>
+		<!--   사용자(공용) 서브 페이지 3단계 들어갈경우  -->
+	<definition name="*.*.*" template="/WEB-INF/views/layout/main.jsp">
+		<put-attribute name="header" value="/WEB-INF/views/inc/header.jsp"/>
+		<put-attribute name="content" value="/WEB-INF/views/content/{1}/{2}/{3}.jsp"/>
+	</definition>
 
-    <!-- ✅ 관리자 메인 -->
-    <definition name="admin.main" template="/WEB-INF/views/layout/admin-main.jsp">
-        <put-attribute name="header" value="/WEB-INF/views/inc/admin-header.jsp"/>
-        <put-attribute name="content" value="/WEB-INF/views/content/admin/index.jsp"/>
-    </definition>
 
-    <!-- ✅ 관리자 기능 페이지 (admin/*/*) -->
-    <definition name="admin.*" template="/WEB-INF/views/layout/admin-feature.jsp">
-        <put-attribute name="header" value="/WEB-INF/views/inc/admin-header.jsp"/>
-        <put-attribute name="content" value="/WEB-INF/views/content/admin/{1}/{2}.jsp"/>
-    </definition>
+	<definition name="*.*" template="/WEB-INF/views/layout/main.jsp">
+		<put-attribute name="header" value="/WEB-INF/views/inc/header.jsp"></put-attribute>
+		<put-attribute name="content" value="/WEB-INF/views/content/{1}/{2}.jsp"></put-attribute>
+	</definition>
+
+	<definition name="main" template="/WEB-INF/views/layout/main.jsp">
+		<put-attribute name="header" value="/WEB-INF/views/inc/header.jsp"></put-attribute>
+		<put-attribute name="content" value="/WEB-INF/views/content/index.jsp"></put-attribute>
+	</definition>
+	
+
+
+
+
 
 </tiles-definitions>

@@ -6,7 +6,7 @@
 <head>
   <meta charset="UTF-8">
   <title>${post.routepostTitle}</title>
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/asset/css/routepost.css">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/routepost.css">
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <style>
     .comment-item { border-bottom: 1px solid #ddd; padding: 10px 0; }
@@ -17,7 +17,6 @@
 </head>
 
 <body>
-<%@ include file="/WEB-INF/views/inc/header.jsp" %>
 
 <div class="container">
 
@@ -43,7 +42,7 @@
       <div class="image-area">
         <c:forEach var="img" items="${images}">
           <img class="routepost-img"
-               src="${pageContext.request.contextPath}/asset/upload/routepost/${img.routepostImageUrl}"
+              src="${pageContext.request.contextPath}/upload/routepost/${img.routepostImageUrl}"
                alt="게시글 이미지">
         </c:forEach>
       </div>
@@ -84,12 +83,14 @@
 
 <!-- ======================= JS ======================= -->
 <script>
-const routepostId = "${post.routepostId}";
-const userId = "${sessionScope.userId}";
 
+const routepostId = "${post.routepostId}";
+const userId = "${userId}"; // 숫자
+const userName = "${userName}"; // 아이디
+const contextPath = "${pageContext.request.contextPath}";
 // ✅ 댓글 목록 불러오기
 function loadComments() {
-  $.getJSON("/api/routepost/comment/list/" + routepostId, function(list) {
+  $.getJSON("${pageContext.request.contextPath}/api/routepost/comment/list/" + routepostId, function(list) {
     let html = "";
     if (list.length === 0) {
       html = "<p>등록된 댓글이 없습니다 😶</p>";
@@ -99,7 +100,7 @@ function loadComments() {
           <div class="comment-item" data-id="${c.routepostCommentId}">
             <b>${c.nickname}</b>
             <small style="color:#999;">${c.routepostCommentRegdate}</small>
-            <div class="comment-content">${c.routepostCommentContent}</div>
+            <div class="comment-content">${c.routepostContent}</div>
             <div class="comment-actions">`;
         if (userId === c.userId) {
           html += `
@@ -116,13 +117,16 @@ function loadComments() {
 
 // ✅ 댓글 등록
 $("#btn-comment-add").click(function() {
+	 
+	if (!userId) return alert("로그인 후 댓글을 작성할 수 있습니다.");
+	
   const content = $("#comment-content").val().trim();
   if (content === "") return alert("댓글 내용을 입력하세요.");
 
-  const data = { routepostId, userId, routepostCommentContent: content };
+  const data = { routepostId, userId, routepostContent: content };
 
   $.ajax({
-    url: "/api/routepost/comment/add",
+    url: "${pageContext.request.contextPath}/api/routepost/comment/add",
     type: "POST",
     contentType: "application/json",
     data: JSON.stringify(data),
@@ -139,7 +143,7 @@ $("#btn-comment-add").click(function() {
 $(document).on("click", ".btn-delete", function() {
   const commentId = $(this).closest(".comment-item").data("id");
   $.ajax({
-    url: "/api/routepost/comment/del/" + commentId,
+    url: "${pageContext.request.contextPath}/api/routepost/comment/del/" + commentId,
     type: "DELETE",
     success: function(res) {
       if (res > 0) loadComments();
@@ -174,10 +178,10 @@ $(document).on("click", ".btn-save", function() {
   if (newContent === "") return alert("내용을 입력하세요.");
 
   $.ajax({
-    url: "/api/routepost/comment/edit",
+    url: "${pageContext.request.contextPath}/api/routepost/comment/edit",
     type: "PUT",
     contentType: "application/json",
-    data: JSON.stringify({ routepostCommentId: commentId, routepostCommentContent: newContent }),
+    data: JSON.stringify({ routepostCommentId: commentId, routepostContent: newContent }),
     success: function(res) {
       if (res > 0) loadComments();
       else alert("댓글 수정 실패 ❌");
@@ -192,42 +196,94 @@ $(document).on("click", ".btn-cancel", function() {
   $comment.find(".comment-content").show();
 });
 
-// ✅ 좋아요
+
 $("#btn-like").click(function() {
-  const liked = $(this).hasClass("active");
-  $.ajax({
-    url: "/api/routepost/like",
-    type: liked ? "DELETE" : "POST",
-    contentType: "application/json",
-    data: JSON.stringify({ routepostId, userId }),
-    success: function(res) {
-      if (res > 0) {
-        $("#btn-like").toggleClass("active")
-          .text(liked ? "🤍 추천" : "❤️ 추천됨");
-      }
-    }
-  });
+
+    $.ajax({
+        url: contextPath + "/api/routepost/like/toggle",
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify({ routepostId, userId }),
+        success: function(res) {
+            if (res === true) {
+                $("#btn-like").addClass("active").text("❤️ 추천됨");
+            } else {
+                $("#btn-like").removeClass("active").text("🤍 추천");
+            }
+        }
+    });
 });
+
 
 // ✅ 스크랩
 $("#btn-scrap").click(function() {
-  const scrapped = $(this).hasClass("active");
-  $.ajax({
-    url: "/api/routepost/scrap",
-    type: scrapped ? "DELETE" : "POST",
-    contentType: "application/json",
-    data: JSON.stringify({ routepostId, userId }),
-    success: function(res) {
-      if (res > 0) {
-        $("#btn-scrap").toggleClass("active")
-          .text(scrapped ? "📁 스크랩" : "✅ 스크랩됨");
-      }
-    }
-  });
+
+    $.ajax({
+        url: contextPath + "/api/routepost/scrap/toggle",
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify({ routepostId, userId }),
+        success: function(res) {
+            if (res === true) {
+                $("#btn-scrap").addClass("active").text("✅ 스크랩됨");
+            } else {
+                $("#btn-scrap").removeClass("active").text("📁 스크랩");
+            }
+        }
+    });
 });
 
-// ✅ 초기 로드
-$(function() { loadComments(); });
+
+//✅ 초기 로드 + CSRF 헤더 세팅
+$(function() {
+  const token = "${_csrf.token}";
+  const header = "${_csrf.headerName}";
+  $(document).ajaxSend(function(e, xhr) {
+    xhr.setRequestHeader(header, token);
+  });
+  
+  loadLikeScrapStatus();
+  loadComments();
+});
+
+function loadLikeScrapStatus() {
+
+    // 로그인 안 한 경우 API 호출하지 않음
+    if (!userId || userId === "") return;
+
+    // ❤️ 좋아요 상태 로드
+    $.get(contextPath + "/api/routepost/like/status",
+        { routepostId: routepostId, userId: userId },
+        function(res) {
+
+            const liked = (res === true || res === "true" || res === 1);
+
+            if (liked) {
+                $("#btn-like").addClass("active").text("❤️ 추천됨");
+            } else {
+                $("#btn-like").removeClass("active").text("🤍 추천");
+            }
+        }
+    );
+
+    // 📁 스크랩 상태 로드
+    $.get(contextPath + "/api/routepost/scrap/status",
+        { routepostId: routepostId, userId: userId },
+        function(res) {
+
+            const scrapped = (res === true || res === "true" || res === 1);
+
+            if (scrapped) {
+                $("#btn-scrap").addClass("active").text("✅ 스크랩됨");
+            } else {
+                $("#btn-scrap").removeClass("active").text("📁 스크랩");
+            }
+        }
+    );
+}
+
+
+
 </script>
 
 </body>

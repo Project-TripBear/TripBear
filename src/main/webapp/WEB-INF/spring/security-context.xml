@@ -1,62 +1,92 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:security="http://www.springframework.org/schema/security"
-       xsi:schemaLocation="
-           http://www.springframework.org/schema/beans 
-           https://www.springframework.org/schema/beans/spring-beans.xsd
-           http://www.springframework.org/schema/security 
-           https://www.springframework.org/schema/security/spring-security.xsd">
 
-    <!-- ✅ Spring Security 설정 -->
-    <security:http auto-config="true" use-expressions="true">
+	<beans xmlns="http://www.springframework.org/schema/beans"
+	       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	       xmlns:security="http://www.springframework.org/schema/security"
+	       xsi:schemaLocation="
+	        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd
+	        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	
+	    <!-- 공통 Bean -->
+	    <bean id="customAccessDeniedHandler" class="com.project.trip.auth.CustomAccessDeniedHandler" />
+	    <bean id="customLoginSuccessHandler" class="com.project.trip.auth.CustomLoginSuccessHandler" />
+	    <bean id="customLoginFailureHandler" class="com.project.trip.auth.CustomLoginFailureHandler" />
+	    <bean id="customUserDetailsService" class="com.project.trip.auth.CustomUserDetailsService" />
+	
+	    <bean id="customAdminLoginSuccessHandler" class="com.project.trip.admin.auth.controller.CustomAdminLoginSuccessHandler" />
+	    <bean id="customAdminLoginFailureHandler" class="com.project.trip.admin.auth.controller.CustomAdminLoginFailureHandler" />
+	    <bean id="customAdminUserDetailsService" class="com.project.trip.admin.auth.service.CustomAdminUserDetailsService" />
+	
+	    <bean id="bCryptPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" />
+		
+		<!-- restapi 보안 구윤추가 -->
+		<security:http pattern="/api/**" security="none" />
 
-        <!-- 접근 허용 경로 -->
-        <security:intercept-url pattern="/" access="permitAll" />
-        <security:intercept-url pattern="/resources/**" access="permitAll" />
-        <security:intercept-url pattern="/member/login" access="permitAll" />
+		<security:http pattern="/admin/**">
+	
+	<!-- 관리자용  Security 설정 -->
+	    <security:intercept-url pattern="/admin/loginPage" access="permitAll" />
 
-        <!-- 기본적으로 로그인하지 않아도 접근 가능 (추후 제한 가능) -->
-        <security:intercept-url pattern="/**" access="permitAll" />
+	<!--ai 관련기능 권한 추가(구윤) -->
+		<security:intercept-url pattern="trip/ai/**" access="hasAuthority('ACTIVE')" />	
+    
+    <!-- 그 외 모든 /admin/** 는 관리자 권한 필요 -->
+    <security:intercept-url pattern="/admin/**" access="hasAuthority('ROLE_ADMIN')" />
 
-        <!-- 로그인 폼 설정 -->
-        <security:form-login 
-            login-page="/member/login"
-            login-processing-url="/login"
-            default-target-url="/"
-            authentication-success-handler-ref="customLoginSuccessHandler"
-            authentication-failure-handler-ref="customLoginFailureHandler"
-            username-parameter="username"
-            password-parameter="password" />
+    <security:access-denied-handler ref="customAccessDeniedHandler"/>
 
-        <!-- 로그아웃 설정 -->
-        <security:logout 
-            logout-url="/member/logout"
-            invalidate-session="true"
-            logout-success-url="/"
-            delete-cookies="JSESSIONID" />
 
-        <!-- 접근 거부 (403) 핸들러 -->
-        <security:access-denied-handler ref="customAccessDeniedHandler" />
+    <security:logout logout-url="/admin/logout"
+                     invalidate-session="true"
+                     logout-success-url="/admin/loginPage" />
 
-    </security:http>
+    <security:form-login login-page="/admin/loginPage"
+                         login-processing-url="/admin/login_proc"
+                         authentication-success-handler-ref="customAdminLoginSuccessHandler"
+                         authentication-failure-handler-ref="customAdminLoginFailureHandler"
+                         username-parameter="username"
+                         password-parameter="password"/>
+</security:http>
 
-    <!-- ✅ 비밀번호 암호화 (BCrypt) -->
-    <bean id="bCryptPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" />
+	    <!-- 일반 사용자용 Security 설정 -->
+	    <security:http>
+	        <security:intercept-url pattern="/resources/**" access="permitAll" />
+	        <security:intercept-url pattern="/member/login" access="permitAll" />
+	        <security:intercept-url pattern="/" access="permitAll" />
+	        
+	        <security:intercept-url pattern="/findboard/report**" access="hasAuthority('ACTIVE')" />
+	      
+	        <security:intercept-url pattern="/ai/plan" access="permitAll" />
+			    <security:intercept-url pattern="/ai/generate" access="permitAll" />
+			    <security:intercept-url pattern="/ai/result" access="permitAll" />
+	
+	        <security:intercept-url pattern="/member/mypage" access="hasAuthority('ACTIVE')" />
+	        <security:intercept-url pattern="/*/add" access="hasAuthority('ACTIVE')" />
+	        <security:intercept-url pattern="/*/edit" access="hasAuthority('ACTIVE')" />
+	        <security:intercept-url pattern="/*/del" access="hasAuthority('ACTIVE')" />
+	
+	        <security:access-denied-handler ref="customAccessDeniedHandler"/>
+	
 
-    <!-- ✅ 커스텀 핸들러 등록 -->
-    <bean id="customAccessDeniedHandler" class="com.project.trip.auth.CustomAccessDeniedHandler" />
-    <bean id="customLoginSuccessHandler" class="com.project.trip.auth.CustomLoginSuccessHandler" />
-    <bean id="customLoginFailureHandler" class="com.project.trip.auth.CustomLoginFailureHandler" />
+	        <security:logout logout-url="/member/logout"
+	                         invalidate-session="true"
+	                         logout-success-url="/" />
+	
+	        <security:form-login login-page="/member/login"
+	                             login-processing-url="/login"
+	                             authentication-success-handler-ref="customLoginSuccessHandler"
+	                             authentication-failure-handler-ref="customLoginFailureHandler"/>
+	    </security:http>
+	
+	    <!-- 관리자, 사용자 인증 매니저 통합 -->
+	    <security:authentication-manager>
+	        <security:authentication-provider user-service-ref="customAdminUserDetailsService">
+	            <security:password-encoder ref="bCryptPasswordEncoder" />
+	        </security:authentication-provider>
+	        <security:authentication-provider user-service-ref="customUserDetailsService">
+	            <security:password-encoder ref="bCryptPasswordEncoder" />
+	        </security:authentication-provider>
+	    </security:authentication-manager>
+	
+	</beans>
 
-    <!-- ✅ 사용자 인증 서비스 -->
-    <bean id="customUserDetailsService" class="com.project.trip.auth.CustomUserDetailsService" />
-
-    <!-- ✅ 인증 매니저 설정 -->
-    <security:authentication-manager>
-        <security:authentication-provider user-service-ref="customUserDetailsService">
-            <security:password-encoder ref="bCryptPasswordEncoder" />
-        </security:authentication-provider>
-    </security:authentication-manager>
-
-</beans>

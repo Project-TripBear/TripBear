@@ -5,7 +5,7 @@ import com.project.trip.AI.model.RouteDTO;
 
 public interface AiService {
 
-	RouteDTO createAndSaveAiRoute(AiRouteRequestDTO airouterequest, long longUserId);
-
 	RouteDTO getAiRouteById(long routeId);
+
+	RouteDTO createAndSaveAiRoute(AiRouteRequestDTO preferences, long longUserId, double userWeight);
 }

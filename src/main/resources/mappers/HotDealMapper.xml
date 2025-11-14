@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.project.trip.board.hotdeal.mapper.HotDealMapper">
+
+	<!-- <resultMap id="noticeResultMap" type="NoticeDTO" >
+		<id property="noticePostId" column="notice_post_id"/>
+		<result property="adminId" column="admin_id"/>
+		<result property="noticeHeader" column="notice_header"/>
+		<result property="noticeContent" column="notice_content"/>
+		<result property="noticeViewCount" column="notice_view_count"/>
+		<result property="noticeRegdate" column="notice_regdate"/>
+	</resultMap> -->
+	 <select id="getBoardTotalCount" parameterType="map" resultType="int">
+        SELECT COUNT(*) AS cnt
+        FROM tblHotDealPost
+        <if test='search == "y"'>
+            WHERE ${column} LIKE '%' || #{word} || '%'
+        </if>
+    </select>
+
+    <!-- 게시글 목록 조회 -->
+    <select id="list" parameterType="map" resultType="com.project.trip.board.hotdeal.model.HotDealDTO">
+        SELECT b.* 
+FROM (
+    SELECT a.*, ROWNUM AS rnum 
+    FROM (
+        SELECT 
+            p.hotdeal_id AS seq,
+            p.hotdeal_title AS subject,
+            p.user_id AS id,
+            p.hotdeal_view_count AS readcount,
+            TO_CHAR(p.hotdeal_regdate, 'YYYY-MM-DD HH24:MI:SS') AS regdate,
+            u.nickname AS name,
+            s.hotdeal_status AS status,
+            (SELECT MIN(hotdeal_image_url) 
+             FROM tblHotDealImage 
+             WHERE hotdeal_id = p.hotdeal_id 
+             AND ROWNUM = 1) AS img
+        FROM tblHotDealPost p
+        LEFT JOIN tblUser u ON p.user_id = u.user_id
+        LEFT JOIN tblHotDealStatus s ON p.hotdeal_status_id = s.hotdeal_status_id
+        <if test='search == "y"'>
+            WHERE ${column} LIKE '%' || #{word} || '%'
+        </if>
+        ORDER BY p.hotdeal_id DESC
+    ) a
+) b
+WHERE rnum BETWEEN #{begin} AND #{end}
+    </select>
+	 <!-- 총 게시물 수 조회 -->
+	<update id="updateReadcount" parameterType="string">
+        UPDATE tblHotDealPost
+        SET hotdeal_view_count = hotdeal_view_count + 1
+        WHERE hotdeal_id = #{seq}
+    </update>
+    
+      <select id="get" parameterType="string" resultType="com.project.trip.board.hotdeal.model.HotDealDTO">
+       SELECT 
+    tblHotDealPost.*,
+    tblHotDealPost.hotdeal_id           AS seq,
+    tblHotDealPost.hotdeal_title        AS subject,
+    (SELECT username FROM tblUser WHERE user_id = tblHotDealPost.user_id)           AS id,
+    tblHotDealPost.hotdeal_regdate      AS regdate,
+    tblHotDealPost.hotdeal_content      AS content,
+    tblHotDealPost.hotdeal_name         AS itemName,
+    tblHotDealPost.hotdeal_price        AS price,
+    tblHotDealPost.hotdeal_url          AS url,
+    (SELECT nickname FROM tblUser WHERE user_id = tblHotDealPost.user_id) AS name,
+    (SELECT hotdeal_image_url FROM tblHotDealImage WHERE hotdeal_id = tblHotDealPost.hotdeal_id AND ROWNUM = 1) AS img,
+    (SELECT hotdeal_category FROM tblHotDealCategory WHERE hotdeal_category_id = tblHotDealPost.hotdeal_category_id) AS category,
+    (SELECT hotdeal_status FROM tblHotDealStatus WHERE hotdeal_status_id = tblHotDealPost.hotdeal_status_id) AS status
+FROM tblHotDealPost
+WHERE hotdeal_id = #{seq}
+    </select>
+    
+    <select id="listComment" parameterType="string" resultType="com.project.trip.board.hotdeal.model.HotDealCommentDTO">
+        SELECT *
+        FROM (
+            SELECT vw_hotdeal_comment.*,
+            		vw_hotdeal_comment.user_id as useq,
+            		vw_hotdeal_comment.hotdeal_id as bseq,
+            		vw_hotdeal_comment.user_login as id,
+            		vw_hotdeal_comment.hotdeal_comment_id as seq,
+                   (SELECT nickname FROM tblUser WHERE user_id = vw_hotdeal_comment.user_id) AS name
+            FROM vw_hotdeal_comment
+            WHERE hotdeal_id = #{bseq}
+            ORDER BY hotdeal_comment_id DESC
+        )
+        WHERE ROWNUM &lt;= 5
+    </select>
+    
+    
+    <insert id="addComment" parameterType="com.project.trip.board.hotdeal.model.HotDealCommentDTO">
+    <selectKey keyProperty="seq" resultType="long" order="BEFORE">
+        SELECT seq_comment.nextval FROM DUAL
+    </selectKey>
+    INSERT INTO tblHotDealComment (hotdeal_comment_id, hotdeal_id, user_id, hotdeal_comment_content, hotdeal_comment_regdate,hotdeal_comment_status) 
+    VALUES (#{seq}, #{bseq}, #{useq}, #{content}, SYSDATE, 'A')
+</insert>
+
+<update id="editComment" parameterType="com.project.trip.board.hotdeal.model.HotDealCommentDTO">
+    UPDATE tblHotDealComment 
+    SET hotdeal_comment_content = #{content} 
+    WHERE hotdeal_comment_id = #{seq} AND user_id = #{useq}
+</update>
+
+<delete id="delComment" parameterType="map">
+    DELETE FROM tblHotDealComment 
+    WHERE hotdeal_comment_id = #{seq} AND user_id = #{userId}
+</delete>
+
+<select id="getComment" parameterType="long" resultType="com.project.trip.board.hotdeal.model.HotDealCommentDTO">
+
+    SELECT
+    hotdeal_comment_id AS seq, 
+    hotdeal_id AS bseq, 	
+    user_id AS useq,
+    hotdeal_comment_content AS content,
+    hotdeal_comment_regdate AS regdate,
+    (SELECT username FROM tblUser WHERE user_id = tblHotDealComment.user_id) AS id,
+    (SELECT nickname FROM tblUser WHERE user_id = tblHotDealComment.user_id) AS name
+    FROM tblHotDealComment 
+    WHERE hotdeal_comment_id = #{param1, jdbcType=NUMERIC}
+</select>
+
+<select id="moreComment" parameterType="map" resultType="com.project.trip.board.hotdeal.model.HotDealCommentDTO">
+     SELECT * FROM (
+        SELECT 
+            ROWNUM AS rn, T1.* FROM (
+            SELECT
+                c.hotdeal_comment_id AS seq,
+                c.hotdeal_comment_content AS content,
+                c.user_id AS id,
+                TO_CHAR(c.hotdeal_comment_regdate, 'YYYY-MM-DD HH24:MI:SS') AS regdate,
+                c.hotdeal_id AS bseq,
+                u.nickname AS name
+            FROM tblHotDealComment c
+            LEFT JOIN tblUser u ON c.user_id = u.user_id
+            WHERE c.hotdeal_id = #{bseq, jdbcType=NUMERIC}  
+            ORDER BY c.hotdeal_comment_id DESC  ) T1 
+    )
+    WHERE rn BETWEEN #{begin, jdbcType=INTEGER} AND #{begin, jdbcType=INTEGER} + 4
+</select>
+
+<insert id="insertBoard" parameterType="com.project.trip.board.hotdeal.model.HotDealDTO" useGeneratedKeys="true" keyProperty="seq">
+        insert into tblHotDealPost 
+        (hotdeal_id, user_id, hotdeal_category_id, hotdeal_status_id, hotdeal_title, hotdeal_content, hotdeal_name, hotdeal_price, hotdeal_url, hotdeal_view_count, hotdeal_report_count, hotdeal_report_status, hotdeal_regdate) 
+        values (seqHotDealPost.nextVal,#{useq} ,#{category}, #{status}, #{subject}, #{content}, #{itemName},#{price} ,#{url} ,0, 0, 'N', sysdate)
+        
+
+    </insert>
+
+    <select id="selectRecentSeq" parameterType="com.project.trip.board.hotdeal.model.HotDealDTO" resultType="String">
+        SELECT MAX(hotdeal_id) FROM tblHotDealPost
+
+    </select>
+
+    <insert id="insertBoardImage" parameterType="map">
+  INSERT INTO tblHotDealImage (hotdeal_image_id, hotdeal_id, hotdeal_image_url, hotdeal_image_seq)
+  VALUES (seqHotDealImage.nextVal, #{hotdealId}, #{img}, #{hotdealImageSeq})
+</insert>
+
+<select id="selectImages" parameterType="string" resultType="com.project.trip.board.hotdeal.model.HotDealImageDTO">
+    SELECT 
+        hotdeal_image_id as hotdealImageId,
+        hotdeal_id as hotdealId,
+        hotdeal_image_url as hotdealImageUrl,
+        hotdeal_image_seq as hotdealImageSeq
+    FROM tblHotDealImage
+    WHERE hotdeal_id = #{seq}
+    ORDER BY hotdeal_image_seq
+</select>
+
+<!-- 게시글 수정 -->
+<update id="updateBoard" parameterType="com.project.trip.board.hotdeal.model.HotDealDTO">
+    UPDATE tblHotDealPost
+    SET hotdeal_title = #{subject},
+        hotdeal_content = #{content},
+        hotdeal_status_id = #{status},
+        hotdeal_category_id = #{category},
+        hotdeal_name = #{itemName},
+        hotdeal_price = #{price},
+        hotdeal_url = #{url}
+    WHERE hotdeal_id = #{seq}
+</update>
+
+<!-- 이미지 삭제 -->
+<delete id="deleteImage" parameterType="string">
+    DELETE FROM tblHotDealImage
+    WHERE hotdeal_image_id = #{imageId}
+</delete>
+
+<!-- 최대 이미지 seq 조회 -->
+<select id="selectMaxImageSeq" parameterType="string" resultType="int">
+    SELECT NVL(MAX(hotdeal_image_seq), 0)
+    FROM tblHotDealImage
+    WHERE hotdeal_id = #{hotdealId}
+</select>
+
+<!-- 게시글의 모든 이미지 삭제 -->
+<delete id="deleteAllImages" parameterType="string">
+    DELETE FROM tblHotDealImage
+    WHERE hotdeal_id = #{seq}
+</delete>
+
+<!-- 게시글 삭제 -->
+<delete id="deleteBoard" parameterType="string">
+    DELETE FROM tblHotDealPost
+    WHERE hotdeal_id = #{seq}
+</delete>
+
+	</mapper>

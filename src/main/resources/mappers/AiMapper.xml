@@ -5,100 +5,89 @@
 
 <mapper namespace="com.project.trip.AI.mapper.AiMapper">
 	
-	<resultMap id="routeResultMap" type="com.project.trip.AI.model.RouteDTO">
-        <id     property="aiRouteId"        column="AI_ROUTE_ID"/>
-        <result property="userId"           column="USER_ID"/>
-        <result property="conversationId"   column="CONVERSATION_ID"/>
-        <result property="aiRouteTitle"     column="AI_ROUTE_TITLE"/>
-        <result property="aiRouteDays"      column="AI_ROUTE_DAYS"/>
-        <result property="aiRouteCreated"   column="AI_ROUTE_CREATED"/>
-        <result property="aiRouteRegion"    column="AI_ROUTE_REGION"/>
-        <result property="aiRouteStartDate" column="AI_ROUTE_STARTDATE"/>
-        <result property="aiRouteEndDate"   column="AI_ROUTE_ENDDATE"/>
-        <result property="weatherConsideration" column="WEATHER_CONSIDERATION"/>
+	<resultMap id="routeResultMap" type="RouteDTO">
+        <id     property="aiRouteId"        column="ai_route_id"/>
+        <result property="userId"           column="user_id"/>
+        <result property="conversationId"   column="conversation_id"/>
+        <result property="aiRouteTitle"     column="ai_route_title"/>
+        <result property="aiRouteDays"      column="ai_route_days"/>
+        <result property="aiRouteCreated"   column="ai_route_created"/>
+        <result property="aiRouteRegion"    column="ai_route_regiom"/>
+        <result property="aiRouteStartDate" column="ai_route_startdate"/>
+        <result property="aiRouteEndDate"   column="ai_route_enddate"/>
+        <result property="weatherConsideration" column="weather_consideration"/>
     </resultMap>
 
-    <resultMap id="stopResultMap" type="com.project.trip.AI.model.RouteStopDTO">
-        <id     property="aiRouteStopId"    column="AI_ROUTE_STOP_ID"/>
-        <result property="aiRouteId"        column="AI_ROUTE_ID"/>
-        <result property="aiRouteDay"       column="AI_ROUTE_DAY"/>
-        <result property="aiRouteStopOrder" column="AI_ROUTE_STOP_ORDER"/>
-        <result property="aiRouteLat"       column="AI_ROUTE_LAT"/>
-        <result property="aiRouteLong"      column="AI_ROUTE_LONG"/>
-        <result property="aiRouteDescription" column="AI_ROUTE_DESCRIPTION"/>
+    <resultMap id="stopResultMap" type="RouteStopDTO">
+        <id     property="aiRouteStopId"    column="ai_route_stop_id"/>
+        <result property="aiRouteId"        column="ai_route_id"/>
+        <result property="aiRouteDay"       column="ai_route_day"/>
+        <result property="aiRouteStopOrder" column="ai_route_stop_order"/>
+        <result property="aiRouteLat"       column="ai_route_lat"/>
+        <result property="aiRouteLong"      column="ai_route_long"/>
+        <result property="aiRouteDescription" column="ai_route_description"/>
+        
         <result property="activityCode"     column="ACTIVITY_CODE"/>
         <result property="durationInMinutes" column="DURATION_IN_MINUTES"/>
         <result property="transportationMode" column="TRANSPORTATION_MODE"/>
+        <result property="walkingDistanceKm"  column="WALKING_DISTANCE_KM"/>
+        <result property="walkingStepsCount"  column="WALKING_STEPS_COUNT"/>
+        <result property="restaurantCategory" column="RESTAURANT_CATEGORY"/>
     </resultMap>
     
-    
 	<insert id="insertAiRoute" parameterType="RouteDTO">
-		<selectKey keyProperty="aiRouteId" resultType="long" order="BEFORE">
-			select seqAiRoute.nextval from dual
-		</selectKey>
-		
-		INSERT INTO tblAiRoute (
-            AI_ROUTE_ID, 
-            USER_ID, 
-            AI_ROUTE_TITLE, 
-            AI_ROUTE_DAYS, 
-            AI_ROUTE_CREATED, 
-            AI_ROUTE_REGION, 
-            AI_ROUTE_STARTDATE, 
-            AI_ROUTE_ENDDATE,
-            WEATHER_CONSIDERATION
-        ) VALUES (
-            #{aiRouteId},
-            #{userId},
-            #{aiRouteTitle},
-            #{aiRouteDays},
-            sysdate,
-            #{aiRouteRegion},
-            TO_DATE(#{aiRouteStartDate}, 'YYYY-MM-DD'),
-            TO_DATE(#{aiRouteEndDate}, 'YYYY-MM-DD'),
-            #{weatherConsideration}
-        )
-	</insert>
+    <selectKey keyProperty="aiRouteId" resultType="long" order="BEFORE">
+        select seqAiRoute.nextval from dual
+    </selectKey>
+    
+    INSERT INTO tblAiRoute (
+        AI_ROUTE_ID, USER_ID, AI_ROUTE_TITLE, AI_ROUTE_DAYS, 
+        AI_ROUTE_CREATED, AI_ROUTE_REGION, AI_ROUTE_STARTDATE, AI_ROUTE_ENDDATE,
+        WEATHER_CONSIDERATION
+    ) VALUES (
+        #{aiRouteId},
+        #{userId},
+        #{aiRouteTitle},
+        #{aiRouteDays},
+        sysdate,
+        #{aiRouteRegion},
+        TO_DATE(#{aiRouteStartDate}, 'YYYY-MM-DD'),
+        TO_DATE(#{aiRouteEndDate}, 'YYYY-MM-DD'),
+        #{weatherConsideration}
+    )
+</insert>
+
 	
 	<insert id="insertAiRouteStop" parameterType="RouteStopDTO">
-		INSERT INTO tblAiRouteStop (
-            AI_ROUTE_STOP_ID, 
-            AI_ROUTE_ID, 
-            AI_ROUTE_DAY, 
-            AI_ROUTE_STOP_ORDER, 
-            AI_ROUTE_LAT, 
-            AI_ROUTE_LONG, 
-            AI_ROUTE_DESCRIPTION, 
-            ACTIVITY_CODE, 
-            DURATION_IN_MINUTES, 
-            TRANSPORTATION_MODE
-        ) VALUES (
-            seqAiRouteStop.nextval,
-            #{aiRouteId},
-            #{aiRouteDay},
-            #{aiRouteStopOrder},
-            #{aiRouteLat},
-            #{aiRouteLong},
-            #{aiRouteDescription},
-            #{activityCode},
-            #{durationInMinutes},
-            #{transportationMode}
-        )
-	</insert>
+    <selectKey keyProperty="aiRouteStopId" resultType="long" order="BEFORE">
+         SELECT seqAiRouteStop.nextval FROM dual
+    </selectKey>
+    
+    INSERT INTO tblAiRouteStop (
+        AI_ROUTE_STOP_ID, AI_ROUTE_ID, AI_ROUTE_DAY, AI_ROUTE_STOP_ORDER, 
+        AI_ROUTE_LAT, AI_ROUTE_LONG, AI_ROUTE_DESCRIPTION, 
+        ACTIVITY_CODE, DURATION_IN_MINUTES, TRANSPORTATION_MODE,
+        WALKING_DISTANCE_KM, WALKING_STEPS_COUNT, RESTAURANT_CATEGORY
+    ) VALUES (
+        #{aiRouteStopId},
+        #{aiRouteId},
+        #{aiRouteDay, jdbcType=INTEGER},
+        #{aiRouteStopOrder, jdbcType=INTEGER},
+        #{aiRouteLat, jdbcType=NUMERIC},
+        #{aiRouteLong, jdbcType=NUMERIC},
+        #{aiRouteDescription, jdbcType=VARCHAR},
+        #{activityCode, jdbcType=VARCHAR},
+        #{durationInMinutes, jdbcType=INTEGER},
+        #{transportationMode, jdbcType=VARCHAR}, 
+        #{walkingDistanceKm, jdbcType=NUMERIC},
+        #{walkingStepsCount, jdbcType=INTEGER},
+        #{restaurantCategory, jdbcType=VARCHAR}
+    )
+</insert>
+
 	
 	<select id="findRouteById" resultMap="routeResultMap" parameterType="long">
-        SELECT 
-            AI_ROUTE_ID,
-            USER_ID,
-            AI_ROUTE_TITLE,
-            AI_ROUTE_DAYS,
-            AI_ROUTE_CREATED,
-            AI_ROUTE_REGION,
-            TO_CHAR(AI_ROUTE_STARTDATE, 'YYYY-MM-DD') AS AI_ROUTE_STARTDATE,
-            TO_CHAR(AI_ROUTE_ENDDATE, 'YYYY-MM-DD') AS AI_ROUTE_ENDDATE,
-            WEATHER_CONSIDERATION
-        FROM tblAiRoute
-        WHERE AI_ROUTE_ID = #{aiRouteId}
+          SELECT * FROM tblAiRoute WHERE AI_ROUTE_ID = #{aiRouteId}
     </select>
     
     <select id="findStopsByRouteId" resultMap="stopResultMap" parameterType="long">
@@ -109,5 +98,20 @@
         ORDER BY AI_ROUTE_DAY, AI_ROUTE_STOP_ORDER
 
 	</select>
+	
+	<insert id="insertHealthCareLog" parameterType="HealthCareLogDTO">
+        INSERT INTO tblHealthCareLog (
+            healthcare_id, user_id, ai_route_stop_id, healthcare_date, 
+            healthcare_distance_km, healthcare_steps_count, healthcare_calories_burned
+        ) VALUES (
+            seqHealthCareLog.nextval, 
+            #{userId}, 
+            #{aiRouteStopId}, 
+            TO_DATE(#{healthcareDate}, 'YYYY-MM-DD'), 
+            #{healthcareDistanceKm},
+            #{healthcareStepsCount},
+            #{healthcareCaloriesBurned}
+        )
+    </insert>
 </mapper>
   

@@ -48,7 +48,7 @@ public class AdminUserController {
         model.addAttribute("userlist", userlist);
         model.addAttribute("paging", paging); 
         
-        return "content/admin/userlist"; 
+        return "admin/userlist"; 
     }
     
 
@@ -94,7 +94,7 @@ public class AdminUserController {
         model.addAttribute("suspendedlist", suspendedlist);
         
         // Tiles에 정의할 뷰 이름 "content/admin/suspendedlist"를 반환합니다.
-        return "content/admin/suspendedlist"; 
+        return "admin/suspendedlist"; 
     }
     
     @PostMapping("/restore")

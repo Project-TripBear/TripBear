@@ -9,27 +9,26 @@ import com.project.trip.board.routepost.model.RoutePostImageDTO;
 public interface RoutePostService {
 
     // ===== 게시글 =====
-    List<RoutePostDTO> list();
-    RoutePostDTO get(String routepostId);
+	List<RoutePostDTO> list(Map<String, Object> map);
+    RoutePostDTO get(int routepostId);
     int add(RoutePostDTO dto);
     int edit(RoutePostDTO dto);
-    int del(String routepostId);
+    int del(int routepostId);
 
     // ===== 이미지 =====
-    List<RoutePostImageDTO> getImages(String routepostId);
+    List<RoutePostImageDTO> getImages(int routepostId);
     int addImage(RoutePostImageDTO imgDto);
-    int delImages(String routepostId);
+    int delImages(int i);
 
     // ===== 조회수 =====
-    void increaseViewCount(String routepostId);
+    void increaseViewCount(int routepostId);
 
-    // ===== 좋아요 =====
-    boolean isLiked(Map<String, Object> map);
-    int addLike(Map<String, Object> map);
-    int removeLike(Map<String, Object> map);
+    boolean toggleLike(Map<String, Object> map);
+    boolean toggleScrap(Map<String, Object> map);
+	
+	
+	boolean checkLike(Map<String, Object> map);
 
-    // ===== 스크랩 =====
-    boolean isScrapped(Map<String, Object> map);
-    int addScrap(Map<String, Object> map);
-    int removeScrap(Map<String, Object> map);
+	boolean checkScrap(Map<String, Object> map);
+	
 }

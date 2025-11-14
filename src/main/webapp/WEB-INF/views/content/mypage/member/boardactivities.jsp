@@ -9,7 +9,7 @@
 </head>
 <body>
 	
-	
+	<div class="page-boardactivities-container">
 	<nav class="board-sub-header">
     <div class="sub-header-inner">
         <a href="/trip/member/boardactivities">내가 쓴 게시글</a>
@@ -31,7 +31,7 @@
 	
 		
 		
-		<table id="list" class="borad-table">
+		<table id="list" class="activity-list-table">
 			<tr>
 				<th>게시판이름</th>
 				<th>제목</th>
@@ -66,10 +66,11 @@
 			</c:forEach>
 		</table>
 
-		<div id="pagebar">${pagebar}</div>
+		<div id="pagebar" class="pagebar-container">${pagebar}</div>
 		
 	
 		
+	</div>
 	</div>
 	
 	<script>
