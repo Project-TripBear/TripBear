@@ -20,9 +20,6 @@
     <tiles:insertAttribute name="header" /> 
     
     <div id="wrapper">
-        <%-- ★★★ [제거] 사이드바 삽입 코드 제거 ★★★ --%>
-        <%-- <tiles:insertAttribute name="sidebar" /> --%>
-        
         <div id="content-area">
             <tiles:insertAttribute name="content" />
         </div>

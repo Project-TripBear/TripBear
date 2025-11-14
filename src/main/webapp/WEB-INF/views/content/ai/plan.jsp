@@ -10,7 +10,6 @@
    
 </head>
 <body class="ai-plan-page">
-    <%@ include file="/WEB-INF/views/inc/header.jsp" %>
     
     <main class="ai-plan-main-container">
         <div class="progress-container">
@@ -494,53 +493,56 @@
 			  });
 			}
         
-        function checkWeatherAndShowAdvice() {
-            // city, startDate 는 userChoices 에 이미 들어가 있음
-            const city = userChoices.city;
-            const startDate = userChoices.startDate;
+			function checkWeatherAndShowAdvice() {
+			    const city = userChoices.city;
+			    const startDate = userChoices.startDate;
 
-            if (!city || !startDate) {
-                console.warn('날씨 체크 불가: city 또는 startDate 없음', userChoices);
-                return;
-            }
+			    if (!city || !startDate) {
+			        console.warn('날씨 체크 불가: city 또는 startDate 없음', userChoices);
+			        return;
+			    }
 
-            // activityType 질문에 있는 실내/실외 카드 (추천 강조용)
-            const activityStep = document.querySelector('[data-question-key="activityType"]');
-            const indoorCard  = activityStep ? activityStep.querySelector('.card[data-value="실내"]') : null;
-            const outdoorCard = activityStep ? activityStep.querySelector('.card[data-value="실외"]') : null;
+			    const activityStep = document.querySelector('[data-question-key="activityType"]');
+			    const indoorCard  = activityStep ? activityStep.querySelector('.card[data-value="실내"]') : null;
+			    const outdoorCard = activityStep ? activityStep.querySelector('.card[data-value="실외"]') : null;
 
-            // 이전 추천 흔적 제거
-            if (indoorCard) indoorCard.classList.remove('recommended');
-            if (outdoorCard) outdoorCard.classList.remove('recommended');
+			    if (indoorCard) indoorCard.classList.remove('recommended');
+			    if (outdoorCard) outdoorCard.classList.remove('recommended');
 
-            const url = base + '/weather/advice?city=' 
-                        + encodeURIComponent(city)
-                        + '&date=' + startDate;
+			    const url = base + '/weather/advice?city=' 
+			                + encodeURIComponent(city)
+			                + '&date=' + startDate;
 
-            fetch(url)
-                .then(res => res.json())
-                .then(data => {
-                    console.log('weather advice:', data);
+			    fetch(url)
+			        .then(res => res.json())
+			        .then(data => {
+			            console.log('weather advice:', data);
 
-                    if (!data || !data.recommendType || data.recommendType === 'NONE') {
-                        return;
-                    }
+			            if (!data || !data.recommendType || data.recommendType === 'NONE') {
+			                return;
+			            }
 
-                    // 팝업 텍스트 세팅
-                    weatherText.textContent = data.message || '날씨 정보를 기반으로 여행을 추천드려요.';
-                    weatherModal.classList.remove('hidden');
+			            // 카드 강조
+			            if (data.recommendType === 'INDOOR' && indoorCard) {
+			                indoorCard.classList.add('recommended');
+			            } else if ((data.recommendType === 'OUTDOOR' || data.recommendType === 'FOLIAGE') && outdoorCard) {
+			                outdoorCard.classList.add('recommended');
+			            }
 
-                    // 추천 타입에 따라 카드 강조
-                    if (data.recommendType === 'INDOOR' && indoorCard) {
-                        indoorCard.classList.add('recommended');
-                    } else if ((data.recommendType === 'OUTDOOR' || data.recommendType === 'FOLIAGE') && outdoorCard) {
-                        outdoorCard.classList.add('recommended');
-                    }
-                })
-                .catch(err => {
-                    console.error('weather advice error', err);
-                });
-        }
+			            // OUTDOOR면 팝업 띄우지 않음
+			            if (data.recommendType === 'OUTDOOR') {
+			                return;
+			            }
+
+			            // INDOOR / FOLIAGE만 팝업
+			            weatherText.textContent = data.message || '날씨 정보를 기반으로 여행을 추천드려요.';
+			            weatherModal.classList.remove('hidden');
+			        })
+			        .catch(err => {
+			            console.error('weather advice error', err);
+			        });
+			}
+
         renderCalendar(currentDate.getFullYear(), currentDate.getMonth());
 	    }); // DOMContentLoaded 끝
 	

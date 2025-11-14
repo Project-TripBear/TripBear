@@ -2,6 +2,8 @@
 package com.project.trip.weather.service;
 
 import java.sql.Date;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,7 +20,7 @@ public class WeatherAdviceService {
     private WeatherService weatherService;   // 이미 OpenWeather 연동된 구현
 
     @Autowired
-    private WeatherMapper weatherMapper;     // 방금 만든 Mapper
+    private WeatherMapper weatherMapper;
 
     /**
      * @param city 도시 이름 (예: "Seoul")
@@ -26,39 +28,80 @@ public class WeatherAdviceService {
      */
     public WeatherAdviceDTO getAdviceAndSave(String city, String date) {
 
-        // 1. OpenWeather -> WeatherDTO
-        WeatherDTO weather = weatherService.getWeather(city, date);
-
-        WeatherAdviceDTO advice = new WeatherAdviceDTO();
-
-        if (weather == null) {
+    	LocalDate travelDate = LocalDate.parse(date);
+    	LocalDate today = LocalDate.now();
+    	long dayDiff = ChronoUnit.DAYS.between(today, travelDate);
+    	
+    	WeatherAdviceDTO advice;
+    	
+    	if (dayDiff >= 0 && dayDiff <= 5) {
+    		advice = buildShortTermAdvice(city, date);
+    	}
+    	else {
+    		advice = buildSeasonalAdvice(city, date);
+    	}
+    	
+        if (advice == null) {
+        	advice = new WeatherAdviceDTO();
             advice.setRecommendType("NONE");
             advice.setMessage("날씨 정보를 가져오지 못했어요. 기본 코스로 추천할게요.");
             return advice;
         }
 
-        // WeatherAdviceDTO 에 기본 정보 채우기
-        advice.setTemp(weather.getTemp());
-        advice.setMain(weather.getMain());
-        advice.setDescription(weather.getDescription());
-
-        // 2. 추천 타입 계산 로직
-        String mainLower = weather.getMain() != null
-                ? weather.getMain().toLowerCase() : "";
-        String descLower = weather.getDescription() != null
-                ? weather.getDescription().toLowerCase() : "";
-
-        boolean rain = mainLower.contains("rain") || mainLower.contains("drizzle");
-        boolean snow = mainLower.contains("snow");
-        boolean heavyRain = descLower.contains("heavy") || descLower.contains("storm");
-        boolean lightRain = rain && !heavyRain; 
-        int month = Integer.parseInt(date.substring(5, 7));
-        boolean autumn = (month == 10 || month == 11);
-
-        String recommendType;
-        String comment;
-
-        if ((rain || snow) && heavyRain) {
+        if (!"NONE".equals(advice.getRecommendType())) {
+        	
+        	WeatherDataDTO dto = new WeatherDataDTO();
+        	dto.setTravelDate(Date.valueOf(date));
+        	dto.setCityName(city);
+        	dto.setTemp(advice.getTemp());
+        	dto.setWeatherMain(advice.getMain());
+        	dto.setWeatherDesc(advice.getDescription());
+        	dto.setRecommendType(advice.getRecommendType());
+        	dto.setWeatherComment(advice.getMessage());
+        	
+        	weatherMapper.insertWeatherData(dto);
+        }
+        
+        return advice;
+    }
+    
+   
+    //단기 모드(오늘 ~ 5일이내)
+	private WeatherAdviceDTO buildShortTermAdvice(String city, String date) {
+		
+		WeatherDTO weather = weatherService.getWeather(city, date);
+    	WeatherAdviceDTO advice = new WeatherAdviceDTO();
+    	
+    	if (weather == null ||
+    			"날씨 정보를 가져오지 못해 기본값을 사용합니다."
+    				.equals(weather.getDescription())) {
+    		
+    		advice.setRecommendType("NONE");
+    		advice.setMessage("날씨 정보를 가져오지 못했어요. 기본 코스로 추천할게요.");
+    		return advice;
+    	}
+    	
+    	advice.setTemp(weather.getTemp());
+    	advice.setMain(weather.getMain());
+    	advice.setDescription(weather.getDescription());
+    	
+    	String mainLower = weather.getMain() != null
+    			? weather.getMain().toLowerCase() : "";
+    	String descLower = weather.getDescription() != null
+    			? weather.getDescription().toLowerCase() : "";
+    	
+    	boolean rain = mainLower.contains("rain") || mainLower.contains("drizzle");
+    	boolean snow = mainLower.contains("snow");
+    	boolean heavyRain = descLower.contains("heavy") || descLower.contains("storm");
+    	boolean lightRain = rain && !heavyRain;
+    	
+    	int month = Integer.parseInt(date.substring(5,7));
+    	boolean autumn = (month == 10 || month == 11);
+    	
+    	String recommendType;
+    	String comment;
+    	
+    	if ((rain || snow) && heavyRain) {
             recommendType = "INDOOR";
             comment = "폭우/폭설 예보가 있어서 실내 위주로 여행하는 걸 추천드려요.";
         } 
@@ -82,18 +125,48 @@ public class WeatherAdviceService {
         advice.setRecommendType(recommendType);
         advice.setMessage(comment);
 
-        // 3. DB 저장 (tblWeatherData)
-        WeatherDataDTO dto = new WeatherDataDTO();
-        dto.setTravelDate(Date.valueOf(date));   // java.sql.Date
-        dto.setCityName(city);
-        dto.setTemp(weather.getTemp());
-        dto.setWeatherMain(weather.getMain());
-        dto.setWeatherDesc(weather.getDescription());
-        dto.setRecommendType(recommendType);
-        dto.setWeatherComment(comment);
-
-        weatherMapper.insertWeatherData(dto);
-
         return advice;
+    	
+		
+	}
+
+	private WeatherAdviceDTO buildSeasonalAdvice(String city, String date) {
+    	
+		WeatherAdviceDTO advice = new WeatherAdviceDTO();
+
+        int month = Integer.parseInt(date.substring(5, 7));
+
+        String recommendType;
+        String comment;
+    	
+    	if (month == 10 || month == 11) {
+    		//단풍 시즌
+    		recommendType = "FOLIAGE";
+    		comment = "단풍 시즌이라 야외 단풍코스를 중심으로 추천드릴게요.🍁";
+    	}
+    	else if (month == 7 || month == 8) {
+    		//장마철
+    		recommendType = "INDOOR";
+    		comment = "장마철이라 비가 자주 올 수 있어 실내 코스를 중심으로 추천드릴게요.☔️";
+    	}
+    	else if (month == 12 || month == 1 || month == 2) {
+    		//한겨울
+    		recommendType = "INDOOR";
+    		comment = "한겨울이라 추운 날씨를 고려해서 실내/짧은 야외 위주로 추천드릴게요.";
+    	}
+    	else {
+    		recommendType = "OUTDOOR";
+    		comment = "야외 활동을 즐기기 좋은 시기예요.";
+    	}
+    	
+    	advice.setRecommendType(recommendType);
+    	advice.setMessage(comment);
+    	
+    	advice.setTemp(null);
+    	advice.setMain(null);
+    	advice.setDescription(null);
+    	
+    	return advice;
     }
+    
 }
