@@ -54,4 +54,5 @@ desktop.ini
 
 ### Custom Configuration ###
 # 실제 ID/PW 등 민감한 정보가 포함된 설정 파일
-application.properties.vscode/
+application.properties
+.vscode/
