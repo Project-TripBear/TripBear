@@ -222,7 +222,7 @@
         const progressBar = document.getElementById('progressBar');
         const generalQuestionContainer = document.getElementById('general-questions');
         const healthcareQuestionContainer = document.getElementById('healthcare-questions');
-        const aiPlanContainer = document.getElopipementById('ai-plan-container');
+        const aiPlanContainer = document.getElementById('ai-plan-container');
         const loadingContainer = document.getElementById('loading-container');
         const dateSelectionStep = document.getElementById('date-selection-step');
         const dateSelectionGuide = document.getElementById('date-selection-guide');
