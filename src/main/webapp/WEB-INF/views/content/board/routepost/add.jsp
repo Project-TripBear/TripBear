@@ -5,11 +5,10 @@
 <head>
 <meta charset="UTF-8">
 <title>여행 추천 루트 게시글 작성 ✈️</title>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/asset/css/routepost.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/routepost.css">
 </head>
 
 <body>
-<%@ include file="/WEB-INF/views/inc/header.jsp" %>
 
 <div class="container">
   <h2>여행 추천 루트 게시글 작성 ✈️</h2>
@@ -54,6 +53,8 @@
         취소
       </button>
     </div>
+    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+    
   </form>
 </div>
 

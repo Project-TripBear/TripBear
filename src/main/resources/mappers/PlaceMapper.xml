@@ -3,75 +3,249 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<!-- 
-   이 XML은 'com.project.trip.allplace.mapper.PlaceMapper' 인터페이스를 구현합니다.
--->
 <mapper namespace="com.project.trip.allplace.mapper.PlaceMapper">
 
-    <!-- 
-        [수정됨]
-        mybatis-config.xml에서 정의한 별칭 'pdto'를 사용합니다.
-        resultType="PlaceDTO" -> resultType="pdto"
-    -->
+	<select id="findRecommendPlaces" resultType="PlaceDTO">
+    SELECT *
+    FROM tblPlace
+    WHERE place_location_id = #{locationId}
+      AND place_type_id = #{typeId}
+      AND place_id != #{placeId}
+    ORDER BY RAND()
+    LIMIT 6
+	</select>
+
     <select id="findPlaceByContentId" 
             parameterType="string" 
-            resultType="placedto">
-        
+            resultType="placeDTO">
         SELECT 
             place_id        as "placeId",
-            api_content_id  as "apiContentId",
-            name,
-            address,
-            latitude,
-            longitude
+            place_api_id    as "placeApiId",
+            place_name      as "name",      
+            place_address   as "address",   
+            place_lat       as "latitude",
+            place_lng       as "longitude",
+            place_type_id   as "placeTypeId",
+            place_location_id as "placeLocationId",
+            place_main_image_url as "placeMainImageUrl"
         FROM 
             tblPlace 
         WHERE 
-            api_content_id = #{apiContentId}
-            
+            place_api_id = #{placeApiId}
     </select>
 
-    <!-- 
-        [수정됨]
-        mybatis-config.xml에서 정의한 별칭 'pdto'를 사용합니다.
-        parameterType="PlaceDTO" -> parameterType="pdto"
-    -->
-    <insert id="insertPlace" 
-            parameterType="placedto">
-        
+    <insert id="insertPlace" parameterType="placeDTO">
         <selectKey keyProperty="placeId" resultType="long" order="BEFORE">
-            SELECT seq_tblPlace.NEXTVAL FROM DUAL
+            SELECT SEQPLACE.NEXTVAL FROM DUAL
         </selectKey>
         
         INSERT INTO tblPlace (
             place_id, 
-            api_content_id, 
-            name, 
-            address, 
-            latitude, 
-            longitude
+            place_api_id, 
+            place_name, 
+            place_address, 
+            place_lat,
+            place_lng,
+            place_type_id,
+            place_location_id,
+            place_main_image_url
         ) VALUES (
             #{placeId}, 
-            #{apiContentId}, 
+            #{placeApiId}, 
             #{name}, 
             #{address}, 
             #{latitude}, 
-            #{longitude}
+            #{longitude},
+            #{placeTypeId},
+            #{placeLocationId},
+            #{placeMainImageUrl}
         )
     </insert>
+    
+    <insert id="insertTouristSpot" parameterType="touristSpotDTO">
+        INSERT INTO tblTouristSpot (
+            place_id, 
+            admission_fee, 
+            opening_hours, 
+            contact_info, 
+            parking_info, 
+            rest_day, 
+            spot_overinfo
+        ) values ( 
+            #{placeId}, 
+            #{admissionFee}, 
+            #{openingHours}, 
+            #{contactInfo}, 
+            #{parkingInfo}, 
+            #{restDay}, 
+            #{spotOverinfo})
+    </insert>
+
+     <resultMap id="placeDetailResultMap" type="placeDTO">
+        <id     property="placeId"           column="place_id" />
+        <result property="placeApiId"        column="place_api_id" />
+        <result property="name"              column="place_name" />
+        <result property="address"           column="place_address" />
+        <result property="latitude"          column="place_lat" />
+        <result property="longitude"         column="place_lng" />
+        <result property="placeMainImageUrl" column="place_main_image_url" />
+        <result property="placeTypeId"       column="place_type_id" />
+        <result property="placeLocationId"   column="place_location_id" />
+        
+        <!-- 1. 관광지 상세정보 (1:1) -->
+        <association property="touristSpotDetail" javaType="touristSpotDTO">
+            <id     property="placeId"        column="place_id"/>
+            <result property="spotOverinfo"   column="spot_overinfo" />
+            <result property="admissionFee"   column="admission_fee" />
+            <result property="openingHours"   column="opening_hours" />
+            <result property="contactInfo"    column="contact_info" />
+            <result property="parkingInfo"    column="parking_info" />
+            <result property="restDay"        column="rest_day" />
+        </association>
+        
+        <!-- 2. 축제 상세정보 (1:1) -->
+        <association property="eventDetail" javaType="eventDTO">
+            <id     property="eventId"      column="event_id"/>
+            <result property="placeId"      column="place_id"/>
+            <result property="eventName"    column="event_name"/>
+            <result property="eventStart"   column="event_start"/>
+            <result property="eventEnd"     column="event_end"/>
+            <result property="eventInfo"    column="event_info"/>
+            <result property="eventLink"    column="event_link"/>
+        </association>
+        
+        <!-- 3. 음식점 상세정보 (1:1) -->
+        <association property="restaurantDetail" javaType="restaurantDTO">
+            <id     property="placeId"              column="place_id"/>
+            <result property="restaurantCategory"   column="restaurant_category"/>
+            <result property="restaurantCall"       column="restaurant_call"/>
+            <result property="restaurantPrice"      column="restaurant_price"/>
+            <result property="restaurantRating"     column="restaurant_rating"/>
+            <result property="restaurantCount"      column="restaurant_count"/>
+            <result property="restaurantOpenTime"   column="restaurant_open_time"/>
+            <result property="restaurantCloseTime"  column="restaurant_close_time"/>
+        </association>
+    </resultMap>
+
+    <!-- [수정] 3개의 상세 테이블을 LEFT JOIN 하도록 변경 -->
+    <select id="getPlaceDetailById" parameterType="long" resultMap="placeDetailResultMap">
+        SELECT
+            p.place_id, p.place_api_id, p.place_name, p.place_address, 
+            p.place_lat, p.place_lng, p.place_main_image_url,
+            p.place_type_id, p.place_location_id,
+            
+            ts.spot_overinfo, ts.admission_fee, ts.opening_hours,
+            ts.contact_info,  ts.parking_info,  ts.rest_day,
+            
+            e.event_id, e.event_name, e.event_start, e.event_end,
+            e.event_info, e.event_link,
+            
+            r.restaurant_category, r.restaurant_call, r.restaurant_price,
+            r.restaurant_rating, r.restaurant_count, 
+            r.restaurant_open_time, r.restaurant_close_time
+            
+        FROM 
+            tblPlace p
+        LEFT JOIN 
+            tblTouristSpot ts ON p.place_id = ts.place_id
+        LEFT JOIN
+            tblEvent e ON p.place_id = e.place_id
+        LEFT JOIN
+            tblRestaurant r ON p.place_id = r.place_id
+            
+        WHERE 
+            p.place_id = #{placeId}
+    </select>
+    
+    
+    <select id="findKeywordByName" parameterType="string" resultType="keywordDTO">
+        SELECT * FROM tblKeyword WHERE keyword_name = #{keywordName}
+    </select>
+    
+    <insert id="insertKeyword" parameterType="keywordDTO">
+        <selectKey keyProperty="keywordId" resultType="long" order="BEFORE">
+            SELECT SEQKEYWORD.NEXTVAL FROM DUAL
+        </selectKey>
+        INSERT INTO tblKeyword (keyword_id, keyword_name, keyword_regdate)
+        VALUES (#{keywordId}, #{keywordName}, SYSDATE)
+    </insert>
+    
+    <insert id="insertKeywordLink" parameterType="keywordLinkDTO">
+        INSERT INTO tblKeywordLink (keyword_link_id, place_id, keyword_id)
+        VALUES (SEQKEYWORDLINK.NEXTVAL, #{placeId}, #{keywordId})
+    </insert>
+    
+    <select id="findPlacesByKeywordName" parameterType="string" resultType="placeDTO">
+        SELECT
+            p.place_id        as "placeId",
+            p.place_api_id    as "placeApiId",
+            p.place_name      as "name",
+            p.place_address   as "address",
+            p.place_lat       as "latitude",
+            p.place_lng       as "longitude",
+            p.place_main_image_url as "placeMainImageUrl"
+            /* (검색 목록이므로 이 정도만 가져옴) */
+        FROM 
+            tblPlace p
+        JOIN 
+            tblKeywordLink kl ON p.place_id = kl.place_id
+        JOIN
+            tblKeyword k ON kl.keyword_id = k.keyword_id
+        WHERE 
+            k.keyword_name = #{keywordName}
+        ORDER BY
+            p.place_id DESC
+    </select>
+    
+    <insert id="insertEvent" parameterType="eventDTO">
+        
+        <selectKey keyProperty="eventId" resultType="long" order="BEFORE">
+            SELECT SEQEVENT.NEXTVAL FROM DUAL
+        </selectKey>
+
+        INSERT INTO tblEvent (
+            event_id,
+            place_id,
+            event_theme_id,
+            event_name,
+            event_start,
+            event_end,
+            event_info,
+            event_link
+        ) VALUES (
+            #{eventId},
+            #{placeId},
+            #{eventThemeId}, 
+            #{eventName},
+            
+            TO_DATE(#{eventStart}, 'YYYYMMDD'), 
+            TO_DATE(#{eventEnd},   'YYYYMMDD'),
+            
+            #{eventInfo},
+            #{eventLink}
+        )
+    </insert>
+    
+   <insert id="insertRestaurant" parameterType="restaurantDTO">
+    INSERT INTO tblRestaurant (
+        place_id,
+        restaurant_category,
+        restaurant_call,
+        restaurant_price,
+        restaurant_rating,
+        restaurant_count,
+        restaurant_open_time,
+        restaurant_close_time
+    ) VALUES (
+        #{placeId},
+        #{restaurantCategory},
+        #{restaurantCall},
+        #{restaurantPrice},
+        #{restaurantRating},
+        #{restaurantCount},
+        #{restaurantOpenTime},
+        #{restaurantCloseTime}
+    )
+</insert>
 
 </mapper>
-
-
-
-
-
-
-
-
-
-
-
-
-
-

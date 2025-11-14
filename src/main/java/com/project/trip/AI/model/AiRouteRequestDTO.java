@@ -1,5 +1,6 @@
 package com.project.trip.AI.model;
 
+
 import lombok.Data;
 
 @Data

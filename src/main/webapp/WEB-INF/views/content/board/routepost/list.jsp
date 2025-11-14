@@ -53,20 +53,20 @@
             <a href="${pageContext.request.contextPath}/routepost/list?page=${page - 1}&search=${param.search}">이전</a>
         </c:if>
 
-        <c:forEach var="i" begin="${startPage}" end="${endPage}">
-            <c:choose>
-                <c:when test="${i == page}">
-                    <strong>[${i}]</strong>
-                </c:when>
-                <c:otherwise>
-                    <a href="${pageContext.request.contextPath}/routepost/list?page=${i}&search=${param.search}">${i}</a>
-                </c:otherwise>
-            </c:choose>
-        </c:forEach>
+         <c:forEach var="i" begin="1" end="${totalPages}">
+        <c:choose>
+            <c:when test="${i == page}">
+                <strong>[${i}]</strong>
+            </c:when>
+            <c:otherwise>
+                <a href="${pageContext.request.contextPath}/routepost/list?page=${i}&search=${param.search}">${i}</a>
+            </c:otherwise>
+        </c:choose>
+    </c:forEach>
 
-        <c:if test="${page < totalPage}">
-            <a href="${pageContext.request.contextPath}/routepost/list?page=${page + 1}&search=${param.search}">다음</a>
-        </c:if>
+		    <c:if test="${page < totalPage}">
+		        <a href="${pageContext.request.contextPath}/routepost/list?page=${page + 1}&search=${param.search}">다음</a>
+		    </c:if>
     </div>
 
     <div class="write-btn">

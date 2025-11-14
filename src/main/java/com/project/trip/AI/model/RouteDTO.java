@@ -15,6 +15,7 @@ public class RouteDTO {
 	private long userId;
 	private long conversationId;
 	
+
 	private String aiRouteTitle;
 	private int aiRouteDays;
 	private Date aiRouteCreated;
@@ -22,6 +23,11 @@ public class RouteDTO {
 	private String aiRouteStartDate;
 	private String aiRouteEndDate;
 	private String weatherConsideration;
+
 	
 	private List<RouteStopDTO> stops;
+	
+	//모빌리티 정보 js로 넘기는 json
+	private List<Object> mobilityRoutes;
+
 }

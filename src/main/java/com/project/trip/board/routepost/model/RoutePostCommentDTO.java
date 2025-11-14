@@ -5,12 +5,12 @@ import lombok.Data;
 @Data
 public class RoutePostCommentDTO {
 
-	private String routepostCommentId;
-    private String userId;
-    private String routepostId;
+	private long routepostCommentId;
+    private int userId;
+    private int routepostId;
     private String routepostContent;
     private String routepostRegdate;
-    private String routepostCommentReportCount;
+    private int routepostCommentReportCount;
     private String commentStatus;
     private String nickname; // JOIN용
 	
