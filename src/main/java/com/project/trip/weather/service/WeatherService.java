@@ -1,4 +1,4 @@
-package com.project.trip.AI.service;
+package com.project.trip.weather.service;
 
 import com.project.trip.AI.model.WeatherDTO;
 

@@ -1,4 +1,4 @@
-package com.project.trip.AI.model;
+package com.project.trip.weather.model;
 
 import lombok.Data;
 
