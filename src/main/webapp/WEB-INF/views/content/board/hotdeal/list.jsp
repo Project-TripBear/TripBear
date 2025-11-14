@@ -14,6 +14,7 @@
 <body>
 
 
+	<div class="page-board-list-container">
 	<div id="main">
 		<h1>
 			여행 용품 게시판
@@ -26,12 +27,10 @@
 		</h1>
 
 		<c:if test="${map.search == 'y'}">
-			<div id="labelSearch">'${map.word}'(으)로 검색한 결과
-				${map.totalCount}건이 있습니다.</div>
+			<div id="labelSearch" class="search-result-label"> '${map.word}'(으)로 검색한 결과 ${map.totalCount}건이 있습니다.</div>
 		</c:if>
 
-		<table id="list" class="borad-table">
-			<tr>
+		<table id="list" class="board-data-table"> <tr>
 				<th>번호</th>
 				<th>제목</th>
 				<th>이름</th>
@@ -51,13 +50,10 @@
 							<c:if test="${dto.img != null}">
 								<img
 									src="${pageContext.request.contextPath}/resources/img/hotdeal/${dto.img}"
-									id="imgPlace">
-							</c:if> <c:if test="${dto.img == null}">
+									id="imgPlace" class="post-thumb-img"> </c:if> <c:if test="${dto.img == null}">
 								<img
 									src="${pageContext.request.contextPath}/resources/img/hotdeal/default.png"
-									id="imgPlace">
-							</c:if> [${dto.status}]${dto.subject}
-					</a></td>
+									id="imgPlace" class="post-thumb-img"> </c:if> <span class="post-subject-text">[${dto.status}]${dto.subject}</span> </a></td>
 					<td>${dto.name}</td>
 					<td>${dto.regdate}</td>
 					<td>${dto.readcount}</td>
@@ -65,29 +61,22 @@
 			</c:forEach>
 		</table>
 
-		<!-- 검색 -->
-		<form id="searchForm" method="GET" action="/trip/hotdeal/list">
-			<select name="column">
-				<option value="hotdeal_title">제목</option>
-				<option value="hotdeal_content">내용</option>
-				<option value="nickname">이름</option>
-			</select> <input type="text" name="word" class="long" required> <input
-				type="submit" value="검색하기">
+		<div class="board-footer-container">
+			
+			<form id="searchForm" method="GET" action="/trip/hotdeal/list" class="board-search-form"> <select name="column" class="form-control-select"> <option value="hotdeal_title">제목</option>
+					<option value="hotdeal_content">내용</option>
+					<option value="nickname">이름</option>
+				</select> <input type="text" name="word" class="form-control-input" required> <button type="submit" class="btn btn-search">검색하기</button>
+			</form>
 
-
-		</form>
-
-		<!-- 페이지바 -->
-		<div id="pagebar">${pagebar}</div>
-
-		<div>
-			<sec:authorize access="hasAuthority('ACTIVE')">
-				<button type="button" class="add primary"
-					onclick="location.href='/trip/hotdeal/add';">쓰기</button>
-			</sec:authorize>
+			<div id="pagebar" class="pagebar-container">${pagebar}</div> <div class="write-button-group">
+				<sec:authorize access="hasAuthority('ACTIVE')">
+					<button type="button" class="btn btn-primary"
+						onclick="location.href='/trip/hotdeal/add';">쓰기</button> </sec:authorize>
+			</div>
 		</div>
-
 	</div>
+</div>
 
 	<script>
 		<c:if test="${map.search == 'y'}">

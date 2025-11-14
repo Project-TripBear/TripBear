@@ -50,36 +50,83 @@ public class HotDealCommentController {
         return ResponseEntity.ok(response);
     }
 
-@PostMapping("/hotdeal/editcomment")
+//    @PostMapping("/hotdeal/editcomment")
+//    @ResponseBody
+//    public Map<String, String> editComment(@RequestBody HotDealCommentDTO dto, Authentication auth) {
+//        Map<String, String> response = new HashMap<>();
+//        
+//        String userId = auth.getName();
+//        UserDTO userDto = membermapper.get(userId);
+//        
+//        System.out.println("Received DTO seq: " + dto.getSeq()); // Debug log added here
+//
+//        if (userDto == null) {
+//            response.put("result", "0");
+//            response.put("message", "로그인이 필요하거나 유효하지 않은 사용자입니다.");
+//            return response;
+//        }
+//
+//        dto.setUseq(userDto.getSeq());
+//
+//        
+//        // 추가 디버그 로그
+//        System.out.println("userDto.getSeq(): " + userDto.getSeq());
+//        System.out.println("userDto.getSeq() type: " + (userDto.getSeq() != null ? userDto.getSeq().getClass().getName() : "null"));
+//        
+//        System.out.println("수정 DTO: " + dto);
+//        System.out.println("dto.getUseq(): " + dto.getUseq());
+//
+//        int result = mapper.editComment(dto);
+//        
+//        response.put("result", String.valueOf(result));
+//        
+//        return response;
+//    }
+    
+    @PostMapping("/hotdeal/editcomment")
     @ResponseBody
     public Map<String, String> editComment(@RequestBody HotDealCommentDTO dto, Authentication auth) {
         Map<String, String> response = new HashMap<>();
         
-        String userId = auth.getName();
-        UserDTO userDto = membermapper.get(userId);
+        try {
+            // 1. 사용자 인증 정보 확인
+            String userId = auth.getName();
+            UserDTO userDto = membermapper.get(userId);
+            
+            System.out.println("Received DTO seq: " + dto.getSeq()); // 디버그 로그
 
-        System.out.println("Received DTO seq: " + dto.getSeq()); // Debug log added here
+            if (userDto == null) {
+                response.put("result", "0");
+                response.put("message", "로그인이 필요하거나 유효하지 않은 사용자입니다.");
+                return response;
+            }
 
-        if (userDto == null) {
-            response.put("result", "0");
-            response.put("message", "로그인이 필요하거나 유효하지 않은 사용자입니다.");
-            return response;
+            // 2. DTO에 사용자 고유 번호(useq) 설정
+            dto.setUseq(userDto.getSeq());
+
+            // 3. 디버그 로그 (요청 DTO 확인)
+            System.out.println("userDto.getSeq(): " + userDto.getSeq());
+            System.out.println("수정 DTO (mapper로 전달): " + dto);
+            System.out.println("dto.getUseq(): " + dto.getUseq());
+
+            // 4. 데이터베이스 수정 시도 (이곳에서 예외 발생 가능성 있음)
+            int result = mapper.editComment(dto);
+            
+            // 5. 성공 응답 구성
+            response.put("result", String.valueOf(result)); // "1" (성공) 또는 "0" (실패)
+
+        } catch (Exception e) {
+            // 6. 예외 발생 시 (catch 블록 실행)
+            System.err.println("===== [ERROR] 댓글 수정 중 예외 발생 =====");
+            e.printStackTrace(); // 👈 콘솔에 실제 오류 내용(NullPointerException, SQL Error 등)이 찍힙니다.
+            System.err.println("=====================================");
+
+            // 7. 실패 응답 구성 (AJAX가 받을 JSON)
+            response.put("result", "0"); 
+            response.put("message", "서버 오류가 발생했습니다: " + e.getMessage());
         }
-
-        dto.setUseq(userDto.getSeq());
-
         
-        // 추가 디버그 로그
-        System.out.println("userDto.getSeq(): " + userDto.getSeq());
-        System.out.println("userDto.getSeq() type: " + (userDto.getSeq() != null ? userDto.getSeq().getClass().getName() : "null"));
-        
-        System.out.println("수정 DTO: " + dto);
-        System.out.println("dto.getUseq(): " + dto.getUseq());
-
-        int result = mapper.editComment(dto);
-        
-        response.put("result", String.valueOf(result));
-        
+        // 8. (성공하든 예외가 터지든) 무조건 Map(JSON)을 반환
         return response;
     }
 
@@ -133,6 +180,8 @@ public class HotDealCommentController {
         Map<String, Object> params = new HashMap<>();
         params.put("bseq", bseq);
         params.put("begin", begin);
+
+        System.out.println("list: " + mapper.moreComment(params));
 
         return mapper.moreComment(params);
     }
