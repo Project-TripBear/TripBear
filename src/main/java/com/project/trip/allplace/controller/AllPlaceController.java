@@ -92,7 +92,7 @@ public class AllPlaceController {
             eventStartDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
         }
 
-        log.info("[Controller] 축제 검색 (API Only): " + eventStartDate);
+        log.info("[Controller] 축제 검색 (API Only): " + eventStartDate); 
         TourApiResponseVO apiResponse = allPlaceService.searchFestival(eventStartDate, arrange);
 
         List<PlaceDTO> placeList = convertApiItemsToDtoList(apiResponse);
@@ -106,28 +106,38 @@ public class AllPlaceController {
     
     @GetMapping("/view/{contentId}")
     public String viewAndSave(
-            @PathVariable("contentId") String contentId, 
+            @PathVariable("contentId") String contentId,
+            @RequestParam("contentTypeId") String contentTypeId,  // ★ 추가
             Model model) {
-        
-        log.info("[Controller] /view/ 상세+저장 요청: " + contentId);
 
+        log.info("[Controller] 상세 요청: contentId = " + contentId + ", type = " + contentTypeId);
+
+        // 1) 상세 기본정보
         TourItemVO item = tourApiService.getPlaceDetail(contentId);
+
         if (item == null) {
-            log.warn("[Controller] " + contentId + " API 정보를 찾을 수 없습니다.");
+            log.warn("[Controller] API 정보를 찾을 수 없습니다.");
             model.addAttribute("errorMessage", "API에서 장소 정보를 찾을 수 없습니다.");
             return "common/error";
         }
 
+        // 2) contentTypeId 직접 세팅
+        item.setContentTypeId(contentTypeId); // ★★★ 결정적 부분
+
+        // 3) DB 저장
         PlaceDTO place = allPlaceService.addPlaceOnDemand(item);
-        
+
         if (place == null) {
-             log.warn("[Controller] " + contentId + " DB 저장/조회 실패.");
-            model.addAttribute("errorMessage", "장소 정보를 처리하는 중 오류가 발생했습니다.");
+            model.addAttribute("errorMessage", "장소 정보 처리 중 오류 발생");
             return "common/error";
         }
-        
+
         return "redirect:/allplace/detail/" + place.getPlaceId();
     }
+
+
+
+
 
     @GetMapping("/detail/{placeId}")
     public String placeDetail(@PathVariable("placeId") long placeId, Model model) {
@@ -220,13 +230,16 @@ public class AllPlaceController {
             if (img == null) img = null; // 프론트에서 noimage 처리
             dto.setPlaceMainImageUrl(img);
 
-            // 타입 매핑
+         // 타입 매핑
             switch (item.getContentTypeId()) {
                 case "12": dto.setPlaceTypeId(1L); break;
                 case "15": dto.setPlaceTypeId(2L); break;
                 case "39": dto.setPlaceTypeId(3L); break;
                 default: dto.setPlaceTypeId(1L);
             }
+
+            // ★ contentTypeId 전달
+            dto.setContentTypeId(item.getContentTypeId());
 
             // 거리 km
             double distance = calcDistance(lat, lng, dLat, dLon);

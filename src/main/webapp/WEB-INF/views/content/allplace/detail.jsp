@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/allplace/detail.css" />
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/detail.css" />
 
 
 <div class="detail-container">
@@ -18,20 +18,26 @@
     <div class="info-box">
         <h3>기본 정보</h3>
         <p><b>주소</b> ${place.address}</p>
-        <p><b>전화번호</b> ${place.tel}</p>
+        <b>전화번호</b>
+    <c:if test="${not empty place.touristSpotDetail.contactInfo}">
+        ${place.touristSpotDetail.contactInfo}
+    </c:if>
+    <c:if test="${not empty place.restaurantDetail.restaurantCall}">
+        ${place.restaurantDetail.restaurantCall}
+    </c:if>
     </div>
 
     <!-- 관광지/축제/음식점 -->
     <c:choose>
         <c:when test="${place.placeTypeId == 1}">
-            <div class="info-box">
-                <h3>관광지 정보</h3>
-                <p><b>개요</b> ${place.spotDetail.spotOverinfo}</p>
-                <p><b>운영시간</b> ${place.spotDetail.openingHours}</p>
-                <p><b>휴무일</b> ${place.spotDetail.restDay}</p>
-                <p><b>주차</b> ${place.spotDetail.parkingInfo}</p>
-            </div>
-        </c:when>
+    <div class="info-box">
+        <h3>관광지 정보</h3>
+        <p><b>개요</b> ${place.touristSpotDetail.spotOverinfo}</p>
+        <p><b>운영시간</b> ${place.touristSpotDetail.openingHours}</p>
+        <p><b>휴무일</b> ${place.touristSpotDetail.restDay}</p>
+        <p><b>주차</b> ${place.touristSpotDetail.parkingInfo}</p>
+    </div>
+</c:when>
 
         <c:when test="${place.placeTypeId == 2}">
             <div class="info-box">
@@ -75,13 +81,29 @@
             <h3>주변 추천 장소</h3>
 
             <div class="recommend-grid">
-                <c:forEach items="${recommendList}" var="p">
-                    <div class="recommend-item" onclick="location.href='/allplace/detail/${p.placeId}'">
-                        <img src="${p.placeMainImageUrl}" />
-                        <h4>${p.name}</h4>
-                        <p>${p.address}</p>
-                    </div>
-                </c:forEach>
+               <c:forEach items="${recommendList}" var="p">
+				    <%-- 
+				      1. onclick에 contextPath 추가 
+				    --%>
+				    <div class="recommend-item" 
+				         onclick="location.href='${pageContext.request.contextPath}/allplace/detail/${p.placeId}'">
+				        
+				        <%-- 
+				          2. <img> 태그에 contextPath 추가 및 NULL 검사 
+				        --%>
+				        <c:choose>
+				            <c:when test="${not empty p.placeMainImageUrl}">
+				                <img src="${pageContext.request.contextPath}${p.placeMainImageUrl}" />
+				            </c:when>
+				            <c:otherwise>
+				                <img src="${pageContext.request.contextPath}/resources/img/icon/noimage.png" />
+				            </c:otherwise>
+				        </c:choose>
+				
+				        <h4>${p.name}</h4>
+				        <p>${p.address}</p>
+				    </div>
+				</c:forEach>
             </div>
         </div>
     </c:if>
@@ -111,7 +133,7 @@
         const tag = document.getElementById("tag-input").value.trim();
         if (tag == "") return;
 
-        fetch("/allplace/addTag?placeId=${place.placeId}&tag=" + encodeURIComponent(tag))
+        fetch("${pageContext.request.contextPath}/allplace/addTag?placeId=${place.placeId}&tag=" + encodeURIComponent(tag))
             .then(r => r.text())
             .then(res => {
                 const list = document.getElementById("tag-list");

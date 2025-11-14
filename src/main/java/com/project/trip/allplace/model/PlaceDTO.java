@@ -29,5 +29,6 @@ public class PlaceDTO {
     
     private TouristSpotDTO touristSpotDetail;
     private EventDTO eventDetail;
-    private RestaurantDTO restaurantDetail;   
+    private RestaurantDTO restaurantDetail;
+    private String contentTypeId;
 }
