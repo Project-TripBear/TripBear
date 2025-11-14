@@ -3826,6 +3826,11 @@ main {
 .bottom-buttons .btn-primary:hover {
     background-color: var(--primary-dark);
 }
+.comment-actions,
+.comment-action-buttons {
+  display: flex;
+  gap: 8px; /* 👈 이 값이 '수정'과 '삭제' 사이의 간격입니다. (원하는 대로 조절하세요) */
+}
 
 
 

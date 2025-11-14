@@ -30,8 +30,8 @@
 		<!-- 파일 업로드 설정(서블릿 자체의 업로드 기능) -->
 		<multipart-config>
 		
-			<!-- 임시 폴더 지정(c:\class\code\spring\temp) -->
-			<location>c:\\code\\spring\\temp</location>
+			<!-- 임시 폴더 지정(webapp/temp-upload) -->
+			<location>C:\dev-temp\trip-upload</location>
 			
 			<!-- 파일 1개 최대 크기 10MB -->
 			<max-file-size>10485760</max-file-size>
@@ -65,6 +65,14 @@
 		<servlet-name>appServlet</servlet-name>
 	</filter-mapping>
 	
+	<filter>
+        <filter-name>multipartFilter</filter-name>
+        <filter-class>org.springframework.web.multipart.support.MultipartFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>multipartFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
 	
 	
 	<!--1. security filter  -->

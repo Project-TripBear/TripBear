@@ -61,7 +61,7 @@
 						<th>가격</th>
 						<td><input type="number" name="price" id="price" required
 							class="full form-control"
-							oninput="this.value = this.value.replace(/[^0-9]/g, '');">원</td>
+							oninput="this.value = this.value.replace(/[^0-9]/g, '');"></td>
 					</tr>
 					<th>링크</th>
 					<td><input type="text" name="url" id="url" required
@@ -74,8 +74,8 @@
 				</div>
 				<button type="button" class="btn btn-secondary"
 					onclick="location.href='/trip/hotdeal/list';">돌아가기</button>
-				<input type="hidden" name="${_csrf.parameterName}"
-					value="${_csrf.token}">
+				<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
+
 			</form>
 		</div>
 	</div>
