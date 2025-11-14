@@ -44,12 +44,14 @@
 			</c:if>
 			<c:forEach items="${list}" var="dto">
 				<tr>
+					
 					<td>${dto.seq}</td>
+					
 					<td><a
 						href="/trip/hotdeal/view?seq=${dto.seq}&column=${map.column}&word=${map.word}">
 							<c:if test="${dto.img != null}">
 								<img
-									src="${pageContext.request.contextPath}/resources/img/hotdeal/${dto.img}"
+									src="${pageContext.request.contextPath}/upload/${dto.img}"
 									id="imgPlace" class="post-thumb-img"> </c:if> <c:if test="${dto.img == null}">
 								<img
 									src="${pageContext.request.contextPath}/resources/img/hotdeal/default.png"

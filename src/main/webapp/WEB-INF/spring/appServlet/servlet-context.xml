@@ -14,7 +14,7 @@
 
 	<!-- 정적 리소스 매핑 -->
 	<resources mapping="/resources/**" location="/resources/" />
-
+	<resources mapping="/upload/**" location="file:///C:/tripbear/" />
 	<!-- 외부 프로퍼티 설정 -->
 	<context:property-placeholder location="classpath:application.properties" />
 	

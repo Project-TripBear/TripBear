@@ -1,5 +1,6 @@
 package com.project.trip.board.hotdeal.controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.http.ResponseEntity;
@@ -261,7 +263,6 @@ public class HotDealController {
 	    public String addForm() {
 	        return "board.hotdeal.add"; // src/main/webapp/WEB-INF/views/board/add.jsp 와 매칭
 	    }
-
 	    @PostMapping("/hotdeal/add")
 	    public String addPost(
 	            @RequestParam("subject") String subject,
@@ -272,6 +273,7 @@ public class HotDealController {
 	            @RequestParam("itemname") String itemname,
 	            @RequestParam("price") String price,
 	            @RequestParam("url") String url,
+	            HttpServletRequest request, // <-- 1. (추가) 파일 경로를 얻기 위해 추가
 	            Authentication auth,
 	            Model model) throws IOException {
 
@@ -297,10 +299,24 @@ public class HotDealController {
 	        if (result > 0) {
 	        	Long hotdealId = Long.parseLong(mapper.selectRecentSeq(dto)); 
 	            int imgResultSum = 0;
+
+	            String realPath = "C:/tripbear";
+	            File uploadDir = new File(realPath);
+	            if (!uploadDir.exists()) {
+	                uploadDir.mkdirs(); // 폴더가 없으면 생성
+	            }
 	            int imageSeq = 1; // 이미지 순서 컬럼 값(필요시)
 	            for (MultipartFile imgFile : imgFiles) {
 	            	 if (imgFile != null && !imgFile.isEmpty()) {
-	                     String savedFileName = imgFile.getOriginalFilename();
+	                     //String savedFileName = imgFile.getOriginalFilename();
+	                     
+	                  // 3-1. 고유한 파일명 생성 (예: 1678886400000_image.jpg)
+	                        String originalFilename = imgFile.getOriginalFilename();
+	                        String savedFileName = System.currentTimeMillis() + "_" + originalFilename; 
+
+	                        // 3-2. 위에서 설정한 경로(uploadDir)에 실제 파일 저장
+	                        File dest = new File(uploadDir, savedFileName);
+	                        imgFile.transferTo(dest);
 	                     
 	                     Map<String, Object> param = new HashMap<>();
 	                     param.put("hotdealId", hotdealId);

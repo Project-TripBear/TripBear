@@ -160,7 +160,7 @@ WHERE hotdeal_id = #{seq}
 
     <insert id="insertBoardImage" parameterType="map">
   INSERT INTO tblHotDealImage (hotdeal_image_id, hotdeal_id, hotdeal_image_url, hotdeal_image_seq)
-  VALUES (seqHotDealImage.nextVal, #{hotdealId}, #{img}, #{hotdealImageSeq})
+  VALUES (seqHotDealImage.nextVal, #{hotdealId}, #{img, jdbcType=VARCHAR}, #{hotdealImageSeq})
 </insert>
 
 <select id="selectImages" parameterType="string" resultType="com.project.trip.board.hotdeal.model.HotDealImageDTO">

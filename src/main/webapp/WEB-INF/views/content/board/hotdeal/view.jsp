@@ -29,12 +29,15 @@
             <span>상태: ${dto.status}</span>
         </div>
     </div>
-    <hr class="post-divider"> <div class="images post-images"> <c:forEach var="img" items="${images}">
-            <div class="image-item">
-                <img src="/trip/resources/upload/${img.hotdealImageUrl}" 
-                     alt="게시글 이미지" class="post-image-thumb"> </div>
-        </c:forEach>
-    </div>
+    <hr class="post-divider"> 
+   <div class="images post-images"> 
+    <c:forEach var="img" items="${images}">
+        <div class="image-item">
+            <img src="${pageContext.request.contextPath}/upload/${img.hotdealImageUrl}" 
+                 alt="게시글 이미지" class="post-image-thumb">
+        </div>
+    </c:forEach>
+</div>
     <div class="post-content">
         ${dto.content}
     </div>

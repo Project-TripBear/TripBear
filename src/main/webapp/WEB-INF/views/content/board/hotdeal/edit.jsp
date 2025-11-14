@@ -28,9 +28,11 @@
                     <td>
                         <div class="existing-images-group"> 
                             <c:forEach var="img" items="${images}">
-                                <div class="image-item-edit"> <img src="/trip/resources/upload/${img.hotdealImageUrl}" alt="기존 이미지" class="existing-thumb"> <label class="delete-label">
+                                <div class="image-item-edit">             <img src="${pageContext.request.contextPath}/upload/${img.hotdealImageUrl}"> 
+<label class="delete-label">
                                         <input type="checkbox" name="deleteImages" value="${img.hotdealImageId}">
                                         삭제
+
                                     </label>
                                 </div>
                             </c:forEach>
@@ -39,11 +41,13 @@
                             </c:if>
                         </div>
                     </td>
-                </tr>                 
+                </tr>
+                 
                 <tr>
                     <th>이미지 추가</th>
                     <td><input type="file" name="imgs" class="full form-control-file" accept="image/*" multiple></td>
-                </tr> <tr>
+                </tr> 
+				<tr>
                     <th>핫딜아이템 이름</th>
                     <td><input type="text" name="itemname" id="itemname" required class="full form-control" value="${dto.itemName}"></td>
                 </tr>
