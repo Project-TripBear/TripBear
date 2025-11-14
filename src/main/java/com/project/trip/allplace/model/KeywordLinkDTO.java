@@ -13,5 +13,5 @@ public class KeywordLinkDTO {
 
     private long placeId;    // (FK: tblPlace 참조)
     private long keywordId;  // (FK: tblKeyword 참조)
-    
+
 }
