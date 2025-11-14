@@ -3348,11 +3348,15 @@ main {
 /* 3. 하단 영역 (검색, 페이지바, 쓰기 버튼) */
 .board-footer-container {
     display: flex;
-    flex-direction: column;
     align-items: center; 
+    
+    /* ❗️ 아래 2줄을 추가합니다 ❗️ */
+    flex-wrap: wrap; /* 👈 2줄로 나눌 수 있게 함 */
+    justify-content: space-between; /* 👈 1번째 줄 양쪽 정렬 */
+
     margin-top: 40px;
     width: 100%;
-    max-width: 1000px; /* 테이블과 동일한 너비 */
+    max-width: 1000px;
     margin-left: auto;
     margin-right: auto;
 }
@@ -3362,7 +3366,9 @@ main {
     display: flex;
     gap: 8px;
     align-items: center;
-    margin-bottom: 20px;
+    
+    order: 1;
+    
 }
 .board-search-form .form-control-select,
 .board-search-form .form-control-input {
@@ -3395,18 +3401,27 @@ main {
 
 /* 쓰기 버튼 */
 .write-button-group {
-    width: 100%;
+   /*  width: 100%;
     max-width: 1000px;
-    text-align: right; /* 오른쪽 정렬 */
-    margin-top: -65px; /* 페이지바 위로 겹치도록 조정 (선택 사항) */
-    margin-bottom: 20px;
+    text-align: right; */ /* 오른쪽 정렬 */
+/*     margin-top: -65px; 페이지바 위로 겹치도록 조정 (선택 사항)
+ */   /*  margin-bottom: 20px;
+ margin-left: 20px; */
+/*  margin-left: auto; */
+ order: 2;
 }
 
 /* 페이지바 */
 .pagebar-container {
+
     text-align: center;
-    margin-top: 30px;
-    order: 2; /* 쓰기 버튼과 겹치지 않게 하기 위해 순서 변경 */
+    
+    /* ❗️ flex-grow: 1, order 등 이전 속성 삭제 ❗️ */
+    
+    /* ❗️ 아래 3줄을 추가합니다 ❗️ */
+    order: 3; /* 👈 2번째 줄로 보냄 */
+    width: 100%; /* 👈 2번째 줄을 꽉 채움 */
+    margin-top: 20px; /* 👈 윗줄과 간격 */
 }
 
 
