@@ -15,7 +15,7 @@ public class RoutePostCommentServiceImpl implements RoutePostCommentService {
     private RoutePostCommentMapper commentMapper;
 
     @Override
-    public List<RoutePostCommentDTO> list(String routepostId) {
+    public List<RoutePostCommentDTO> list(int routepostId) {
         return commentMapper.list(routepostId);
     }
 
@@ -25,12 +25,17 @@ public class RoutePostCommentServiceImpl implements RoutePostCommentService {
     }
 
     @Override
-    public int del(String routepostCommentId) {
+    public int del(int routepostCommentId) {
         return commentMapper.del(routepostCommentId);
     }
 
     @Override
-    public int count(String routepostId) {
+    public int count(int routepostId) {
         return commentMapper.count(routepostId);
+    }
+    
+    @Override
+    public int edit(RoutePostCommentDTO dto) { // ✅ 추가
+        return commentMapper.edit(dto);
     }
 }

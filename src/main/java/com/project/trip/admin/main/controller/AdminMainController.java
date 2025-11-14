@@ -38,10 +38,8 @@ public class AdminMainController {
      * ▼▼▼ 이 메서드를 추가했습니다! ▼▼▼
      * 어드민 로그인 폼 페이지를 보여주는 메서드 (GET 요청)
      */
-    @GetMapping("/login")
+    @GetMapping("/loginPage")
     public String adminLoginForm() {
-        
-        // /WEB-INF/views/admin/login.jsp 파일을 보여주라는 의미
         return "admin/admin_login";
     }
-}
+}	

@@ -16,7 +16,7 @@ public class HealthCareServiceImpl implements HealthCareService{
 	@Autowired
 	private AiMapper aimapper;
 	
-	private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-DD");
+	private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 	
 	@Override
 	public void saveHealthCareLog(long userId, double userWeight, RouteStopDTO stop, LocalDate tripStartDate) {
@@ -56,8 +56,8 @@ public class HealthCareServiceImpl implements HealthCareService{
 		aimapper.insertHealthCareLog(logDTO);
 		
 		System.out.println(String.format(
-				"[HealthCareService] 헬스케어 로그 저장: StopID=%d, 날짜=%s, 칼로리=%.1f kcal", 
-				stop.getAiRouteId(), logDTO.getHealthcareDate(), caloriesBurned
+				"[HealthCareService] 헬스케어 로그 저장: RouteID=%d, StopId= %d, 날짜=%s, 칼로리=%.1f kcal", 
+				stop.getAiRouteId(), stop.getAiRouteStopId(),logDTO.getHealthcareDate(), caloriesBurned
 		));
 		
 	}

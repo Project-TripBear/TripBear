@@ -1,79 +1,92 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:security="http://www.springframework.org/schema/security"
-       xsi:schemaLocation="
-        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd
-        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <!-- 공통 Bean -->
-    <bean id="customAccessDeniedHandler" class="com.project.trip.auth.CustomAccessDeniedHandler" />
-    <bean id="customLoginSuccessHandler" class="com.project.trip.auth.CustomLoginSuccessHandler" />
-    <bean id="customLoginFailureHandler" class="com.project.trip.auth.CustomLoginFailureHandler" />
-    <bean id="customUserDetailsService" class="com.project.trip.auth.CustomUserDetailsService" />
+	<beans xmlns="http://www.springframework.org/schema/beans"
+	       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	       xmlns:security="http://www.springframework.org/schema/security"
+	       xsi:schemaLocation="
+	        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd
+	        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	
+	    <!-- 공통 Bean -->
+	    <bean id="customAccessDeniedHandler" class="com.project.trip.auth.CustomAccessDeniedHandler" />
+	    <bean id="customLoginSuccessHandler" class="com.project.trip.auth.CustomLoginSuccessHandler" />
+	    <bean id="customLoginFailureHandler" class="com.project.trip.auth.CustomLoginFailureHandler" />
+	    <bean id="customUserDetailsService" class="com.project.trip.auth.CustomUserDetailsService" />
+	
+	    <bean id="customAdminLoginSuccessHandler" class="com.project.trip.admin.auth.controller.CustomAdminLoginSuccessHandler" />
+	    <bean id="customAdminLoginFailureHandler" class="com.project.trip.admin.auth.controller.CustomAdminLoginFailureHandler" />
+	    <bean id="customAdminUserDetailsService" class="com.project.trip.admin.auth.service.CustomAdminUserDetailsService" />
+	
+	    <bean id="bCryptPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" />
+		
+		<!-- restapi 보안 구윤추가 -->
+		<security:http pattern="/api/**" security="none" />
 
-    <bean id="customAdminLoginSuccessHandler" class="com.project.trip.admin.auth.controller.CustomAdminLoginSuccessHandler" />
-    <bean id="customAdminLoginFailureHandler" class="com.project.trip.admin.auth.controller.CustomAdminLoginFailureHandler" />
-    <bean id="customAdminUserDetailsService" class="com.project.trip.admin.auth.service.CustomAdminUserDetailsService" />
+		<security:http pattern="/admin/**">
+	
+	<!-- 관리자용  Security 설정 -->
+	    <security:intercept-url pattern="/admin/loginPage" access="permitAll" />
 
-    <bean id="bCryptPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" />
+	<!--ai 관련기능 권한 추가(구윤) -->
+		<security:intercept-url pattern="trip/ai/**" access="hasAuthority('ACTIVE')" />	
+    
+    <!-- 그 외 모든 /admin/** 는 관리자 권한 필요 -->
+    <security:intercept-url pattern="/admin/**" access="hasAuthority('ROLE_ADMIN')" />
 
-    <!-- 관리자용 Security 설정 -->
-    <security:http pattern="/admin/**">
-        <security:intercept-url pattern="/admin/login" access="permitAll" />
-        <security:intercept-url pattern="/admin/**" access="hasRole('ROLE_ADMIN')" />
+    <security:access-denied-handler ref="customAccessDeniedHandler"/>
 
-        <security:access-denied-handler ref="customAccessDeniedHandler"/>
 
-        <security:logout logout-url="/admin/logout"
-                         invalidate-session="true"
-                         logout-success-url="/admin/login" />
+    <security:logout logout-url="/admin/logout"
+                     invalidate-session="true"
+                     logout-success-url="/admin/loginPage" />
 
-        <security:form-login login-page="/admin/login"
-                             login-processing-url="/admin/login_proc"
-                             authentication-success-handler-ref="customAdminLoginSuccessHandler"
-                             authentication-failure-handler-ref="customAdminLoginFailureHandler"
-                             username-parameter="username"
-                             password-parameter="password"/>
-    </security:http>
+    <security:form-login login-page="/admin/loginPage"
+                         login-processing-url="/admin/login_proc"
+                         authentication-success-handler-ref="customAdminLoginSuccessHandler"
+                         authentication-failure-handler-ref="customAdminLoginFailureHandler"
+                         username-parameter="username"
+                         password-parameter="password"/>
+</security:http>
 
-    <!-- 일반 사용자용 Security 설정 -->
-    <security:http>
-        <security:intercept-url pattern="/resources/**" access="permitAll" />
-        <security:intercept-url pattern="/member/login" access="permitAll" />
-        <security:intercept-url pattern="/" access="permitAll" />
-        
-        <security:intercept-url pattern="/findboard/report**" access="hasAuthority('ACTIVE')" />
-      
-        <security:intercept-url pattern="/ai/plan" access="permitAll" />
-		    <security:intercept-url pattern="/ai/generate" access="permitAll" />
-		    <security:intercept-url pattern="/ai/result" access="permitAll" />
+	    <!-- 일반 사용자용 Security 설정 -->
+	    <security:http>
+	        <security:intercept-url pattern="/resources/**" access="permitAll" />
+	        <security:intercept-url pattern="/member/login" access="permitAll" />
+	        <security:intercept-url pattern="/" access="permitAll" />
+	        
+	        <security:intercept-url pattern="/findboard/report**" access="hasAuthority('ACTIVE')" />
+	      
+	        <security:intercept-url pattern="/ai/plan" access="permitAll" />
+			    <security:intercept-url pattern="/ai/generate" access="permitAll" />
+			    <security:intercept-url pattern="/ai/result" access="permitAll" />
+	
+	        <security:intercept-url pattern="/member/mypage" access="hasAuthority('ACTIVE')" />
+	        <security:intercept-url pattern="/*/add" access="hasAuthority('ACTIVE')" />
+	        <security:intercept-url pattern="/*/edit" access="hasAuthority('ACTIVE')" />
+	        <security:intercept-url pattern="/*/del" access="hasAuthority('ACTIVE')" />
+	
+	        <security:access-denied-handler ref="customAccessDeniedHandler"/>
+	
 
-        <security:intercept-url pattern="/member/mypage" access="hasAuthority('ACTIVE')" />
-        <security:intercept-url pattern="/*/add" access="hasAuthority('ACTIVE')" />
-        <security:intercept-url pattern="/*/edit" access="hasAuthority('ACTIVE')" />
-        <security:intercept-url pattern="/*/del" access="hasAuthority('ACTIVE')" />
+	        <security:logout logout-url="/member/logout"
+	                         invalidate-session="true"
+	                         logout-success-url="/" />
+	
+	        <security:form-login login-page="/member/login"
+	                             login-processing-url="/login"
+	                             authentication-success-handler-ref="customLoginSuccessHandler"
+	                             authentication-failure-handler-ref="customLoginFailureHandler"/>
+	    </security:http>
+	
+	    <!-- 관리자, 사용자 인증 매니저 통합 -->
+	    <security:authentication-manager>
+	        <security:authentication-provider user-service-ref="customAdminUserDetailsService">
+	            <security:password-encoder ref="bCryptPasswordEncoder" />
+	        </security:authentication-provider>
+	        <security:authentication-provider user-service-ref="customUserDetailsService">
+	            <security:password-encoder ref="bCryptPasswordEncoder" />
+	        </security:authentication-provider>
+	    </security:authentication-manager>
+	
+	</beans>
 
-        <security:access-denied-handler ref="customAccessDeniedHandler"/>
-
-        <security:logout logout-url="/member/logout"
-                         invalidate-session="true"
-                         logout-success-url="/" />
-
-        <security:form-login login-page="/member/login"
-                             login-processing-url="/login"
-                             authentication-success-handler-ref="customLoginSuccessHandler"
-                             authentication-failure-handler-ref="customLoginFailureHandler"/>
-    </security:http>
-
-    <!-- 관리자, 사용자 인증 매니저 통합 -->
-    <security:authentication-manager>
-        <security:authentication-provider user-service-ref="customAdminUserDetailsService">
-            <security:password-encoder ref="bCryptPasswordEncoder" />
-        </security:authentication-provider>
-        <security:authentication-provider user-service-ref="customUserDetailsService">
-            <security:password-encoder ref="bCryptPasswordEncoder" />
-        </security:authentication-provider>
-    </security:authentication-manager>
-
-</beans>

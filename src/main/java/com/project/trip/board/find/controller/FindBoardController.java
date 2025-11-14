@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-// ★★★ [삭제] MultipartFile 관련 Import 제거 ★★★
-// ★★★ [삭제] @Value 관련 Import 제거 ★★★
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.security.core.Authentication;
+// ★★★ 관리자 계정 처리용 Spring Security 기본 User 객체 import ★★★
+import org.springframework.security.core.userdetails.User; 
 
 import com.project.trip.board.find.model.findboardDTO;
 import com.project.trip.board.find.model.findcommentDTO;
@@ -20,38 +20,49 @@ import com.project.trip.board.find.service.FindBoardService;
 import com.project.trip.mypage.model.CustomUser;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j; // 로깅을 위해 추가
+import lombok.extern.slf4j.Slf4j; 
 
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/findboard")
-@Slf4j // 로깅 활성화
+@Slf4j 
 public class FindBoardController {
 
     private final FindBoardService findBoardService;
 
-    // ★★★ [핵심 수정] 로그인 사용자 ID를 Integer 타입으로 안전하게 가져오는 유틸리티 메서드 ★★★
+    // ★★★ [ClassCastException 최종 수정] 관리자/일반/비로그인 모두 안전하게 처리 ★★★
     private Integer getLoggedInUserId(Authentication authentication) {
         if (authentication == null || authentication.getPrincipal() == null) {
-            return null; // 비로그인 상태
+            return null; // 비로그인 시
         }
         
-        CustomUser customUser = (CustomUser) authentication.getPrincipal();
-        // UserDTO.seq는 String 타입이므로 getUdto().getSeq() 사용
-        String seqStr = customUser.getUdto().getSeq(); 
+        Object principal = authentication.getPrincipal();
+        String seqStr = null; // ★★★ [수정] 변수 한 번만 선언 ★★★
+        
+        // 1. 일반 사용자 (CustomUser) 타입인 경우
+        if (principal instanceof CustomUser) {
+            CustomUser customUser = (CustomUser) principal;
+            seqStr = customUser.getUdto().getSeq(); // ★★★ [수정] 재할당 (String 타입 제거) ★★★
+            
+        // 2. 관리자 (Spring Security 기본 User) 타입인 경우
+        } else if (principal instanceof User) {
+            User user = (User) principal;
+            // 관리자 ID(seq)가 user.getUsername()에 저장되어 있다고 가정
+            seqStr = user.getUsername(); 
+        } else {
+            // 기타 타입 (익명 사용자 등)
+            return null;
+        }
         
         if (seqStr == null || seqStr.trim().isEmpty()) {
-            // seq 값이 없거나 공백인 경우, 오류 발생 방지를 위해 null 반환
-            log.warn("Authentication principal exists, but user ID (seq) is null or empty.");
-            return null; 
+            return null;
         }
         
         try {
-            // String을 Integer로 변환 시도 (NumberFormatException 방지)
-            return Integer.parseInt(seqStr.trim()); 
+            // 추출된 String ID를 Integer로 변환
+            return Integer.parseInt(seqStr.trim());
         } catch (NumberFormatException e) {
-            // seq에 숫자가 아닌 값이 들어온 경우
-            log.error("Failed to parse user ID (seq) '{}' to Integer.", seqStr, e);
+            log.error("Failed to parse user ID (seq) '{}' to Integer. Check Admin UserDetails Service.", seqStr, e);
             return null; 
         }
     }
@@ -64,7 +75,6 @@ public class FindBoardController {
             @RequestParam(value = "searchType", required = false) String searchType,
             @RequestParam(value = "searchKeyword", required = false) String searchKeyword
     ) {
-        // ★★★ [목록 출력 오류 해결] 서비스 호출 및 결과 Map을 Model에 추가 ★★★
         Map<String, Object> resultMap = findBoardService.getPostList(currentPage, searchType, searchKeyword);
         
         model.addAttribute("list", resultMap.get("list"));
@@ -85,7 +95,6 @@ public class FindBoardController {
     @PostMapping("/add")
     public String addFindBoardProcess(
             findboardDTO dto, 
-            // ★★★ [삭제] @RequestParam("attachFile") MultipartFile file 제거 ★★★
             Authentication authentication, 
             RedirectAttributes rttr) {
         
@@ -93,13 +102,12 @@ public class FindBoardController {
         
         if (userId == null) {
             rttr.addFlashAttribute("msg", "로그인 정보가 유효하지 않아 게시글을 등록할 수 없습니다.");
-            return "redirect:/login"; // 비로그인 시 로그인 페이지로 리다이렉트 (필요한 경우)
+            return "redirect:/login"; 
         }
         
-        // DTO의 user_id는 String이므로, Integer를 String으로 변환하여 설정
         dto.setUser_id(String.valueOf(userId)); 
         
-        findBoardService.addPost(dto); // ★★★ [삭제] 파일/키워드 처리 로직 제거됨 ★★★
+        findBoardService.addPost(dto); 
         rttr.addFlashAttribute("msg", "게시글이 등록되었습니다.");
         return "redirect:/findboard/list";
     }
@@ -108,7 +116,6 @@ public class FindBoardController {
     @GetMapping("/view")
     public String viewFindBoard(@RequestParam("seq") int boardSeq, Model model, Authentication authentication) {
         
-        // ★★★ [수정] 안전 메서드 사용: Integer 타입으로 좋아요/스크랩 확인용 userId 전달 ★★★
         Integer userId = getLoggedInUserId(authentication); 
         
         findboardDTO dto = findBoardService.getPostDetail(boardSeq, userId);
@@ -120,9 +127,11 @@ public class FindBoardController {
         return "find.view";
     }
 
-    // --- 4-1. 게시글 수정 GET ---
     @GetMapping("/edit")
-    public String editFindBoardForm(@RequestParam("seq") int boardSeq, Model model, Authentication authentication, RedirectAttributes rttr) {
+    public String editFindBoardForm(@RequestParam("seq") int boardSeq, 
+                                    Model model, 
+                                    Authentication authentication, 
+                                    RedirectAttributes rttr) {
         
         Integer userId = getLoggedInUserId(authentication);
 
@@ -132,8 +141,12 @@ public class FindBoardController {
         }
 
         findboardDTO dto = findBoardService.getPostById(boardSeq);
-        
-        // 작성자 ID 비교: DTO의 user_id는 String, userId는 Integer이므로 비교 시 String으로 변환
+
+        if (dto == null) {
+            rttr.addFlashAttribute("msg", "존재하지 않는 게시글입니다.");
+            return "redirect:/findboard/list";
+        }
+
         if (dto.getUser_id() == null || !dto.getUser_id().equals(String.valueOf(userId))) { 
             rttr.addFlashAttribute("msg", "수정 권한이 없습니다.");
             return "redirect:/findboard/view?seq=" + boardSeq;
@@ -142,20 +155,19 @@ public class FindBoardController {
         model.addAttribute("dto", dto);
         return "find.edit";
     }
-
+    
     // --- 4-2. 게시글 수정 POST ---
     @PostMapping("/edit")
     public String editFindBoardProcess(
             findboardDTO dto, 
-            // ★★★ [삭제] @RequestParam("attachFile") MultipartFile newFile 제거 ★★★
             Authentication authentication,
             RedirectAttributes rttr) {
-    	
-    	if (dto == null || dto.getUser_id() == null || dto.getFind_board_id() == 0) {
+        
+        if (dto == null || dto.getUser_id() == null || dto.getFind_board_id() == 0) {
             rttr.addFlashAttribute("msg", "수정 정보가 누락되었습니다.");
             return "redirect:/findboard/list"; 
         }
-        // 작성자 검증을 위해 현재 로그인 ID를 다시 가져옴 (선택 사항이나 보안상 권장)
+        
         Integer sessionUserId = getLoggedInUserId(authentication);
         
         if (sessionUserId == null || !dto.getUser_id().equals(String.valueOf(sessionUserId))) {
@@ -163,10 +175,11 @@ public class FindBoardController {
             return "redirect:/findboard/view?seq=" + dto.getFind_board_id();
         }
         
-        findBoardService.updatePost(dto); // ★★★ [삭제] 파일/키워드 처리 로직 제거됨 ★★★
+        findBoardService.updatePost(dto); 
         rttr.addFlashAttribute("msg", "게시글이 수정되었습니다.");
-        return "redirect:/findboard/view?seq=" + dto.getFind_board_id(); // 👈 이 부분에서 find_board_id가 null이면 NPE 발생    }
+        return "redirect:/findboard/view?seq=" + dto.getFind_board_id(); 
     }
+    
     // --- 5. 게시글 삭제 ---
     @GetMapping("/delete")
     public String deleteFindBoard(@RequestParam("seq") int boardSeq, Authentication authentication, RedirectAttributes rttr) {
@@ -179,7 +192,7 @@ public class FindBoardController {
         }
 
         findboardDTO dto = findBoardService.getPostById(boardSeq);
-        // 작성자 ID 비교
+        
         if (dto.getUser_id() == null || !dto.getUser_id().equals(String.valueOf(userId))) { 
             rttr.addFlashAttribute("msg", "삭제 권한이 없습니다.");
             return "redirect:/findboard/view?seq=" + boardSeq;
@@ -194,7 +207,6 @@ public class FindBoardController {
     @GetMapping("/like")
     public String toggleLike(@RequestParam("seq") int boardSeq, Authentication authentication, RedirectAttributes rttr) {
 
-        // Service/Mapper는 Integer를 요구하므로 Integer 타입으로 사용
         Integer userId = getLoggedInUserId(authentication);
         
         if (userId == null) {
@@ -210,7 +222,6 @@ public class FindBoardController {
     @GetMapping("/scrap")
     public String toggleScrap(@RequestParam("seq") int boardSeq, Authentication authentication, RedirectAttributes rttr) {
 
-        // Service/Mapper는 Integer를 요구하므로 Integer 타입으로 사용
         Integer userId = getLoggedInUserId(authentication);
         
         if (userId == null) {
@@ -221,20 +232,21 @@ public class FindBoardController {
         findBoardService.toggleScrap(boardSeq, userId);
         return "redirect:/findboard/view?seq=" + boardSeq;
     }
- // --- 8. 신고 폼 GET ---
-    @GetMapping("/report") // ★★★ 이 부분이 반드시 @GetMapping 이어야 합니다. ★★★
+    
+    // --- 8. 신고 폼 GET ---
+    @GetMapping("/report") 
     public String reportForm(@RequestParam("boardSeq") int boardSeq, @RequestParam("reportedUserId") int reportedUserId, Model model) {
-        // ... (필요한 모델 추가 로직)
         model.addAttribute("boardSeq", boardSeq);
         model.addAttribute("reportedUserId", reportedUserId);
         return "find.report"; 
     }
+
     // --- 8-2. 신고 POST ---
     @PostMapping("/report")
     public String reportProcess(@RequestParam int boardSeq, 
                                 @RequestParam int reportedUserId, 
                                 @RequestParam String reason, 
-                                Authentication authentication) { // RedirectAttributes 제거
+                                Authentication authentication) { 
         
         Integer reporterId = getLoggedInUserId(authentication);
 
@@ -258,11 +270,9 @@ public class FindBoardController {
         Integer userId = getLoggedInUserId(authentication);
         
         if (userId == null) {
-            // 로그인 필요 시, 처리 방식에 따라 리다이렉트 변경 가능
             return "redirect:/findboard/view?seq=" + dto.getFind_board_id();
         }
         
-        // findcommentDTO의 user_id는 int 타입이므로, Integer를 바로 설정
         dto.setUser_id(userId); 
         findBoardService.addComment(dto);
         
@@ -312,7 +322,4 @@ public class FindBoardController {
         
         return "redirect:/findboard/view?seq=" + boardSeq;
     }
-    
-    // ★★★ [삭제] 12. 키워드 대시보드 관련 메서드 제거 ★★★
-    // @GetMapping("/dashboard") ...
 }
