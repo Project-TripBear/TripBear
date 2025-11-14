@@ -1,6 +1,6 @@
 package com.project.trip.weather.service;
 
-import com.project.trip.AI.model.WeatherDTO;
+import com.project.trip.weather.model.WeatherDTO;
 
 public interface WeatherService {
 	

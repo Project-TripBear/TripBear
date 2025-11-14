@@ -19,14 +19,13 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.project.trip.AI.model.AiRouteRequestDTO;
 import com.project.trip.AI.model.RouteDTO;
-import com.project.trip.AI.model.WeatherDTO;
 import com.project.trip.AI.model.gemini.GeminiApiResponse.Content;
 import com.project.trip.AI.model.gemini.GeminiApiResponse.Part;
+import com.project.trip.weather.model.WeatherDTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @Service
 public class GeminiServiceImpl implements GeminiService {
