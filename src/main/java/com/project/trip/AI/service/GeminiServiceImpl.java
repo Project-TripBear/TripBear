@@ -240,12 +240,24 @@ public class GeminiServiceImpl implements GeminiService {
         // 3. 장소/스탑 공통 규칙
         prompt.append("### 조건 2: 장소 정보 규칙 (매우 중요)\n");
         prompt.append("- stops 배열의 각 원소는 하나의 실제 장소(명소, 카페, 식당 등)입니다.\n");
+        prompt.append("- 이번 여행 도시는 반드시 '부산광역시'입니다.\n");
+        prompt.append("- 모든 장소와 식당은 반드시 '부산광역시' 안에 실제로 존재해야 합니다.\n");
+        prompt.append("- 제주도, 서울, 기타 다른 시/도에 있는 장소/식당을 사용하는 순간, 그 답변은 잘못된 답변입니다.\n\n");
+
         prompt.append("- 각 필드의 규칙은 다음과 같습니다.\n");
         prompt.append("  1. aiRouteDay: 여행 며칠차인지 (1부터 시작하는 정수).\n");
         prompt.append("  2. aiRouteStopOrder: 해당 날짜 내 방문 순서 (1부터 시작하는 정수).\n");
-        prompt.append("  3. aiRouteDescription: **반드시 실제 존재하는 장소명 또는 식당명만 사용.**\n");
-        prompt.append("     절대 '광안리 맛집', '제주 카페거리', '서면 핫플', '부산 전망좋은 카페' 등과 같은 키워드형 장소명을 쓰지 말 것.\n");
-        prompt.append("     반드시 실제 상호명(예: '오조해녀의집', '연돈', '명진전복', '우진해장국') 또는 실재 명소명(예: '사려니숲길', '만장굴')만 사용.\n");
+        prompt.append("  3. aiRouteDescription: **반드시 실제로 존재하는 장소명 또는 식당명만 사용.**\n");
+        prompt.append("     - 예: '광안리해수욕장', '해운대해수욕장', '부산시립미술관', '오륙도스카이워크' 등 실제 명소명.\n");
+        prompt.append("     - 예: '우암돼지국밥', '송정3대국밥', '해운대암소갈비집' 등 실제 식당 상호명.\n");
+        prompt.append("     - 절대 사용하면 안 되는 예시:\n");
+        prompt.append("       * '광안리 맛집', '부산 해녀촌 맛집', '부산 카페거리', '서면 핫플', '부산 전망좋은 카페' 등 키워드형/설명형 명칭\n");
+        prompt.append("       * 'OO 해녀촌', 'OO 맛집', 'OO 카페', 'OO 힐링스팟'처럼 네가 지어낸 것처럼 보이는 가짜 상호명\n");
+        prompt.append("     - '**해녀촌**, **맛집**, **카페거리**, **핫플**, **전망좋은 카페**' 같은 단어가 포함된 상호명을 만들지 마라.\n");
+        prompt.append("     - 실제 존재 여부가 조금이라도 애매한 장소/식당은 절대 사용하지 말 것.\n");
+        prompt.append("     - 확실하지 않을 경우, 전국적으로 잘 알려진 프랜차이즈 체인 중 실제로 존재하는 지점만 사용하려고 노력할 것.\n");
+        prompt.append("       (예: '스타벅스 서면역점', '맥도날드 부산서면점', '투썸플레이스 해운대점' 등 실제 지점명)\n\n");
+
         prompt.append("  4. aiRouteLat / aiRouteLong: 반드시 소수점 6자리로 출력.\n");
         prompt.append("     - 예: 35.123456 / 129.123456 형식\n");
         prompt.append("     - 소수점 5자리 이하, 7자리 이상 절대 금지\n");
@@ -260,6 +272,12 @@ public class GeminiServiceImpl implements GeminiService {
         prompt.append("     첫 번째 장소는 null로 설정하세요.\n");
         prompt.append("  8. restaurantCategory: 식당일 경우 음식 종류(예: '한식', '일식', '샐러드'), 아니면 null.\n");
         prompt.append("  9. 모든 여행일마다 점심/저녁 = EATING 2개 반드시 포함.\n\n");
+
+        prompt.append("### 조건 2-1: 잘못된 지역/가짜 상호 금지 (초강력 규칙)\n");
+        prompt.append("- 부산 여행인데 제주도/서울/타 지역의 장소나 식당을 추천하면 그 답변은 실패입니다.\n");
+        prompt.append("- 실재하지 않는 식당명(예: '부산 해녀촌'처럼 그럴듯하지만 실제로 없는 이름)을 만들어내지 마십시오.\n");
+        prompt.append("- 장소가 실제로 존재하는지 확신이 없다면, **그 장소는 stops 배열에 넣지 말고**, 다른 확실한 장소를 선택하십시오.\n\n");
+
 
         // 4. 예산
         prompt.append("### 조건 3: 예산(budget) 반영\n");
