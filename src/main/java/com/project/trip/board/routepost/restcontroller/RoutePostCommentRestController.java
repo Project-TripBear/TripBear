@@ -17,7 +17,7 @@ public class RoutePostCommentRestController {
 
     // 댓글 목록
     @GetMapping("/list/{routepostId}")
-    public List<RoutePostCommentDTO> list(@PathVariable String routepostId) {
+    public List<RoutePostCommentDTO> list(@PathVariable int routepostId) {
         return commentService.list(routepostId);
     }
 
@@ -26,16 +26,22 @@ public class RoutePostCommentRestController {
     public int add(@RequestBody RoutePostCommentDTO dto) {
         return commentService.add(dto);
     }
+    
+    // 댓글 수정
+    @PutMapping("/edit")
+    public int edit(@RequestBody RoutePostCommentDTO dto) {
+        return commentService.edit(dto);
+    }
 
     // 댓글 삭제
     @DeleteMapping("/del/{commentId}")
-    public int del(@PathVariable("commentId") String commentId) {
+    public int del(@PathVariable("commentId") int commentId) {
         return commentService.del(commentId);
     }
 
     // 댓글 개수
     @GetMapping("/count/{routepostId}")
-    public int count(@PathVariable String routepostId) {
+    public int count(@PathVariable int routepostId) {
         return commentService.count(routepostId);
     }
 }

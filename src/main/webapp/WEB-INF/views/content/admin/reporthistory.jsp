@@ -33,13 +33,13 @@
                 <td>${dto.reportId}</td>
                 
                 <%-- 신고된 게시글 링크 --%>
-                <td>
-                    <c:choose>
-                        <c:when test="${dto.reportTargetType == 'findboard'}">
-                            <a href="${pageContext.request.contextPath}/findboard/view?id=${dto.reportTargetId}" target="_blank">
-                                ${dto.postTitle}
-                            </a>
-                        </c:when>
+              <td>
+				    <c:choose>
+				        <c:when test="${dto.reportTargetType == 'findboard'}">
+				            <a href="${pageContext.request.contextPath}/findboard/view?seq=${dto.reportTargetId}" target="_blank">
+				                ${dto.postTitle}
+				            </a>
+				        </c:when>
                         <c:when test="${dto.reportTargetType == 'question'}">
                             <a href="${pageContext.request.contextPath}/question/view?id=${dto.reportTargetId}" target="_blank">
                                 ${dto.postTitle}

@@ -904,3 +904,84 @@ h1 {
     color: white;
     background-color: var(--primary-color);
 }
+/* ===============================================
+  6. Admin Login Page (관리자 로그인 페이지)
+=============================================== */
+
+/* 전체 레이아웃: 화면 중앙 정렬 */
+.login-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    /* admin_layout의 헤더(70px)가 없으므로 100vh 사용 */
+    min-height: 100vh;
+    background-color: var(--bg-light); /* admin2.css 변수 */
+    font-family: var(--font-main); /* admin2.css 변수 */
+    padding: 2rem;
+    box-sizing: border-box;
+}
+
+/* 로그인 카드: 흰색 박스 */
+.login-card {
+    width: 100%;
+    max-width: 420px; /* 로그인 박스 최대 너비 */
+    padding: 2.5rem 3rem;
+    background-color: var(--content-bg); /* admin2.css 변수 */
+    border-radius: var(--border-radius); /* admin2.css 변수 */
+    box-shadow: var(--box-shadow); /* admin2.css 변수 */
+    text-align: center;
+}
+
+/* 1. 로고 (TripBear) */
+.login-card h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--primary-color); /* admin2.css 변수 */
+    margin-bottom: 0.5rem;
+}
+
+/* (Font Awesome 아이콘 스타일) */
+.login-card h1 i {
+    color: var(--primary-color);
+    margin-right: 0.5rem;
+    font-size: 2.2rem;
+    vertical-align: middle;
+}
+
+/* 2. 부제목 (관리자 페이지) */
+.login-card h2 {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--text-secondary); /* admin2.css 변수 */
+    margin-top: 0;
+    margin-bottom: 2.5rem; /* 폼과의 간격 */
+}
+
+/* 3. 폼 스타일링 */
+.login-card .form-group {
+    margin-bottom: 1.5rem;
+    text-align: left; /* 라벨 좌측 정렬 */
+}
+
+/* 라벨 (admin2.css 스타일 재사용) */
+.login-card .form-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+/* 입력창 (admin2.css 스타일 재사용) */
+.login-card .form-group .form-control {
+    width: 100%;
+    box-sizing: border-box; /* 패딩 포함 너비 100% */
+}
+
+/* 4. 버튼 (admin2.css 스타일 재사용) */
+.login-card .btn.full-width {
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-top: 1rem; /* 폼과의 간격 */
+}

@@ -8,7 +8,7 @@
     <title>AI 추천 여행 루트</title>
     
     <%-- (필요) 이 페이지를 꾸밀 CSS (예: result.css) --%>
-    <%-- <link rel="stylesheet" href="${pageContext.request.contextPath}/asset/css/result.css"> --%>
+	<link rel="stylesheet" href="${pageContext.request.contextPath}/asset/css/result.css">
     
     <%-- (필요) 카카오맵 API 로드 (지도를 표시할 경우) --%>
     <%-- <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=YOUR_KAKAO_APP_KEY"></script> --%>
@@ -21,7 +21,7 @@
             <div style="text-align: center; padding: 100px 20px;">
                 <h2>오류</h2>
                 <p>여행 루트를 불러오는 데 실패했습니다. 다시 시도해주세요.</p>
-                <a href="<c:url value='/ai/plan.do' />">계획 페이지로 돌아가기</a>
+                <a href="<c:url value='/ai/plan' />">계획 페이지로 돌아가기</a>
             </div>
         </c:if>
 
@@ -29,7 +29,7 @@
             <div class="route-header">
                 <h1>${resultRoute.ai_route_title}</h1>
                 <p>
-                    ${resultRoute.ai_route_region} | 
+                    ${resultRoute.ai_route_region} | ß
                     ${resultRoute.ai_route_days}일 | 
                     (${resultRoute.ai_route_startdate} ~ ${resultRoute.ai_route_enddate})
                 </p>

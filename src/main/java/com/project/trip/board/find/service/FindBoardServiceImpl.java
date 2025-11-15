@@ -2,7 +2,6 @@
 
 package com.project.trip.board.find.service;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,12 +9,12 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.project.trip.board.find.mapper.FindBoardMapper;
 import com.project.trip.board.find.model.findboardDTO;
 import com.project.trip.board.find.model.findcommentDTO;
-import com.project.trip.admin.board.model.PagingDTO; // ★★★ [수정] PagingDTO 임포트 ★★★
+import com.project.trip.common.mapper.ReportMapper;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j; // 로깅을 위한 Lombok 추가
 
@@ -26,10 +25,13 @@ public class FindBoardServiceImpl implements FindBoardService {
 
     private final FindBoardMapper mapper;
 
+    private final FindBoardMapper findBoardMapper; // 1. 동행찾기 Mapper
+    private final ReportMapper reportMapper;     // 2. ★★★ [추가] 공용 신고 Mapper
+    
     // ★★★ [추가] 파일 업로드 경로 설정 (프로퍼티 또는 상수) ★★★
-	/*
-	 * @Value("${app.uploadPath}") private String uploadPath;
-	 */
+	
+	 @Value("${app.uploadPath}") private String uploadPath;
+	 
 
     // 1. 목록 조회 및 페이징 (findboardList.java 대체)
     @Override
@@ -153,26 +155,26 @@ public class FindBoardServiceImpl implements FindBoardService {
         }
     }
     
-    // 6. 신고 등록 (reportfindBoard.java 대체)
     @Override
-    @Transactional // 신고 내역 INSERT와 게시글 상태 UPDATE는 하나의 트랜잭션으로 처리
+    @Transactional
     public int addReport(int boardSeq, int reporterId, int reportedUserId, String reason) {
+        
         Map<String, Object> params = new HashMap<>();
         params.put("boardSeq", boardSeq);
         params.put("reporterId", reporterId);
         params.put("reportedUserId", reportedUserId);
         params.put("reason", reason);
+        params.put("report_target_type", "findboard"); // ★★★ [추가] 신고 대상 타입 명시
         
-        // 1. 신고 내역 등록
-        mapper.addReport(params);
+        // 1. [수정] 공용 ReportMapper를 호출하여 신고 내역 등록
+        reportMapper.addReport(params);
         
-        // 2. 게시글 상태 변경
-        mapper.updateReportStatus(boardSeq);
+        // 2. [수정] FindBoardMapper를 호출하여 "동행찾기" 게시판 상태 변경
+        findBoardMapper.updateReportStatus(boardSeq);
         
-        return 1; // 트랜잭션 성공 시
+        return 1; 
     }
-
-
+    
     // ... 나머지 댓글 관련 Service 메서드 구현 생략 ...
     @Override
     public int getCommentAuthor(int commentId) {

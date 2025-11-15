@@ -3,19 +3,22 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
-<%-- 이 페이지 전용 CSS --%>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
 
 <h1><i class="fa-solid fa-magnifying-glass-location"></i> 숙소 상세 정보</h1>
 
 <div class="detail-container">
-    
+
+    <!-- ======================= -->
+    <!-- 객실 이미지 (File Upload) -->
+    <!-- ======================= -->
     <div class="form-section card">
         <h3 class="form-section-title">대표 객실 이미지 (Room Image)</h3>
         <div class="detail-image-wrapper">
             <c:choose>
                 <c:when test="${not empty dto.roomImageUrl}">
-                    <img src="${dto.roomImageUrl}" alt="${dto.roomName} 이미지" class="detail-image">
+                    <img src="${pageContext.request.contextPath}/resources/img/room/${dto.roomImageUrl}"
+                         alt="${dto.roomName} 이미지" class="detail-image">
                 </c:when>
                 <c:otherwise>
                     <div class="detail-image img-error"></div>
@@ -24,6 +27,9 @@
         </div>
     </div>
 
+    <!-- ======================= -->
+    <!-- 객실 기본 정보 -->
+    <!-- ======================= -->
     <div class="form-section card">
         <h3 class="form-section-title">객실 정보 (Room)</h3>
         <div class="detail-grid-2col">
@@ -56,9 +62,26 @@
             </div>
         </div>
     </div>
-    
+
+    <!-- ======================= -->
+    <!-- 숙소 정보 (Place + Accom) -->
+    <!-- ======================= -->
     <div class="form-section card">
         <h3 class="form-section-title">숙소 정보 (Place & Accom)</h3>
+
+        <!-- 숙소 대표 이미지 표시 (File Upload) -->
+        <div class="detail-image-wrapper" style="margin-bottom:20px;">
+            <c:choose>
+                <c:when test="${not empty dto.placeMainImageUrl}">
+                    <img src="${pageContext.request.contextPath}/resources/img/accom/${dto.placeMainImageUrl}"
+                         alt="숙소 대표 이미지" class="detail-image">
+                </c:when>
+                <c:otherwise>
+                    <div class="detail-image img-error"></div>
+                </c:otherwise>
+            </c:choose>
+        </div>
+
         <div class="detail-grid-2col">
             <div class="detail-item">
                 <label>숙소명</label>
@@ -76,10 +99,6 @@
                 <label>숙소 전화번호</label>
                 <p>${dto.accomTel}</p>
             </div>
-            <div class="detail-item">
-                <label>숙소 대표 이미지 URL</label>
-                <p>${dto.placeMainImageUrl}</p>
-            </div>
             <div class="detail-item full-width">
                 <label>숙소 설명</label>
                 <p>${dto.placeDescription}</p>
@@ -94,9 +113,18 @@
             </div>
         </div>
     </div>
-       
+
+    <!-- 버튼 -->
     <div class="button-container">
-        <button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/admin/accom/list'">목록으로</button>
-        <button type="button" class="btn primary" onclick="location.href='${pageContext.request.contextPath}/admin/accom/edit?roomId=${dto.roomId}'">수정하기</button>
+        <button type="button" class="btn"
+                onclick="location.href='${pageContext.request.contextPath}/admin/accom/list'">
+            목록으로
+        </button>
+
+        <button type="button" class="btn primary"
+                onclick="location.href='${pageContext.request.contextPath}/admin/accom/edit?roomId=${dto.roomId}'">
+            수정하기
+        </button>
     </div>
+
 </div>

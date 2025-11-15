@@ -6,6 +6,7 @@
     <meta charset="UTF-8">
     <%-- jQuery 라이브러리를 꼭 추가해주세요 --%>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/mypage.css">
     
     <%-- ▼▼▼ 분리한 CSS 파일을 연결합니다 ▼▼▼ --%>
 
@@ -65,7 +66,7 @@
                         <div class="route-card-item"> <div class="route-item-content" onclick="location.href='/trip/route/userRouteView.do?id=${dto.seq}'">
                                 <div class="route-title">${dto.userroutetitle}</div>
                                 <div class="route-details">
-                                    <span><i class="fas fa-users"></i> 인원수: ${dto.userroutedays}</span>
+                                    <span><i class="fa-solid fa-calendar"></i> 여행일자: ${dto.userroutedays}</span>
                                     <span><i class="far fa-calendar-alt"></i> 시작: ${dto.userroutestartdate}</span>
                                     <span><i class="far fa-calendar-alt"></i> 종료: ${dto.userrouteenddate}</span>
                                 </div>

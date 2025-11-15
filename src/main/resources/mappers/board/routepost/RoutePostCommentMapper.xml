@@ -6,7 +6,7 @@
 <mapper namespace="com.project.trip.board.routepost.mapper.RoutePostCommentMapper">
 
     <!-- 🟩 댓글 목록 -->
-    <select id="list" parameterType="string" resultType="RoutePostCommentDTO">
+    <select id="list" parameterType="int" resultType="RoutePostCommentDTO">
         SELECT 
             c.routepost_comment_id      AS routepostCommentId,
             c.user_id                   AS userId,
@@ -45,14 +45,21 @@
     </insert>
 
     <!-- 🟩 댓글 삭제 (상태 변경) -->
-    <update id="del" parameterType="string">
+    <update id="del" parameterType="int">
         UPDATE tblRoutePostComment
         SET comment_status = 'D'
         WHERE routepost_comment_id = #{routepostCommentId}
     </update>
+    
+    <!-- 댓글 수정  -->
+    <update id="edit" parameterType="RoutePostCommentDTO">
+    UPDATE tblRoutePostComment
+    SET routepost_content = #{routepostContent}
+    WHERE routepost_comment_id = #{routepostCommentId}
+  </update>
 
     <!-- 🟩 댓글 개수 -->
-    <select id="count" parameterType="string" resultType="int">
+    <select id="count" parameterType="int" resultType="int">
         SELECT COUNT(*)
         FROM tblRoutePostComment
         WHERE routepost_id = #{routepostId}

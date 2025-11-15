@@ -13,14 +13,22 @@
             http://www.springframework.org/schema/tx/spring-tx.xsd
             http://www.springframework.org/schema/context 
             http://www.springframework.org/schema/context/spring-context.xsd"> 
-    
-<!--     <context:property-placeholder location="classpath:application.properties" />
- -->
+  
+    <context:property-placeholder location="classpath:application.properties" />
+
+
     <bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
         <property name="driverClassName" value="oracle.jdbc.OracleDriver"/>
         
-        <property name="jdbcUrl" 
-                  value="jdbc:oracle:thin:@TripBearDB_high?tns_admin=C:/dev/Wallet_TripBearDB"/>
+       <!-- 윈도우용 -->
+	<property name="jdbcUrl" 
+          value="jdbc:oracle:thin:@TripBearDB_high?tns_admin=C:/dev/Wallet_TripBearDB"/>
+
+
+	<!-- 맥북용
+	<property name="jdbcUrl" 
+          value="jdbc:oracle:thin:@TripBearDB_high?TNS_ADMIN=/Users/bunohoq/dev/Wallet_TripBearDB"/> -->
+
         
         <property name="username" value="tripbear"/>
         <property name="password" value="Java123456789"/>
@@ -35,16 +43,20 @@
         <constructor-arg ref="hikariConfig"/>
     </bean>
 
-    <bean id="sessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
-        <property name="dataSource" ref="dataSource"/>
-        
-        <property name="mapperLocations" value="classpath:mappers/**/*.xml"/>
-        <property name="configLocation" value="classpath:config/mybatis-config.xml"/>
-    </bean>
-    
-    <mybatis-spring:scan base-package="com.project.trip.**.mapper"/>
-        
-    <context:component-scan base-package="com.project.trip">
+	
+
+
+	<bean id="sessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"/>
+		<property name="mapperLocations" value="classpath:mappers/**/*.xml"/>
+		<property name="configLocation" value="classpath:config/mybatis-config.xml"/>
+	</bean>
+	
+	<mybatis-spring:scan base-package="com.project.trip.**.mapper"/>
+		
+	
+	<context:component-scan base-package="com.project.trip">
+
         <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
     </context:component-scan>
     
@@ -56,5 +68,4 @@
 
     <tx:annotation-driven transaction-manager="transactionManager"/>
 	
-    
 </beans>

@@ -108,12 +108,12 @@
                 <div class="accom-card">
                     <div class="accom-image-wrapper">
                         <c:choose>
-                            <c:when test="${not empty dto.roomImage}">
-                                <img src="${pageContext.request.contextPath}/resources/upload/accom/${dto.roomImage}" 
-                                     alt="${dto.roomName} 이미지" 
-                                     class="accom-image"
-                                     onerror="this.parentElement.classList.add('img-error'); this.style.display='none';">
-                            </c:when>
+                          <c:when test="${not empty dto.roomImage}">
+						    <img src="${pageContext.request.contextPath}/resources/img/room/${dto.roomImage}"
+						         alt="${dto.roomName} 이미지"
+						         class="accom-image"
+						         onerror="this.parentElement.classList.add('img-error'); this.style.display='none';">
+								</c:when>
                             <c:otherwise>
                                 <div class="accom-image img-error"></div>
                             </c:otherwise>

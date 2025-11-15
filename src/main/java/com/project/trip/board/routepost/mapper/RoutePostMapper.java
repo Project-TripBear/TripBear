@@ -9,10 +9,10 @@ import com.project.trip.board.routepost.model.RoutePostImageDTO;
 public interface RoutePostMapper {
 	
 	// 게시글 목록
-    List<RoutePostDTO> list();
+    List<RoutePostDTO> list(Map<String, Object> map);
 
     // 게시글 상세보기
-    RoutePostDTO get(String routepostId);
+    RoutePostDTO get(int routepostId);
 
     // 게시글 등록
     int add(RoutePostDTO dto);
@@ -21,33 +21,37 @@ public interface RoutePostMapper {
     int edit(RoutePostDTO dto);
 
     // 게시글 삭제
-    int del(String routepostId);
+    int del(int routepostId);
 
     // 게시글 이미지 목록
-    List<RoutePostImageDTO> getImages(String routepostId);
+    List<RoutePostImageDTO> getImages(int routepostId);
 
     // 이미지 등록
     int addImage(RoutePostImageDTO imgDto);
 
     // 이미지 삭제
-    int delImages(String routepostId);
+    int delImages(int routepostId);
     
     // 조회수 증가
-    void increaseViewCount(String routepostId);
+    void increaseViewCount(int routepostId);
     
-    //좋아요
+    // ===== 좋아요 =====
     int checkLike(Map<String, Object> map);
     int addLike(Map<String, Object> map);
     int removeLike(Map<String, Object> map);
-    
-    //스크랩
+
+    // ===== 스크랩 =====
     int checkScrap(Map<String, Object> map);
     int addScrap(Map<String, Object> map);
     int removeScrap(Map<String, Object> map);
 
-	int isLiked(Map<String, Object> map);
+    // 전체 삭제
+    int deleteAllComments(int routepostId);
+    int deleteAllLikes(int routepostId);
+    int deleteAllScrap(int routepostId);
+    int deleteAllImages(int routepostId);
 
-	int isScrapped(Map<String, Object> map);
+	void deleteImageById(int imageId);
 
 
 

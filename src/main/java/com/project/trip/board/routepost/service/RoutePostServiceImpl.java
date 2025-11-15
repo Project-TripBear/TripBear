@@ -1,4 +1,3 @@
-
 package com.project.trip.board.routepost.service;
 
 import java.util.List;
@@ -6,25 +5,29 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.project.trip.board.routepost.mapper.RoutePostMapper;
 import com.project.trip.board.routepost.model.RoutePostDTO;
 import com.project.trip.board.routepost.model.RoutePostImageDTO;
-import com.project.trip.board.routepost.mapper.RoutePostMapper;
 
 @Service
 public class RoutePostServiceImpl implements RoutePostService {
 
     @Autowired
     private RoutePostMapper mapper;
+    
+    @Autowired
+    private RoutePostCommentService commentMapper;
 
     // ===== 게시글 =====
     @Override
-    public List<RoutePostDTO> list() {
-        return mapper.list();
+    public List<RoutePostDTO> list(Map<String, Object> map) {
+        return mapper.list(map); //
     }
 
     @Override
-    public RoutePostDTO get(String routepostId) {
+    public RoutePostDTO get(int routepostId) {
         return mapper.get(routepostId);
     }
 
@@ -39,15 +42,29 @@ public class RoutePostServiceImpl implements RoutePostService {
     }
 
     @Override
-    public int del(String routepostId) {
-        // 게시글 삭제 전 이미지 삭제 (연관 데이터 정리)
-        mapper.delImages(routepostId);
+    @Transactional
+    public int del(int routepostId) {
+
+        // 1) 댓글 삭제
+        mapper.deleteAllComments(routepostId);
+
+        // 2) 좋아요 삭제
+        mapper.deleteAllLikes(routepostId);
+
+        // 3) 스크랩 삭제
+        mapper.deleteAllScrap(routepostId);
+
+        // 4) 이미지 삭제
+        mapper.deleteAllImages(routepostId);
+
+        // 5) 마지막으로 게시글 삭제
         return mapper.del(routepostId);
     }
 
+
     // ===== 이미지 =====
     @Override
-    public List<RoutePostImageDTO> getImages(String routepostId) {
+    public List<RoutePostImageDTO> getImages(int routepostId) {
         return mapper.getImages(routepostId);
     }
 
@@ -57,45 +74,55 @@ public class RoutePostServiceImpl implements RoutePostService {
     }
 
     @Override
-    public int delImages(String routepostId) {
+    public int delImages(int routepostId) {
         return mapper.delImages(routepostId);
     }
 
     // ===== 조회수 =====
     @Override
-    public void increaseViewCount(String routepostId) {
+    public void increaseViewCount(int routepostId) {
         mapper.increaseViewCount(routepostId);
     }
 
-    // ===== 좋아요 =====
+ // ===== 좋아요 토글 =====
     @Override
-    public boolean isLiked(Map<String, Object> map) {
-        return mapper.isLiked(map) > 0;
+    public boolean toggleLike(Map<String, Object> map) {
+        if (mapper.checkLike(map) > 0) {
+            mapper.removeLike(map);
+            return false;   // 좋아요 취소됨
+        } else {
+            mapper.addLike(map);
+            return true;    // 좋아요 추가됨
+        }
+    }
+
+    // ===== 스크랩 토글 =====
+    @Override
+    public boolean toggleScrap(Map<String, Object> map) {
+        if (mapper.checkScrap(map) > 0) {
+            mapper.removeScrap(map);
+            return false;   // 스크랩 취소됨
+        } else {
+            mapper.addScrap(map);
+            return true;    // 스크랩 추가됨
+        }
+    }
+    
+    @Override
+    public boolean checkLike(Map<String, Object> map) {
+        return mapper.checkLike(map) > 0;
     }
 
     @Override
-    public int addLike(Map<String, Object> map) {
-        return mapper.addLike(map);
+    public boolean checkScrap(Map<String, Object> map) {
+        return mapper.checkScrap(map) > 0;
+    }
+    
+    @Override
+    public void deleteImageById(int imageId) {
+        mapper.deleteImageById(imageId);
     }
 
-    @Override
-    public int removeLike(Map<String, Object> map) {
-        return mapper.removeLike(map);
-    }
 
-    // ===== 스크랩 =====
-    @Override
-    public boolean isScrapped(Map<String, Object> map) {
-        return mapper.isScrapped(map) > 0;
-    }
 
-    @Override
-    public int addScrap(Map<String, Object> map) {
-        return mapper.addScrap(map);
-    }
-
-    @Override
-    public int removeScrap(Map<String, Object> map) {
-        return mapper.removeScrap(map);
-    }
 }
