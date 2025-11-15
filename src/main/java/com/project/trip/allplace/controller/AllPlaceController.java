@@ -150,14 +150,66 @@ public class AllPlaceController {
             return "common/error";
         }
         
-        // ⭐ 주변 추천 장소 조회
-        List<PlaceDTO> recommend = allPlaceService.getRecommendPlaces(place);
-        model.addAttribute("recommendList", recommend);
+        // ⭐ [수정] 주변 추천 장소: API 직접 호출
+        List<PlaceDTO> recommendList = new ArrayList<>();
+        try {
+            String lat = String.valueOf(place.getLatitude());
+            String lon = String.valueOf(place.getLongitude());
+            String radius = "5000"; // 5km
+            String contentTypeIds = "12,15,39"; // 관광,축제,음식
+            
+            TourApiResponseVO apiResponse = tourApiService.searchByLocation(lat, lon, radius, contentTypeIds);
 
-        // ⭐ 해시태그 조회
+            // [중요] API Item -> PlaceDTO 변환 (contentTypeId 포함!)
+            if (apiResponse != null &&
+                apiResponse.getResponse() != null &&
+                apiResponse.getResponse().getBody() != null &&
+                apiResponse.getResponse().getBody().getItems() != null &&
+                apiResponse.getResponse().getBody().getItems().getItem() != null) {
+
+                List<TourItemVO> items = apiResponse.getResponse().getBody().getItems().getItem();
+                final String currentApiId = place.getPlaceApiId();
+
+                for (TourItemVO item : items) {
+                    // 1. 자기 자신은 추천 목록에서 제외
+                    if (currentApiId != null && currentApiId.equals(item.getContentId())) {
+                        continue;
+                    }
+
+                    // 2. 좌표 없으면 제외
+                    double dLat = safeDouble(item.getLatitude());
+                    double dLon = safeDouble(item.getLongitude());
+                    if (dLat == 0 || dLon == 0) continue;
+
+                    PlaceDTO dto = new PlaceDTO();
+                    
+                    // 3. JSP가 사용할 핵심 정보 4가지
+                    dto.setPlaceApiId(item.getContentId()); // (JSP: onclick용)
+                    dto.setName(clean(item.getTitle()));
+                    dto.setAddress(clean(item.getAddress()));
+                    dto.setPlaceMainImageUrl(clean(item.getFirstImage()));
+                    
+                    // 4. ⭐ "저장 로직 실행"을 위한 필수 '키'
+                    dto.setContentTypeId(item.getContentTypeId()); // (JSP: onclick용)
+
+                    recommendList.add(dto);
+                    
+                    // 5. 6개만 채우면 중단
+                    if (recommendList.size() >= 6) {
+                        break;
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            log.error("[Controller] 주변 추천 API 호출 오류: " + e.getMessage());
+        }
+        
+        model.addAttribute("recommendList", recommendList);
+        
+        // ⭐ 해시태그 조회 (기존 로직)
         List<String> hashtags = allPlaceService.getHashtags(placeId);
         place.setHashtags(hashtags);
-
 
         model.addAttribute("place", place);
         return "allplace.detail";

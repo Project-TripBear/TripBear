@@ -5,7 +5,7 @@
 <div id="ctx" data-context-path="${pageContext.request.contextPath}"></div>
 
 <!-- ★ 사이드바/지도 CSS -->
-<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/mapsidebar.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/allplace/mapsidebar.css">
 
 <div class="map-container">
 
