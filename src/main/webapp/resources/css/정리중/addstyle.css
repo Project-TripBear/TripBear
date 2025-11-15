@@ -1,17 +1,17 @@
 @charset "UTF-8";
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap');
 
+/*
 
-
-/* 기본 배경 설정 */
+// 기본 배경 설정  
 body {
     background-color: #f8f9fa;
 }
 
-/* 글쓰기 전체 컨테이너 */
+// 글쓰기 전체 컨테이너  
 #main {
     width: 100%;
-    max-width: 800px; /* 등록폼보다 약간 넓게 */
+    max-width: 800px; // 등록폼보다 약간 넓게  
     margin: 40px auto;
     padding: 40px;
     background-color: #fff;
@@ -31,11 +31,11 @@ body {
     color: #888;
 }
 
-/* 폼 테이블 스타일 */
+// 폼 테이블 스타일  
 #main table {
     width: 100%;
     border-collapse: separate;
-    border-spacing: 0 20px; /* 세로 간격 */
+    border-spacing: 0 20px; // 세로 간격  
 }
 
 #main table th {
@@ -52,7 +52,7 @@ body {
     vertical-align: top;
 }
 
-/* 모든 입력 컨트롤 공통 스타일 */
+// 모든 입력 컨트롤 공통 스타일  
 #main input[type="text"],
 #main input[type="number"],
 #main select,
@@ -64,7 +64,7 @@ body {
     font-size: 0.95rem;
     box-sizing: border-box;
     transition: border-color 0.2s, box-shadow 0.2s;
-    font-family: inherit; /* 폰트 상속 */
+    font-family: inherit; // 폰트 상속  
 }
 
 #main input:focus,
@@ -77,10 +77,10 @@ body {
 
 #main textarea {
     min-height: 200px;
-    resize: vertical; /* 세로 크기만 조절 가능 */
+    resize: vertical; // 세로 크기만 조절 가능  
 }
 
-/* 파일 업로드 버튼 스타일 */
+// 파일 업로드 버튼 스타일  
 #main input[type="file"] {
     padding: 5px;
 }
@@ -93,10 +93,10 @@ body {
     margin-right: 10px;
 }
 
-/* 하단 버튼 그룹 */
+// 하단 버튼 그룹  
 #main form > div:last-of-type {
     display: flex;
-    justify-content: flex-end; /* 버튼을 오른쪽으로 정렬 */
+    justify-content: flex-end; // 버튼을 오른쪽으로 정렬  
     gap: 10px;
     margin-top: 40px;
     padding-top: 20px;
@@ -114,7 +114,7 @@ body {
     transition: background-color 0.2s, color 0.2s;
 }
 
-/* 쓰기 버튼 (주요 버튼) */
+// 쓰기 버튼 (주요 버튼)  
 #main .add.primary {
     background-color: #6C9A8B;
     border-color: #6C9A8B;
@@ -124,7 +124,7 @@ body {
     background-color: #5A887B;
 }
 
-/* 돌아가기 버튼 (보조 버튼) */
+// 돌아가기 버튼 (보조 버튼)  
 #main .back {
     background-color: #f8f9fa;
     color: #333;
@@ -132,3 +132,5 @@ body {
 #main .back:hover {
     background-color: #e2e6ea;
 }
+
+*/

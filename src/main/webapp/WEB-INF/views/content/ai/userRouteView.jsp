@@ -1,98 +1,42 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-<meta charset="UTF-8">
-<title>내 여행 경로</title>
-<script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=95f06e859388fb23abc3ac05fa370f48&libraries=services"></script>
-<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 
-<style>
-body {
-  font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
-  background: #f5f7fb;
-  color: #333;
-}
-.container {
-  max-width: 960px;
-  margin: 40px auto;
-  background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-  padding: 30px 40px;
-}
-h1 {
-  margin-bottom: 6px;
-  font-size: 28px;
-}
-#route-desc { color: #666; margin-bottom: 24px; }
-#map { width: 100%; height: 480px; border-radius: 10px; margin-bottom: 20px; }
+<div class="route-container user-route-page">
+    <header class="route-header">
+        <h1 id="route-title" class="route-title">내 여행 경로</h1>
+        <p id="route-desc" class="route-subtitle">
+            저장된 여행 일정을 확인하고, 순서를 바꾸고, 필요하면 삭제할 수 있어요 🌿
+        </p>
+    </header>
 
-#day-buttons {
-  display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap;
-}
-.day-btn {
-  flex: none; background: #edf0fa; color: #333;
-  border: none; border-radius: 6px;
-  padding: 6px 14px; font-weight: 600; cursor: pointer;
-  transition: 0.2s;
-}
-.day-btn.active { background: #4a6cf7; color: #fff; }
+    <!-- 날짜 선택 버튼 -->
+    <div id="day-buttons" class="day-buttons"></div>
 
-#stop-list { list-style: none; padding: 0; margin: 0; }
-.travel-card {
-  background: #f9fafc; border: 1px solid #e0e4ef;
-  border-radius: 10px; padding: 14px 16px; margin-bottom: 10px;
-  transition: 0.2s;
-}
-.travel-card:hover { background: #eef2ff; }
+    <!-- 지도 영역 -->
+    <div id="map" class="route-map"></div>
 
-.travel-header {
-  display: flex; justify-content: space-between; align-items: center;
-}
-.travel-meta {
-  margin-top: 6px; font-size: 14px; color: #666;
-  display: flex; gap: 12px; align-items: center;
-}
-.travel-meta select {
-  padding: 4px 8px; border-radius: 6px;
-  border: 1px solid #ccc; background: #fff;
-}
-.travel-meta .mode-select {
-  padding: 4px 8px; border-radius: 6px;
-  border: 1px solid #ccc; background: #fff;
-  font-size: 14px;
-}
+    <!-- 일정 수정 영역 -->
+    <section class="route-section">
+        <h2 class="route-section-title route-edit-title">일정 수정</h2>
+        <ul id="stop-list" class="stop-list">
+            <%-- JS로 stop-item(li) 동적 렌더링 --%>
+        </ul>
+    </section>
 
-#delete-route-btn {
-  display: block;
-  background: #e74c3c; color: #fff;
-  border: none; border-radius: 8px;
-  padding: 10px 18px; font-weight: 600;
-  cursor: pointer; margin: 20px auto 0;
-}
-#delete-route-btn:hover { background: #d63c2d; }
-</style>
-</head>
+    <!-- 삭제 / 숙소예약 버튼 -->
+    <div class="route-footer route-footer-double">
+        <button id="delete-route-btn" class="btn delete-btn">
+            이 루트를 삭제하기
+        </button>
 
-<body>
-<div class="container">
-  <h1 id="route-title">내 여행 경로</h1>
-  <p id="route-desc">저장된 여행 일정을 확인하고 수정할 수 있습니다 🌿</p>
-
-  <div id="day-buttons"></div>
-  <div id="map"></div>
-
-  <h3 style="margin-top:24px;">일정 수정</h3>
-  <ul id="stop-list"></ul>
-
-  <button id="delete-route-btn">이 루트를 삭제하기</button>
-
-  <button id="reserveBtn" class="save-btn">🛏️ 숙소 예약하러 가기</button>
-  
+        <button id="reserveBtn" class="btn save-btn">
+            🛏️ 숙소 예약하러 가기
+        </button>
+    </div>
 </div>
 
+<script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=95f06e859388fb23abc3ac05fa370f48&libraries=services"></script>
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 <script>
 // ✅ JSP EL 완전 제거
 const pathParts = window.location.pathname.split('/');

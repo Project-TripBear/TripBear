@@ -1,0 +1,295 @@
+/* =========================================================
+   ROUTEVIEW.CSS
+   - AI 지도 / 내 루트 보기 공통 스타일
+   - common.css 테마 변수를 적극 사용
+   ========================================================= */
+
+/* 전체 컨테이너 */
+.route-container {
+    max-width: 1100px;
+    margin: 40px auto 60px;
+    padding: 0 30px 40px;
+}
+
+/* 헤더 */
+.route-header {
+    margin-bottom: 18px;
+}
+
+.route-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary-dark);
+    margin: 0 0 6px;
+}
+
+.route-subtitle {
+    margin: 0 0 18px;
+    font-size: 0.96rem;
+    color: var(--text-light);
+}
+
+/* Day 버튼 영역 */
+.day-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 14px;
+}
+
+.day-btn {
+    padding: 7px 16px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: #fff;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.18s ease;
+}
+
+.day-btn:hover {
+    background: #F1F3F5;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+}
+
+.day-btn.active {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #fff;
+    transform: translateY(-1px);
+}
+
+/* 지도 영역 */
+.route-map {
+    width: 100%;
+    height: 480px;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    background: #E9ECEF;
+    box-shadow: var(--shadow-soft);
+    margin-bottom: 24px;
+    overflow: hidden;
+}
+
+/* 섹션 공통 */
+.route-section {
+    margin-top: 20px;
+}
+
+.route-section-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin: 0 0 12px;
+    color: var(--text);
+}
+
+/* AI 요약 카드 리스트 */
+.summary-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.summary-card {
+    background: #fff;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-soft);
+    padding: 12px 16px;
+    font-size: 0.9rem;
+}
+
+.summary-card-title {
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.summary-tag {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #fff;
+    background: var(--primary);
+    margin-right: 6px;
+}
+
+/* 저장 / 삭제 / 예약 버튼 영역 */
+.route-footer {
+    margin-top: 24px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.route-footer-double {
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* 버튼 공통 (common.css의 .btn과 어울리게) */
+.btn.save-btn {
+    background-color: var(--primary);
+    color: #fff;
+    border-radius: 999px;
+    border: 1px solid var(--primary);
+    padding: 10px 20px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn.save-btn:hover {
+    background-color: var(--primary-dark);
+    box-shadow: 0 4px 14px rgba(108,154,139,0.28);
+    transform: translateY(-1px);
+}
+
+.btn.delete-btn {
+    background: #FFE3E3;
+    border-radius: 999px;
+    border: 1px solid #FF8787;
+    color: #C92A2A;
+    padding: 10px 20px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.18s ease;
+}
+
+.btn.delete-btn:hover {
+    background: #FFC9C9;
+}
+
+/* 내 루트: stop 리스트 */
+.stop-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.stop-item {
+    background: #fff;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-soft);
+    padding: 12px 14px;
+    font-size: 0.9rem;
+    cursor: grab; /* Sortable.js용 */
+}
+
+.stop-item:active {
+    cursor: grabbing;
+}
+
+.stop-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+}
+
+.stop-title {
+    font-weight: 600;
+    color: var(--text);
+}
+
+.stop-tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #fff;
+    background: var(--accent);
+}
+
+.stop-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 12px;
+    font-size: 0.82rem;
+    color: var(--text-light);
+    margin-top: 2px;
+}
+
+.stop-meta label {
+    font-weight: 500;
+    margin-right: 4px;
+}
+
+/* 이동수단 / Day 선택 셀렉트박스 */
+.day-selector,
+.mode-select {
+    padding: 4px 8px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: #fff;
+    font-size: 0.82rem;
+    cursor: pointer;
+}
+
+/* 진행도 (AI 헬스케어 등에서 쓸 수 있게) */
+.progress-wrap {
+    margin-top: 6px;
+}
+
+.progress-label {
+    font-size: 0.78rem;
+    color: var(--text-light);
+    margin-bottom: 3px;
+}
+
+.progress-bar {
+    height: 8px;
+    border-radius: 999px;
+    background: #E9ECEF;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    border-radius: 999px;
+    background: var(--primary);
+}
+
+/* 아이콘 */
+.icon {
+    font-size: 1rem;
+    margin-right: 4px;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+    .route-container {
+        padding: 0 16px 32px;
+        margin-top: 24px;
+    }
+
+    .route-title {
+        font-size: 1.6rem;
+    }
+
+    .route-map {
+        height: 380px;
+    }
+
+    .route-footer,
+    .route-footer-double {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .btn.save-btn,
+    .btn.delete-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}

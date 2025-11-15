@@ -1,76 +1,42 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-<meta charset="UTF-8">
-<title>AI 추천 여행 경로</title>
 
-<!-- ✅ Spring Security CSRF 토큰 -->
-<meta name="_csrf" content="${_csrf.token}">
-<meta name="_csrf_header" content="${_csrf.headerName}">
+<div class="route-container ai-route-page">
+    <header class="route-header">
+        <h1 id="route-title" class="route-title">AI 추천 여행 경로</h1>
+        <p id="route-desc" class="route-subtitle">
+            AI가 분석한 최적의 일정과 활동 요약을 한눈에 확인하세요 🧭
+        </p>
+    </header>
 
-<!-- ✅ Kakao Map SDK -->
-<script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=95f06e859388fb23abc3ac05fa370f48&libraries=services"></script>
+    <!-- 날짜 선택 버튼 -->
+    <div id="day-buttons" class="day-buttons"></div>
 
-<style>
-.container { max-width: 960px; margin: 0 auto; padding: 20px; }
-#map { width: 100%; height: 500px; margin-top: 12px; border-radius: 10px; }
-#day-buttons { text-align: center; margin: 20px 0 10px; }
-.day-btn { margin: 3px; padding: 7px 14px; border: none; border-radius: 8px; background: #4a6cf7; color: #fff; cursor: pointer; font-weight: 600; transition: 0.2s; }
-.day-btn.active { background: #2a48c5; transform: scale(1.05); }
+    <!-- 지도 영역 -->
+    <div id="map" class="route-map"></div>
 
-.section-title { font-weight: bold; margin-top: 25px; font-size: 17px; color: #222; }
-.travel-card, .health-card {
-  background: #fff; border-radius: 10px; padding: 12px 16px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.08); margin-bottom: 10px;
-}
-.activity-tag {
-  display:inline-block; color:white; font-size:11px; font-weight:bold;
-  padding:3px 8px; border-radius:8px; margin-right:8px;
-}
-.health-info { font-size: 13px; color:#555; margin-top:4px; }
-.health-total { text-align:center; margin-top:10px; font-weight:700; color:#333; background:#f5f7ff; border-radius:8px; padding:10px; }
+    <!-- 여행 정보 요약 -->
+    <section class="route-section">
+        <h2 class="route-section-title">여행 정보</h2>
+        <div id="travel-summary" class="summary-list"></div>
+    </section>
 
-.custom-overlay-marker {
-  color:white; font-size:13px; font-weight:bold;
-  border-radius:50%; width:26px; height:26px;
-  display:flex; justify-content:center; align-items:center;
-  border:2px solid white; box-shadow:0 2px 5px rgba(0,0,0,0.3);
-}
-.route-mode-label {
-  background:white; padding:2px 8px; border-radius:6px;
-  font-weight:bold; font-size:12px; box-shadow:0 1px 3px rgba(0,0,0,0.2);
-}
-.save-btn { margin-top:20px; padding:10px 18px; border:none; background:#4a6cf7; color:white; border-radius:8px; cursor:pointer; font-weight:600; }
-.save-btn:hover { background:#2a48c5; }
+    <!-- 헬스케어 요약 -->
+    <section class="route-section">
+        <h2 class="route-section-title">헬스케어 정보</h2>
+        <div id="healthcare-summary" class="summary-list"></div>
+    </section>
 
-.progress-wrap { margin-top:8px; }
-.progress-label { font-size:12px; color:#555; margin-bottom:4px; }
-.progress-bar { height:8px; background:#e6e9ff; border-radius:6px; overflow:hidden; }
-.progress-fill { height:100%; border-radius:6px; }
-
-.icon { font-size:18px; margin-right:6px; }
-</style>
-</head>
-
-<body>
-<div class="container">
-  <h1 id="route-title">AI 추천 여행 경로</h1>
-  <p id="route-desc">AI가 분석한 최적의 일정과 활동 요약을 한눈에 확인하세요 🧭</p>
-
-  <div id="day-buttons"></div>
-  <div id="map"></div>
-
-  <h3 class="section-title">여행 정보</h3>
-  <div id="travel-summary"></div>
-
-  <h3 class="section-title">헬스케어 정보</h3>
-  <div id="healthcare-summary"></div>
-
-  <button id="save-route-btn" class="save-btn">이 경로를 내 루트로 저장하기</button>
+    <!-- 저장 버튼 -->
+    <div class="route-footer">
+        <button id="save-route-btn" class="btn save-btn">
+            이 경로를 내 루트로 저장하기
+        </button>
+    </div>
 </div>
 
+<%-- ✅ JS는 여기에서만 --%>
+<script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=95f06e859388fb23abc3ac05fa370f48&libraries=services"></script>
 <script>
 console.log("로그인 사용자:", "${pageContext.request.userPrincipal != null ? pageContext.request.userPrincipal.name : '비로그인'}");
 
@@ -360,5 +326,3 @@ window.addEventListener("DOMContentLoaded", async function() {
   }
 });
 </script>
-</body>
-</html>
