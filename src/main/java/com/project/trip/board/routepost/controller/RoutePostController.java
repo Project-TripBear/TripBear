@@ -9,8 +9,11 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,13 +22,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import org.springframework.http.MediaType;
 import com.project.trip.board.routepost.model.RoutePostDTO;
 import com.project.trip.board.routepost.model.RoutePostImageDTO;
 import com.project.trip.board.routepost.service.RoutePostService;
-import com.project.trip.mypage.model.CustomUser;
 
-import org.springframework.ui.Model;
+// 🔹 HotDeal 방식과 동일하게, 로그인 아이디로 회원 정보를 조회하기 위해 MemberMapper 사용
+import com.project.trip.mypage.mapper.MemberMapper;
+import com.project.trip.mypage.model.CustomUser;
+import com.project.trip.mypage.model.UserDTO;
 
 @Controller
 @RequestMapping("/routepost")
@@ -34,9 +38,18 @@ public class RoutePostController {
     @Autowired
     private RoutePostService postService;
 
-    // 게시글 목록
+    // 🔹 로그인 아이디(username) -> 회원 DTO(seq 등) 조회용
+    @Autowired
+    private MemberMapper membermapper;
+
+    /**
+     * 목록
+     * - 기존 로직 유지
+     * - 페이지 파라미터만 받아서 start/end 계산 후 서비스 호출
+     * - 반환 뷰 이름도 기존("board.routepost.list") 그대로 유지 (Tiles/뷰 설정 건드리지 않음)
+     */
     @GetMapping("/list")
-    public String list(@RequestParam(defaultValue="1") int page, Model model) {
+    public String list(@RequestParam(defaultValue = "1") int page, Model model) {
 
         int pageSize = 10; // 한 페이지당 게시글 수
         int start = (page - 1) * pageSize + 1;
@@ -53,14 +66,23 @@ public class RoutePostController {
         return "board.routepost.list";
     }
 
-
- // 게시글 상세보기
+    /**
+     * 상세보기
+     * ✅ 핵심 변경 포인트 (HotDeal 방식 적용)
+     * 1) 더 이상 CustomUser/CustomAdminUser 캐스팅하지 않습니다.
+     * 2) Authentication 이 있다면 auth.getName()으로 "로그인 아이디(username)"만 가져옵니다.
+     * 3) membermapper.get(username) 으로 DB에서 사용자 정보를 조회해 seq 등 필요한 값을 얻습니다.
+     * 4) 관리자/일반/비로그인 모두 안전하게 동작합니다. (ClassCastException 방지)
+     *
+     * URL: /routepost/view/{routepostId}
+     * - 형님 JSP에서 링크를 /routepost/view/${board.seq} 로 걸어두셨으니 PathVariable 유지합니다.
+     */
     @GetMapping("/view/{routepostId}")
     public String view(@PathVariable int routepostId,
                        Model model,
-                       Authentication authentication) {
+                       Authentication auth) {
 
-        // 기본 데이터
+        // 1) 기본 데이터 조회 (기존 로직 유지)
         postService.increaseViewCount(routepostId);
         RoutePostDTO post = postService.get(routepostId);
         List<RoutePostImageDTO> images = postService.getImages(routepostId);
@@ -68,57 +90,95 @@ public class RoutePostController {
         model.addAttribute("post", post);
         model.addAttribute("images", images);
 
-        // 로그인 사용자 확인
-        if (authentication != null && authentication.isAuthenticated()
-            && !"anonymousUser".equals(authentication.getPrincipal())) {
+        // 2) 로그인 사용자 정보 (HotDeal과 동일한 방식)
+        String loginUsername = null; // 로그인 아이디(문자열)
+        Long loginUserSeq = null;    // DB의 사용자 식별자 (숫자)
 
-            CustomUser user = (CustomUser) authentication.getPrincipal();
+        // 로그인 상태이고 익명 사용자가 아닐 때만 처리
+        if (auth != null
+                && auth.isAuthenticated()
+                && !(auth instanceof AnonymousAuthenticationToken)) {
 
-            System.out.println("✅ 로그인 사용자: " + user.getUdto().getSeq() + " / " + user.getUsername());
+            // (1) SecurityContext에서 username만 가져오기
+            loginUsername = auth.getName(); // 관리자/일반 모두 공통
 
-            model.addAttribute("userId", user.getUdto().getSeq());   // NUMBER (댓글 INSERT용)
-            model.addAttribute("userName", user.getUsername());      // 문자열 (표시용)
-        } else {
-            model.addAttribute("userId", null);
-            model.addAttribute("userName", null);
+            // (2) username으로 DB에서 사용자 조회
+            UserDTO userDto = membermapper.get(loginUsername);
+
+            // (3) 조회 성공 시 seq를 Long으로 변환해서 JSP에서 사용 가능하게 제공
+            if (userDto != null && userDto.getSeq() != null) {
+                try {
+                    loginUserSeq = Long.parseLong(userDto.getSeq());
+                } catch (NumberFormatException ignore) {
+                    // seq가 숫자가 아니라면 null로 두고 넘어갑니다.
+                    loginUserSeq = null;
+                }
+            }
         }
+
+        // 3) JSP에서 댓글/버튼 노출 등에 사용할 값 전달
+        //    - userId: 숫자(seq) — INSERT/권한 체크 등에 사용
+        //    - userName: 문자열(username) — 화면 표시용
+        model.addAttribute("userId", loginUserSeq);
+        model.addAttribute("userName", loginUsername);
 
         return "board.routepost.view";
     }
 
-
-
-    // 게시글 작성 폼
+    /**
+     * 작성 폼
+     * - 뷰 이름 그대로 유지
+     */
     @GetMapping("/add")
     public String addForm() {
         return "board.routepost.add";
     }
 
+    /**
+     * 등록 처리 (파일 업로드 포함)
+     * ✅ 변경 포인트 (HotDeal 방식 적용)
+     * - 기존엔 CustomUser 로 캐스팅하여 seq를 꺼냈다면,
+     *   이제는 auth.getName() -> membermapper.get(username) 으로 seq 조회
+     * - 서비스/매퍼/JSP 건드릴 필요 없이 컨트롤러에서만 로그인 정보를 정리
+     */
     @PostMapping(value = "/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public String add(@ModelAttribute RoutePostDTO dto,
                       @RequestParam(value = "images", required = false) MultipartFile[] images,
                       HttpServletRequest req,
-                      Authentication authentication) throws Exception {
+                      Authentication auth) throws Exception {
 
-        // 1) 로그인 유저 정보
-        CustomUser user = (CustomUser) authentication.getPrincipal();
-        long uid = Long.parseLong(user.getUdto().getSeq());
-        dto.setUserId(uid);
+        // 1) 로그인 체크 + username 확보
+        if (auth == null || !auth.isAuthenticated() || auth instanceof AnonymousAuthenticationToken) {
+            // 비로그인 상태면 글 등록이 불가하다면, 로그인 페이지/리스트 등으로 보냅니다.
+            return "redirect:/login";
+        }
 
-        // 2) 게시글 DB insert
+        String loginUsername = auth.getName();
+        UserDTO userDto = membermapper.get(loginUsername);
+        if (userDto == null || userDto.getSeq() == null) {
+            // 사용자 정보를 못 찾으면 방어적으로 처리
+            return "redirect:/login";
+        }
+
+        // 2) RoutePostDTO 에 userId 세팅 (DB 스키마에 맞춰 Long/Number 사용)
+        try {
+            long uid = Long.parseLong(userDto.getSeq());
+            dto.setUserId(uid);
+        } catch (NumberFormatException e) {
+            return "redirect:/login";
+        }
+
+        // 3) 게시글 DB insert
         postService.add(dto);
 
-        // 3) 로컬 이미지 저장 경로
+        // 4) 이미지 업로드 + DB 저장 (기존 로직 유지)
         String uploadPath = "C:/tripbear/routepost/";
-
         File folder = new File(uploadPath);
         if (!folder.exists()) folder.mkdirs();
 
-        // 4) 이미지 저장 + DB 저장
         if (images != null && images.length > 0) {
             for (MultipartFile file : images) {
                 if (!file.isEmpty()) {
-
                     String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
                     File dest = new File(uploadPath, fileName);
                     file.transferTo(dest);
@@ -134,7 +194,6 @@ public class RoutePostController {
 
         return "redirect:/routepost/list";
     }
-
 
 
     @GetMapping("/edit/{routepostId}")
@@ -164,9 +223,6 @@ public class RoutePostController {
 
         return "board.routepost.edit";
     }
-
-
-
     @PostMapping(value = "/edit", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public String edit(@ModelAttribute RoutePostDTO dto,
                        @RequestParam(value = "images", required = false) MultipartFile[] images,
@@ -175,6 +231,9 @@ public class RoutePostController {
 
         // 1) 게시글 기본 정보 업데이트
         postService.edit(dto);
+
+        // 기존 이미지 삭제 후 재등록 (기존 로직 유지)
+        postService.delImages(dto.getRoutepostId());
 
         // 2) 삭제할 이미지 처리
         if (deleteImageIds != null && !deleteImageIds.trim().isEmpty()) {
@@ -209,13 +268,10 @@ public class RoutePostController {
     }
 
 
-
-
     // 게시글 삭제
     @GetMapping("/del/{routepostId}")
     public String del(@PathVariable int routepostId) {
         postService.del(routepostId);
         return "redirect:/routepost/list";
     }
-
 }

@@ -3,15 +3,32 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
+<%-- ★★★ 1. ${contextPath} 변수 정의 추가 ★★★ --%>
+<c:set var="contextPath" value="${pageContext.request.contextPath}" />
+
 <%-- 이 페이지 전용 CSS (Font Awesome) --%>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
 
 <h1>회원 관리</h1>
 
-<form method="GET" action="${pageContext.request.contextPath}/admin/user/list">
-    
+<div class="board-nav-tabs mb-4">
+    <ul class="nav nav-tabs admin-tab-style">
+        <li class="nav-item">
+            <%-- "전체 회원" 탭 (현재 페이지) --%>
+            <a class="nav-link active" 
+               href="${contextPath}/admin/user/list">전체 회원</a>
+        </li>
+        <li class="nav-item">
+            <%-- "정지된 회원" 탭 --%>
+            <a class="nav-link" href="${contextPath}/admin/user/suspendedlist">정지된 회원</a>
+        </li>
+    </ul>
+</div>
+
+<%-- ★★★ 2. 폼 action 경로 수정 (/admin/userlist -> /admin/user/list) ★★★ --%>
+<form method="GET" action="${contextPath}/admin/user/list">
     <div class="controls-bar">
-        
+		
         <div class="controls-left search-box">
             <select name="searchType" class="search-select">
                 <option value="real_name" <c:if test="${param.searchType == 'real_name'}">selected</c:if>>이름</option>
@@ -72,22 +89,31 @@
                         </c:otherwise>
                     </c:choose>
                 </td>
-                <td>
+				<td>
+                    <%-- 1. 활동중일 때 (정지 버튼) --%>
                     <c:if test="${user.status == '활동중'}">
                         <button type="button" class="btn danger" style="padding: 5px 10px; font-size: 0.9rem;"
                             onclick="openSuspendModal('${user.userId}', '${user.nickname}')">정지</button>
                     </c:if>
+                    
+                    <%-- 2. 정지 상태일 때 (복구 버튼 폼) --%>
                     <c:if test="${user.status == '정지'}">
-                        </c:if>
+                        <form method="POST" action="${contextPath}/admin/user/restore" onsubmit="return confirm('[${user.nickname}] 회원을 정말로 복구하시겠습니까?');" style="margin:0;">
+                            <%-- CSRF 토큰 (POST 방식이므로 필수) --%>
+                            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
+                            <input type="hidden" name="userId" value="${user.userId}">
+                            <button type="submit" class="btn primary" style="padding: 5px 10px; font-size: 0.9rem;">복구</button>
+                        </form>
+                    </c:if>
                 </td>
             </tr>
         </c:forEach>
     </tbody>
 </table>
 
+<%-- ... (페이징 코드: 페이징은 ${pageContext.request.contextPath}를 사용해서 이미 올바르게 되어있습니다.) ... --%>
 <div class="pagination-container d-flex justify-content-center" style="margin-top: 2rem;">
     <ul class="pagination">
-        
         <c:if test="${paging.prev}">
             <li class="page-item">
                 <a class="page-link" href="${pageContext.request.contextPath}/admin/user/list?page=${paging.startPage - 1}&searchType=${param.searchType}&keyword=${param.keyword}&status=${param.status}">
@@ -111,24 +137,27 @@
                 </a>
             </li>
         </c:if>
-        
     </ul>
 </div>
             
+<%-- ... (정지 모달 코드: ${pageContext.request.contextPath}를 사용해서 이미 올바르게 되어있습니다.) ... --%>
 <div id="suspendModal" class="modal">
     <div class="modal-content">
         <span class="close-button" onclick="closeSuspendModal()">&times;</span>
         <h2>회원 정지 처리</h2>
         
         <form method="POST" action="${pageContext.request.contextPath}/admin/user/suspend">
+            <%-- CSRF 토큰 추가 --%>
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
+           
             <input type="hidden" name="userId" id="userIdToSuspend">
             <p><strong id="nicknameToSuspend"></strong> 회원을 정지하시겠습니까?</p>
             <div class="form-group"> <label for="reason">정지 사유</label>
-                <input type="text" name="reason" id="reason" required>
+                <input type="text" name="reason" id="reason" class="form-control" required>
             </div>
             <div class="form-group">
                 <label for="duration">정지 기간 (일)</label>
-                <input type="number" name="duration" id="duration" value="7" required>
+                <input type="number" name="duration" id="duration" value="7" class="form-control" required>
             </div>
             <div class="button-container" style="margin-top: 20px;">
                 <button type="submit" class="btn danger">정지 실행</button> 
@@ -136,13 +165,12 @@
         </form>
     </div>
 </div>
-
 <script>
     const modal = document.getElementById('suspendModal');
     function openSuspendModal(userId, nickname) {
         document.getElementById('userIdToSuspend').value = userId;
         document.getElementById('nicknameToSuspend').innerText = nickname;
-        modal.style.display = 'flex'; // 모달을 flex로 변경하여 중앙 정렬 (CSS에서 설정)
+        modal.style.display = 'flex';
     }
     function closeSuspendModal() {
         modal.style.display = 'none';
