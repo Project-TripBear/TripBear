@@ -6,29 +6,36 @@
 
 <div class="admin-content-wrapper">
 
-    <h3 class="page-title mb-4">통합 게시판 관리</h3>
-    
-    <!-- ✅ 탭 메뉴 -->
-    <div class="board-nav-tabs mb-4 d-flex justify-content-between align-items-center">
-        <ul class="nav nav-tabs admin-tab-style">
-            <li class="nav-item">
-                <a class="nav-link ${empty boardType ? 'active' : ''}" 
-                   href="${contextPath}/admin/board/integratedList">전체</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link ${boardType eq 'tblFindBoard' ? 'active' : ''}" 
-                   href="${contextPath}/admin/board/integratedList?boardType=tblFindBoard">동행찾기</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link ${boardType eq 'tblReviewBoard' ? 'active' : ''}" 
-                   href="${contextPath}/admin/board/integratedList?boardType=tblReviewBoard">후기/추천</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link ${boardType eq 'tblNotice' ? 'active' : ''}" 
-                   href="${contextPath}/admin/board/integratedList?boardType=tblNotice">공지/질문</a>
-            </li>
-        </ul>
-
+	<div class="board-nav-tabs mb-4 d-flex justify-content-between align-items-center">
+	    
+	    <%-- 1. 세분화된 탭 메뉴 --%>
+	    <ul class="nav nav-tabs admin-tab-style">
+	        <li class="nav-item">
+	            <a class="nav-link ${empty boardType ? 'active' : ''}" 
+	               href="${contextPath}/admin/board/integratedList">전체</a>
+	        </li>
+	        <li class="nav-item">
+	            <a class="nav-link ${boardType eq 'tblNotice' ? 'active' : ''}" 
+	               href="${contextPath}/admin/board/integratedList?boardType=tblNotice">공지사항</a>
+	        </li>
+	        <li class="nav-item">
+	            <a class="nav-link ${boardType eq 'tblQuestionBoard' ? 'active' : ''}" 
+	               href="${contextPath}/admin/board/integratedList?boardType=tblQuestionBoard">질문</a>
+	        </li>
+	        <li class="nav-item">
+	            <a class="nav-link ${boardType eq 'tblFindBoard' ? 'active' : ''}" 
+	               href="${contextPath}/admin/board/integratedList?boardType=tblFindBoard">동행찾기</a>
+	        </li>
+	        <li class="nav-item">
+	            <a class="nav-link ${boardType eq 'tblHotDealPost' ? 'active' : ''}" 
+	               href="${contextPath}/admin/board/integratedList?boardType=tblHotDealPost">핫딜</a>
+	        </li>
+	        <li class="nav-item">
+	            <a class="nav-link ${boardType eq 'tblReviewBoard' ? 'active' : ''}" 
+	               href="${contextPath}/admin/board/integratedList?boardType=tblReviewBoard">후기</a>
+	        </li>
+	    </ul>
+		
         <!-- 검색 박스 (옵션) -->
         <div class="d-flex align-items-center search-box">
             <select class="form-control form-control-sm mr-2 search-select">
@@ -67,7 +74,22 @@
 					            <c:forEach var="board" items="${boardList}">
 					                <tr>
 					                    <td>${board.seq}</td>
-					                    <td><span class="badge badge-secondary">${board.boardType}</span></td>
+										<td>
+										    <span class="badge badge-secondary">
+												<c:choose>
+												    <c:when test="${board.boardType eq 'tblHotDealPost'}">핫딜</c:when>
+												    <c:when test="${board.boardType eq 'tblRoutePost'}">여행루트</c:when>
+												    <c:when test="${board.boardType eq 'tblReviewBoard'}">후기</c:when>
+												    <c:when test="${board.boardType eq 'tblRecommendBoard'}">추천</c:when>
+												    <c:when test="${board.boardType eq 'tblFindBoard'}">동행찾기</c:when>
+													<c:when test="${board.boardType eq 'tblNotice'}">공지사항</c:when>
+
+												    <%-- 질문 게시판은 아직 미구현이라 주석 처리 --%>
+												    <c:when test="${board.boardType eq 'tblQuestionBoard'}">질문</c:when> 
+
+												</c:choose>
+										    </span>
+										</td>
 
 					                    <!-- ✅ 게시판별 상세보기 링크 분기 -->
 					                    <td class="text-left">

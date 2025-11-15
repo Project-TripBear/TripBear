@@ -15,8 +15,12 @@
             <a href="${pageContext.request.contextPath}/admin/car/list">렌터카 관리</a>
             <a href="${pageContext.request.contextPath}/admin/report/list">신고 관리</a>
         </nav>
-        <div class="header-column header-right">
-            <a href="${pageContext.request.contextPath}/admin/logout" class="btn-logout">로그아웃</a>
-        </div>
+		<form name="logoutForm" action="<c:url value='/admin/logout'/>" method="POST" style="margin: 0;">
+		        <%-- 1. CSRF 토큰 (필수) --%>
+		        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+		        
+		        <%-- 2. 로그아웃 버튼 (admin2.css의 스타일 적용) --%>
+		        <button type="submit" class="btn-logout">로그아웃</button>
+		    </form>
     </div>
 </header>
