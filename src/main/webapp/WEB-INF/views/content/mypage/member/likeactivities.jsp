@@ -5,6 +5,7 @@
 <html lang="ko">
 <head>
 	<meta charset="UTF-8">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/mypage.css">
 
 </head>
 <body>

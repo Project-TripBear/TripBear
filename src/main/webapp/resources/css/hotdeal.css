@@ -1,0 +1,495 @@
+@charset "UTF-8";
+
+
+
+/* ------------------------------------------------------------ */
+
+/* 핫딜게시판 쓰기 (18번) */
+
+/* =========================================================
+ 🔑 USER REGISTER PAGE STYLES (page-register-container) - 이 스타일은 위에 이미 정의되어 있다고 가정합니다.
+ 🔑 BOARD WRITE PAGE STYLES (page-board-add-container) - 최종 수정
+ ========================================================= */
+
+/* 페이지 컨테이너: 중앙 배치 및 화이트 카드 스타일 */
+.page-board-add-container {
+    max-width: 900px; 
+    margin: 40px auto !important; /* 중앙 정렬 */
+    padding: 40px 50px;
+    background-color: var(--surface) !important;
+    border-radius: var(--radius) !important;
+    box-shadow: var(--shadow-soft) !important;
+    border: 1px solid var(--border);
+}
+
+/* <h1>게시판 쓰기 제목 스타일 */
+.page-board-add-container h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--primary-dark);
+    margin-bottom: 30px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--primary-light);
+    text-align: center;
+}
+.page-board-add-container h1 small {
+    display: inline;
+    font-size: 0.8em;
+    font-weight: 500;
+    color: var(--text-light);
+    margin-left: 10px;
+}
+
+/* --- 폼 테이블 스타일 --- */
+.page-board-add-container table.form-input-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 40px;
+    font-size: 1rem;
+}
+.form-input-table tr {
+    border-bottom: 1px solid var(--border);
+}
+.form-input-table tr:last-child {
+    border-bottom: none;
+}
+
+/* 테이블 제목 (<th>) - 항목 이름 */
+.form-input-table th {
+    width: 20%; /* 레이블 너비 고정 */
+    padding: 15px 20px;
+    text-align: left;
+    font-weight: 600;
+    color: var(--text-light);
+    background-color: #F8F9FA; 
+    border-right: 1px solid var(--border);
+    vertical-align: middle;
+}
+
+/* 테이블 내용 (<td>) - 입력 필드 영역 */
+.form-input-table td {
+    padding: 15px 20px;
+    text-align: left;
+    vertical-align: middle;
+    width: 80%;
+}
+
+/* --- 입력 컨트롤 공통 스타일 --- */
+.page-board-add-container .form-control {
+    width: 100%; 
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 1rem;
+    background-color: var(--bg);
+    box-sizing: border-box;
+    transition: all 0.3s;
+    max-width: 500px; /* 기본 입력 필드의 최대 너비 */
+}
+.page-board-add-container .form-control:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(108, 154, 139, 0.15);
+}
+
+/* 💡 특정 필드 너비 조정: 핫딜아이템 이름 */
+.page-board-add-container #itemname {
+    max-width: 350px; 
+}
+
+/* 💡 특정 필드 너비 조정: 가격 */
+.page-board-add-container #price {
+    max-width: 200px; 
+    display: inline-block;
+    margin-right: 5px;
+    vertical-align: middle;
+}
+
+/* 텍스트 영역 */
+.page-board-add-container textarea.form-control {
+    min-height: 200px;
+    resize: vertical;
+}
+
+/* 셀렉트 박스 */
+.page-board-add-container .form-control-select {
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 1rem;
+    background-color: var(--surface);
+    min-width: 150px;
+    color: var(--text-light);
+    cursor: pointer;
+}
+
+/* 파일 업로드 */
+.page-board-add-container .form-control-file {
+    font-size: 0.9rem;
+    padding: 10px 0;
+    width: 100%;
+}
+
+/* --- 하단 버튼 그룹 --- */
+.action-buttons-group {
+    display: flex;
+    justify-content: flex-end; /* 오른쪽 정렬 */
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.action-buttons-group .btn {
+    padding: 12px 28px;
+    min-width: 120px;
+    border-radius: 30px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: none;
+    transform: translateY(0); 
+}
+
+/* 돌아가기 버튼 (Secondary) */
+.action-buttons-group .btn-secondary {
+    background-color: #E9ECEF;
+    color: var(--text-light);
+}
+.action-buttons-group .btn-secondary:hover {
+    background-color: #dee2e6;
+    color: var(--text);
+}
+
+/* 쓰기 버튼 (Primary) */
+.action-buttons-group .btn-primary {
+    background-color: var(--primary);
+    color: white;
+}
+.action-buttons-group .btn-primary:hover {
+    background-color: var(--primary-dark);
+}
+
+
+/* ------------------------------------------------------------ */
+
+/* 핫딜게시판 삭제 (19번) */
+
+/* =========================================================
+ 🔑 BOARD DELETE CONFIRM STYLES (page-board-delete-container)
+ ========================================================= */
+
+/* 페이지 컨테이너: 중앙 배치 */
+.page-board-delete-container {
+    max-width: 1000px; 
+    margin: 40px auto !important; 
+    padding: 0 30px;
+}
+
+/* --- 1. 삭제 확인 카드 (delete-card) --- */
+.page-board-delete-container .delete-card {
+    max-width: 450px; /* 카드 폭 제한 */
+    margin: 80px auto; /* 중앙 배치 */
+    padding: 30px;
+    background-color: var(--surface);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-soft);
+    border: 1px solid var(--border);
+    text-align: center;
+}
+
+.delete-card h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary-dark);
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--primary-light);
+    text-align: center;
+}
+
+.delete-card p {
+    font-size: 1rem;
+    color: var(--text);
+    margin-bottom: 15px;
+    line-height: 1.5;
+}
+
+.delete-card .warning {
+    font-weight: 700;
+    color: var(--accent); /* 💡 경고색 강조 */
+    border: 1px solid var(--accent);
+    padding: 10px;
+    border-radius: 8px;
+    background-color: rgba(255, 140, 105, 0.1); /* 연한 경고 배경 */
+    margin-top: 20px;
+}
+
+.delete-card .error-message {
+    color: red;
+    font-weight: 500;
+    margin-top: 10px;
+}
+
+
+/* --- 2. 하단 버튼 그룹 --- */
+.delete-card .action-buttons-group {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+}
+
+.action-buttons-group .btn {
+    padding: 12px 28px;
+    min-width: 120px;
+    border-radius: 30px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: none;
+    transform: translateY(0); 
+}
+
+/* 삭제 버튼 (Danger) */
+.action-buttons-group .btn-danger {
+    background-color: var(--accent); 
+    color: white;
+}
+.action-buttons-group .btn-danger:hover {
+    background-color: #E57355; 
+}
+
+/* 취소 버튼 (Secondary) */
+.action-buttons-group .btn-secondary {
+    background-color: #E9ECEF;
+    color: var(--text-light);
+}
+.action-buttons-group .btn-secondary:hover {
+    background-color: #dee2e6;
+    color: var(--text);
+}
+
+/* ------------------------------------------------------------ */
+
+/* 핫딜게시판 수정 (20번) */
+
+/* =========================================================
+ 🔑 BOARD EDIT PAGE STYLES - FINAL VERSION (전체)
+ * 폼 잘림 및 필드 크기, 이미지 정렬 FIX *
+ ========================================================= */
+
+/* 페이지 컨테이너: 중앙 배치 및 화이트 카드 스타일 */
+.page-board-edit-container {
+    /* 💡 max-width를 1000px로 늘려 잘림 방지 */
+    max-width: 1000px; 
+    margin: 40px auto !important; 
+    padding: 40px 50px;
+    background-color: var(--surface) !important;
+    border-radius: var(--radius) !important;
+    box-shadow: var(--shadow-soft) !important;
+    border: 1px solid var(--border);
+}
+
+/* <h1>게시판 수정 제목 스타일 */
+.page-board-edit-container h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--primary-dark);
+    margin-bottom: 30px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--primary-light);
+    text-align: center;
+}
+.page-board-edit-container h1 small {
+    display: inline;
+    font-size: 0.8em;
+    font-weight: 500;
+    color: var(--text-light);
+    margin-left: 10px;
+}
+
+/* --- 폼 테이블 스타일 --- */
+.page-board-edit-container table.form-input-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 40px;
+    font-size: 1rem;
+}
+.form-input-table tr {
+    border-bottom: 1px solid var(--border);
+}
+.form-input-table tr:last-child {
+    border-bottom: none;
+}
+/* 테이블 제목 (<th>) - 항목 이름 */
+.form-input-table th {
+    width: 200px; 
+    padding: 20px 20px !important;
+    text-align: left;
+    font-weight: 600;
+    color: var(--text-light);
+    background-color: #F8F9FA; 
+    border-right: 1px solid var(--border);
+    
+    /* 💡 수직 정렬을 Flex 시작점으로 변경 */
+    vertical-align: top !important; 
+}
+
+/* 💡 테이블 내용 (<td>) - 이미지 영역에 Flexbox 적용 */
+.form-input-table td {
+    padding: 20px 20px !important;
+    text-align: left;
+    width: 80%;
+    
+    /* 💡 <td>를 Flex 컨테이너로 만들어 내부 이미지 그룹을 중앙 정렬 */
+    display: flex; 
+    flex-direction: column; 
+    justify-content: center; /* 💡 수직 중앙 정렬 */
+    align-items: flex-start; /* 좌측 정렬 */
+}
+/* --- 입력 컨트롤 공통 스타일 --- */
+.page-board-edit-container .form-control {
+    width: 100%; 
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 1rem;
+    background-color: var(--bg);
+    box-sizing: border-box;
+    transition: all 0.3s;
+    max-width: 500px; /* 기본 입력 필드의 최대 너비 */
+}
+.page-board-edit-container .form-control:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(108, 154, 139, 0.15);
+}
+
+/* 텍스트 영역 */
+.page-board-edit-container textarea.form-control {
+    min-height: 200px;
+    resize: vertical;
+}
+
+/* 💡 특정 필드 너비 조정: 핫딜아이템 이름, 가격 */
+.page-board-edit-container #itemname {
+    max-width: 350px; 
+}
+.page-board-edit-container #price {
+    max-width: 200px; 
+    display: inline-block;
+    margin-right: 5px;
+    vertical-align: middle;
+}
+
+/* 셀렉트 박스 */
+.page-board-edit-container .form-control-select {
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 1rem;
+    background-color: var(--surface);
+    min-width: 150px;
+    color: var(--text-light);
+    cursor: pointer;
+}
+
+/* 파일 업로드 필드 */
+.page-board-edit-container .form-control-file {
+    font-size: 0.9rem;
+    padding: 0; 
+    width: 100%;
+    max-width: 450px;
+}
+
+
+/* --- 이미지 수정/삭제 섹션 --- */
+.page-board-edit-container .existing-images-group {
+   display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    /* 💡 <th>의 텍스트가 <td> 내용과 같은 높이에서 시작하도록 패딩/마진 조정 */
+    margin-top: 0; 
+    padding: 0;
+}
+.page-board-edit-container .image-item-edit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px;
+    background-color: var(--bg);
+}
+
+.page-board-edit-container .existing-thumb {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-bottom: 5px;
+}
+
+.page-board-edit-container .delete-label {
+    font-size: 0.9rem;
+    color: var(--accent);
+    cursor: pointer;
+    font-weight: 500;
+    display: flex; 
+    align-items: center; 
+    gap: 5px; 
+}
+.page-board-edit-container .delete-label input[type="checkbox"] {
+    margin: 0; 
+    width: 15px;
+    height: 15px;
+    vertical-align: middle;
+}
+
+.page-board-edit-container .no-image-message {
+   color: var(--text-light);
+    font-style: italic;
+    padding: 10px 0;
+    width: 100%; 
+    text-align: center;
+    min-height: 50px;
+}
+
+
+/* --- 하단 버튼 그룹 --- */
+.action-buttons-group {
+    display: flex;
+    justify-content: flex-end; /* 오른쪽 정렬 */
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.action-buttons-group .btn {
+    padding: 12px 28px;
+    min-width: 120px;
+    border-radius: 30px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: none;
+    transform: translateY(0); 
+}
+
+/* 취소 버튼 (Secondary) */
+.action-buttons-group .btn-secondary {
+    background-color: #E9ECEF;
+    color: var(--text-light);
+}
+.action-buttons-group .btn-secondary:hover {
+    background-color: #dee2e6;
+    color: var(--text);
+}
+
+/* 수정 버튼 (Primary) */
+.action-buttons-group .btn-primary {
+    background-color: var(--primary);
+    color: white;
+}
+.action-buttons-group .btn-primary:hover {
+    background-color: var(--primary-dark);

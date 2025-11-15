@@ -5,6 +5,8 @@
 <html lang="ko">
 <head>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/mypage.css">
+
 </head>
 <body>
 	<div class="page-useredit-container">
