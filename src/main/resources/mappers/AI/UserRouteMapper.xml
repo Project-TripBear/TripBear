@@ -57,12 +57,24 @@
   
   <!-- ✅ 일차/순서 수정 -->
   <update id="updateStopOrder">
-    UPDATE user_route_stop
+    UPDATE tblUserRouteStop
     SET user_route_stop_order = #{order}
     WHERE user_route_stop_id = #{stopId}
     AND user_route_day = #{day}
 </update>
-
+	
+	<update id="updateStopDay">
+    UPDATE tblUserRouteStop
+    SET user_route_day = #{day}
+    WHERE user_route_stop_id = #{stopId}
+	</update>
+	
+	<update id="updateOrder">
+	    UPDATE tblUserRouteStop
+	    SET user_route_stop_order = #{order}
+	    WHERE user_route_stop_id = #{stopId}
+	</update>
+	
   
 
 </mapper>

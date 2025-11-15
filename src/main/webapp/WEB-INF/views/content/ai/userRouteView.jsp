@@ -94,327 +94,414 @@ h1 {
 </div>
 
 <script>
-// ✅ JSP EL 완전 제거
-const pathParts = window.location.pathname.split('/');
-const contextPath = pathParts.length > 1 ? '/' + pathParts[1] : '';
-const userRouteId = new URLSearchParams(window.location.search).get("id");
-let routeData = null;
+// 기본 설정
+var userRouteId = new URLSearchParams(window.location.search).get("id");
+var contextPath = "/trip";
+
+var map;
+var stopsByDay = {};
+var currentDay = 1;
+var routeData = null;   // ✅ 예약 버튼에서 사용할 데이터
+
+// 지도 객체 저장 배열(마커/라인)
+var mapElements = { overlays: [], polylines: [] };
+
+// renderToken (drawRoute 중복 호출 방지)
+var renderToken = 0;
+
+var routeColors = [
+  "#4A6CF7", "#FF5722", "#9C27B0", "#009688",
+  "#FBC02D", "#E91E63", "#795548"
+];
 
 
-let map, stopsByDay = {}, mapElements = {}, currentDay = 1;
-const routeColors = [
-	  "#4A6CF7",
-	  "#FF5722",
-	  "#9C27B0",
-	  "#009688",
-	  "#FBC02D",
-	  "#E91E63",
-	  "#795548"
-	];
-
-
-
+// 지도 초기화
 function initMap(lat, lng) {
   map = new kakao.maps.Map(document.getElementById("map"), {
-    center: new kakao.maps.LatLng(lat, lng), level: 8
+    center: new kakao.maps.LatLng(lat, lng),
+    level: 8
   });
 }
 
+
+// 액티비티 스타일
 function getActivityStyle(code) {
-  const styles = {
+  var styles = {
     ARRIVE: { color: "#7E57C2", icon: "📍" },
-    WALK: { color: "#FF9500", icon: "🚶‍♂️" },
-    EAT: { color: "#E74C3C", icon: "🍴" },
-    VISIT: { color: "#27AE60", icon: "🏛️" },
-    RETURN: { color: "#3498DB", icon: "🏠" },
+    WALK:   { color: "#FF9500", icon: "🚶‍♂️" },
+    EAT:    { color: "#E74C3C", icon: "🍴" },
+    VISIT:  { color: "#27AE60", icon: "🏛️" },
+    RETURN: { color: "#3498DB", icon: "🏠" }
   };
   return styles[code] || { color: "#999", icon: "📌" };
 }
 
-async function drawRoute(start, end, index) {
-	  try {
-	    const url = contextPath + "/api/mobility/directions?originX=" +
-	      start.userRouteLong + "&originY=" + start.userRouteLat +
-	      "&destX=" + end.userRouteLong + "&destY=" + end.userRouteLat;
 
-	    const res = await fetch(url);
-	    if (!res.ok) return null;
-
-	    const json = await res.json();
-	    console.log("Mobility API 응답:", json);
-
-	    let path = [];
-	    const roads = json.routes?.[0]?.sections?.[0]?.roads;
-	    if (!roads) return null;
-
-	    roads.forEach(r => {
-	      for (let i = 0; i < r.vertexes.length; i += 2) {
-	        path.push(new kakao.maps.LatLng(r.vertexes[i + 1], r.vertexes[i]));
-	      }
-	    });
-
-	    const line = new kakao.maps.Polyline({
-	      path,
-	      strokeWeight: 4,
-	      strokeColor: routeColors[index % routeColors.length],
-	      strokeOpacity: 0.9
-	    });
-
-	    line.setMap(map);
-	    return line;
-
-	  } catch (e) {
-	    console.error("Mobility API 오류", e);
-	    return null;
-	  }
-	}
-
-
+// 지도 클리어
 function clearMap() {
-  Object.values(mapElements).forEach(v => {
-    v.overlays?.forEach(o => o.setMap(null));
-    v.lines?.forEach(p => p.setMap(null));
-  });
-  mapElements = {};
+  mapElements.overlays.forEach(function(o){ o.setMap(null); });
+  mapElements.polylines.forEach(function(l){ l.setMap(null); });
+  mapElements = { overlays: [], polylines: [] };
 }
 
-function renderDayButtons() {
-	  const btnBox = document.getElementById("day-buttons");
-	  btnBox.innerHTML = "";
 
-	  Object.keys(stopsByDay).sort((a,b)=>a-b).forEach(day => {
-	    const btn = document.createElement("button");
-	    btn.className = "day-btn";
-	    btn.textContent = "Day " + day;
-	    btn.dataset.day = day;
-	    btnBox.appendChild(btn);
-	  });
+// 경로 그리기
+async function drawRoute(start, end, index, token) {
+  try {
+    var url =
+      contextPath +
+      "/api/mobility/directions?originX=" +
+      start.userRouteLong +
+      "&originY=" + start.userRouteLat +
+      "&destX=" + end.userRouteLong +
+      "&destY=" + end.userRouteLat;
 
-	  btnBox.onclick = async (e) => {
-	    if (!e.target.matches(".day-btn")) return;
-	    document.querySelectorAll(".day-btn").forEach(b => b.classList.remove("active"));
-	    e.target.classList.add("active");
-	    currentDay = e.target.dataset.day;
-	    await displayDay(currentDay);
-	  };
-	}
+    var res = await fetch(url);
+    if (!res.ok) return null;
+
+    // 이전 렌더링이면 무시
+    if (token !== renderToken) return null;
+
+    var json = await res.json();
+    var roads = json.routes && json.routes[0] &&
+                json.routes[0].sections &&
+                json.routes[0].sections[0] &&
+                json.routes[0].sections[0].roads;
+
+    if (!roads) return null;
+
+    var path = [];
+
+    roads.forEach(function(r){
+      for (var i = 0; i < r.vertexes.length; i += 2) {
+        var lat = r.vertexes[i + 1];
+        var lng = r.vertexes[i];
+        path.push(new kakao.maps.LatLng(lat, lng));
+      }
+    });
+
+    var line = new kakao.maps.Polyline({
+      path: path,
+      strokeWeight: 4,
+      strokeColor: routeColors[index % routeColors.length],
+      strokeOpacity: 0.9
+    });
+
+    line.setMap(map);
+    return line;
+
+  } catch (e) {
+    console.error("Mobility 오류:", e);
+    return null;
+  }
+}
 
 
+// Day 렌더링
 async function displayDay(day) {
-  clearMap();
-  const stops = stopsByDay[day];
-  if (!stops) return;
-  const bounds = new kakao.maps.LatLngBounds();
-  const overlays = [], lines = [];
+  var token = ++renderToken;
 
-  stops.forEach((s, i) => {
-    const info = getActivityStyle(s.activityCode);
-    const latlng = new kakao.maps.LatLng(s.userRouteLat, s.userRouteLong);
+  clearMap();
+
+  var stops = stopsByDay[day];
+  if (!stops) return;
+
+  var bounds = new kakao.maps.LatLngBounds();
+
+  // 마커/번호 표시
+  for (var i = 0; i < stops.length; i++) {
+    var s = stops[i];
+    var info = getActivityStyle(s.activityCode);
+    var latlng = new kakao.maps.LatLng(s.userRouteLat, s.userRouteLong);
     bounds.extend(latlng);
-    const overlay = new kakao.maps.CustomOverlay({
+
+    var overlay = new kakao.maps.CustomOverlay({
       position: latlng,
-      content: "<div style='background:" + info.color + ";color:#fff;padding:3px 6px;border-radius:6px;'>" + s.userRouteStopOrder + "</div>",
+      content:
+        "<div style='background:" +
+        info.color +
+        ";color:#fff;padding:3px 6px;border-radius:6px;'>" +
+        s.userRouteStopOrder +
+        "</div>",
       yAnchor: 1.2
     });
-    overlay.setMap(map);
-    overlays.push(overlay);
-  });
 
-  for (let j = 0; j < stops.length - 1; j++) {
-	  const seg = await drawRoute(stops[j], stops[j + 1], j);
-    if (seg) lines.push(seg);
+    overlay.setMap(map);
+    mapElements.overlays.push(overlay);
+  }
+
+  // Polyline 표시
+  for (var j = 0; j < stops.length - 1; j++) {
+    var seg = await drawRoute(stops[j], stops[j + 1], j, token);
+    if (seg && token === renderToken) {
+      mapElements.polylines.push(seg);
+    }
   }
 
   map.setBounds(bounds);
-  mapElements[day] = { overlays, lines };
   renderEditableStops(stops);
 }
 
+
+// Day 버튼 렌더링
+function renderDayButtons() {
+  var box = document.getElementById("day-buttons");
+  box.innerHTML = "";
+
+  Object.keys(stopsByDay)
+    .sort(function(a,b){ return a - b; })
+    .forEach(function(day){
+      var btn = document.createElement("button");
+      btn.className = "day-btn";
+      btn.textContent = "Day " + day;
+      btn.dataset.day = day;
+      box.appendChild(btn);
+    });
+
+  box.onclick = function(e){
+    if (!e.target.matches(".day-btn")) return;
+
+    document.querySelectorAll(".day-btn").forEach(function(b){
+      b.classList.remove("active");
+    });
+
+    e.target.classList.add("active");
+    currentDay = e.target.dataset.day;
+    displayDay(currentDay);
+  };
+}
+
+
+// 일정 카드 렌더링
 function renderEditableStops(stops) {
-  const list = document.getElementById("stop-list");
+  var list = document.getElementById("stop-list");
   list.innerHTML = "";
-  stops.forEach(s => {
-    const info = getActivityStyle(s.activityCode);
-    const li = document.createElement("li");
+
+  stops.forEach(function(s){
+    var info = getActivityStyle(s.activityCode);
+    var li = document.createElement("li");
     li.className = "travel-card";
     li.dataset.id = s.userRouteStopId;
 
-    let dayOptions = "";
-    for (let d = 1; d <= 7; d++) {
-      dayOptions += "<option value='" + d + "'" + (s.userRouteDay == d ? " selected" : "") + ">Day " + d + "</option>";
+    // Day 옵션 생성
+    var dayOptions = "";
+    for (var d = 1; d <= 7; d++) {
+      dayOptions +=
+        "<option value='" + d + "'" +
+        (s.userRouteDay == d ? " selected" : "") +
+        ">Day " + d + "</option>";
     }
 
     li.innerHTML =
       "<div class='travel-header'>" +
-        "<div><span style='background:" + info.color + ";padding:2px 6px;color:#fff;border-radius:4px;'>" + s.activityCode + "</span> " +
-        info.icon + " <strong>" + (s.userRouteDescription || "(이름 없음)") + "</strong></div>" +
+        "<div>" +
+          "<span style='background:" + info.color + ";padding:2px 6px;color:#fff;border-radius:4px;'>" +
+            s.activityCode +
+          "</span> " +
+          info.icon +
+          " <strong>" + (s.userRouteDescription || "(이름 없음)") + "</strong>" +
+        "</div>" +
       "</div>" +
       "<div class='travel-meta'>" +
         "<span>🕒 " + (s.durationInMinutes || 0) + "분</span>" +
-        "<span><label>일차:</label> <select class='day-selector' data-stopid='" + s.userRouteStopId + "'>" + dayOptions + "</select></span>" +
-        "<span><label>이동수단:</label> <select class='mode-select' data-stopid='" + s.userRouteStopId + "'>" +
-          "<option value='WALK' " + (s.transportationMode==='WALK'?'selected':'') + ">도보 🚶</option>" +
-          "<option value='CAR' " + (s.transportationMode==='CAR'?'selected':'') + ">자동차 🚗</option>" +
-          "<option value='BIKE' " + (s.transportationMode==='BIKE'?'selected':'') + ">자전거 🚴</option>" +
-        "</select></span>" +
+        "<span><label>일차:</label> " +
+          "<select class='day-selector' data-stopid='" + s.userRouteStopId + "'>" +
+            dayOptions +
+          "</select>" +
+        "</span>" +
+        "<span><label>이동수단:</label> " +
+          "<select class='mode-select' data-stopid='" + s.userRouteStopId + "'>" +
+            "<option value='WALK' " + (s.transportationMode==="WALK"?"selected":"") + ">도보 🚶</option>" +
+            "<option value='CAR' "  + (s.transportationMode==="CAR" ?"selected":"") + ">자동차 🚗</option>" +
+            "<option value='BIKE' " + (s.transportationMode==="BIKE"?"selected":"") + ">자전거 🚴</option>" +
+          "</select>" +
+        "</span>" +
       "</div>";
 
     list.appendChild(li);
   });
 
+  // Sortable 적용
   Sortable.create(list, {
-	  animation: 150,
-	  onEnd: async evt => {
-	    const items = [...document.querySelectorAll("#stop-list .travel-card")];
+    animation: 150,
+    onEnd: async function(evt){
+      var items = document.querySelectorAll("#stop-list .travel-card");
 
-	    // order 재정렬 목록 생성
-	    const orderedStops = items.map((li, index) => ({
-	      stopId: li.dataset.id,
-	      order: index + 1
-	    }));
+      var orderedStops = [];
+      items.forEach(function(li, idx){
+        orderedStops.push({
+          stopId: li.dataset.id,
+          order: idx + 1
+        });
+      });
 
-	    // 전체 order 업데이트 API 호출
-	    const res = await fetch("trip/api/user/route/stop/reorder", {
-	      method: "POST",
-	      headers: { "Content-Type": "application/json" },
-	      body: JSON.stringify({
-	        day: currentDay,
-	        stops: orderedStops
-	      })
-	    });
+      await fetch(
+        contextPath + "/api/user/route/stop/bulk/reorder",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            day: currentDay,
+            stops: orderedStops
+          })
+        }
+      );
 
-	    if (res.ok) await refreshDay(currentDay);
-	  }
-	});
-
+      refreshDay(currentDay);
+    }
+  });
 }
 
-document.addEventListener("change", async e => {
+
+// Day 변경 / 이동수단 변경 이벤트
+document.addEventListener("change", async function(e){
+
+  // Day 변경
   if (e.target.matches(".day-selector")) {
-    const stopId = e.target.dataset.stopid;
-    const newDay = e.target.value;
-    const res = await fetch(contextPath + "/api/user/route/stop/" + stopId + "?day=" + newDay + "&order=1", {method:"PATCH"});
-    if (res.ok) await refreshDay(newDay);
+    var stopId = e.target.dataset.stopid;
+    var newDay = e.target.value;
+
+    await fetch(
+      contextPath +
+      "/api/user/route/stop/" +
+      stopId +
+      "/day?day=" + newDay,
+      { method: "PATCH" }
+    );
+
+    refreshDay(newDay);
   }
+
+  // 이동수단 변경
   if (e.target.matches(".mode-select")) {
-    const stopId = e.target.dataset.stopid;
-    const mode = e.target.value;
-    const res = await fetch(contextPath + "/api/user/route/stop/" + stopId + "/mode?mode=" + mode, {method:"PATCH"});
-    if (res.ok) await refreshDay(currentDay);
+    var stopId2 = e.target.dataset.stopid;
+    var mode = e.target.value;
+
+    await fetch(
+      contextPath +
+      "/api/user/route/stop/" +
+      stopId2 +
+      "/mode?mode=" + mode,
+      { method: "PATCH" }
+    );
+
+    refreshDay(currentDay);
   }
+
 });
 
+
+// Day 새로고침
 async function refreshDay(day){
-	  const res = await fetch(contextPath + "/api/user/route/" + userRouteId);
-	  const data = await res.json();
-		
-	  stopsByDay = data.stops.reduce((acc,s)=>{
-	    (acc[s.userRouteDay] = acc[s.userRouteDay] || []).push(s);
-	    return acc;
-	  },{});
+  var res = await fetch(contextPath + "/api/user/route/" + userRouteId);
+  var data = await res.json();
 
-	  // ★ 정렬 추가
-	  Object.keys(stopsByDay).forEach(d => {
-	    stopsByDay[d].sort((a,b) => a.userRouteStopOrder - b.userRouteStopOrder);
-	  });
+  routeData = data;  // ✅ 예약 버튼에서도 쓰도록 유지
 
-	  // ★ Day 버튼 재생성
-	  renderDayButtons();
+  stopsByDay = data.stops.reduce(function(acc, s){
+    if (!acc[s.userRouteDay]) acc[s.userRouteDay] = [];
+    acc[s.userRouteDay].push(s);
+    return acc;
+  }, {});
 
-	  // 현재 day가 없어진 경우 첫 day로 이동
-	  if (!stopsByDay[day]) {
-	    day = Object.keys(stopsByDay)[0];
-	  }
+  Object.keys(stopsByDay).forEach(function(d){
+    stopsByDay[d].sort(function(a,b){
+      return a.userRouteStopOrder - b.userRouteStopOrder;
+    });
+  });
 
-	  currentDay = day;
+  renderDayButtons();
 
-	  // 새로 생성된 day 버튼에 active 추가
-	  document.querySelector(`[data-day="${day}"]`)?.classList.add("active");
+  if (!stopsByDay[day]) {
+    day = Object.keys(stopsByDay)[0];
+  }
 
-	  await displayDay(day);
-	}
+  currentDay = day;
+  var activeBtn = document.querySelector("[data-day='" + day + "']");
+  if (activeBtn) activeBtn.classList.add("active");
+
+  displayDay(day);
+}
 
 
-window.addEventListener("DOMContentLoaded", async ()=>{
-  const res = await fetch(contextPath + "/api/user/route/" + userRouteId);
-  const data = await res.json();
-  
-  routeData = data; 
+// 초기 로딩
+window.addEventListener("DOMContentLoaded", async function(){
+  var res = await fetch(contextPath + "/api/user/route/" + userRouteId);
+  var data = await res.json();
+
+  routeData = data;   // ✅ 최초에도 세팅
+
   if (!data.stops || data.stops.length === 0) {
     document.getElementById("map").innerHTML = "<h4>저장된 경로가 없습니다.</h4>";
     return;
   }
-  document.getElementById("route-title").textContent = data.userRouteTitle;
+
   initMap(data.stops[0].userRouteLat, data.stops[0].userRouteLong);
 
-  stopsByDay = data.stops.reduce((acc,s)=>{
-    (acc[s.userRouteDay]=acc[s.userRouteDay]||[]).push(s);
+  stopsByDay = data.stops.reduce(function(acc, s){
+    if (!acc[s.userRouteDay]) acc[s.userRouteDay] = [];
+    acc[s.userRouteDay].push(s);
     return acc;
-  },{});
+  }, {});
 
-  const btnBox = document.getElementById("day-buttons");
-  Object.keys(stopsByDay).sort((a,b)=>a-b).forEach(day=>{
-    const btn=document.createElement("button");
-    btn.className="day-btn";
-    btn.textContent="Day "+day;
-    btn.dataset.day=day;
-    btnBox.appendChild(btn);
-  });
-  btnBox.addEventListener("click",async e=>{
-    if(!e.target.matches(".day-btn"))return;
-    document.querySelectorAll(".day-btn").forEach(b=>b.classList.remove("active"));
-    e.target.classList.add("active");
-    currentDay=e.target.dataset.day;
-    await displayDay(currentDay);
-  });
+  renderDayButtons();
 
-  const firstDay=Object.keys(stopsByDay).sort((a,b)=>a-b)[0];
-  document.querySelector('[data-day="'+firstDay+'"]').classList.add("active");
-  currentDay=firstDay;
-  await displayDay(firstDay);
+  var firstDay = Object.keys(stopsByDay).sort(function(a,b){ return a - b; })[0];
+  var btn = document.querySelector("[data-day='" + firstDay + "']");
+  if (btn) btn.classList.add("active");
+
+  displayDay(firstDay);
 });
 
-document.getElementById("delete-route-btn").addEventListener("click", async ()=>{
-  if(!confirm("이 루트를 삭제할까요?")) return;
-  const res = await fetch(contextPath + "/api/user/route/" + userRouteId, {method:"DELETE"});
-  if(res.ok){
+
+// 삭제 기능
+document.getElementById("delete-route-btn").addEventListener("click", async function(){
+  if (!confirm("이 루트를 삭제할까요?")) return;
+
+  var res = await fetch(contextPath + "/api/user/route/" + userRouteId, {
+    method: "DELETE"
+  });
+
+  if (res.ok) {
     alert("삭제 완료");
-    location.href=contextPath+"/mypage";
-  } else alert("삭제 실패");
+    window.location.href = contextPath + "/mypage";
+  } else {
+    alert("삭제 실패");
+  }
 });
 
-document.getElementById("reserveBtn").addEventListener("click", () => {
 
-	  if (!routeData) {
-	    alert("경로 정보를 불러오지 못했습니다.");
-	    return;
-	  }
+// 숙소 예약
+document.getElementById("reserveBtn").addEventListener("click", function(){
+  if (!routeData) {
+    alert("경로 정보를 불러오지 못했습니다.");
+    return;
+  }
 
-	  var region = routeData.userRouteRegion;
-	  var checkin = formatDate(routeData.userRouteStartdate);
-	  var checkout = formatDate(routeData.userRouteEnddate);
+  var region = routeData.userRouteRegion;
+  var checkin = formatDate(routeData.userRouteStartdate);
+  var checkout = formatDate(routeData.userRouteEnddate);
 
-	  // ❗ 백틱 제거한 형태
-	  var url = "/trip/reservation/select-accom"
-	          + "?userRouteId=" + routeData.userRouteId
-	          + "&region=" + encodeURIComponent(region)
-	          + "&checkin=" + checkin
-	          + "&checkout=" + checkout;
+  var url =
+    contextPath + "/reservation/select-accom" +
+    "?userRouteId=" + routeData.userRouteId +
+    "&region=" + encodeURIComponent(region) +
+    "&checkin=" + checkin +
+    "&checkout=" + checkout;
 
-	  window.location.href = url;
-	});
-
-	function formatDate(d) {
-	  var date = new Date(d);
-	  var month = String(date.getMonth() + 1).padStart(2, "0");
-	  var day = String(date.getDate()).padStart(2, "0");
-	  return date.getFullYear() + "-" + month + "-" + day;
-	}
+  window.location.href = url;
+});
 
 
-
-
-
+function formatDate(d) {
+  var date = new Date(d);
+  var month = String(date.getMonth() + 1).padStart(2, "0");
+  var day = String(date.getDate() + 0).padStart(2, "0");
+  return date.getFullYear() + "-" + month + "-" + day;
+}
 </script>
+
+
+
 </body>
 </html>

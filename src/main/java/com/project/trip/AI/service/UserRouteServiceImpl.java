@@ -53,6 +53,16 @@ public class UserRouteServiceImpl implements UserRouteService {
             mapper.updateStopOrder(s.getStopId(), s.getOrder(), day);
         }
     }
+    
+    @Override
+    public int updateStopDay(Long stopId, int day) {
+        return mapper.updateStopDay(stopId, day);
+    }
+
+    @Override
+    public int updateOrder(Long stopId, int order) {
+        return mapper.updateOrder(stopId, order);
+    }
 
     
 }
