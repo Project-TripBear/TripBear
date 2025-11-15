@@ -128,8 +128,8 @@
     
     /* ❗️ 아래 2줄을 추가합니다 ❗️ */
     flex-wrap: wrap; /* 👈 2줄로 나눌 수 있게 함 */
-    justify-content: space-between; /* 👈 1번째 줄 양쪽 정렬 */
-
+/*     justify-content: space-between; 👈 1번째 줄 양쪽 정렬
+ */
     margin-top: 40px;
     width: 100%;
     max-width: 1000px;
@@ -200,6 +200,49 @@
     margin-top: 20px; /* 👈 윗줄과 간격 */
 }
 
+
+/* =========================================================
+   🔑 페이지바 디자인 스타일 추가
+ ========================================================= */
+
+/* 페이지바 링크 (<a> 태그) 공통 스타일 */
+.pagebar-container a {
+    display: inline-block;     /* 링크를 버튼처럼 다루기 위해 */
+    padding: 8px 14px;         /* 내부 여백 (버튼 크기) */
+    margin: 0 5px;             /* 버튼 사이 간격 */
+    text-decoration: none;     /* 밑줄 제거 */
+    
+    color: var(--primary);     /* 링크 글씨 색 (CSS 변수 활용) */
+    border: 1px solid var(--border); /* 옅은 테두리 */
+    border-radius: 8px;        /* 모서리 둥글게 */
+    
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: all 0.2s ease; /* 부드러운 효과 */
+}
+
+/* 페이지바 링크에 마우스를 올렸을 때 */
+.pagebar-container a:hover {
+    background-color: var(--primary); /* 배경색 강조 */
+    color: white;                     /* 글씨색 흰색으로 */
+    border-color: var(--primary);
+}
+
+/* 현재 페이지 (스크린샷에서 '1'처럼 굵게 표시된 부분) */
+/* (JSP에서 <strong> 태그로 생성되었다고 가정) */
+.pagebar-container strong {
+    display: inline-block;
+    padding: 8px 14px;
+    margin: 0 5px;
+    
+    color: white;                     /* 글씨색 흰색 */
+    background-color: var(--primary); /* 배경색 강조 */
+    border: 1px solid var(--primary);
+    border-radius: 8px;
+    
+    font-size: 0.95rem;
+    font-weight: 700;                 /* 굵은 글씨 */
+}
 /* ------------------------------------------------------------ */
 
 /* 핫딜게시판 쓰기 (18번) */

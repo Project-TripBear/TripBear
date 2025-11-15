@@ -24,6 +24,8 @@ public class SessionUrlSavingFilter extends OncePerRequestFilter {
 		    !requestURI.contains("/auth") &&
 		    !requestURI.contains("/static") &&
 		    !requestURI.contains("/script") &&
+		    !requestURI.contains("/like") &&
+		    !requestURI.contains("/scrap") &&
 		    !requestURI.contains("/allplace") &&
 		    !requestURI.contains("/css") &&
 		    !requestURI.contains("/js") &&
