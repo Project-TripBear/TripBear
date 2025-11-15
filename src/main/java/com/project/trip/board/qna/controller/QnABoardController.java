@@ -177,6 +177,9 @@ public class QnABoardController {
             QnABoardDTO dto,
             Authentication authentication,
             RedirectAttributes rttr) {
+    	
+    	System.out.println("🔥 POST EDIT 호출됨");
+
 
         Integer userId = getLoggedInUserId(authentication);
 
