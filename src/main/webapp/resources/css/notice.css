@@ -3223,3 +3223,1106 @@ main {
 .action-buttons-group .btn-danger:hover {
     background-color: #E57355; 
 }
+
+
+/* ------------------------------------------------------------ */
+
+/* 핫딜게시판 리스트 (16번) */
+
+/* =========================================================
+ 🔑 BOARD LIST PAGE STYLES - FINAL MINIMAL CHANGE
+ ========================================================= */
+
+/* 페이지 컨테이너 및 제목 영역 */
+.page-board-list-container {
+    max-width: 1100px;
+    margin: 40px auto !important;
+    padding: 0 30px;
+}
+.page-board-list-container #main {
+    max-width: 1000px; /* 내부 콘텐츠 너비 */
+    margin: 0 auto;
+    padding: 0;
+}
+
+/* 1. <h1> 게시판 제목 스타일 */
+.page-board-list-container h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--primary-dark);
+    margin-bottom: 25px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--primary-light);
+    text-align: left;
+}
+.page-board-list-container h1 small {
+    display: inline;
+    font-size: 0.8em;
+    font-weight: 500;
+    color: var(--text-light);
+    margin-left: 10px;
+}
+.page-board-list-container .search-result-label {
+    font-size: 1rem;
+    color: var(--text-light);
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+
+/* 2. 게시글 목록 테이블 스타일 */
+.page-board-list-container .board-data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: var(--surface);
+    border-radius: 8px;
+    box-shadow: var(--shadow-soft);
+    overflow: hidden;
+}
+
+/* 테이블 헤더 */
+.board-data-table tr:first-child {
+    background-color: var(--bg);
+    border-bottom: 2px solid var(--border);
+}
+.board-data-table th {
+    padding: 15px 20px;
+    text-align: center;
+    font-weight: 600;
+    color: var(--text-light);
+}
+
+/* 테이블 데이터 셀 */
+.board-data-table td {
+    padding: 12px 20px;
+    color: var(--text);
+    font-size: 0.95rem;
+    vertical-align: middle;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+}
+.board-data-table tr:last-child td {
+    border-bottom: none;
+}
+
+/* 열 너비 지정 */
+.board-data-table th:nth-child(1), .board-data-table td:nth-child(1) { width: 60px; } /* 번호 */
+.board-data-table th:nth-child(3), .board-data-table td:nth-child(3) { width: 100px; } /* 이름 */
+.board-data-table th:nth-child(4), .board-data-table td:nth-child(4) { width: 120px; } /* 날짜 */
+.board-data-table th:nth-child(5), .board-data-table td:nth-child(5) { width: 70px; } /* 읽음 */
+.board-data-table td:nth-child(2) { text-align: left; } /* 제목 왼쪽 정렬 */
+
+/* 게시물이 없습니다 셀 */
+.board-data-table td[colspan="5"] {
+    text-align: center;
+    font-style: italic;
+    color: var(--text-light);
+    padding: 30px;
+    background-color: var(--surface);
+}
+
+/* 제목 링크 스타일 (이미지 포함) */
+.board-data-table td a {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: var(--text);
+    font-weight: 600;
+}
+.board-data-table td a .post-thumb-img { /* 💡 이미지 클래스 */
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-right: 10px;
+    flex-shrink: 0;
+    border: 1px solid var(--border);
+}
+.board-data-table td a .post-subject-text { /* 💡 텍스트 클래스 */
+    /* 텍스트가 잘리지 않도록 Flexbox 내에서 유연하게 확장 */
+    flex-grow: 1; 
+}
+
+
+/* 3. 하단 영역 (검색, 페이지바, 쓰기 버튼) */
+.board-footer-container {
+    display: flex;
+    align-items: center; 
+    
+    /* ❗️ 아래 2줄을 추가합니다 ❗️ */
+    flex-wrap: wrap; /* 👈 2줄로 나눌 수 있게 함 */
+    justify-content: space-between; /* 👈 1번째 줄 양쪽 정렬 */
+
+    margin-top: 40px;
+    width: 100%;
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* 검색 폼 스타일 */
+.board-search-form {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    
+    order: 1;
+    
+}
+.board-search-form .form-control-select,
+.board-search-form .form-control-input {
+    padding: 10px 15px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 0.95rem;
+    background-color: var(--surface);
+    transition: all 0.3s;
+}
+.board-search-form .form-control-select {
+    width: 100px;
+}
+.board-search-form .form-control-input {
+    width: 200px;
+}
+
+.board-search-form .btn-search {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    background-color: var(--primary);
+    color: white;
+    font-weight: 500;
+    cursor: pointer;
+}
+.board-search-form .btn-search:hover {
+    background-color: var(--primary-dark);
+}
+
+/* 쓰기 버튼 */
+.write-button-group {
+   /*  width: 100%;
+    max-width: 1000px;
+    text-align: right; */ /* 오른쪽 정렬 */
+/*     margin-top: -65px; 페이지바 위로 겹치도록 조정 (선택 사항)
+ */   /*  margin-bottom: 20px;
+ margin-left: 20px; */
+/*  margin-left: auto; */
+ order: 2;
+}
+
+/* 페이지바 */
+.pagebar-container {
+
+    text-align: center;
+    
+    /* ❗️ flex-grow: 1, order 등 이전 속성 삭제 ❗️ */
+    
+    /* ❗️ 아래 3줄을 추가합니다 ❗️ */
+    order: 3; /* 👈 2번째 줄로 보냄 */
+    width: 100%; /* 👈 2번째 줄을 꽉 채움 */
+    margin-top: 20px; /* 👈 윗줄과 간격 */
+}
+
+
+/* ------------------------------------------------------------ */
+
+/* 핫딜게시판 보기 (17번) */
+/* =========================================================
+ 🔑 BOARD VIEW PAGE STYLES - FINAL VERSION (전체)
+ * 수정 행 정렬 및 디자인 FIX *
+ ========================================================= */
+
+/* 페이지 컨테이너 및 중앙 정렬 */
+.page-board-view-container {
+    max-width: 1000px;
+    margin: 40px auto !important; 
+    padding: 0 30px;
+}
+.page-board-view-container #main {
+    max-width: 800px; 
+    margin: 0 auto;
+    padding: 0;
+}
+
+/* --- 1. 게시글 컨테이너 (메인 카드) --- */
+.post-container {
+    background-color: var(--surface);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-soft);
+    border: 1px solid var(--border);
+    padding: 40px;
+    margin-bottom: 40px;
+}
+/* 헤더 및 메타 정보 */
+.post-header {
+    padding-bottom: 15px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid var(--border);
+}
+.post-header .category {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--primary);
+    display: block;
+    margin-bottom: 5px;
+}
+.post-header .subject {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text);
+    margin: 0;
+    padding: 0;
+}
+.post-meta {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    margin-top: 10px;
+}
+.post-meta strong {
+    color: var(--primary-dark);
+    font-weight: 600;
+}
+.post-divider {
+    border: 0;
+    border-top: 1px solid var(--border);
+    margin: 20px 0;
+}
+
+
+/* 이미지 갤러리 */
+.post-images {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin: 20px 0;
+    justify-content: center;
+}
+.post-images .post-image-thumb {
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+}
+
+/* 게시글 내용 */
+.post-content {
+    min-height: 150px;
+    padding: 20px 0;
+    line-height: 1.8;
+    color: var(--text);
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 20px;
+}
+
+/* 핫딜 정보 카드 */
+.hotdeal-info.info-card {
+    background-color: #F8F9FA;
+    border: 1px solid var(--primary-light);
+    border-radius: 12px;
+    padding: 15px 25px;
+    margin-bottom: 30px;
+}
+.hotdeal-info.info-card p {
+    margin: 5px 0;
+    font-size: 1rem;
+}
+
+
+/* --- 2. 액션 버튼 (좋아요, 스크랩, 신고) --- */
+.post-actions.action-buttons-group {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    padding: 20px 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 30px;
+}
+.post-actions .btn { /* 버튼 공통 스타일 */
+    padding: 10px 20px;
+    border-radius: 30px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background-color: var(--bg);
+    color: var(--text);
+    transition: all 0.2s;
+    white-space: nowrap; 
+}
+.post-actions .btn:hover {
+    background-color: #E9ECEF;
+}
+/* 좋아요/스크랩 활성화 상태 */
+.post-actions button.active {
+    background-color: var(--primary-light);
+    color: var(--primary-dark);
+    border-color: var(--primary);
+}
+
+
+/* --- 3. 댓글 섹션 --- */
+.comment-section {
+    padding-bottom: 20px;
+}
+.comment-section h3 {
+    font-size: 1.5rem;
+    color: var(--primary-dark);
+    margin-bottom: 15px;
+    border-bottom: 2px solid var(--border);
+    padding-bottom: 5px;
+}
+
+.comment-list-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 15px;
+}
+.comment-list-table tr.comment-row {
+    border-bottom: 1px solid var(--border);
+    cursor: pointer; 
+    transition: background-color 0.3s;
+}
+
+.comment-list-table tr.comment-row:hover {
+    background-color: #F8F9FA;
+}
+
+.comment-list-table td {
+    padding: 10px 0;
+    vertical-align: top;
+}
+.comment-list-table .commentContent {
+    width: 80%;
+    text-align: left;
+    line-height: 1.4;
+    font-size: 1rem;
+}
+.comment-list-table .commentContent div:last-child { 
+    font-size: 0.85rem;
+    color: var(--text-light);
+    margin-top: 5px;
+}
+.comment-list-table .commentInfo {
+    width: 20%;
+    text-align: right;
+}
+.comment-list-table .commentInfo > div {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+.comment-list-table .commentInfo div:first-child { /* 작성자 이름 */
+    font-weight: 600;
+    color: var(--primary-dark);
+    margin-bottom: 5px;
+}
+/* 수정/삭제 버튼 그룹 정렬 */
+.comment-list-table .commentInfo .comment-actions {
+    display: flex; 
+    gap: 5px;
+    margin-top: 5px;
+}
+
+/* 💡 수정/삭제 텍스트 색상 통일 */
+.comment-list-table .commentInfo .comment-actions span {
+    font-size: 1rem; 
+    cursor: pointer;
+    /* 💡 색상을 작성자 이름과 유사한 Primary-dark로 통일 */
+    color: var(--primary-dark) !important; 
+    transition: color 0.2s;
+}
+.comment-list-table .commentInfo .comment-actions span:hover {
+    color: var(--primary) !important;
+}
+
+
+/* =========================================================
+ 🔑 댓글 수정 행 (Dynamic Edit Row) 스타일 - 최종 FIX
+ ========================================================= */
+
+.comment-list-table tr.commentEditRow {
+    border-bottom: 2px solid var(--primary-light); 
+    background-color: var(--surface);
+    vertical-align: middle; 
+}
+
+/* 💡 Colspan=2가 적용된 <td>에만 스타일 적용 */
+.comment-list-table tr.commentEditRow td {
+    padding: 15px 20px !important; 
+    text-align: left; 
+    position: relative; /* 내부 요소 위치 지정을 위한 기준점 설정 */
+}
+
+
+/* 1. 버튼 그룹 컨테이너 (오른쪽 정렬 및 Float 강제) */
+.comment-list-table tr.commentEditRow td > div:last-child {
+    /* 💡 Float를 사용하여 이 요소 자체를 오른쪽 끝으로 밀어냅니다. */
+    float: right !important; 
+    margin-top: 0 !important; /* JS의 마진 무시 */
+    text-align: right; 
+    /* float를 사용했으므로 인라인 style="text-align: right;"가 작동합니다. */
+}
+
+/* 2. 입력 필드 컨테이너 (첫 번째 Div - 남은 공간 채우기) */
+.comment-list-table tr.commentEditRow td > div:first-child {
+    margin-bottom: 0; /* 불필요한 마진 제거 */
+    overflow: hidden; /* Float된 요소를 제외하고 남은 공간을 확보 */
+    padding-right: 15px; /* 버튼과의 간격 확보 */
+}
+
+/* 입력 필드 자체 */
+.comment-list-table tr.commentEditRow td input[type="text"]#txtComment {
+    width: 100%; /* 💡 남은 공간을 채우도록 100% 유지 */
+    padding: 8px 10px;
+    border: 1px solid var(--primary);
+    border-radius: 6px;
+    box-sizing: border-box;
+    font-size: 1rem;
+    background-color: var(--bg);
+}
+
+
+/* 💡 동적으로 삽입된 '확인/닫기' 버튼 스타일 */
+.comment-list-table tr.commentEditRow td button {
+    padding: 8px 15px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+    margin-left: 8px; 
+    white-space: nowrap;
+}
+
+/* 확인 버튼 (Primary 스타일) */
+.comment-list-table tr.commentEditRow td button:first-child {
+    background-color: var(--primary);
+    color: white;
+}
+.comment-list-table tr.commentEditRow td button:last-child {
+    background-color: #E9ECEF;
+    color: var(--text-light);
+}
+
+
+/* 댓글 로딩, 더보기 버튼 */
+.loading-spinner {
+    text-align: center;
+    display: none; 
+    padding: 20px 0;
+}
+.comment-more-container {
+    text-align: center;
+    margin-top: 15px;
+    display: flex;
+    justify-content: center;
+}
+.comment-more-container .btn-secondary {
+    width: 100%;
+    max-width: 200px;
+    padding: 10px;
+    background-color: var(--surface);
+    color: var(--text-light);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.comment-more-container .btn-secondary:hover {
+    background-color: #E9ECEF;
+    color: var(--text);
+}
+
+
+/* 댓글 쓰기 폼 */
+.comment-add-form {
+    margin-top: 30px;
+    border-top: 1px solid var(--border);
+    padding-top: 20px;
+}
+.comment-add-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.comment-add-table td:first-child {
+    width: 85%;
+    padding-right: 10px;
+}
+.comment-add-table td:last-child {
+    width: 15%;
+}
+.comment-add-table input.form-control {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background-color: var(--bg);
+    color: var(--text);
+}
+.comment-add-table .btn-primary {
+    padding: 10px 20px;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 8px;
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.2s;
+}
+.comment-add-table .btn-primary:hover {
+    background-color: var(--primary-dark);
+}
+
+
+/* --- 4. 하단 목록보기/수정/삭제 버튼 --- */
+.bottom-buttons.action-buttons-group {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+}
+.bottom-buttons .right-align { 
+    display: flex;
+    gap: 10px;
+}
+.bottom-buttons .btn {
+    padding: 10px 20px;
+    font-weight: 600;
+    border-radius: 30px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+.bottom-buttons .btn-secondary { 
+    background-color: #E9ECEF;
+    color: var(--text-light);
+    border-color: #E9ECEF;
+}
+.bottom-buttons .btn-secondary:hover {
+    background-color: #DDE2E6;
+    color: var(--text);
+}
+.bottom-buttons .btn-danger { 
+    background-color: var(--accent);
+    color: white;
+    border-color: var(--accent);
+}
+.bottom-buttons .btn-danger:hover {
+    background-color: #D32F2F;
+}
+.bottom-buttons .btn-primary { 
+    background-color: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+.bottom-buttons .btn-primary:hover {
+    background-color: var(--primary-dark);
+}
+.comment-actions,
+.comment-action-buttons {
+  display: flex;
+  gap: 8px; /* 👈 이 값이 '수정'과 '삭제' 사이의 간격입니다. (원하는 대로 조절하세요) */
+}
+
+
+
+/* ------------------------------------------------------------ */
+
+/* 핫딜게시판 쓰기 (18번) */
+
+/* =========================================================
+ 🔑 USER REGISTER PAGE STYLES (page-register-container) - 이 스타일은 위에 이미 정의되어 있다고 가정합니다.
+ 🔑 BOARD WRITE PAGE STYLES (page-board-add-container) - 최종 수정
+ ========================================================= */
+
+/* 페이지 컨테이너: 중앙 배치 및 화이트 카드 스타일 */
+.page-board-add-container {
+    max-width: 900px; 
+    margin: 40px auto !important; /* 중앙 정렬 */
+    padding: 40px 50px;
+    background-color: var(--surface) !important;
+    border-radius: var(--radius) !important;
+    box-shadow: var(--shadow-soft) !important;
+    border: 1px solid var(--border);
+}
+
+/* <h1>게시판 쓰기 제목 스타일 */
+.page-board-add-container h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--primary-dark);
+    margin-bottom: 30px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--primary-light);
+    text-align: center;
+}
+.page-board-add-container h1 small {
+    display: inline;
+    font-size: 0.8em;
+    font-weight: 500;
+    color: var(--text-light);
+    margin-left: 10px;
+}
+
+/* --- 폼 테이블 스타일 --- */
+.page-board-add-container table.form-input-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 40px;
+    font-size: 1rem;
+}
+.form-input-table tr {
+    border-bottom: 1px solid var(--border);
+}
+.form-input-table tr:last-child {
+    border-bottom: none;
+}
+
+/* 테이블 제목 (<th>) - 항목 이름 */
+.form-input-table th {
+    width: 20%; /* 레이블 너비 고정 */
+    padding: 15px 20px;
+    text-align: left;
+    font-weight: 600;
+    color: var(--text-light);
+    background-color: #F8F9FA; 
+    border-right: 1px solid var(--border);
+    vertical-align: middle;
+}
+
+/* 테이블 내용 (<td>) - 입력 필드 영역 */
+.form-input-table td {
+    padding: 15px 20px;
+    text-align: left;
+    vertical-align: middle;
+    width: 80%;
+}
+
+/* --- 입력 컨트롤 공통 스타일 --- */
+.page-board-add-container .form-control {
+    width: 100%; 
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 1rem;
+    background-color: var(--bg);
+    box-sizing: border-box;
+    transition: all 0.3s;
+    max-width: 500px; /* 기본 입력 필드의 최대 너비 */
+}
+.page-board-add-container .form-control:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(108, 154, 139, 0.15);
+}
+
+/* 💡 특정 필드 너비 조정: 핫딜아이템 이름 */
+.page-board-add-container #itemname {
+    max-width: 350px; 
+}
+
+/* 💡 특정 필드 너비 조정: 가격 */
+.page-board-add-container #price {
+    max-width: 200px; 
+    display: inline-block;
+    margin-right: 5px;
+    vertical-align: middle;
+}
+
+/* 텍스트 영역 */
+.page-board-add-container textarea.form-control {
+    min-height: 200px;
+    resize: vertical;
+}
+
+/* 셀렉트 박스 */
+.page-board-add-container .form-control-select {
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 1rem;
+    background-color: var(--surface);
+    min-width: 150px;
+    color: var(--text-light);
+    cursor: pointer;
+}
+
+/* 파일 업로드 */
+.page-board-add-container .form-control-file {
+    font-size: 0.9rem;
+    padding: 10px 0;
+    width: 100%;
+}
+
+/* --- 하단 버튼 그룹 --- */
+.action-buttons-group {
+    display: flex;
+    justify-content: flex-end; /* 오른쪽 정렬 */
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.action-buttons-group .btn {
+    padding: 12px 28px;
+    min-width: 120px;
+    border-radius: 30px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: none;
+    transform: translateY(0); 
+}
+
+/* 돌아가기 버튼 (Secondary) */
+.action-buttons-group .btn-secondary {
+    background-color: #E9ECEF;
+    color: var(--text-light);
+}
+.action-buttons-group .btn-secondary:hover {
+    background-color: #dee2e6;
+    color: var(--text);
+}
+
+/* 쓰기 버튼 (Primary) */
+.action-buttons-group .btn-primary {
+    background-color: var(--primary);
+    color: white;
+}
+.action-buttons-group .btn-primary:hover {
+    background-color: var(--primary-dark);
+}
+
+
+/* ------------------------------------------------------------ */
+
+/* 핫딜게시판 삭제 (19번) */
+
+/* =========================================================
+ 🔑 BOARD DELETE CONFIRM STYLES (page-board-delete-container)
+ ========================================================= */
+
+/* 페이지 컨테이너: 중앙 배치 */
+.page-board-delete-container {
+    max-width: 1000px; 
+    margin: 40px auto !important; 
+    padding: 0 30px;
+}
+
+/* --- 1. 삭제 확인 카드 (delete-card) --- */
+.page-board-delete-container .delete-card {
+    max-width: 450px; /* 카드 폭 제한 */
+    margin: 80px auto; /* 중앙 배치 */
+    padding: 30px;
+    background-color: var(--surface);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-soft);
+    border: 1px solid var(--border);
+    text-align: center;
+}
+
+.delete-card h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary-dark);
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--primary-light);
+    text-align: center;
+}
+
+.delete-card p {
+    font-size: 1rem;
+    color: var(--text);
+    margin-bottom: 15px;
+    line-height: 1.5;
+}
+
+.delete-card .warning {
+    font-weight: 700;
+    color: var(--accent); /* 💡 경고색 강조 */
+    border: 1px solid var(--accent);
+    padding: 10px;
+    border-radius: 8px;
+    background-color: rgba(255, 140, 105, 0.1); /* 연한 경고 배경 */
+    margin-top: 20px;
+}
+
+.delete-card .error-message {
+    color: red;
+    font-weight: 500;
+    margin-top: 10px;
+}
+
+
+/* --- 2. 하단 버튼 그룹 --- */
+.delete-card .action-buttons-group {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+}
+
+.action-buttons-group .btn {
+    padding: 12px 28px;
+    min-width: 120px;
+    border-radius: 30px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: none;
+    transform: translateY(0); 
+}
+
+/* 삭제 버튼 (Danger) */
+.action-buttons-group .btn-danger {
+    background-color: var(--accent); 
+    color: white;
+}
+.action-buttons-group .btn-danger:hover {
+    background-color: #E57355; 
+}
+
+/* 취소 버튼 (Secondary) */
+.action-buttons-group .btn-secondary {
+    background-color: #E9ECEF;
+    color: var(--text-light);
+}
+.action-buttons-group .btn-secondary:hover {
+    background-color: #dee2e6;
+    color: var(--text);
+}
+
+/* ------------------------------------------------------------ */
+
+/* 핫딜게시판 수정 (20번) */
+
+/* =========================================================
+ 🔑 BOARD EDIT PAGE STYLES - FINAL VERSION (전체)
+ * 폼 잘림 및 필드 크기, 이미지 정렬 FIX *
+ ========================================================= */
+
+/* 페이지 컨테이너: 중앙 배치 및 화이트 카드 스타일 */
+.page-board-edit-container {
+    /* 💡 max-width를 1000px로 늘려 잘림 방지 */
+    max-width: 1000px; 
+    margin: 40px auto !important; 
+    padding: 40px 50px;
+    background-color: var(--surface) !important;
+    border-radius: var(--radius) !important;
+    box-shadow: var(--shadow-soft) !important;
+    border: 1px solid var(--border);
+}
+
+/* <h1>게시판 수정 제목 스타일 */
+.page-board-edit-container h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--primary-dark);
+    margin-bottom: 30px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--primary-light);
+    text-align: center;
+}
+.page-board-edit-container h1 small {
+    display: inline;
+    font-size: 0.8em;
+    font-weight: 500;
+    color: var(--text-light);
+    margin-left: 10px;
+}
+
+/* --- 폼 테이블 스타일 --- */
+.page-board-edit-container table.form-input-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 40px;
+    font-size: 1rem;
+}
+.form-input-table tr {
+    border-bottom: 1px solid var(--border);
+}
+.form-input-table tr:last-child {
+    border-bottom: none;
+}
+/* 테이블 제목 (<th>) - 항목 이름 */
+.form-input-table th {
+    width: 200px; 
+    padding: 20px 20px !important;
+    text-align: left;
+    font-weight: 600;
+    color: var(--text-light);
+    background-color: #F8F9FA; 
+    border-right: 1px solid var(--border);
+    
+    /* 💡 수직 정렬을 Flex 시작점으로 변경 */
+    vertical-align: top !important; 
+}
+
+/* 💡 테이블 내용 (<td>) - 이미지 영역에 Flexbox 적용 */
+.form-input-table td {
+    padding: 20px 20px !important;
+    text-align: left;
+    width: 80%;
+    
+    /* 💡 <td>를 Flex 컨테이너로 만들어 내부 이미지 그룹을 중앙 정렬 */
+    display: flex; 
+    flex-direction: column; 
+    justify-content: center; /* 💡 수직 중앙 정렬 */
+    align-items: flex-start; /* 좌측 정렬 */
+}
+/* --- 입력 컨트롤 공통 스타일 --- */
+.page-board-edit-container .form-control {
+    width: 100%; 
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 1rem;
+    background-color: var(--bg);
+    box-sizing: border-box;
+    transition: all 0.3s;
+    max-width: 500px; /* 기본 입력 필드의 최대 너비 */
+}
+.page-board-edit-container .form-control:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(108, 154, 139, 0.15);
+}
+
+/* 텍스트 영역 */
+.page-board-edit-container textarea.form-control {
+    min-height: 200px;
+    resize: vertical;
+}
+
+/* 💡 특정 필드 너비 조정: 핫딜아이템 이름, 가격 */
+.page-board-edit-container #itemname {
+    max-width: 350px; 
+}
+.page-board-edit-container #price {
+    max-width: 200px; 
+    display: inline-block;
+    margin-right: 5px;
+    vertical-align: middle;
+}
+
+/* 셀렉트 박스 */
+.page-board-edit-container .form-control-select {
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 1rem;
+    background-color: var(--surface);
+    min-width: 150px;
+    color: var(--text-light);
+    cursor: pointer;
+}
+
+/* 파일 업로드 필드 */
+.page-board-edit-container .form-control-file {
+    font-size: 0.9rem;
+    padding: 0; 
+    width: 100%;
+    max-width: 450px;
+}
+
+
+/* --- 이미지 수정/삭제 섹션 --- */
+.page-board-edit-container .existing-images-group {
+   display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    /* 💡 <th>의 텍스트가 <td> 내용과 같은 높이에서 시작하도록 패딩/마진 조정 */
+    margin-top: 0; 
+    padding: 0;
+}
+.page-board-edit-container .image-item-edit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px;
+    background-color: var(--bg);
+}
+
+.page-board-edit-container .existing-thumb {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-bottom: 5px;
+}
+
+.page-board-edit-container .delete-label {
+    font-size: 0.9rem;
+    color: var(--accent);
+    cursor: pointer;
+    font-weight: 500;
+    display: flex; 
+    align-items: center; 
+    gap: 5px; 
+}
+.page-board-edit-container .delete-label input[type="checkbox"] {
+    margin: 0; 
+    width: 15px;
+    height: 15px;
+    vertical-align: middle;
+}
+
+.page-board-edit-container .no-image-message {
+   color: var(--text-light);
+    font-style: italic;
+    padding: 10px 0;
+    width: 100%; 
+    text-align: center;
+    min-height: 50px;
+}
+
+
+/* --- 하단 버튼 그룹 --- */
+.action-buttons-group {
+    display: flex;
+    justify-content: flex-end; /* 오른쪽 정렬 */
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.action-buttons-group .btn {
+    padding: 12px 28px;
+    min-width: 120px;
+    border-radius: 30px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: none;
+    transform: translateY(0); 
+}
+
+/* 취소 버튼 (Secondary) */
+.action-buttons-group .btn-secondary {
+    background-color: #E9ECEF;
+    color: var(--text-light);
+}
+.action-buttons-group .btn-secondary:hover {
+    background-color: #dee2e6;
+    color: var(--text);
+}
+
+/* 수정 버튼 (Primary) */
+.action-buttons-group .btn-primary {
+    background-color: var(--primary);
+    color: white;
+}
+.action-buttons-group .btn-primary:hover {
+    background-color: var(--primary-dark);
+}

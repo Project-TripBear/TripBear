@@ -19,14 +19,13 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.project.trip.AI.model.AiRouteRequestDTO;
 import com.project.trip.AI.model.RouteDTO;
-import com.project.trip.AI.model.WeatherDTO;
 import com.project.trip.AI.model.gemini.GeminiApiResponse.Content;
 import com.project.trip.AI.model.gemini.GeminiApiResponse.Part;
+import com.project.trip.weather.model.WeatherDTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @Service
 public class GeminiServiceImpl implements GeminiService {
@@ -253,7 +252,12 @@ public class GeminiServiceImpl implements GeminiService {
         prompt.append("     - 항상 6자리로 '0'을 포함해 패딩해서 출력\n");
         prompt.append("  5. activityCode: VIEWING, WALK_SLOW, WALK_NORMAL, WALK_FAST, HIKE_LIGHT, SHOPPING, EATING 중 하나.\n");
         prompt.append("  6. durationInMinutes: 해당 장소에서 머무는 시간 (분 단위 정수).\n");
-        prompt.append("  7. transportationMode: WALK, CAR, BICYCLE 중 하나. 첫 장소는 null.\n");
+        prompt.append("  7. transportationMode: 장소 간 이동수단. 아래 값 중 하나만 사용하세요.\n");
+        prompt.append("     - WALK: 도보 이동\n");
+        prompt.append("     - BICYCLE: 자전거 이동\n");
+        prompt.append("     - PUBLIC_TRANSPORT: 버스/지하철 등 대중교통 이동\n");
+        prompt.append("     - CAR: 자동차(렌터카/자가용) 이동\n");
+        prompt.append("     첫 번째 장소는 null로 설정하세요.\n");
         prompt.append("  8. restaurantCategory: 식당일 경우 음식 종류(예: '한식', '일식', '샐러드'), 아니면 null.\n");
         prompt.append("  9. 모든 여행일마다 점심/저녁 = EATING 2개 반드시 포함.\n\n");
 

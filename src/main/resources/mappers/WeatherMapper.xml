@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.project.trip.weather.mapper.WeatherMapper">
+
+    <insert id="insertWeatherData"
+            parameterType="com.project.trip.weather.model.WeatherDataDTO">
+
+        <!-- PK 생성 -->
+        <selectKey keyProperty="weatherId"
+                   resultType="long"
+                   order="BEFORE">
+            SELECT seq_weather_id.NEXTVAL FROM dual
+        </selectKey>
+
+        INSERT INTO tblWeatherData (
+              weather_id,
+              travel_date,
+              city_name,
+              temp,
+              weather_main,
+              weather_desc,
+              recommend_type,
+              weather_comment
+        )
+        VALUES (
+              #{weatherId},
+              #{travelDate},
+              #{cityName},
+              #{temp},
+              #{weatherMain},
+              #{weatherDesc},
+              #{recommendType},
+              #{weatherComment}
+        )
+    </insert>
+
+</mapper>

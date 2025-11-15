@@ -45,6 +45,13 @@ public interface RoutePostMapper {
     int addScrap(Map<String, Object> map);
     int removeScrap(Map<String, Object> map);
 
+    // 전체 삭제
+    int deleteAllComments(int routepostId);
+    int deleteAllLikes(int routepostId);
+    int deleteAllScrap(int routepostId);
+    int deleteAllImages(int routepostId);
+
+	void deleteImageById(int imageId);
 
 
 

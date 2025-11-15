@@ -210,6 +210,17 @@
                 <p class="loading-subtext">루트 만드는 중입니다</p>
             </div>
         </div>
+        
+        <div id="weatherAdviceModal" class="weather-modal hidden">
+	  		<div class="weather-modal-content">
+	   			<h3>날씨 기반 추천 안내</h3>
+	    		<p id="weatherAdviceText"></p>
+
+	    		<button type="button" id="weatherAdviceOkBtn" onclick="closeWeatherModal()">
+	        		확인
+	    		</button>
+	  		</div>
+		</div>
     </main>
         
     <script>
@@ -217,6 +228,8 @@
     	
     	const csrfToken = document.querySelector('meta[name="_csrf"]').content;
         const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+        
+        const base = '${pageContext.request.contextPath}';
         
     	const userChoices = {};
         const progressBar = document.getElementById('progressBar');
@@ -235,6 +248,10 @@
         
         const totalGeneralSteps = 10;
         const totalHealthcareSteps = 4;
+        
+        const weatherModal = document.getElementById('weatherAdviceModal');
+        const weatherText  = document.getElementById('weatherAdviceText');
+        const weatherOkBtn = document.getElementById('weatherAdviceOkBtn');
       
         function renderCalendar(year, month) {
             calendarDates.innerHTML = '';
@@ -382,6 +399,11 @@
                 submitPlan();
                 return;
             }
+            
+            if (nextStepElement.dataset.questionKey === 'activityType') {
+                checkWeatherAndShowAdvice();
+            }
+            
             nextStepElement.classList.add('active');
         }
 
@@ -428,7 +450,6 @@
             progressBar.style.width = '100%';
 
             // 2. 서버에 AJAX POST 요청
-			const base = '${pageContext.request.contextPath}';
 			
             fetch( base + '/ai/generate', {
                 method: 'POST',
@@ -472,7 +493,63 @@
 			    alert('서버 통신 오류: ' + err.message);
 			  });
 			}
+        
+        function checkWeatherAndShowAdvice() {
+            // city, startDate 는 userChoices 에 이미 들어가 있음
+            const city = userChoices.city;
+            const startDate = userChoices.startDate;
+
+            if (!city || !startDate) {
+                console.warn('날씨 체크 불가: city 또는 startDate 없음', userChoices);
+                return;
+            }
+
+            // activityType 질문에 있는 실내/실외 카드 (추천 강조용)
+            const activityStep = document.querySelector('[data-question-key="activityType"]');
+            const indoorCard  = activityStep ? activityStep.querySelector('.card[data-value="실내"]') : null;
+            const outdoorCard = activityStep ? activityStep.querySelector('.card[data-value="실외"]') : null;
+
+            // 이전 추천 흔적 제거
+            if (indoorCard) indoorCard.classList.remove('recommended');
+            if (outdoorCard) outdoorCard.classList.remove('recommended');
+
+            const url = base + '/weather/advice?city=' 
+                        + encodeURIComponent(city)
+                        + '&date=' + startDate;
+
+            fetch(url)
+                .then(res => res.json())
+                .then(data => {
+                    console.log('weather advice:', data);
+
+                    if (!data || !data.recommendType || data.recommendType === 'NONE') {
+                        return;
+                    }
+
+                    // 팝업 텍스트 세팅
+                    weatherText.textContent = data.message || '날씨 정보를 기반으로 여행을 추천드려요.';
+                    weatherModal.classList.remove('hidden');
+
+                    // 추천 타입에 따라 카드 강조
+                    if (data.recommendType === 'INDOOR' && indoorCard) {
+                        indoorCard.classList.add('recommended');
+                    } else if ((data.recommendType === 'OUTDOOR' || data.recommendType === 'FOLIAGE') && outdoorCard) {
+                        outdoorCard.classList.add('recommended');
+                    }
+                })
+                .catch(err => {
+                    console.error('weather advice error', err);
+                });
+        }
         renderCalendar(currentDate.getFullYear(), currentDate.getMonth());
-    });
+	    }); // DOMContentLoaded 끝
+	
+	    // ✅ 전역 함수
+	    function closeWeatherModal() {
+	        const modal = document.getElementById('weatherAdviceModal');
+	        if (modal) {
+	            modal.classList.add('hidden');
+	        }
+	    }
     </script>
 

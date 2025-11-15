@@ -53,10 +53,23 @@
 				</td>
 				<td>
 				<!-- 글제목 -->
-						<a href="/trip/board/${dto.boradCode}.do?seq=${dto.seq}&column=${map.column}&word=${map.word}">
-						${dto.subject}</a>
+						<%-- <a href="/trip/${dto.boradCode}/view?seq=${dto.seq}&column=${map.column}&word=${map.word}">
+						${dto.subject}</a> --%>
 
-					
+					 <c:choose>
+                        <c:when test="${dto.boradCode == 'routepost'}">
+                            <%-- 'routepost'일 경우: /trip/routepost/view/39 형식 --%>
+                            <c:set var="postUrl" value="/trip/routepost/view/${dto.seq}" />
+                        </c:when>
+                        <c:otherwise>
+                            <%-- 그 외: /trip/hotdeal/view?seq=123 형식 --%>
+                            <c:set var="postUrl" value="/trip/${dto.boradCode}/view?seq=${dto.seq}" />
+                        </c:otherwise>
+                    </c:choose>
+                    
+                    <a href="${postUrl}">
+                        ${dto.subject}
+                    </a>
 				</td>
 				<td>
 		

@@ -3,7 +3,6 @@ package com.project.trip.allplace.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,11 +15,18 @@ import lombok.ToString;
 @Setter
 @ToString
 @NoArgsConstructor
-@JsonIgnoreProperties(ignoreUnknown = true) // API가 주는 수많은 필드 중, 여기서 정의한 것 외에는 무시
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class TourItemVO {
 
     @JsonProperty("contentid")
     private String contentId; 
+
+    @JsonProperty("contenttypeid")
+    private String contentTypeId; 
+    
+    @JsonProperty("areacode")
+    private String areaCode;
+
 
     @JsonProperty("title")
     private String title; 
@@ -28,7 +34,6 @@ public class TourItemVO {
     @JsonProperty("addr1")
     private String address; 
 
-    // API는 좌표를 String으로 줌
     @JsonProperty("mapx")
     private String longitude;
 
@@ -37,4 +42,7 @@ public class TourItemVO {
 
     @JsonProperty("firstimage")
     private String firstImage;
+    
+    @JsonProperty("overview")
+    private String overview;
 }
