@@ -3,71 +3,7 @@
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %> 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
-
-<style>
-    /* 좋아요/스크랩 기본 글자색 바꾸기 */
-    .btn-outline-danger, .btn-outline-primary {
-        color: var(--text-dark) !important;
-        border-color: var(--border);
-    }
-
-    .btn-outline-danger:hover, .btn-outline-primary:hover {
-        color: white !important;
-        background: var(--primary);
-        border-color: var(--primary);
-    }
-
-    /* 댓글 수정/삭제 버튼 */
-    .comment-action-btn {
-        padding: 2px 6px;
-        border-radius: 6px;
-        margin-left: 5px;
-        cursor: pointer;
-        font-size: 0.85em;
-        color: var(--text-dark);
-    }
-
-    .comment-edit-btn:hover {
-        background: var(--primary-light);
-    }
-    .comment-delete-btn {
-        color: var(--danger);
-    }
-    .comment-delete-btn:hover {
-        background: #ffe2e2;
-    }
-    
-    /* ---- 댓글 수정 / 삭제 동그란 버튼 ---- */
-	.comment-round-btn {
-	    display: inline-block;
-	    padding: 6px 14px;
-	    font-size: 0.85em;
-	    font-weight: 600;
-	    border-radius: 20px;  /* 동그랗게 */
-	    cursor: pointer;
-	    margin-left: 6px;
-	    transition: 0.2s ease;
-	}
-	
-	/* 수정 버튼 */
-	.comment-edit-round {
-	    background: #6C9A8B;   /* 누나 사이트 primary 색 */
-	    color: white;
-	}
-	.comment-edit-round:hover {
-	    background: #578476;
-	}
-	
-	/* 삭제 버튼 */
-	.comment-delete-round {
-	    background: #D9534F;   /* 예쁜 빨강 */
-	    color: white;
-	}
-	.comment-delete-round:hover {
-	    background: #c64542;
-	}
-    
-</style>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/qna.css">
 
 <main>
     <div class="notice-view-container">
@@ -142,6 +78,7 @@
 
             <div class="comment-list" style="margin-top:15px;">
                 <c:forEach var="comment" items="${commentList}">
+
                     <div class="comment-item" style="border-bottom:1px dashed var(--border); padding:15px 0;">
                         
                         <p style="margin:0 0 5px; font-weight:600; color:var(--primary-dark);">
@@ -156,19 +93,22 @@
                         </p>
 
                         <c:if test="${comment.user_id == currentUserId}">
-                            <div style="font-size:0.9em; text-align:right; margin-top:5px;">
-                                <button type="button"
-								        class="comment-round-btn comment-edit-round"
-								        onclick="toggleCommentEdit(${comment.question_answer_id})">
-								    수정
-								</button>
-								
-								<button type="button"
-								        class="comment-round-btn comment-delete-round"
-								        onclick="deleteComment(${comment.question_answer_id}, ${dto.question_board_id})">
-								    삭제
-								</button>
+				        <div class="comment-buttons" 
+				             style="font-size:0.9em; text-align:right; margin-top:5px; position:relative; z-index:5;">
+				             
+				             <button type="button"
+				                     class="comment-round-btn comment-edit-round"
+				                     onclick="toggleCommentEdit(${comment.question_answer_id})">
+				                 수정
+				             </button>
+				            
+				             <button type="button"
+				                     class="comment-round-btn comment-delete-round"
+				                     onclick="deleteComment(${comment.question_answer_id}, ${dto.question_board_id})">
+				                 삭제
+				             </button>
 
+								
                             </div>
 
                             <!-- 수정 폼 -->
@@ -242,10 +182,17 @@ function updateComment(id) {
 }
 
 /* 댓글 삭제 AJAX */
-function deleteComment(id, boardSeq) {
+function deleteComment(commentId, boardSeq) {
 
     if (!confirm("정말 삭제할까요?")) return;
 
-    location.href = `/qnaboard/deletecomment?commentId=${id}&boardSeq=${boardSeq}`;
+    // 값 확인
+    console.log("삭제 요청 commentId =", commentId);
+    console.log("삭제 요청 boardSeq =", boardSeq);
+
+    // 삭제 요청 보내기
+    location.href = "/trip/qnaboard/deletecomment?commentId=" + commentId + "&boardSeq=" + boardSeq;
+
 }
 </script>
+

@@ -3,128 +3,12 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/reservation.css">
+
 <!-- 예약: 숙소 선택 (지도 60 : 카드 40) -->
-<style>
-body {
-	max-width: 100% !important;
-	width: 100% !important;
-	padding: 0;
-}
 
-#wrap, #container, .container {
-	max-width: 100% !important;
-	width: 100% !important;
-	margin: 0 !important;
-	padding: 0 !important;
-}
 
-.select-layout {
-    width: 100%;
-    display: grid;
-    grid-template-columns: 55% 45%;
-    gap: 12px;
-    height: calc(100vh - 120px);
-}
-
-#map {
-	width: 100%;
-	height: 100%;
-}
-
-.cards {
-	overflow: auto;
-	border-radius: 16px;
-	background: #fff;
-	padding: 12px;
-}
-
-.toolbar {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	margin-bottom: 8px;
-}
-
-.chip {
-	border: 1px solid #ddd;
-	padding: 6px 10px;
-	border-radius: 999px;
-	cursor: pointer;
-}
-
-.card {
-	display: flex;
-	gap: 12px;
-	padding: 12px;
-	border: 1px solid #eee;
-	border-radius: 12px;
-	margin-bottom: 10px;
-	align-items: center;
-}
-
-.thumb {
-	width: 96px;
-	height: 96px;
-	border-radius: 10px;
-	object-fit: cover;
-	background: #f2f2f2;
-}
-
-.meta h4 {
-	margin: 0 0 4px;
-	font-size: 16px;
-}
-
-.meta .sub {
-	color: #666;
-	font-size: 13px;
-}
-
-.price {
-	font-weight: 700;
-	margin-top: 6px;
-}
-
-.actions {
-	margin-left: auto;
-	display: flex;
-	gap: 8px;
-}
-
-.btn {
-	padding: 8px 12px;
-	border-radius: 10px;
-	border: 1px solid #ddd;
-	background: #fff;
-	cursor: pointer;
-}
-
-.btn.primary {
-	background: #6C9A8B;
-	color: #fff;
-	border-color: #6C9A8B;
-}
-
-.empty {
-	padding: 24px;
-	color: #888;
-	text-align: center;
-}
-
-.map-wrap {
-    border-radius: 20px;
-    overflow: hidden;
-    min-height: 520px;
-}
-
-.page-inner,
-.select-layout {
-    width: 100%;
-    margin: 100px auto 10px auto;
-    max-width: 1400px;
-}
-
-</style>
+<div class="select-accom-page">
 
 <div class="page-inner">
 <div class="select-layout">
@@ -189,6 +73,7 @@ body {
 		</c:choose>
 	</div>
 	
+</div>
 </div>
 </div>
 

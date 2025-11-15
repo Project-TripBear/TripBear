@@ -2,6 +2,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/reservation.css">
+
 <!-- 🚗 차량 선택 페이지 -->
 <div class="container car-select-container">
 
@@ -142,112 +144,4 @@
     </main>
 </div>
 
-<!-- ✨ TripBear 스타일 -->
-<style>
-.container.car-select-container {
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    gap: 30px;
-    width: 80%;
-    margin: 40px auto;
-}
 
-.filter-section {
-    flex: 1;
-    max-width: 260px;
-    background: #f9f9f9;
-    border-radius: 15px;
-    padding: 20px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-}
-
-.filter-section h2 {
-    font-size: 1.2rem;
-    margin-bottom: 15px;
-}
-
-.filter-group {
-    margin-bottom: 15px;
-}
-
-.filter-btn {
-    width: 100%;
-    padding: 8px;
-    background: #6C9A8B;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-}
-
-.skip-btn {
-    margin-top: 15px;
-    width: 100%;
-    padding: 8px;
-    background: #ccc;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-}
-
-.car-list-section {
-    flex: 3;
-}
-
-.car-list-header {
-    margin-bottom: 20px;
-}
-
-.car-card {
-    display: flex;
-    align-items: center;
-    background: white;
-    border-radius: 15px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    margin-bottom: 20px;
-    overflow: hidden;
-}
-
-.car-image {
-    width: 250px;
-    height: 120px;
-    object-fit: cover;
-    border-right: 1px solid #eee;
-}
-
-.car-info {
-    flex: 1;
-    padding: 15px;
-}
-
-.car-price {
-    margin-top: 5px;
-    color: #444;
-}
-
-.select-btn {
-    background: #6C9A8B;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    padding: 10px 15px;
-    margin-right: 15px;
-    cursor: pointer;
-}
-
-.no-result {
-    text-align: center;
-    color: #777;
-}
-
-input[type=range] {
-    width: 100%;
-    margin-top: 5px;
-}
-
-#priceLabel {
-    font-size: 0.9rem;
-    color: #555;
-}
-</style>

@@ -1,7 +1,6 @@
-/* =========================================================
-   Q&A 리스트 화면 스타일 (list.jsp 전용)
-   author: Seongho 💚
-   ========================================================= */
+/* =========================================================== */
+/*                           list.jsp                          */
+/* =========================================================== */
 
 /* ---------------------- 전체 컨테이너 ---------------------- */
 .card-container {
@@ -190,3 +189,81 @@
     color: #777;
     font-size: 15px;
 }
+
+/* =========================================================== */
+/*                           view.jsp                          */
+/* =========================================================== */
+
+
+/* 좋아요/스크랩 기본 글자색 바꾸기 */
+    .btn-outline-danger, .btn-outline-primary {
+        color: var(--text-dark) !important;
+        border-color: var(--border);
+    }
+
+    .btn-outline-danger:hover, .btn-outline-primary:hover {
+        color: white !important;
+        background: var(--primary);
+        border-color: var(--primary);
+    }
+
+    /* 댓글 수정/삭제 버튼 */
+    .comment-action-btn {
+        padding: 2px 6px;
+        border-radius: 6px;
+        margin-left: 5px;
+        cursor: pointer;
+        font-size: 0.85em;
+        color: var(--text-dark);
+    }
+
+    .comment-edit-btn:hover {
+        background: var(--primary-light);
+    }
+    .comment-delete-btn {
+        color: var(--danger);
+    }
+    .comment-delete-btn:hover {
+        background: #ffe2e2;
+    }
+    
+    /* ---- 댓글 수정 / 삭제 동그란 버튼 ---- */
+	.comment-round-btn {
+	    display: inline-block;
+	    padding: 6px 14px;
+	    font-size: 0.85em;
+	    font-weight: 600;
+	    border-radius: 20px;
+	    cursor: pointer;
+	    margin-left: 6px;
+	    transition: 0.2s ease;
+	
+	    border: none;              /* ← 기본 까만 테두리 제거 */
+	    outline: none;             /* ← 포커스 테두리 제거 */
+	    box-shadow: none;          /* ← 클릭 시 그림자 제거 */
+	}
+	
+	/* 수정 버튼 */
+	.comment-edit-round {
+	    background: #6C9A8B;  /* 누나 primary */
+	    color: white;
+	    border: none;         /* 안전하게 한번 더 */
+	}
+	.comment-edit-round:hover {
+	    background: #578476;
+	}
+	
+	/* 삭제 버튼 */
+	.comment-delete-round {
+	    background: #D9534F;
+	    color: white;
+	    border: none;
+	}
+	.comment-delete-round:hover {
+	    background: #c64542;
+	}
+	
+	.comment-round-btn:focus {
+    outline: none;
+    box-shadow: none;
+	}	

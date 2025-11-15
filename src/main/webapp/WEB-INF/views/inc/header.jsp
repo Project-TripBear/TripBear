@@ -38,14 +38,8 @@
                 <a href="#">게시판</a>
                 <div class="sub-menu">
                     <a href="${pageContext.request.contextPath}/routepost/list">여행 루트 추천 게시판</a>
-<<<<<<< HEAD
-              
                    <a href="${pageContext.request.contextPath}/reviewboard/list">여행 후기 게시판</a>
                     <a href="${pageContext.request.contextPath}/qnaboard/list">Q&A</a>
-=======
-                    <a href="${pageContext.request.contextPath}/reviewboard/list">여행 후기 게시판</a>
-                    <a href="${pageContext.request.contextPath}/qna/list">Q&A</a>
->>>>>>> dev
                     <a href="${pageContext.request.contextPath}/findboard/list">동행 찾기 게시판</a>
                     <a href="${pageContext.request.contextPath}/hotdeal/list">여행 용품 게시판</a>
                 </div>
