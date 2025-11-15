@@ -81,7 +81,7 @@
 </header>
 
 <%-- 모바일 메뉴 패널 --%>
-<%-- <div id="mobile-menu" class="mobile-menu-panel">
+<div id="mobile-menu" class="mobile-menu-panel">
     <div class="menu-header">
         <div class="logo">
 
@@ -135,4 +135,4 @@
             <a href="${pageContext.request.contextPath}/member/login" class="login-link">로그인</a>
         </sec:authorize>
     </div>
-</div> --%>
+</div>
