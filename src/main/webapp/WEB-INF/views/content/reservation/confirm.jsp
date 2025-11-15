@@ -4,6 +4,8 @@
 
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/reservation.css">
 
+<c:set var="userRouteId" value="${param.userRouteId}" />
+
 <div class="confirm-wrapper">
 	<h2 class="confirm-title">예약 정보 확인</h2>
 
@@ -16,7 +18,6 @@
 					<h3>🏠 숙소 정보</h3>
 					<p><strong>숙소명:</strong> ${data.room.accomName}</p>
 					<p><strong>객실명:</strong> ${data.room.roomName}</p>
-					<p><strong>인원:</strong> ${data.people}명</p>
 					<p><strong>체크인:</strong> ${param.checkin}</p>
 					<p><strong>체크아웃:</strong> ${param.checkout}</p>
 				</div>
@@ -110,10 +111,11 @@
 				<input type="hidden" name="checkin" value="${param.checkin}">
 				<input type="hidden" name="checkout" value="${param.checkout}">
 				<input type="hidden" name="roomId" value="${param.roomId}">
-				<input type="hidden" name="people" value="${param.people}">
 				<input type="hidden" name="rentalStart" value="${param.rentalStart}">
 				<input type="hidden" name="rentalEnd" value="${param.rentalEnd}">
 				<input type="hidden" name="carId" value="${param.carId}">
+				<input type="hidden" name="userRouteId" value="${userRouteId}">
+				
 				
 				<!-- 버튼 -->
 				<div class="btn-wrap">

@@ -4,6 +4,8 @@
 
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/reservation.css">
 
+<c:set var="userRouteId" value="${param.userRouteId}" />
+
 <!-- 🚗 차량 선택 페이지 -->
 <div class="container car-select-container">
 
@@ -77,23 +79,34 @@
             <input type="hidden" name="region" value="${region}">
             <input type="hidden" name="checkin" value="${checkin}">
             <input type="hidden" name="checkout" value="${checkout}">
-            <input type="hidden" name="people" value="${people}">
             <input type="hidden" name="roomId" value="${roomId}">
+            <input type="hidden" name="userRouteId" value="${userRouteId}">
 
             <button type="submit" class="filter-btn">필터 적용</button>
         </form>
 
         <!-- 스킵/뒤로가기 -->
         <button class="skip-btn"
-    onclick="location.href='${pageContext.request.contextPath}/reservation/confirm?region=${param.region}&checkin=${param.checkin}&checkout=${param.checkout}&people=${param.people}&roomId=${param.roomId}'">
+    onclick="location.href='${pageContext.request.contextPath}/reservation/confirm
+        ?region=${param.region}
+        &checkin=${param.checkin}
+        &checkout=${param.checkout}
+        &roomId=${param.roomId}
+        &userRouteId=${userRouteId}'">
 		    차량 선택 안 함 →
 		</button>
 
 
+
         <button class="skip-btn"
-            onclick="location.href='${pageContext.request.contextPath}/reservation/select-accom?region=${region}&checkin=${checkin}&checkout=${checkout}&people=${people}'">
-            ← 숙소 선택으로 돌아가기
-        </button>
+    onclick="location.href='${pageContext.request.contextPath}/reservation/select-accom
+        ?region=${region}
+        &checkin=${checkin}
+        &checkout=${checkout}
+        &userRouteId=${userRouteId}'">
+		    ← 숙소 선택으로 돌아가기
+		</button>
+
     </aside>
 
     <!-- 차량 목록 -->
@@ -101,7 +114,7 @@
 
         <div class="car-list-header">
             <h2>차량 선택</h2>
-            <p>지역: <strong>${region}</strong> · 인원: <strong>${people}</strong> · 기간: <strong>${checkin} ~ ${checkout}</strong></p>
+            <p>지역: <strong>${region}</strong> · 기간: <strong>${checkin} ~ ${checkout}</strong></p>
         </div>
 
         <c:forEach var="c" items="${carList}">
@@ -129,10 +142,11 @@
                     <input type="hidden" name="region" value="${region}">
                     <input type="hidden" name="checkin" value="${checkin}">
                     <input type="hidden" name="checkout" value="${checkout}">
-                    <input type="hidden" name="people" value="${people}">
                     <input type="hidden" name="roomId" value="${roomId}">
                     <input type="hidden" name="rentalStart" value="${checkin}">
                     <input type="hidden" name="rentalEnd" value="${checkout}">
+                    <input type="hidden" name="userRouteId" value="${userRouteId}">
+                    
                     <button type="submit" class="select-btn">이 차량 선택</button>
                 </form>
             </div>

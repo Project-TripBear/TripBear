@@ -5,8 +5,7 @@
 
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/reservation.css">
 
-<!-- 예약: 숙소 선택 (지도 60 : 카드 40) -->
-
+<c:set var="userRouteId" value="${param.userRouteId}" />
 
 <div class="select-accom-page">
 
@@ -24,8 +23,7 @@
 				<span class="chip" id="showAll">모두 보기</span>
 			</div>
 			<div class="sub">
-				지역: <b>${region}</b> · 인원: <b>${people}</b>명 · 기간: <b>${checkin}</b>
-				~ <b>${checkout}</b>
+				지역: <b>${region}</b> · 기간: <b>${checkin}</b> ~ <b>${checkout}</b>
 			</div>
 		</div>
 
@@ -58,11 +56,12 @@
 								<!-- 다음 단계: 차량 선택 페이지로 이동 -->
 								<form method="get"
 									action="${pageContext.request.contextPath}/reservation/select-car">
+									<input type="hidden" name="userRouteId" value="${userRouteId}" />
 									<input type="hidden" name="region" value="${region}" /> 
 									<input type="hidden" name="checkin" value="${checkin}" /> 
 									<input type="hidden" name="checkout" value="${checkout}" /> 
-									<input type="hidden" name="people" value="${people}" /> 
 									<input type="hidden" name="roomId" value="${r.roomId}" />
+									
 									<button class="btn primary" type="submit">이 방 선택</button>
 								</form>
 							</div>

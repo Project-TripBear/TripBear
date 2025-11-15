@@ -17,7 +17,6 @@ public class IntegratedReservation {
     private String region;
     private String checkin;
     private String checkout;
-    private String people;
     private Long roomId;
     private Long carId;
     
