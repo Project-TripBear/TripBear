@@ -6,6 +6,7 @@
 <head>
   <meta charset="UTF-8">
   <title>${post.routepostTitle}</title>
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/common.css">
   <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/routepost.css">
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <style>

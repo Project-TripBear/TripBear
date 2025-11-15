@@ -5,6 +5,10 @@
 <%-- Chart.js 라이브러리 로드 --%>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
 
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/common.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/findboard.css">
+
+
 <h1>📊 동행 찾기 인기 키워드 대시보드</h1>
 
 <%-- admin2.css의 dashboard-grid-2col 및 stat-card 스타일을 사용합니다. --%>

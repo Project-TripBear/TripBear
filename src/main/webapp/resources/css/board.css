@@ -1,0 +1,418 @@
+/* =========================================================
+   board-common.css
+   - 공지 / 동행 / 핫딜 / 여행루트 게시판 공통 레이아웃
+   - 기존 notice.css 스타일을 기준으로 통일
+   ========================================================= */
+
+/* 컨테이너 공통 (공지, 동행, 루트, 핫딜) */
+.notice-container,
+.find-board-container,
+.routepost-list-container,
+.page-board-list-container {
+    max-width: 1100px;
+    margin: 40px auto;
+    padding: 24px 32px 36px;
+    background-color: var(--surface);
+    border-radius: 20px;
+    box-shadow: var(--shadow-soft);
+    border: 1px solid var(--border);
+    box-sizing: border-box;
+}
+
+/* 제목 영역 공통 */
+.notice-title,
+.find-board-container .content-header,
+.routepost-list-container .content-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.notice-title h2,
+.find-board-container .board-title h2,
+.routepost-list-container .board-title h2 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--primary-dark);
+    margin: 0;
+}
+
+.notice-title p,
+.find-board-container .board-title p,
+.routepost-list-container .board-title p {
+    margin: 4px 0 0;
+    font-size: 0.9rem;
+    color: var(--text-light);
+}
+
+/* 핫딜 제목(h1)도 비슷하게 맞추기 */
+.page-board-list-container #main > h1 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--primary-dark);
+    margin: 0 0 18px;
+}
+
+/* 우측 액션 영역 (검색 / 필터 / 버튼 등) */
+.board-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+/* 필터/검색 폼 공통 */
+.board-actions form,
+.find-search-form,
+.notice-search-form {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.board-actions select,
+.board-actions input[type="text"],
+.find-search-form select,
+.find-search-form input[type="text"],
+.notice-search-form select,
+.notice-search-form input[type="text"] {
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 6px 12px;
+    font-size: 0.9rem;
+    background-color: #F8F9FA;
+    outline: none;
+}
+
+.board-actions select:focus,
+.board-actions input[type="text"]:focus,
+.find-search-form select:focus,
+.find-search-form input[type="text"]:focus,
+.notice-search-form select:focus,
+.notice-search-form input[type="text"]:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(108,154,139,0.15);
+    background-color: #fff;
+}
+
+/* 테이블 래퍼 공통 */
+.notice-table-wrapper,
+.table-wrapper,
+.board-list-wrapper {
+    margin-top: 10px;
+}
+
+/* ------- 테이블 공통 (notice / routepost / find / hotdeal) ------- */
+
+.notice-table,
+.board-table,
+.board-data-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    font-size: 0.9rem;
+}
+
+/* 헤더 */
+.notice-table thead th,
+.board-table thead th,
+.board-data-table thead th,
+.notice-table tr:first-child th,
+.board-table tr:first-child th,
+.board-data-table tr:first-child th {
+    padding: 10px 8px;
+    border-bottom: 2px solid var(--border);
+    background-color: #F8F9FA;
+    font-weight: 600;
+    color: var(--text);
+    text-align: center;
+    white-space: nowrap;
+}
+
+/* 바디 */
+.notice-table tbody td,
+.board-table tbody td,
+.board-data-table tbody td,
+.notice-table tr td,
+.board-table tr td,
+.board-data-table tr td {
+    padding: 9px 8px;
+    border-bottom: 1px solid #E9ECEF;
+    color: var(--text);
+    word-break: break-word;
+}
+
+/* 번호/작성자/날짜/조회/좋아요/스크랩 정렬 */
+td.col-num,
+td.col-writer,
+td.col-date,
+td.col-views,
+td.col-like,
+td.col-scrap {
+    text-align: center;
+    font-size: 0.86rem;
+    color: var(--text-light);
+}
+
+/* 제목 컬럼 (기본은 왼쪽 정렬) */
+td.col-title {
+    text-align: left;
+}
+
+/* 행 hover 효과 */
+.notice-table tbody tr:hover,
+.board-table tbody tr:hover,
+.board-data-table tbody tr:hover {
+    background-color: #F8FAFB;
+}
+
+/* 빈 데이터 행 */
+.notice-table tbody tr.empty-row td,
+.board-table tbody tr.empty-row td,
+.board-data-table tbody tr.empty-row td {
+    text-align: center;
+    padding: 20px 8px;
+    color: var(--text-light);
+}
+
+/* 제목 링크 */
+.board-title-link,
+.notice-table td a,
+.board-table td a,
+.board-data-table td a {
+    color: var(--text);
+    text-decoration: none;
+}
+.board-title-link:hover,
+.notice-table td a:hover,
+.board-table td a:hover,
+.board-data-table td a:hover {
+    color: var(--primary);
+    text-decoration: underline;
+}
+
+/* 배지 / 상태칩 */
+.badge-status,
+.badge-region,
+.badge-gender {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-right: 4px;
+}
+
+.badge-status {
+    background-color: rgba(108,154,139,0.12);
+    color: var(--primary-dark);
+}
+.badge-status.closed {
+    background-color: #F1F3F5;
+    color: var(--text-light);
+}
+
+.badge-region {
+    background-color: rgba(255,140,105,0.12);
+    color: var(--accent);
+}
+
+.badge-gender {
+    background-color: #E9ECEF;
+    color: var(--text-light);
+}
+
+/* 좋아요 / 스크랩 아이콘 공통 */
+.like-icon,
+.scrap-icon {
+    font-size: 0.9rem;
+    margin-right: 3px;
+    vertical-align: middle;
+    color: var(--accent);
+}
+td.col-like span,
+td.col-scrap span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+}
+
+/* 핫딜 썸네일 */
+.post-thumb-img {
+    width: 72px;
+    height: 72px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-right: 10px;
+    vertical-align: middle;
+}
+
+/* 제목+썸네일 같이 쓰는 경우 정렬 */
+.hotdeal-title-cell {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* ------- 하단 영역 (검색 + 페이지네이션 + 버튼) 공통 ------- */
+
+.notice-footer,
+.board-footer {
+    margin-top: 18px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+}
+
+/* 검색 박스 (공지/동행/루트) */
+.notice-footer .search-box,
+.board-footer .search-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.notice-footer .search-box select,
+.notice-footer .search-box input[type="text"],
+.board-footer .search-box select,
+.board-footer .search-box input[type="text"] {
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 6px 12px;
+    font-size: 0.9rem;
+    background-color: #F8F9FA;
+    outline: none;
+}
+.notice-footer .search-box input[type="text"],
+.board-footer .search-box input[type="text"] {
+    min-width: 180px;
+}
+
+/* 페이지네이션(클래스 제각각이라 다 모아서) */
+.pagination,
+.pagebar,
+.paging,
+.board-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    font-size: 0.9rem;
+}
+
+.pagination a,
+.pagebar a,
+.paging a,
+.board-pagination a,
+.pagination span,
+.pagebar span,
+.paging span,
+.board-pagination span {
+    display: inline-block;
+    min-width: 30px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    border-radius: 999px;
+    padding: 0 6px;
+    border: 1px solid transparent;
+    color: var(--text-light);
+    text-decoration: none;
+}
+
+.pagination a:hover,
+.pagebar a:hover,
+.paging a:hover,
+.board-pagination a:hover {
+    border-color: var(--border);
+    background-color: #F1F3F5;
+    color: var(--text);
+}
+
+.pagination .current,
+.pagebar .current,
+.paging .current,
+.board-pagination .current,
+.pagination span.selected,
+.pagebar span.selected,
+.paging span.selected,
+.board-pagination span.selected {
+    background-color: var(--primary);
+    color: #fff;
+    border-color: var(--primary);
+}
+
+/* 우측 옵션 (글쓰기 버튼) */
+.table-options,
+.board-footer .write-btn-area {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+
+    .notice-container,
+    .find-board-container,
+    .routepost-list-container,
+    .page-board-list-container {
+        padding: 18px 16px 24px;
+        margin: 24px 0 32px;
+        border-radius: 16px;
+    }
+
+    .notice-title,
+    .find-board-container .content-header,
+    .routepost-list-container .content-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .board-actions {
+        width: 100%;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .notice-footer,
+    .board-footer {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .notice-footer .search-box,
+    .board-footer .search-box {
+        order: 1;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .pagination,
+    .pagebar,
+    .paging,
+    .board-pagination {
+        order: 2;
+    }
+
+    .table-options,
+    .board-footer .write-btn-area {
+        order: 3;
+        justify-content: flex-end;
+    }
+
+    .notice-footer .search-box input[type="text"],
+    .board-footer .search-box input[type="text"] {
+        min-width: 0;
+        flex: 1;
+    }
+}

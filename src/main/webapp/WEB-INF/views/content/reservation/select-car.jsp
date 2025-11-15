@@ -2,6 +2,9 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/common.css">	
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/reservation.css">	
+
 <!-- 🚗 차량 선택 페이지 -->
 <div class="container car-select-container">
 

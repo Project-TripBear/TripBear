@@ -2,9 +2,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>  
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/main.css">
-<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/mainpage.css">
 
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/common.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/index.css">
 
 <header id="main-header">
     <div class="header-inner">
@@ -81,7 +81,7 @@
 </header>
 
 <%-- 모바일 메뉴 패널 --%>
-<%-- <div id="mobile-menu" class="mobile-menu-panel">
+<div id="mobile-menu" class="mobile-menu-panel">
     <div class="menu-header">
         <div class="logo">
 
@@ -135,4 +135,4 @@
             <a href="${pageContext.request.contextPath}/member/login" class="login-link">로그인</a>
         </sec:authorize>
     </div>
-</div> --%>
+</div>

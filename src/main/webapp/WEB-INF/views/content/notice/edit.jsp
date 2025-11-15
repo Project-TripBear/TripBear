@@ -3,6 +3,10 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>    
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
+
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/common.css">	
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/notice.css">	
+
 <main>
     <div class="notice-form-container">
         <h2>공지사항 수정</h2>

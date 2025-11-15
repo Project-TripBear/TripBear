@@ -1,6 +1,9 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/common.css">	
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/reservation.css">	
+
 <div class="complete-wrapper">
     <h2 class="complete-title">예약이 완료되었습니다 🎉</h2>
 

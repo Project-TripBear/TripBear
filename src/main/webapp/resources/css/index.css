@@ -1,24 +1,16 @@
 /* =========================================================
-   HOME.CSS
-   - 메인 홈/랜드링 페이지 전용
-   - hero 섹션, 검색바, 카드 그리드 등
+   HOME.CSS (fixed)
+   - 메인 홈/랜딩 페이지 전용
    ========================================================= */
-
-/* 메인 래퍼 */
-.home-main {
-    max-width: 1100px;
-    margin: 40px auto;
-    padding: 0 30px;
-}
 
 /* -------------------- 1. HERO 영역 -------------------- */
 
 .hero-section {
     display: grid;
     grid-template-columns: 3fr 2.3fr;
-    gap: 40px;
+    gap: 32px;
 
-    padding: 40px 40px 50px;
+    padding: 28px 28px 40px;
     border-radius: 26px;
 
     background: radial-gradient(circle at top left, #A8D8C7 0, #F8F9FA 38%, #FFFFFF 100%);
@@ -312,7 +304,6 @@
 
 /* -------------------- 3. 특화 섹션 예시 -------------------- */
 
-/* AI 추천 루트 섹션 전용 (원하면 home.jsp에서 이 클래스 사용) */
 .ai-route-card .home-card-title {
     display: flex;
     align-items: center;
@@ -322,7 +313,6 @@
     font-size: 1.2rem;
 }
 
-/* 핫딜 카드 */
 .hotdeal-card .home-card-meta {
     display: flex;
     justify-content: space-between;
@@ -338,13 +328,14 @@
 
 @media (max-width: 992px) {
     .home-main {
-        padding: 0 20px;
-        margin-top: 24px;
+        max-width: 100%;
+        padding: 0 20px 40px;
+        margin: 24px 0 40px;
     }
 
     .hero-section {
         grid-template-columns: 1fr;
-        padding: 32px 24px 36px;
+        padding: 24px 20px 32px;
     }
     .hero-visual {
         justify-content: flex-start;
@@ -360,12 +351,12 @@
 
 @media (max-width: 576px) {
     .home-main {
-        padding: 0 16px;
+        padding: 0 16px 32px;
     }
 
     .hero-section {
-        padding: 24px 18px 28px;
-        gap: 24px;
+        padding: 22px 16px 26px;
+        gap: 20px;
     }
     .hero-title {
         font-size: 2rem;

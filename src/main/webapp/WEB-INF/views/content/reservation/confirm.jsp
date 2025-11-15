@@ -2,6 +2,9 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/common.css">	
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/reservation.css">	
+
 <div class="confirm-wrapper">
 	<h2 class="confirm-title">예약 정보 확인</h2>
 

@@ -5,6 +5,11 @@
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %> 
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/common.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/board.css">
+<!--<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/findboard.css"> -->
+
+
 <%-- 1. 타이틀 영역 (style 속성 제거) --%>
 <div class="content-header"> 
     <h1>동행 찾기 게시판</h1>

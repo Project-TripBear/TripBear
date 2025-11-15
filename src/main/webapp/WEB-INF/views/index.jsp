@@ -6,10 +6,10 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
-<link rel="stylesheet" href="http://bit.ly/3WJ5ilK" />
+<!-- <link rel="stylesheet" href="http://bit.ly/3WJ5ilK" /> -->
 
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/common.css">
-<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/home.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/index.css">
 
 </head>
 <body>

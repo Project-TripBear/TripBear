@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/common.css">
+
 <div class="route-container ai-route-page">
     <header class="route-header">
         <h1 id="route-title" class="route-title">AI 추천 여행 경로</h1>
