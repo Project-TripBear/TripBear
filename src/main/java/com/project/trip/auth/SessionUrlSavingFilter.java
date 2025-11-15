@@ -28,6 +28,8 @@ public class SessionUrlSavingFilter extends OncePerRequestFilter {
 		    !requestURI.contains("/morecomment") &&
 			!requestURI.contains("/resources") &&
 			!requestURI.contains("/upload") &&  // ★★★ 추가 ★★★
+			!requestURI.contains("/findpw") &&
+			!requestURI.contains("/findid") &&
 			!requestURI.contains("/images")){
 			
 			String fullUrl = requestURI;
