@@ -8,16 +8,40 @@ import com.project.trip.weather.model.WeatherDTO;
 
 @Service
 public class WeatherServiceImpl implements WeatherService{
-	
-	@Autowired
+    
+    @Autowired
     private OpenWeatherService openWeatherService;
 
+    private String normalizeCity(String city) {
+        if (city == null) return null;
+        switch (city) {
+            case "서울": return "Seoul";
+            case "제주": return "Jeju";
+            case "부산": return "Busan";
+            case "강릉": return "Gangneung";
+            case "전주": return "Jeonju";
+            case "경주": return "Gyeongju";
+            case "인천": return "Incheon";
+            case "대구": return "Daegu";
+            case "대전": return "Daejeon";
+            case "춘천": return "Chuncheon";
+            default: return city; // 이미 영어면 그대로
+        }
+    }
+
+    
     @Override
     public WeatherDTO getWeather(String city, String date) {
 
+        String normalizedCity = normalizeCity(city);
+        
+        System.out.println("[WeatherService] 요청 city=" + city + "→ API city=" + normalizedCity);
+        
+        
         // 1. OpenWeather에서 예보 한 건 가져오기
-        OpenWeatherVo vo = openWeatherService.getForecastByCityAndDate(city, date);
+        OpenWeatherVo vo = openWeatherService.getForecastByCityAndDate(normalizedCity, date);
 
+        
         // 2. 예외 처리: API 실패 시 기본값 리턴 (AI 프롬프트가 완전 비지 않게)
         if (vo == null) {
             System.out.println("[WeatherService] OpenWeather 호출 실패, 기본값 사용");
