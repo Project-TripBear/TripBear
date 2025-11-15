@@ -1,0 +1,386 @@
+/* =========================================================
+   HOME.CSS
+   - 메인 홈/랜드링 페이지 전용
+   - hero 섹션, 검색바, 카드 그리드 등
+   ========================================================= */
+
+/* 메인 래퍼 */
+.home-main {
+    max-width: 1100px;
+    margin: 40px auto;
+    padding: 0 30px;
+}
+
+/* -------------------- 1. HERO 영역 -------------------- */
+
+.hero-section {
+    display: grid;
+    grid-template-columns: 3fr 2.3fr;
+    gap: 40px;
+
+    padding: 40px 40px 50px;
+    border-radius: 26px;
+
+    background: radial-gradient(circle at top left, #A8D8C7 0, #F8F9FA 38%, #FFFFFF 100%);
+    box-shadow: var(--shadow-soft);
+    position: relative;
+    overflow: hidden;
+}
+
+/* 왼쪽 텍스트 영역 */
+.hero-content {
+    position: relative;
+    z-index: 1;
+}
+
+.hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    border-radius: 999px;
+
+    background-color: rgba(255,255,255,0.9);
+    color: var(--primary-dark);
+    font-size: 0.85rem;
+    font-weight: 600;
+    border: 1px solid rgba(255,255,255,0.8);
+    margin-bottom: 12px;
+}
+
+.hero-title {
+    font-size: 2.6rem;
+    font-weight: 800;
+    letter-spacing: -1px;
+    color: var(--primary-dark);
+    margin: 0 0 14px;
+}
+.hero-title .highlight {
+    color: var(--accent);
+}
+
+.hero-subtitle {
+    font-size: 1rem;
+    color: var(--text-light);
+    margin-bottom: 22px;
+}
+
+/* 검색 / CTA */
+.hero-search {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+.hero-search-input {
+    flex: 1;
+    position: relative;
+}
+.hero-search-input input {
+    width: 100%;
+    padding: 12px 16px 12px 16px;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.8);
+    background-color: rgba(255,255,255,0.9);
+    outline: none;
+    font-size: 0.95rem;
+    color: var(--text);
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.3);
+    transition: all 0.25s;
+}
+.hero-search-input input::placeholder {
+    color: var(--text-light);
+}
+.hero-search-input input:focus {
+    border-color: var(--primary-light);
+    box-shadow: 0 0 0 3px rgba(108,154,139,0.25);
+}
+
+/* CTA 버튼 – 공통 .btn-primary 사용 */
+.hero-search .btn-primary {
+    padding-inline: 22px;
+}
+
+/* 서브 정보 */
+.hero-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 10px;
+    font-size: 0.85rem;
+    color: var(--text-light);
+}
+.hero-meta span {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* 오른쪽 일러스트 / 카드 영역 */
+.hero-visual {
+    position: relative;
+    z-index: 1;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 곰 + 지도 카드 같은 느낌의 블록 */
+.hero-card {
+    width: 100%;
+    max-width: 320px;
+    padding: 22px 20px;
+    border-radius: 22px;
+    background-color: rgba(255,255,255,0.95);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.12);
+    border: 1px solid rgba(255,255,255,0.9);
+}
+
+.hero-card-title {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--primary-dark);
+}
+.hero-card-sub {
+    font-size: 0.86rem;
+    color: var(--text-light);
+    margin-bottom: 14px;
+}
+
+/* 간단한 스텝 리스트 */
+.hero-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+.hero-step {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+}
+.hero-step-index {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    font-size: 0.8rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--primary-light);
+    color: var(--primary-dark);
+    font-weight: 700;
+}
+
+/* 작은 상태 라벨 */
+.hero-status {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+    font-size: 0.78rem;
+    color: var(--text-light);
+}
+
+/* 뒤쪽 장식 원 */
+.hero-section::before,
+.hero-section::after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,255,255,0.8), rgba(255,255,255,0));
+    z-index: 0;
+}
+.hero-section::before {
+    width: 260px;
+    height: 260px;
+    right: -60px;
+    top: -40px;
+}
+.hero-section::after {
+    width: 220px;
+    height: 220px;
+    left: -80px;
+    bottom: -60px;
+}
+
+/* -------------------- 2. 홈 섹션 공통 -------------------- */
+
+.home-section {
+    margin-top: 50px;
+}
+
+.home-section-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 18px;
+}
+
+.home-section-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--text);
+}
+.home-section-sub {
+    font-size: 0.9rem;
+    color: var(--text-light);
+}
+
+.home-section-link {
+    font-size: 0.88rem;
+    color: var(--text-light);
+}
+.home-section-link a {
+    color: var(--text-light);
+}
+.home-section-link a:hover {
+    color: var(--primary);
+}
+
+/* 카드 그리드 (AI 추천, 핫딜, 여행지 등 공통) */
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+}
+
+/* 홈 카드 공통 */
+.home-card {
+    background-color: var(--surface);
+    border-radius: 18px;
+    box-shadow: var(--shadow-soft);
+    border: 1px solid var(--border);
+    padding: 16px 18px 18px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    cursor: pointer;
+    transition: transform 0.16s ease-out, box-shadow 0.16s ease-out, border-color 0.16s;
+}
+.home-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 30px rgba(0,0,0,0.12);
+    border-color: rgba(108,154,139,0.6);
+}
+
+/* 카드 이미지 영역 (옵션) */
+.home-card-thumb {
+    width: 100%;
+    height: 150px;
+    border-radius: 14px;
+    overflow: hidden;
+    margin-bottom: 10px;
+    background-color: #E9ECEF;
+}
+.home-card-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* 카드 텍스트 */
+.home-card-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text);
+}
+.home-card-meta {
+    font-size: 0.82rem;
+    color: var(--text-light);
+}
+.home-card-tag-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 4px;
+}
+
+/* 간단한 태그칩 */
+.tag-chip {
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    background-color: #F1F3F5;
+    color: var(--text-light);
+}
+
+/* -------------------- 3. 특화 섹션 예시 -------------------- */
+
+/* AI 추천 루트 섹션 전용 (원하면 home.jsp에서 이 클래스 사용) */
+.ai-route-card .home-card-title {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.ai-route-card .home-card-title span.emoji {
+    font-size: 1.2rem;
+}
+
+/* 핫딜 카드 */
+.hotdeal-card .home-card-meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 4px;
+}
+.hotdeal-card-price {
+    font-weight: 700;
+    color: var(--accent);
+    font-size: 0.92rem;
+}
+
+/* -------------------- 4. 반응형 -------------------- */
+
+@media (max-width: 992px) {
+    .home-main {
+        padding: 0 20px;
+        margin-top: 24px;
+    }
+
+    .hero-section {
+        grid-template-columns: 1fr;
+        padding: 32px 24px 36px;
+    }
+    .hero-visual {
+        justify-content: flex-start;
+    }
+    .hero-card {
+        max-width: 280px;
+    }
+
+    .card-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 576px) {
+    .home-main {
+        padding: 0 16px;
+    }
+
+    .hero-section {
+        padding: 24px 18px 28px;
+        gap: 24px;
+    }
+    .hero-title {
+        font-size: 2rem;
+    }
+
+    .hero-search {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .hero-search .btn-primary {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .card-grid {
+        grid-template-columns: 1fr;
+    }
+}
