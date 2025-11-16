@@ -4,6 +4,11 @@
  - 헤더, 모바일 메뉴, 핫딜, 댓글 스타일 전부 제거됨
  ========================================================= */
 
+:root {
+    --danger: #DC3545;
+    --danger-dark: #C82333;
+}
+
 /* 공지 등록/수정 폼 컨테이너 */
 .notice-form-container { 
     max-width: 800px; /* 폼의 최대 너비를 지정 */
@@ -69,22 +74,16 @@ textarea.form-control {
     margin-top: 40px;
 }
 
-.form-actions .btn {
+.form-actions .notice-btn {
     padding: 10px 24px;
-    border-radius: 30px;
-    font-weight: 700;
-    text-decoration: none;
-    border: none;
-    cursor: pointer;
-    transition: all 0.3s;
 }
 
 /* 취소 버튼 디자인 */
-.form-actions .btn-cancel {
+.form-actions .notice-btn-secondary {
     background-color: #E9ECEF;
     color: var(--text-light);
 }
-.form-actions .btn-cancel:hover {
+.form-actions .notice-btn-secondary:hover {
     background-color: #dee2e6;
     color: var(--text);
 }
@@ -252,42 +251,49 @@ main {
     text-align: right;
 }
 
-/* 공지 페이지 공통 버튼 스타일 (헤더 버튼 영향을 피하기 위해 영역 한정) */
-.notice-form-container .btn,
-.notice-view-container .btn,
-.notice-container .btn,
-.notice-footer .btn,
-.notice-actions .btn,
-.table-options .btn {
+/* 공지 페이지 공통 버튼 스타일 (헤더 버튼 영향을 피하기 위해 notice-btn 클래스로 제한) */
+.notice-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     padding: 12px 28px;
     border-radius: 30px;
     font-weight: 700;
     text-decoration: none;
     border: none;
     cursor: pointer;
-    transition: all 0.3s;
+    transition: all 0.3s ease;
 }
 
-.notice-form-container .btn-primary,
-.notice-view-container .btn-primary,
-.notice-container .btn-primary,
-.notice-footer .btn-primary,
-.notice-actions .btn-primary,
-.table-options .btn-primary {
+.notice-btn-primary {
     background-color: var(--primary);
-    color: white;
+    color: #ffffff;
 }
 
-.notice-form-container .btn-primary:hover,
-.notice-view-container .btn-primary:hover,
-.notice-container .btn-primary:hover,
-.notice-footer .btn-primary:hover,
-.notice-actions .btn-primary:hover,
-.table-options .btn-primary:hover {
+.notice-btn-primary:hover {
     background-color: var(--primary-dark);
     transform: translateY(-2px);
     box-shadow: 0 4px 15px rgba(108, 154, 139, 0.2);
     text-decoration: none;
+}
+
+.notice-btn-secondary {
+    background-color: #E9ECEF;
+    color: var(--text-light);
+}
+
+.notice-btn-secondary:hover {
+    background-color: #dee2e6;
+    color: var(--text);
+}
+
+.notice-btn-danger {
+    background-color: var(--danger);
+    color: #fff;
+}
+
+.notice-btn-danger:hover {
+    background-color: var(--danger-dark);
 }
 
 /* ========================================================= */

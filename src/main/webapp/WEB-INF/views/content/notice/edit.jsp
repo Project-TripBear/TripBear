@@ -30,8 +30,8 @@
             </div>
             
             <div class="form-actions">
-                <button type="submit" class="btn btn-primary">수정</button>
-                <button type="button" class="btn" onclick="history.back();">취소</button>
+                <button type="submit" class="notice-btn notice-btn-primary">수정</button>
+                <button type="button" class="notice-btn notice-btn-secondary" onclick="history.back();">취소</button>
             </div>
         </form>
     </div>
