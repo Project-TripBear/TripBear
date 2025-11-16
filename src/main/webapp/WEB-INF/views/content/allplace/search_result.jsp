@@ -6,7 +6,8 @@
   CSS: resources/css/trendcard.css (공통 레이아웃에서 로드)
   Data: Controller가 "placeList" (List<PlaceDTO>)와 "keyword"를 전달합니다.
 --%>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/allplace/trendcard.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/main.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/allplace.css">
 <main>
     <%-- .trend-header 클래스 공통 사용 --%>
     <div class="trend-header">

@@ -11,6 +11,8 @@ public interface RoutePostMapper {
 	// 게시글 목록
     List<RoutePostDTO> list(Map<String, Object> map);
 
+    int totalCount(Map<String, Object> map);
+
     // 게시글 상세보기
     RoutePostDTO get(int routepostId);
 

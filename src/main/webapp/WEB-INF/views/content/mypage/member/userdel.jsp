@@ -4,7 +4,8 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/mypage.css">
+	<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/main.css">
+	<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/mypage.css">
 
 </head>
 <body>

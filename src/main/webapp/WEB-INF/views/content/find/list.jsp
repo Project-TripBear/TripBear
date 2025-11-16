@@ -5,99 +5,93 @@
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %> 
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<%-- 1. 타이틀 영역 (style 속성 제거) --%>
-<div class="content-header"> 
-    <h1>동행 찾기 게시판</h1>
-</div>
+<div class="board-page">
+    <div class="board-header">
+        <h1 class="board-title">동행 찾기 게시판</h1>
+        <p class="board-subtitle">함께 여행할 동행을 찾고 실시간 소통을 이어가세요.</p>
+    </div>
 
-<%-- 2. 게시글 목록 테이블 (style 속성 제거) --%>
-<div class="card-container">
-    <table class="notice-table">
-        <thead>
-            <tr>
-                <th>No.</th>
-                <th>제목</th>
-                <th>글쓴이</th>
-                <th>작성일</th>
-                <th>조회수</th>
-                <th>좋아요</th>
-            </tr>
-        </thead>
-        <tbody>
-            <%-- 데이터 없을 때 --%>
-            <c:if test="${empty list}">
-            <tr>
-                <td colspan="6" class="no-data">게시물이 없습니다.</td>
-            </tr>
-            </c:if>	
-            
-            <%-- 데이터 루프 --%>
-    	 <c:forEach items="${list}" var="dto">
-            <tr>
-                <td>${dto.find_board_id}</td>
-                <td class="title">
-                    <a href="<c:url value='/findboard/view?seq=${dto.find_board_id}'/>">
-                        ${dto.find_board_title} 
-                        <%-- 댓글 수 표시 (style 속성 제거) --%>
-                        <c:if test="${dto.commentCount > 0}">
-                            <span class="comment-count">[${dto.commentCount}]</span>
-                        </c:if>
-                    </a>
-                </td>
-                <td>${dto.nickname}</td>
-                <td>${dto.find_board_regdate}</td>  <%-- ★★★ [수정] displayTime -> find_board_regdate로 수정 ★★★ --%>
-                <td>${dto.find_board_view_count}</td>
-                <td>${dto.likeCount}</td>
-            </tr>
-            </c:forEach>
-        </tbody>
-    </table>
-</div>
+    <div class="board-table-wrapper">
+        <table class="board-table">
+            <thead>
+                <tr>
+                    <th>No.</th>
+                    <th>제목</th>
+                    <th>글쓴이</th>
+                    <th>작성일</th>
+                    <th>댓글</th>
+                    <th>좋아요</th>
+                    <th>조회수</th>
+                </tr>
+            </thead>
+            <tbody>
+                <c:choose>
+                    <c:when test="${not empty list}">
+                        <c:forEach items="${list}" var="dto">
+                            <tr onclick="location.href='${pageContext.request.contextPath}/findboard/view?seq=${dto.find_board_id}'">
+                                <td class="numeric">${dto.find_board_id}</td>
+                                <td class="title">
+                                    <a href="${pageContext.request.contextPath}/findboard/view?seq=${dto.find_board_id}">
+                                        ${dto.find_board_title}
+                                    </a>
+                                </td>
+                                <td>${dto.nickname}</td>
+                                <td>${dto.find_board_regdate}</td>
+                                <td class="numeric">${dto.commentCount}</td>
+                                <td class="numeric">${dto.likeCount}</td>
+                                <td class="numeric">${dto.find_board_view_count}</td>
+                            </tr>
+                        </c:forEach>
+                    </c:when>
+                    <c:otherwise>
+                        <tr>
+                            <td colspan="7">
+                                <div class="board-empty">게시물이 없습니다.</div>
+                            </td>
+                        </tr>
+                    </c:otherwise>
+                </c:choose>
+            </tbody>
+        </table>
+    </div>
 
-<%-- 3. 검색 및 버튼 영역 (Footer) (style 속성 제거) --%>
-<div class="notice-footer">
-    
-    <%-- 검색 폼 --%>
-    <div class="search-box">
-        <form method="GET" action="<c:url value='/findboard/list'/>">
+    <div class="board-actions">
+        <form method="GET" action="<c:url value='/findboard/list'/>" class="board-search">
             <input type="hidden" name="page" value="1">
-            <select name="searchType" class="search-select">
+            <select name="searchType">
                 <option value="title_content" ${searchMap.searchType == 'title_content' ? 'selected' : ''}>제목+내용</option>
                 <option value="nickname" ${searchMap.searchType == 'nickname' ? 'selected' : ''}>작성자</option>
             </select>
             <input type="text" name="searchKeyword" placeholder="검색어를 입력하세요" value="${searchMap.searchKeyword}">
-            <button type="submit" class="btn btn-primary">검색</button>
+            <button type="submit">검색</button>
         </form>
-    </div>
-    
-    <%-- 글쓰기 버튼 --%>
-    <div class="table-options">
+        <div class="board-button-group">
             <sec:authorize access="hasAuthority('ACTIVE')">
-            <button type="button" class="btn btn-primary" onclick="location.href='<c:url value='/findboard/add'/>';">글쓰기</button>
-        </sec:authorize>
+                <button type="button" class="btn btn-primary" onclick="location.href='<c:url value='/findboard/add'/>';">글쓰기</button>
+            </sec:authorize>
+        </div>
     </div>
-</div>
 
-<%-- 4. 페이징 영역 --%>
-<div class="pagination">
-    <c:set var="params" value="&searchType=${searchMap.searchType}&searchKeyword=${searchMap.searchKeyword}" />
+    <div class="board-pagination">
+        <c:set var="params" value="&searchType=${searchMap.searchType}&searchKeyword=${searchMap.searchKeyword}" />
 
-    <c:if test="${paging.prev}">
-        <a href="${pageContext.request.contextPath}/findboard/list?page=${paging.startPage - 1}${params}">이전</a>
-    </c:if>
+        <c:if test="${paging.prev}">
+            <a href="${pageContext.request.contextPath}/findboard/list?page=${paging.startPage - 1}${params}">이전</a>
+        </c:if>
 
-    <c:forEach begin="${paging.startPage}" end="${paging.endPage}" var="i">
-        <c:choose>
-            <c:when test="${i == paging.page}">
-                <a href="#!" class="active">${i}</a>
-            </c:when>
-            <c:otherwise>
-                <a href="${pageContext.request.contextPath}/findboard/list?page=${i}${params}">${i}</a>
-            </c:otherwise>
-        </c:choose>
-    </c:forEach>
+        <c:forEach begin="${paging.startPage}" end="${paging.endPage}" var="i">
+            <c:choose>
+                <c:when test="${i == paging.page}">
+                    <strong>${i}</strong>
+                </c:when>
+                <c:otherwise>
+                    <a href="${pageContext.request.contextPath}/findboard/list?page=${i}${params}">${i}</a>
+                </c:otherwise>
+            </c:choose>
+        </c:forEach>
 
-    <c:if test="${paging.next}">
-        <a href="${pageContext.request.contextPath}/findboard/list?page=${paging.endPage + 1}${params}">다음</a>
-    </c:if>
+        <c:if test="${paging.next}">
+            <a href="${pageContext.request.contextPath}/findboard/list?page=${paging.endPage + 1}${params}">다음</a>
+        </c:if>
+    </div>
 </div>

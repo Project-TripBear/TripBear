@@ -3,6 +3,10 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>    
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/main.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/notice.css">
+
+
 <main>
     <div class="notice-form-container">
         <h2>공지사항 작성</h2>
@@ -23,8 +27,8 @@
             </div>
             
             <div class="form-actions">
-                <button type="submit" class="btn btn-primary">등록</button>
-                <button type="button" class="btn" onclick="location.href='<c:url value="/notice/list"/>';">취소</button>
+                <button type="submit" class="notice-btn notice-btn-primary">등록</button>
+                <button type="button" class="notice-btn notice-btn-secondary" onclick="location.href='<c:url value="/notice/list"/>';">취소</button>
             </div>
         
         </form>

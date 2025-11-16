@@ -129,69 +129,6 @@
     margin-right: 5px;
 }
 
-/* 1. 마이페이지 링크 (.btn-logout) 스타일 */
-/* 로그인/회원가입과 동일한 미니멀 테두리 스타일 적용 */
-.user-info .btn-logout {
-    padding: 8px 20px;
-    border: 1px solid var(--primary); /* 💡 테마 주 색상 테두리 */
-    background-color: transparent;
-    color: var(--primary); /* 💡 글자색 테마 주 색상 */
-    border-radius: 30px; 
-    font-weight: 700;
-    text-decoration: none;
-    transition: all 0.3s;
-    white-space: nowrap;
-    display: inline-block;
-}
-.user-info .btn-logout:hover {
-    background-color: var(--primary-light); 
-    color: var(--primary-dark);
-    text-decoration: none;
-}
-
-.user-info .btn-logout {
-    padding: 8px 20px;
-    border: 1px solid var(--primary); /* 💡 테마 주 색상 테두리 */
-    background-color: transparent;
-    color: var(--primary); /* 💡 글자색 테마 주 색상 */
-    border-radius: 30px; 
-    font-weight: 700;
-    text-decoration: none;
-    transition: all 0.3s;
-    white-space: nowrap;
-    display: inline-block;
-}
-.user-info .btn-logout:hover {
-    background-color: var(--primary-light); 
-    color: var(--primary-dark);
-    text-decoration: none;
-}
-
-/* 2. 로그아웃 폼 버튼 (버튼 태그) 스타일 */
-.header-right .user-info form button {
-    /* 💡 마이페이지 버튼과 동일한 둥근 테두리 스타일 적용 */
-    padding: 8px 20px;
-    border: 1px solid var(--primary); 
-    color: var(--primary);
-    border-radius: 30px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.3s;
-    white-space: nowrap;
-    font-family: inherit; 
-    font-size: 1rem;
-    
-    /* 💡 배경을 채우지 않고 테두리만 가짐 (로그인/회원가입 버튼과 디자인 통일) */
-    background-color: transparent; /* 배경 투명 */
-    border-color: var(--primary); /* 테두리 색상 */
-}
-.header-right .user-info form button:hover {
-    /* 💡 호버 시 배경 채우기 (로그인/회원가입 버튼과 동일) */
-    background-color: var(--primary-light); 
-    color: var(--primary-dark);
-}
-
-
 /* ------------------------------------------------------------ */
 
 

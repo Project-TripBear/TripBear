@@ -3,8 +3,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>  
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/main.css">
-
 
 <header id="main-header">
     <div class="header-inner">
@@ -41,7 +39,7 @@
                 <div class="sub-menu">
                     <a href="${pageContext.request.contextPath}/routepost/list">여행 루트 추천 게시판</a>
                     <a href="${pageContext.request.contextPath}/review/list">여행 후기 게시판</a>
-                    <a href="${pageContext.request.contextPath}/qna/list">Q&A</a>
+                    <a href="${pageContext.request.contextPath}/qnaboard/list">Q&A</a>
                     <a href="${pageContext.request.contextPath}/findboard/list">동행 찾기 게시판</a>
                     <a href="${pageContext.request.contextPath}/hotdeal/list">여행 용품 게시판</a>
                 </div>
@@ -118,7 +116,7 @@
             <div class="mobile-sub-menu">
                 <a href="${pageContext.request.contextPath}/routepost/list">여행 루트 추천</a>
                 <a href="${pageContext.request.contextPath}/review/list">여행 후기</a>
-                <a href="${pageContext.request.contextPath}/qna/list">Q&A</a>
+                <a href="${pageContext.request.contextPath}/qnaboard/list">Q&A</a>
                 <a href="${pageContext.request.contextPath}/findboard/list">동행 찾기</a>
                 <a href="${pageContext.request.contextPath}/board/list">여행 용품</a>
             </div>

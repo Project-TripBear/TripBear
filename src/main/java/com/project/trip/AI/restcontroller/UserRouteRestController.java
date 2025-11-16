@@ -24,53 +24,76 @@ public class UserRouteRestController {
 
     private final UserRouteService userRouteService;
 
-    // ✅ 사용자 루트 조회
+    // ==============================
+    //  루트 조회
+    // ==============================
     @GetMapping("/{id}")
-    public ResponseEntity<UserRouteDTO> getUserRoute(@PathVariable("id") Long id) {
+    public ResponseEntity<UserRouteDTO> getUserRoute(@PathVariable Long id) {
         UserRouteDTO dto = userRouteService.getUserRouteWithStops(id);
-        return (dto == null) ? ResponseEntity.notFound().build() : ResponseEntity.ok(dto);
+        return (dto == null)
+                ? ResponseEntity.notFound().build()
+                : ResponseEntity.ok(dto);
     }
 
-    // ✅ 사용자 루트 삭제
+    // ==============================
+    //  루트 삭제
+    // ==============================
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteUserRoute(@PathVariable("id") Long id) {
+    public ResponseEntity<String> deleteUserRoute(@PathVariable Long id) {
         int deleted = userRouteService.deleteUserRouteCascade(id);
         return (deleted > 0)
-            ? ResponseEntity.ok("삭제 완료")
-            : ResponseEntity.notFound().build();
+                ? ResponseEntity.ok("삭제 완료")
+                : ResponseEntity.notFound().build();
     }
 
-    // ✅ 방문 순서/일차 수정
-    @PatchMapping("/stop/{stopId}")
-    public ResponseEntity<String> updateStopOrder(
-            @PathVariable("stopId") Long stopId,
-            @RequestParam("day") int day,
-            @RequestParam("order") int order) {
+    // ==============================
+    //  🔥 일차(day) 단독 수정
+    // ==============================
+    @PatchMapping("/stop/{stopId}/day")
+    public ResponseEntity<String> updateStopDay(
+            @PathVariable Long stopId,
+            @RequestParam int day) {
 
-        int updated = userRouteService.updateStopOrder(stopId, day, order);
+        int updated = userRouteService.updateStopDay(stopId, day);
         return (updated > 0)
-            ? ResponseEntity.ok("순서/날짜 수정 완료")
-            : ResponseEntity.notFound().build();
+                ? ResponseEntity.ok("일차 수정 완료")
+                : ResponseEntity.notFound().build();
     }
 
-    // ✅ 이동수단 수정
+    // ==============================
+    //  🔥 순서(order) 단독 수정
+    // ==============================
+    @PatchMapping("/stop/{stopId}/order")
+    public ResponseEntity<String> updateStopOrder(
+            @PathVariable Long stopId,
+            @RequestParam int order) {
+
+        int updated = userRouteService.updateOrder(stopId, order);
+        return (updated > 0)
+                ? ResponseEntity.ok("순서 수정 완료")
+                : ResponseEntity.notFound().build();
+    }
+
+    // ==============================
+    //  이동수단 변경
+    // ==============================
     @PatchMapping("/stop/{stopId}/mode")
     public ResponseEntity<String> updateTransportMode(
-            @PathVariable("stopId") Long stopId,
-            @RequestParam("mode") String mode) {
+            @PathVariable Long stopId,
+            @RequestParam String mode) {
 
         int updated = userRouteService.updateTransportMode(stopId, mode);
         return (updated > 0)
-            ? ResponseEntity.ok("이동수단 변경 완료")
-            : ResponseEntity.notFound().build();
+                ? ResponseEntity.ok("이동수단 변경 완료")
+                : ResponseEntity.notFound().build();
     }
-    
-    @PostMapping("/stop/reorder")
+
+    // ==============================
+    //  🔥 Bulk 재정렬
+    // ==============================
+    @PostMapping("/stop/bulk/reorder")
     public ResponseEntity<?> reorderStops(@RequestBody ReorderRequest req) {
         userRouteService.updateStopOrders(req.getDay(), req.getStops());
         return ResponseEntity.ok().build();
     }
-
-
-    
 }
