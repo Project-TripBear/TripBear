@@ -9,7 +9,8 @@ import com.project.trip.board.routepost.model.RoutePostImageDTO;
 public interface RoutePostService {
 
     // ===== 게시글 =====
-	List<RoutePostDTO> list(Map<String, Object> map);
+        List<RoutePostDTO> list(Map<String, Object> map);
+    int totalCount(Map<String, Object> map);
     RoutePostDTO get(int routepostId);
     int add(RoutePostDTO dto);
     int edit(RoutePostDTO dto);

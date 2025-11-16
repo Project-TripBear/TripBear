@@ -60,8 +60,11 @@ public class RoutePostController {
         map.put("end", end);
 
         List<RoutePostDTO> list = postService.list(map);
+        int totalCount = postService.totalCount(map);
+        int totalPages = (int) Math.ceil((double) totalCount / pageSize);
         model.addAttribute("list", list);
         model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", totalPages);
 
         return "board.routepost.list";
     }

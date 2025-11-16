@@ -1,218 +1,257 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <title>${post.routepostTitle}</title>
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/routepost.css">
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-  <style>
-    .comment-item { border-bottom: 1px solid #ddd; padding: 10px 0; }
-    .comment-actions button { font-size: 11px; margin-left: 5px; }
-    .comment-edit-area { width: 100%; resize: none; margin-top: 5px; }
-    .btn-action-area button.active { background: #ffebeb; }
-  </style>
+    <meta charset="UTF-8">
+    <title>${post.routepostTitle}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/board-view.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/routepost.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 </head>
-
 <body>
+<div class="page-board-view-container">
+    <div id="main">
+        <div class="post-container">
+            <div class="post-header">
+                <span class="category">여행 경로</span>
+                <h2 class="subject">${post.routepostTitle}</h2>
+                <div class="post-meta">
+                    <span>작성자: <strong>${post.nickname}</strong></span>
+                    <span>|</span>
+                    <span>작성일: ${post.routepostRegdate}</span>
+                    <span>|</span>
+                    <span>조회수: ${post.routepostViewCount}</span>
+                </div>
+            </div>
 
-<div class="routepost-page">
-	<div class="container">   
-  <!-- ===== 게시글 헤더 ===== -->
-  <div class="header-area">
-    <h2>${post.routepostTitle}</h2>
-    <div class="post-info">
-      작성자: ${post.nickname} |
-      작성일: ${post.routepostRegdate} |
-      조회수: ${post.routepostViewCount}
+            <div class="post-content">${post.routepostContent}</div>
+
+            <c:if test="${not empty images}">
+                <div class="post-images routepost-gallery">
+                    <span class="image-nav-arrow left">&#10094;</span>
+                    <div class="image-area">
+                        <c:forEach var="img" items="${images}">
+                            <img class="routepost-img"
+                                 src="${pageContext.request.contextPath}/upload/routepost/${img.routepostImageUrl}"
+                                 alt="게시글 이미지">
+                        </c:forEach>
+                    </div>
+                    <span class="image-nav-arrow right">&#10095;</span>
+                </div>
+            </c:if>
+
+            <div class="post-actions action-buttons-group">
+                <button type="button" class="btn like" id="btn-like" data-id="${post.routepostId}">🤍 추천</button>
+                <button type="button" class="btn scrap" id="btn-scrap" data-id="${post.routepostId}">📁 스크랩</button>
+            </div>
+
+            <div class="comment-section">
+                <h3>댓글 <span id="comment-count">(0)</span></h3>
+                <table id="comment" class="comment-list-table">
+                    <tbody>
+                    <tr>
+                        <td class="comment-empty" colspan="2">등록된 댓글이 없습니다 😶</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <c:if test="${not empty userId}">
+                <div class="comment-add-form">
+                    <textarea id="comment-content" placeholder="댓글을 입력하세요" rows="3"></textarea>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-primary" id="btn-comment-add">댓글 등록</button>
+                    </div>
+                </div>
+            </c:if>
+
+            <div class="bottom-buttons action-buttons-group">
+                <a href="${pageContext.request.contextPath}/routepost/list" class="btn btn-secondary">목록</a>
+                <div class="action-buttons-group">
+                    <c:if test="${userId == post.userId}">
+                        <a href="${pageContext.request.contextPath}/routepost/edit/${post.routepostId}" class="btn btn-primary">수정</a>
+                        <a href="${pageContext.request.contextPath}/routepost/del/${post.routepostId}"
+                           class="btn btn-danger"
+                           onclick="return confirm('정말 삭제하시겠습니까?');">삭제</a>
+                    </c:if>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
-
-  <!-- ===== 본문 내용 ===== -->
-  <div class="content-area">
-    <p>${post.routepostContent}</p>
-  </div>
-
-  <!-- ===== 이미지 영역 ===== -->
-  <c:if test="${not empty images}">
-    <div class="image-area-wrapper">
-      <span class="image-nav-arrow left">&#10094;</span>
-      <div class="image-area">
-        <c:forEach var="img" items="${images}">
-          <img class="routepost-img"
-              src="${pageContext.request.contextPath}/upload/routepost/${img.routepostImageUrl}"
-               alt="게시글 이미지">
-        </c:forEach>
-      </div>
-      <span class="image-nav-arrow right">&#10095;</span>
-    </div>
-  </c:if>
-
-  <!-- ===== 추천 / 스크랩 ===== -->
-  <div class="btn-action-area">
-    <button id="btn-like" data-id="${post.routepostId}">🤍 추천</button>
-    <button id="btn-scrap" data-id="${post.routepostId}">📁 스크랩</button>
-  </div>
-
-  <!-- ===== 목록 / 수정 / 삭제 ===== -->
-  <div class="btn-area">
-    <a href="${pageContext.request.contextPath}/routepost/list" class="btn-list">목록</a>
-    <c:if test="${userId == post.userId}">
-    <a href="${pageContext.request.contextPath}/routepost/edit/${post.routepostId}" class="btn-edit">수정</a>
-    <a href="${pageContext.request.contextPath}/routepost/del/${post.routepostId}" class="btn-delete"
-       onclick="return confirm('정말 삭제하시겠습니까?');">삭제</a>
-	</c:if>
-
-  </div>
-
-  <!-- ===== 댓글 영역 ===== -->
-  <div class="comment-section" style="margin-top:40px; border-top:1px solid #ccc; padding-top:20px;">
-    <h3>댓글 💬 <span id="comment-count">(0)</span></h3>
-    <div id="comment-list" style="margin-top:20px;"></div>
-
-    <!-- 댓글 입력 -->
-    <div class="comment-input" style="margin-top:25px;">
-      <textarea id="comment-content" placeholder="댓글을 입력하세요" rows="3"
-                style="width:100%; resize:none;"></textarea>
-      <button id="btn-comment-add" style="margin-top:5px; float:right;">등록</button>
-      <div style="clear:both;"></div>
-    </div>
-  </div>
 </div>
-</div>
-<!-- ======================= JS ======================= -->
+
 <script>
-
 const routepostId = "${post.routepostId}";
-const userId = "${userId}"; // 숫자
-const userName = "${userName}"; // 아이디
+const userId = "${userId}";
 const contextPath = "${pageContext.request.contextPath}";
-//댓글 목록 불러오기
-function loadComments() {
+const token = "${_csrf.token}";
+const header = "${_csrf.headerName}";
 
-  $.getJSON(contextPath + "/api/routepost/comment/list/" + routepostId, function(list) {
+const $commentBody = () => $("#comment tbody");
 
-    var html = "";
-
-    if (!list || list.length === 0) {
-      html = "<p>등록된 댓글이 없습니다 😶</p>";
-
-    } else {
-
-      list.forEach(function(c) {
-
-        html += "<div class='comment-item' data-id='" + c.routepostCommentId + "'>";
-        html += "<b>" + c.nickname + "</b>";
-        html += "<small style='color:#999;'>" + c.routepostCommentRegdate + "</small>";
-        html += "<div class='comment-content'>" + c.routepostContent + "</div>";
-        html += "<div class='comment-actions'>";
-
-        if (String(userId) === String(c.userId)) {
-          html += "<button class='btn-edit'>수정</button>";
-          html += "<button class='btn-delete'>삭제</button>";
-        }
-
-        html += "</div></div>";
-      });
-    }
-
-    $("#comment-list").html(html);
-    $("#comment-count").text("(" + list.length + ")");
-  });
+function renderEmptyRow() {
+    return '<tr><td class="comment-empty" colspan="2">등록된 댓글이 없습니다 😶</td></tr>';
 }
 
-
-// ✅ 댓글 등록
-$("#btn-comment-add").click(function() {
-	 
-	if (!userId) return alert("로그인 후 댓글을 작성할 수 있습니다.");
-	
-  const content = $("#comment-content").val().trim();
-  if (content === "") return alert("댓글 내용을 입력하세요.");
-
-  const data = { routepostId, userId, routepostContent: content };
-
-  $.ajax({
-    url: "${pageContext.request.contextPath}/api/routepost/comment/add",
-    type: "POST",
-    contentType: "application/json",
-    data: JSON.stringify(data),
-    success: function(res) {
-      if (res > 0) {
-        $("#comment-content").val("");
-        loadComments();
-      } else alert("댓글 등록 실패 ❌");
+function buildCommentRow(c) {
+    let actions = '';
+    if (String(userId) === String(c.userId) && userId) {
+        actions = `
+            <div class="comment-actions">
+                <span class="comment-edit" data-id="${c.routepostCommentId}">수정</span>
+                <span class="comment-delete" data-id="${c.routepostCommentId}">삭제</span>
+            </div>`;
     }
-  });
-});
 
-// ✅ 댓글 삭제
-$(document).on("click", ".btn-delete", function() {
-  const commentId = $(this).closest(".comment-item").data("id");
-  $.ajax({
-    url: "${pageContext.request.contextPath}/api/routepost/comment/del/" + commentId,
-    type: "DELETE",
-    success: function(res) {
-      if (res > 0) loadComments();
-      else alert("댓글 삭제 실패 ❌");
+    return `
+        <tr class="comment-row" id="comment-row-${c.routepostCommentId}">
+            <td class="commentContent">
+                <div>${c.routepostContent}</div>
+                <div>${c.routepostCommentRegdate}</div>
+            </td>
+            <td class="commentInfo">
+                <div>
+                    <div>${c.nickname}</div>
+                    ${actions}
+                </div>
+            </td>
+        </tr>`;
+}
+
+function loadComments() {
+    $.getJSON(contextPath + "/api/routepost/comment/list/" + routepostId, function(list) {
+        const $tbody = $commentBody();
+        $tbody.empty();
+        $('.commentEditRow').remove();
+
+        if (!list || list.length === 0) {
+            $tbody.append(renderEmptyRow());
+        } else {
+            list.forEach(function(c) {
+                $tbody.append(buildCommentRow(c));
+            });
+        }
+        $("#comment-count").text("(" + (list ? list.length : 0) + ")");
+    });
+}
+
+function appendEditRow(commentId, original) {
+    const $row = $('#comment-row-' + commentId);
+    if (!$row.length) return;
+
+    $('.commentEditRow').remove();
+
+    const editRowHtml = `
+        <tr class="commentEditRow">
+            <td colspan="2">
+                <textarea class="comment-edit-area">${original}</textarea>
+                <div class="comment-edit-actions">
+                    <button type="button" class="btn btn-primary comment-edit-save" data-id="${commentId}">확인</button>
+                    <button type="button" class="btn btn-secondary comment-edit-cancel">닫기</button>
+                </div>
+            </td>
+        </tr>`;
+
+    $row.after(editRowHtml);
+}
+
+$('#btn-comment-add').click(function() {
+    if (!userId) {
+        alert('로그인 후 댓글을 작성할 수 있습니다.');
+        return;
     }
-  });
-});
 
-// ✅ 댓글 수정 모드
-$(document).on("click", ".btn-edit", function() {
-  const $comment = $(this).closest(".comment-item");
-  const $content = $comment.find(".comment-content");
-  const original = $content.text().trim();
-
-  // 이미 수정 중이면 return
-  if ($comment.find("textarea").length > 0) return;
-
-  const editBox = `
-    <textarea class="comment-edit-area">${original}</textarea>
-    <button class="btn-save">저장</button>
-    <button class="btn-cancel">취소</button>
-  `;
-  $content.hide();
-  $content.after(editBox);
-});
-
-// ✅ 댓글 수정 저장
-$(document).on("click", ".btn-save", function() {
-  const $comment = $(this).closest(".comment-item");
-  const commentId = $comment.data("id");
-  const newContent = $comment.find(".comment-edit-area").val().trim();
-  if (newContent === "") return alert("내용을 입력하세요.");
-
-  $.ajax({
-    url: "${pageContext.request.contextPath}/api/routepost/comment/edit",
-    type: "PUT",
-    contentType: "application/json",
-    data: JSON.stringify({ routepostCommentId: commentId, routepostContent: newContent }),
-    success: function(res) {
-      if (res > 0) loadComments();
-      else alert("댓글 수정 실패 ❌");
+    const content = $("#comment-content").val().trim();
+    if (!content) {
+        alert('댓글 내용을 입력하세요.');
+        return;
     }
-  });
+
+    $.ajax({
+        url: contextPath + "/api/routepost/comment/add",
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify({ routepostId, userId, routepostContent: content }),
+        beforeSend: function(xhr) { xhr.setRequestHeader(header, token); },
+        success: function(res) {
+            if (res > 0) {
+                $("#comment-content").val('');
+                loadComments();
+            } else {
+                alert('댓글 등록 실패 ❌');
+            }
+        }
+    });
 });
 
-// ✅ 댓글 수정 취소
-$(document).on("click", ".btn-cancel", function() {
-  const $comment = $(this).closest(".comment-item");
-  $comment.find(".comment-edit-area, .btn-save, .btn-cancel").remove();
-  $comment.find(".comment-content").show();
+$(document).on('click', '.comment-delete', function() {
+    if (!confirm('댓글을 삭제하시겠습니까?')) {
+        return;
+    }
+
+    const commentId = $(this).data('id');
+    $.ajax({
+        url: contextPath + "/api/routepost/comment/del/" + commentId,
+        type: "DELETE",
+        beforeSend: function(xhr) { xhr.setRequestHeader(header, token); },
+        success: function(res) {
+            if (res > 0) {
+                loadComments();
+            } else {
+                alert('댓글 삭제 실패 ❌');
+            }
+        }
+    });
 });
 
+$(document).on('click', '.comment-edit', function() {
+    const commentId = $(this).data('id');
+    const $row = $('#comment-row-' + commentId);
+    if (!$row.length) return;
 
-$("#btn-like").click(function() {
+    const original = $row.find('.commentContent div').first().text().trim();
+    appendEditRow(commentId, original.replace(/"/g, '&quot;'));
+});
 
+$(document).on('click', '.comment-edit-save', function() {
+    const commentId = $(this).data('id');
+    const $editRow = $(this).closest('.commentEditRow');
+    const newContent = $editRow.find('.comment-edit-area').val().trim();
+
+    if (!newContent) {
+        alert('내용을 입력하세요.');
+        return;
+    }
+
+    $.ajax({
+        url: contextPath + "/api/routepost/comment/edit",
+        type: "PUT",
+        contentType: "application/json",
+        data: JSON.stringify({ routepostCommentId: commentId, routepostContent: newContent }),
+        beforeSend: function(xhr) { xhr.setRequestHeader(header, token); },
+        success: function(res) {
+            if (res > 0) {
+                loadComments();
+            } else {
+                alert('댓글 수정 실패 ❌');
+            }
+        }
+    });
+});
+
+$(document).on('click', '.comment-edit-cancel', function() {
+    $(this).closest('.commentEditRow').remove();
+});
+
+$('#btn-like').click(function() {
     $.ajax({
         url: contextPath + "/api/routepost/like/toggle",
         type: "POST",
         contentType: "application/json",
         data: JSON.stringify({ routepostId, userId }),
+        beforeSend: function(xhr) { xhr.setRequestHeader(header, token); },
         success: function(res) {
             if (res === true) {
                 $("#btn-like").addClass("active").text("❤️ 추천됨");
@@ -223,15 +262,13 @@ $("#btn-like").click(function() {
     });
 });
 
-
-// ✅ 스크랩
-$("#btn-scrap").click(function() {
-
+$('#btn-scrap').click(function() {
     $.ajax({
         url: contextPath + "/api/routepost/scrap/toggle",
         type: "POST",
         contentType: "application/json",
         data: JSON.stringify({ routepostId, userId }),
+        beforeSend: function(xhr) { xhr.setRequestHeader(header, token); },
         success: function(res) {
             if (res === true) {
                 $("#btn-scrap").addClass("active").text("✅ 스크랩됨");
@@ -242,58 +279,40 @@ $("#btn-scrap").click(function() {
     });
 });
 
-
-//✅ 초기 로드 + CSRF 헤더 세팅
-$(function() {
-  const token = "${_csrf.token}";
-  const header = "${_csrf.headerName}";
-  $(document).ajaxSend(function(e, xhr) {
-    xhr.setRequestHeader(header, token);
-  });
-  
-  loadLikeScrapStatus();
-  loadComments();
-});
-
 function loadLikeScrapStatus() {
+    if (!userId) return;
 
-    // 로그인 안 한 경우 API 호출하지 않음
-    if (!userId || userId === "") return;
-
-    // ❤️ 좋아요 상태 로드
-    $.get(contextPath + "/api/routepost/like/status",
-        { routepostId: routepostId, userId: userId },
-        function(res) {
-
-            const liked = (res === true || res === "true" || res === 1);
-
-            if (liked) {
-                $("#btn-like").addClass("active").text("❤️ 추천됨");
-            } else {
-                $("#btn-like").removeClass("active").text("🤍 추천");
-            }
+    $.get(contextPath + "/api/routepost/like/status", { routepostId: routepostId, userId: userId }, function(res) {
+        const liked = (res === true || res === "true" || res === 1);
+        if (liked) {
+            $("#btn-like").addClass("active").text("❤️ 추천됨");
+        } else {
+            $("#btn-like").removeClass("active").text("🤍 추천");
         }
-    );
+    });
 
-    // 📁 스크랩 상태 로드
-    $.get(contextPath + "/api/routepost/scrap/status",
-        { routepostId: routepostId, userId: userId },
-        function(res) {
-
-            const scrapped = (res === true || res === "true" || res === 1);
-
-            if (scrapped) {
-                $("#btn-scrap").addClass("active").text("✅ 스크랩됨");
-            } else {
-                $("#btn-scrap").removeClass("active").text("📁 스크랩");
-            }
+    $.get(contextPath + "/api/routepost/scrap/status", { routepostId: routepostId, userId: userId }, function(res) {
+        const scrapped = (res === true || res === "true" || res === 1);
+        if (scrapped) {
+            $("#btn-scrap").addClass("active").text("✅ 스크랩됨");
+        } else {
+            $("#btn-scrap").removeClass("active").text("📁 스크랩");
         }
-    );
+    });
 }
 
+$(function() {
+    $.ajaxSetup({
+        beforeSend: function(xhr) {
+            if (token && header) {
+                xhr.setRequestHeader(header, token);
+            }
+        }
+    });
 
-
+    loadLikeScrapStatus();
+    loadComments();
+});
 </script>
-
 </body>
 </html>

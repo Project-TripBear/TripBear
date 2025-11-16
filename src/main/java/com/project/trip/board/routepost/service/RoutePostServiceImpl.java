@@ -27,6 +27,11 @@ public class RoutePostServiceImpl implements RoutePostService {
     }
 
     @Override
+    public int totalCount(Map<String, Object> map) {
+        return mapper.totalCount(map);
+    }
+
+    @Override
     public RoutePostDTO get(int routepostId) {
         return mapper.get(routepostId);
     }
