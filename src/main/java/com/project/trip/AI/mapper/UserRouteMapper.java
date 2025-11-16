@@ -25,5 +25,8 @@ public interface UserRouteMapper {
    
     	);
     
+    int updateStopDay(@Param("stopId") Long stopId, @Param("day") int day);
+    int updateOrder(@Param("stopId") Long stopId, @Param("order") int order);
+
 
 }

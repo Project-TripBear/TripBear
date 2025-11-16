@@ -91,27 +91,52 @@ function initMap(lat, lng) {
 
 // ✅ 활동별 스타일
 function getActivityStyle(code) {
-  switch (code) {
-    case "ARRIVE": return { color: "#7E57C2", icon: "📍" };
-    case "WALK": return { color: "#FF9500", icon: "🚶‍♂️" };
-    case "EAT": return { color: "#E74C3C", icon: "🍴" };
-    case "VISIT": return { color: "#27AE60", icon: "🏛️" };
-    case "RETURN": return { color: "#3498DB", icon: "🏠" };
-    default: return { color: "#999", icon: "📌" };
-  }
+
+  // 코드 그룹핑
+  const map = {
+
+    // ====== 이동 관련 ======
+    "ARRIVE":      { color: "#7E57C2", icon: "📍" },
+    "RETURN":      { color: "#3498DB", icon: "🏠" },
+
+    // 걷기 유형별
+    "WALK":        { color: "#FF9500", icon: "🚶‍♂️" },
+    "WALK_SLOW":   { color: "#FFB74D", icon: "🚶‍♂️" },
+    "WALK_NORMAL": { color: "#FB8C00", icon: "🚶‍♂️" },
+
+    // 등산/하이킹
+    "HIKE_LIGHT":  { color: "#8BC34A", icon: "🥾" },
+
+    // ====== 먹는 활동 ======
+    "EAT":         { color: "#E74C3C", icon: "🍴" },
+    "EATING":      { color: "#E57373", icon: "🍽️" },
+
+    // ====== 관광, 둘러보기 ======
+    "VISIT":       { color: "#27AE60", icon: "🏛️" },
+    "VIEWING":     { color: "#66BB6A", icon: "🌄" },
+
+    // ====== 쇼핑 ======
+    "SHOPPING":    { color: "#9C27B0", icon: "🛍️" }
+  };
+
+  // 매칭 없을 경우 기본값
+  return map[code] || { color: "#999", icon: "📌" };
 }
+
 
 // ✅ 지도 클리어
 function clearMap() {
-  Object.values(mapElements).forEach(v=>{
-    if (v.markers) v.markers.forEach(m=>m.setMap(null));
-    if (v.overlays) v.overlays.forEach(o=>o.setMap(null));
-    if (v.polylines) v.polylines.forEach(p=>p.setMap(null));
-  });
-  mapElements = {};
-  document.getElementById("travel-summary").innerHTML = "";
-  document.getElementById("healthcare-summary").innerHTML = "";
+  if (mapElements.overlays) {
+    mapElements.overlays.forEach(o => o.setMap(null));
+  }
+  if (mapElements.polylines) {
+    mapElements.polylines.forEach(p => p.setMap(null));
+  }
+
+  mapElements.overlays = [];
+  mapElements.polylines = [];
 }
+
 
 // ✅ 경로 그리기
 const routeColors = [
@@ -137,26 +162,69 @@ async function drawRoute(start, end, index) {
     if (!res.ok) return null;
 
     const json = await res.json();
-    console.log("AI Mobility 응답:", json);
+    const section = json.routes && json.routes[0] && json.routes[0].sections && json.routes[0].sections[0];
+    if (!section) return null;
 
+    // 거리/시간 계산
+    var distanceM = section.distance || 0;
+    var durationS = section.duration || 0;
+
+    var distanceKm = (distanceM / 1000).toFixed(2);
+    var durationMin = Math.round(durationS / 60);
+
+    var infoText =
+      "거리: " + distanceKm + " km<br>" +
+      "예상 시간: " + durationMin + "분";
+
+    // Polyline 생성
     let path = [];
-    const roads = json.routes?.[0]?.sections?.[0]?.roads;
+    const roads = section.roads;
     if (!roads) return null;
 
-    roads.forEach(r => {
-      for (let i = 0; i < r.vertexes.length; i += 2) {
+    roads.forEach(function(r) {
+      for (var i = 0; i < r.vertexes.length; i += 2) {
         path.push(new kakao.maps.LatLng(r.vertexes[i + 1], r.vertexes[i]));
       }
     });
 
-    const polyline = new kakao.maps.Polyline({
-      path,
+    var polyline = new kakao.maps.Polyline({
+      path: path,
       strokeWeight: 4,
       strokeColor: routeColors[index % routeColors.length],
       strokeOpacity: 0.9
     });
 
     polyline.setMap(map);
+
+    //🔥 "마우스 따라다니는" 말풍선 전용 오버레이
+    var tooltip = new kakao.maps.CustomOverlay({
+      map: null,
+      position: null,
+      content:
+        "<div style='background:white;border:1px solid #aaa;padding:6px 10px;" +
+        "font-size:12px;border-radius:6px;white-space:nowrap;" +
+        "box-shadow:0 2px 4px rgba(0,0,0,0.2);'>" +
+        infoText +
+        "</div>",
+      yAnchor: 2.0    // ⬅️ 마우스 위쪽에 붙게 만드는 핵심 옵션
+    });
+
+    // 🔥 마우스 올라가면 툴팁 활성화
+    kakao.maps.event.addListener(polyline, "mouseover", function(mouseEvent) {
+      tooltip.setMap(map);
+      tooltip.setPosition(mouseEvent.latLng);
+    });
+
+    // 🔥 마우스 움직이는 동안 계속 툴팁 위치 업데이트
+    kakao.maps.event.addListener(polyline, "mousemove", function(mouseEvent) {
+      tooltip.setPosition(mouseEvent.latLng);
+    });
+
+    // 🔥 마우스 벗어나면 숨김
+    kakao.maps.event.addListener(polyline, "mouseout", function() {
+      tooltip.setMap(null);
+    });
+
     return polyline;
 
   } catch (err) {
@@ -167,43 +235,90 @@ async function drawRoute(start, end, index) {
 
 
 
+
+
 // ✅ 여행정보 렌더링
 function renderTravel(stops) {
   var box = document.getElementById("travel-summary");
   box.innerHTML = "";
-  stops.forEach(s=>{
+
+  // 활동별 간단 설명
+  var shortDescMap = {
+    "VIEWING": "주변 명소를 둘러보는 일정입니다.",
+    "VISIT": "관광 명소 방문 일정입니다.",
+    "EATING": "식사와 휴식을 위한 추천 장소입니다.",
+    "EAT": "식사 장소입니다.",
+    "WALK_SLOW": "여유롭게 걷는 도보 구간입니다.",
+    "WALK_NORMAL": "보통 속도로 이동하는 도보 구간입니다.",
+    "WALK": "도보 이동이 포함된 일정입니다.",
+    "SHOPPING": "기념품 또는 쇼핑을 즐기는 일정입니다.",
+    "HIKE_LIGHT": "가벼운 하이킹 코스입니다.",
+    "ARRIVE": "일정의 시작 지점입니다.",
+    "RETURN": "숙소 또는 출발지로 돌아가는 경로입니다."
+  };
+
+  stops.forEach(function(s) {
+
     var info = getActivityStyle(s.activityCode);
+    var desc = shortDescMap[s.activityCode] || "여행 일정의 일부입니다.";
+
     var div = document.createElement("div");
     div.className = "travel-card";
-    div.innerHTML =
-      "<span class='activity-tag' style='background:" + info.color + ";'>" + s.activityCode + "</span>" +
-      "<strong>" + info.icon + " " + (s.aiRouteDescription || "(이름 없음)") + "</strong>" +
-      "<div class='health-info'>" +
-      (s.activityCode === "WALK" ? "도보 이동 구간" :
-       s.activityCode === "EAT" ? "식사 장소" :
-       s.activityCode === "VISIT" ? "관광 명소" :
-       s.activityCode === "RETURN" ? "귀가 경로" : "이동 경로") +
-      "</div>";
+
+    var html = "";
+    html += "<span class='activity-tag' style='background:" + info.color + ";'>" + s.activityCode + "</span>";
+    html += "<strong>" + info.icon + " " + (s.aiRouteDescription || "(이름 없음)") + "</strong>";
+    html += "<div class='health-info'>" + desc + "</div>";
+
+    div.innerHTML = html;
     box.appendChild(div);
   });
 }
 
-// ✅ 헬스정보 렌더링
+
+
+//🔥 사용자 체중(kg)
+const USER_WEIGHT = 69;
+
 function renderHealth(stops) {
   var box = document.getElementById("healthcare-summary");
   box.innerHTML = "";
-  var totalDist = 0, totalSteps = 0, totalKcal = 0;
 
+  var totalDist = 0, totalSteps = 0, totalKcal = 0;
   var goalDist = 5, goalSteps = 8000, goalKcal = 500;
 
-  stops.forEach(s=>{
-    totalDist += s.walkingDistanceKm || 0;
-    totalSteps += s.walkingStepsCount || 0;
-    totalKcal += s.healthcareCaloriesBurned || 0;
+  var hasHealthData = false;
+
+  stops.forEach(s => {
 
     var dist = s.walkingDistanceKm || 0;
     var steps = s.walkingStepsCount || 0;
     var kcal = s.healthcareCaloriesBurned || 0;
+
+    // 🔥 DB 칼로리가 없으면 자동 계산
+    if (kcal === 0 && (dist > 0 || steps > 0)) {
+
+      // 거리 기반 kcal
+      let kcal_distance = dist * USER_WEIGHT * 1.036;
+
+      // 스텝 기반 kcal (평균 0.045 kcal per step)
+      let kcal_steps = steps * 0.045;
+
+      // 평균값 (너무 치우치지 않게)
+      kcal = ((kcal_distance + kcal_steps) / 2);
+
+      // 소수점 2자리
+      kcal = Number(kcal.toFixed(2));
+    }
+
+    // 세 값 모두 0이면 헬스카드 숨김
+    if (dist === 0 && steps === 0 && kcal === 0) return;
+
+    hasHealthData = true;
+
+    totalDist += dist;
+    totalSteps += steps;
+    totalKcal += kcal;
 
     var div = document.createElement("div");
     div.className = "health-card";
@@ -218,14 +333,28 @@ function renderHealth(stops) {
         "<div class='progress-label'>칼로리 소모</div>" +
         "<div class='progress-bar'><div class='progress-fill' style='background:#E74C3C;width:" + Math.min(100, (kcal/goalKcal)*100) + "%'></div></div>" +
       "</div>";
+
     box.appendChild(div);
   });
 
+  if (!hasHealthData) {
+    box.innerHTML = "<div class='health-info'>헬스케어 정보가 없는 일정입니다.</div>";
+    return;
+  }
+
   var total = document.createElement("div");
   total.className = "health-total";
-  total.innerHTML = "<strong>총합</strong> " + totalDist.toFixed(2) + " km · " + totalSteps + " steps · " + totalKcal + " kcal";
+  total.innerHTML =
+    "<strong>총합</strong> " +
+    totalDist.toFixed(2) + " km · " +
+    totalSteps + " steps · " +
+    totalKcal.toFixed(2) + " kcal";
+
   box.appendChild(total);
 }
+
+
+
 
 // ✅ 일차별 표시
 async function displayDay(day) {
@@ -252,14 +381,15 @@ async function displayDay(day) {
 
   for (let j = 0; j < stops.length - 1; j++) {
 	  var seg = await drawRoute(stops[j], stops[j + 1], j);
-    if (seg?.line) lines.push(seg.line);
-    if (seg?.label) overlays.push(seg.label);
+	  if (seg) lines.push(seg);
   }
 
   map.setBounds(bounds);
   renderTravel(stops);
   renderHealth(stops);
-  mapElements[day] = { overlays, polylines: lines };
+  mapElements.overlays = overlays;
+  mapElements.polylines = lines;
+
 }
 
 // ✅ 페이지 로드 시 실행

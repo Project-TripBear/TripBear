@@ -3,8 +3,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>  
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/main.css">
-
 
 <header id="main-header">
     <div class="header-inner">

@@ -15,5 +15,9 @@ public interface UserRouteService {
 
     int updateStopOrder(Long stopId, int day, int order);
     void updateStopOrders(int day, List<StopOrderDTO> stops);
+    
+    int updateStopDay(Long stopId, int day);
+    int updateOrder(Long stopId, int order);
 
+    
 }
