@@ -65,39 +65,37 @@
 		        </a>
 		    </div>
 
-		    <!-- 아침 하늘 스타일 날씨 카드 -->
 		    <div class="home-weather-hero morning">
-		        <div class="home-weather-main-left">
-		            <div class="home-weather-label morning">강남 · 아침</div>
+		        <div class="weather-left">
+		            <div class="weather-label">남양주시 · 아침</div>
 
-		            <div class="home-weather-temp-row">
-		                <span class="home-weather-temp">6°</span>
-		                <span class="home-weather-feels">체감 2°</span>
+		            <div class="weather-temp-row">
+		                <span class="weather-temp">6°</span>
+		                <span class="weather-feels">체감 2°</span>
 		            </div>
 
-		            <p class="home-weather-desc">
+		            <p class="weather-desc">
 		                오전엔 맑지만 약간 쌀쌀해요.<br>
 		                가벼운 외투 하나 챙기면 좋아요.
 		            </p>
 
-		            <p class="home-weather-date">
+		            <p class="weather-date">
 		                2025. 11. 17 (월) · Morning
 		            </p>
 		        </div>
 
-		        <!-- 이번 주 간단 예보 -->
-		        <ul class="home-weather-week">
-		            <li><span class="day">오늘</span><span class="icon">🌤️</span><span class="temp">-2° / 7°</span></li>
-		            <li><span class="day">화</span><span class="icon">☀️</span><span class="temp">-4° / 6°</span></li>
-		            <li><span class="day">수</span><span class="icon">☀️</span><span class="temp">-5° / 7°</span></li>
-		            <li><span class="day">목</span><span class="icon">⛅</span><span class="temp">-1° / 12°</span></li>
-		            <li><span class="day">금</span><span class="icon">☀️</span><span class="temp">-1° / 11°</span></li>
+		        <ul class="weather-week">
+		            <li><span class="day">오늘</span><span class="ico">🌤️</span><span class="t">-2° / 7°</span></li>
+		            <li><span class="day">화</span><span class="ico">☀️</span><span class="t">-4° / 6°</span></li>
+		            <li><span class="day">수</span><span class="ico">☀️</span><span class="t">-5° / 7°</span></li>
+		            <li><span class="day">목</span><span class="ico">⛅</span><span class="t">-1° / 12°</span></li>
+		            <li><span class="day">금</span><span class="ico">☀️</span><span class="t">-1° / 11°</span></li>
 		        </ul>
 
-		        <!-- 오른쪽 상단 햇살 -->
-		        <div class="home-weather-sun">🌞</div>
+		        <div class="weather-sun">🌞</div>
 		    </div>
 		</section>
+
 
 
 
