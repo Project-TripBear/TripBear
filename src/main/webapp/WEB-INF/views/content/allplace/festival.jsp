@@ -13,7 +13,7 @@
 
 <main>
     <div class="trend-header">
-        <h2>여행 트렌드</h2>
+        <h2>시기별 축제/행사</h2>
         <p class="sub">지금 가장 인기있는 추천 여행지입니다.</p>
     </div>
 
@@ -71,45 +71,46 @@
             <div class="sidebar-box">
                 <div class="region-tags">
                 
-                    <a href="${pageContext.request.contextPath}/allplace/trend?locationId=0" 
+                    <%-- [수정] 모든 링크를 /allplace/festival 로 변경 --%>
+                    <a href="${pageContext.request.contextPath}/allplace/festival?locationId=0" 
                        class="tag-btn ${currentLocationId == 0 ? 'active' : ''}">#전체</a>
                     
                     <%-- 광역시/특별시 --%>
-                    <a href="${pageContext.request.contextPath}/allplace/trend?locationId=1" 
+                    <a href="${pageContext.request.contextPath}/allplace/festival?locationId=1" 
                        class="tag-btn ${currentLocationId == 1 ? 'active' : ''}">#서울</a>
-                    <a href="${pageContext.request.contextPath}/allplace/trend?locationId=7" 
+                    <a href="${pageContext.request.contextPath}/allplace/festival?locationId=7" 
                        class="tag-btn ${currentLocationId == 7 ? 'active' : ''}">#인천</a>
-                    <a href="${pageContext.request.contextPath}/allplace/trend?locationId=12" 
+                    <a href="${pageContext.request.contextPath}/allplace/festival?locationId=12" 
                        class="tag-btn ${currentLocationId == 12 ? 'active' : ''}">#대전</a>
-                    <a href="${pageContext.request.contextPath}/allplace/trend?locationId=5" 
+                    <a href="${pageContext.request.contextPath}/allplace/festival?locationId=5" 
                        class="tag-btn ${currentLocationId == 5 ? 'active' : ''}">#대구</a>
-                    <a href="${pageContext.request.contextPath}/allplace/trend?locationId=14" 
+                    <a href="${pageContext.request.contextPath}/allplace/festival?locationId=14" 
                        class="tag-btn ${currentLocationId == 14 ? 'active' : ''}">#광주</a>
-                    <a href="${pageContext.request.contextPath}/allplace/trend?locationId=2" 
+                    <a href="${pageContext.request.contextPath}/allplace/festival?locationId=2" 
                        class="tag-btn ${currentLocationId == 2 ? 'active' : ''}">#부산</a>
-                    <a href="${pageContext.request.contextPath}/allplace/trend?locationId=9" 
+                    <a href="${pageContext.request.contextPath}/allplace/festival?locationId=9" 
                        class="tag-btn ${currentLocationId == 9 ? 'active' : ''}">#울산</a>
-                    <a href="${pageContext.request.contextPath}/allplace/trend?locationId=15" 
+                    <a href="${pageContext.request.contextPath}/allplace/festival?locationId=15" 
                        class="tag-btn ${currentLocationId == 15 ? 'active' : ''}">#세종</a>
                        
                     <%-- 8도 + 제주 --%>
-                    <a href="${pageContext.request.contextPath}/allplace/trend?locationId=16" 
+                    <a href="${pageContext.request.contextPath}/allplace/festival?locationId=16" 
                        class="tag-btn ${currentLocationId == 16 ? 'active' : ''}">#경기</a>
-                    <a href="${pageContext.request.contextPath}/allplace/trend?locationId=17" 
+                    <a href="${pageContext.request.contextPath}/allplace/festival?locationId=17" 
                        class="tag-btn ${currentLocationId == 17 ? 'active' : ''}">#강원</a>
-                    <a href="${pageContext.request.contextPath}/allplace/trend?locationId=18" 
+                    <a href="${pageContext.request.contextPath}/allplace/festival?locationId=18" 
                        class="tag-btn ${currentLocationId == 18 ? 'active' : ''}">#충북</a>
-                    <a href="${pageContext.request.contextPath}/allplace/trend?locationId=19" 
+                    <a href="${pageContext.request.contextPath}/allplace/festival?locationId=19" 
                        class="tag-btn ${currentLocationId == 19 ? 'active' : ''}">#충남</a>
-                    <a href="${pageContext.request.contextPath}/allplace/trend?locationId=22" 
+                    <a href="${pageContext.request.contextPath}/allplace/festival?locationId=22" 
                        class="tag-btn ${currentLocationId == 22 ? 'active' : ''}">#전북</a>
-                    <a href="${pageContext.request.contextPath}/allplace/trend?locationId=23" 
+                    <a href="${pageContext.request.contextPath}/allplace/festival?locationId=23" 
                        class="tag-btn ${currentLocationId == 23 ? 'active' : ''}">#전남</a>
-                    <a href="${pageContext.request.contextPath}/allplace/trend?locationId=20" 
+                    <a href="${pageContext.request.contextPath}/allplace/festival?locationId=20" 
                        class="tag-btn ${currentLocationId == 20 ? 'active' : ''}">#경북</a>
-                    <a href="${pageContext.request.contextPath}/allplace/trend?locationId=21" 
+                    <a href="${pageContext.request.contextPath}/allplace/festival?locationId=21" 
                        class="tag-btn ${currentLocationId == 21 ? 'active' : ''}">#경남</a>
-                    <a href="${pageContext.request.contextPath}/allplace/trend?locationId=3" 
+                    <a href="${pageContext.request.contextPath}/allplace/festival?locationId=3" 
                        class="tag-btn ${currentLocationId == 3 ? 'active' : ''}">#제주</a>
                 </div>
             </div>

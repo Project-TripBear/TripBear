@@ -221,12 +221,45 @@ public class AllPlaceController {
         log.info("[Controller] 관광지 지도 페이지 요청");
         return "allplace.map";
     }
-    
+   
     @GetMapping("/trend")
-    public String showTrendPage(Model model) {
-        log.info("[Controller] 여행 트렌드 페이지 요청");
-        // (참고: trend.jsp가 데이터를 표시하려면 여기서 Service를 호출하고
-        // model.addAttribute("trendList", ...)를 추가해야 합니다)
+    public String showTrendPage(
+            // 1. 기본값을 '0' (#전체)으로 변경
+            @RequestParam(value="locationId", defaultValue="0") long locationId, 
+            Model model) {
+        
+        log.info("[Controller] 여행 트렌드 페이지 요청 (LocationID: " + locationId + ")");
+        
+        String contentTypeId = "12";   // (12: 관광지)
+        String arrange = "A";          // (A: 인기순 정렬)
+        
+        TourApiResponseVO apiResponse = allPlaceService.searchByArea(locationId, contentTypeId, arrange);
+        
+        // ⭐ --- [진단 코드 추가 시작] ---
+        if (apiResponse != null &&
+            apiResponse.getResponse() != null &&
+            apiResponse.getResponse().getBody() != null &&
+            apiResponse.getResponse().getBody().getItems() != null &&
+            !apiResponse.getResponse().getBody().getItems().getItem().isEmpty()) {
+            
+            TourItemVO firstItem = apiResponse.getResponse().getBody().getItems().getItem().get(0);
+            log.info("[진단] API가 준 첫번째 아이템 이름: " + firstItem.getTitle());
+            log.info("[진단] API가 준 첫번째 아이템 overview: " + firstItem.getOverview());
+        
+        } else {
+            log.info("[진단] API가 데이터를 반환하지 않았습니다. (trendList가 비어있음)");
+        }
+        // ⭐ --- [진단 코드 추가 끝] ---
+        
+        List<PlaceDTO> trendList = convertApiItemsToDtoList(apiResponse);
+        
+        if (trendList.size() > 100) {
+            trendList = trendList.subList(0, 100);
+        }
+        
+        model.addAttribute("currentLocationId", locationId); 
+        model.addAttribute("trendList", trendList); 
+        
         return "allplace.trend";
     }
 
@@ -241,6 +274,38 @@ public class AllPlaceController {
         log.info("[Controller] 날씨/공기질 페이지 요청");
         return "allplace.weatherPage";
     }
+    
+    @GetMapping("/festival") // 1. URL을 "/festival"로 변경
+    public String showFestivalPage(
+            @RequestParam(value="locationId", defaultValue="0") long locationId, 
+            Model model) {
+        
+        log.info("[Controller] 축제/행사 페이지 요청 (LocationID: " + locationId + ")");
+        
+        String contentTypeId = "15";   // 2. contentTypeId를 "15" (축제/행사)로 변경
+        String arrange = "A";          // (A: 인기순 정렬)
+        TourApiResponseVO apiResponse; 
+        
+        if (locationId == 0) {
+            log.info("[Controller] '#전체' 축제 목록을 요청합니다.");
+            apiResponse = allPlaceService.searchByArea(0L, contentTypeId, arrange); // '0L'을 그대로 사용
+        } else {
+            log.info("[Controller] '#" + locationId + "' 지역 축제 목록을 요청합니다.");
+            apiResponse = allPlaceService.searchByArea(locationId, contentTypeId, arrange);
+        }
+        
+        List<PlaceDTO> trendList = convertApiItemsToDtoList(apiResponse); // (이름은 재사용)
+        
+        if (trendList.size() > 100) {
+            trendList = trendList.subList(0, 100);
+        }
+        
+        model.addAttribute("currentLocationId", locationId); 
+        model.addAttribute("trendList", trendList); // (JSP에서 trendList 이름 재사용)
+        
+        return "allplace.festival"; // 3. 뷰 이름을 "allplace.festival"로 변경
+    }
+    
     
     private List<PlaceDTO> convertApiItemsToDtoList(TourApiResponseVO apiResponse) {
         List<PlaceDTO> placeList = new ArrayList<>();
@@ -267,6 +332,8 @@ public class AllPlaceController {
                 dto.setLatitude(lat);
                 dto.setLongitude(lon);
                 dto.setPlaceMainImageUrl(item.getFirstImage());
+                dto.setContentTypeId(item.getContentTypeId());
+                dto.setOverview(item.getOverview());
                 
                 placeList.add(dto);
             }

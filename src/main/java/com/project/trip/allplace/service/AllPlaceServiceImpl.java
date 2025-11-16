@@ -364,6 +364,10 @@ public class AllPlaceServiceImpl implements AllPlaceService {
      * (헬퍼2) DB의 place_location_id(long)를 TourAPI의 areacode(String)로 변환합니다.
      */
     private String mapLocationIdToAreaCode(long locationId) {
+    	if (locationId == 0) {
+            return null;
+        }
+    	
         switch ((int) locationId) {
             case 1:  return "1";   // 서울
             case 2:  return "6";   // 부산
@@ -391,5 +395,4 @@ public class AllPlaceServiceImpl implements AllPlaceService {
             default: return "1";   // 기본값: 서울
         }
     }
-    // --- [여기까지] ---
 }

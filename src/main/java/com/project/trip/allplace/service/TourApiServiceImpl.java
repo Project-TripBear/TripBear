@@ -80,8 +80,10 @@ public class TourApiServiceImpl implements TourApiService {
                 .queryParam("keyword", keyword)
                 .queryParam("arrange", arrange)
                 .queryParam("contentTypeId", contentTypeId)
+                .queryParam("numOfRows", 100) // <-- 이 줄 추가
+                .queryParam("pageNo", 1)       // <-- 이 줄 추가
                 .queryParam("_type", "json")
-                .build(true).toUri();
+                .build(false).toUri();
 
         return restTemplate.getForObject(uri, TourApiResponseVO.class);
     }
@@ -113,17 +115,24 @@ public class TourApiServiceImpl implements TourApiService {
     @Override
     public TourApiResponseVO searchByArea(String areaCode, String contentTypeId, String arrange, int pageNo, int rows) {
 
-        URI uri = UriComponentsBuilder.fromHttpUrl(AREA_BASED_URL)
+        // 1. 'UriComponentsBuilder' 타입의 'builder' 변수로 선언합니다.
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(AREA_BASED_URL)
                 .queryParam("serviceKey", serviceKey)
                 .queryParam("MobileApp", "TripBear")
                 .queryParam("MobileOS", "ETC")
                 .queryParam("arrange", arrange)
-                .queryParam("areaCode", areaCode)
                 .queryParam("contentTypeId", contentTypeId)
                 .queryParam("pageNo", pageNo)
                 .queryParam("numOfRows", rows)
-                .queryParam("_type", "json")
-                .build(true).toUri();
+                .queryParam("_type", "json");
+        
+        // 2. areaCode가 null이나 빈 값이 아닐 때만 builder에 파라미터를 추가합니다.
+        if (areaCode != null && !areaCode.isEmpty()) {
+            builder.queryParam("areaCode", areaCode);
+        }
+
+        // 3. 최종 URI 빌드
+        URI uri = builder.build(true).toUri(); // 'uri' 변수는 여기서 한 번만 선언합니다.
 
         return restTemplate.getForObject(uri, TourApiResponseVO.class);
     }

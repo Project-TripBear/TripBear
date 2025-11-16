@@ -25,7 +25,7 @@
                     <a href="${pageContext.request.contextPath}/allplace/trend">여행트렌드</a>
                     <a href="${pageContext.request.contextPath}/allplace/news"">여행지 뉴스</a>
                     <a href="${pageContext.request.contextPath}/allplace/wether"">날씨/공기질</a>
-                    <a href="${pageContext.request.contextPath}/allplace/event"#">시기별 축제/행사</a>
+                    <a href="${pageContext.request.contextPath}/allplace/event">시기별 축제/행사</a>
                 </div>
 
       
@@ -114,7 +114,7 @@
             <a href="#" class="dropdown-toggle">게시판 <i class="fa-solid fa-chevron-down dropdown-arrow"></i></a>
             <div class="mobile-sub-menu">
                 <a href="${pageContext.request.contextPath}/routepost/list">여행 루트 추천</a>
-                <a href="${pageContext.request.contextPath}/reviewboard/list">여행 후기</a>
+                <a href="${pageContext.request.contextPath}/review/list">여행 후기</a>
                 <a href="${pageContext.request.contextPath}/qna/list">Q&A</a>
                 <a href="${pageContext.request.contextPath}/findboard/list">동행 찾기</a>
                 <a href="${pageContext.request.contextPath}/board/list">여행 용품</a>
