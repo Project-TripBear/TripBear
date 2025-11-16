@@ -28,6 +28,7 @@ public class HotDealDTO {
 	
 	private String name;			//작성자
 	private String commentCount;	//댓글 수
+	private String likeCount;	//좋아요 수
 	private String img; 			//이미지
 
 }
