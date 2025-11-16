@@ -20,14 +20,14 @@
     <bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
         <property name="driverClassName" value="oracle.jdbc.OracleDriver"/>
         
-       <!-- 윈도우용 --> 
+       <!-- 윈도우용  
 	<property name="jdbcUrl" 
-          value="jdbc:oracle:thin:@TripBearDB_high?tns_admin=C:/dev/Wallet_TripBearDB"/>
+          value="jdbc:oracle:thin:@TripBearDB_high?tns_admin=C:/dev/Wallet_TripBearDB"/> -->
 
 
 	<!-- 맥북용 -->
-	<!-- <property name="jdbcUrl" 
-          value="jdbc:oracle:thin:@TripBearDB_high?TNS_ADMIN=/Users/bunohoq/dev/Wallet_TripBearDB"/> -->
+	<property name="jdbcUrl" 
+          value="jdbc:oracle:thin:@TripBearDB_high?TNS_ADMIN=/Users/bunohoq/dev/Wallet_TripBearDB"/>
 
         
         <property name="username" value="tripbear"/>

@@ -7,8 +7,6 @@ pageEncoding="UTF-8"%>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/main.css">
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/notice.css">
 
-
-
 <!-- list.jsp -->
 
 <main>

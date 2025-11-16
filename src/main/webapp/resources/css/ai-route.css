@@ -361,3 +361,29 @@ main.route-choice-container h2 {
         font-size: 1.5rem;
     }
 }
+
+/* ================================
+   AI 루트 페이지 레이아웃 정렬
+   ================================ */
+
+/* 이 페이지 전체 배경색 */
+body.ai-plan-page {
+    background-color: var(--bg);
+}
+
+/* 헤더 아래 메인 영역(연두 카드 전체를 감싸는 영역) */
+.ai-plan-main-container {
+    max-width: 1200px;        /* 헤더랑 비슷한 폭 */
+    margin: 40px auto;        /* 상하 40, 좌우 자동 = 정확히 가운데 */
+    padding: 0 40px;          /* 양 옆 여백 (스크린샷처럼) */
+    box-sizing: border-box;
+
+    display: flex;
+    justify-content: center;  /* 안쪽 카드 수평 중앙 정렬 */
+}
+
+/* 실제 연두색 큰 카드 */
+.ai-plan-main-container #ai-plan-container {
+    width: 100%;
+    max-width: 900px;         /* 카드 자체 폭 (원하면 숫자 조절) */
+}

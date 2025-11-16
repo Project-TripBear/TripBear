@@ -1,23 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>    
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
+
 <title>트립베어</title>
-<!-- <link rel="stylesheet" href="http://bit.ly/3WJ5ilK" /> -->
 
-<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/main.css">
-<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/home.css">
-
-</head>
-<body>
-	<%@ include file="/WEB-INF/views/inc/header.jsp" %>
-
-	<!-- home.jsp -->
-	
-	<main class="home-main">
+<main class="home-main">
 	    <section class="hero-section">
 	        <div class="hero-content">
 	            <div class="hero-badge">🐻 TripBear · AI 여행 루트</div>
@@ -65,7 +52,5 @@
 	        </div>
 	    </section>
 	</main>
-</body>
-</html>
 
 

@@ -1,47 +1,66 @@
-// asset/js/main.js
+// resources/js/main.js
 
 document.addEventListener('DOMContentLoaded', function() {
-    
+
+    // 공통으로 쓸 클래스 이름
+    const OPEN_CLASS = 'open';
+
     // --- 1. 모바일 메뉴 패널 열고 닫기 ---
     const hamburgerBtn = document.getElementById('hamburger-btn');
-    const mobileMenu = document.getElementById('mobile-menu');
+    const mobileMenu   = document.getElementById('mobile-menu');
     const closeMenuBtn = document.getElementById('close-menu-btn');
 
     if (hamburgerBtn && mobileMenu && closeMenuBtn) {
-        hamburgerBtn.addEventListener('click', function() {
-            mobileMenu.classList.add('active');
+        // 열기
+        hamburgerBtn.addEventListener('click', function () {
+            mobileMenu.classList.add(OPEN_CLASS);   // ★ active → open
         });
-        closeMenuBtn.addEventListener('click', function() {
-            mobileMenu.classList.remove('active');
+
+        // 닫기
+        closeMenuBtn.addEventListener('click', function () {
+            mobileMenu.classList.remove(OPEN_CLASS); // ★ active → open
+        });
+
+        // 패널 바깥(오버레이) 클릭 시 닫기 원하면 이거 추가해도 됨
+        mobileMenu.addEventListener('click', function (e) {
+            if (e.target === mobileMenu) {
+                mobileMenu.classList.remove(OPEN_CLASS);
+            }
         });
     }
 
-    // --- 2. 모바일 메뉴 안의 드롭다운 토글 ---
-    document.querySelectorAll('.mobile-nav-links .dropdown-toggle').forEach(toggle => {
-        toggle.addEventListener('click', function(event) {
-            event.preventDefault(); 
-            const parentItem = this.closest('.has-dropdown');
-            const subMenu = parentItem.querySelector('.mobile-sub-menu');
-            // 클릭된 메뉴가 이전에 이미 열려 있었는지 상태 확인
-            const wasActive = parentItem.classList.contains('active'); 
+    // --- 2. 모바일 사이드바 드롭다운 (여행정보 / 게시판) ---
+    const dropdownToggles = document.querySelectorAll(
+        '.mobile-nav-links .has-dropdown > .dropdown-toggle'
+    );
 
-            // 먼저 모든 드롭다운을 닫습니다. (클릭된 메뉴 포함)
-            document.querySelectorAll('.mobile-nav-links .has-dropdown.active').forEach(openItem => {
-                openItem.classList.remove('active'); 
-                const openSubMenu = openItem.querySelector('.mobile-sub-menu');
-                if (openSubMenu) {
-                    openSubMenu.style.display = 'none';
-                }
-            });
+    dropdownToggles.forEach(function (toggle) {
+        toggle.addEventListener('click', function (e) {
+            e.preventDefault();
 
-            // 만약 클릭된 메뉴가 이전에 닫혀 있었다면, 다시 열어줍니다.
-            if (!wasActive) { 
-                parentItem.classList.add('active');
-                if (subMenu) {
-                    subMenu.style.display = 'block';
-                }
+            const parentItem = toggle.closest('.has-dropdown');
+            const subMenu    = parentItem.querySelector('.mobile-sub-menu');
+
+            if (!parentItem || !subMenu) return;
+
+            // 현재 열려 있던 상태였는지 체크
+            const wasOpen = parentItem.classList.contains(OPEN_CLASS);
+
+            // 1) 모든 드롭다운 닫기
+            document.querySelectorAll('.mobile-nav-links .has-dropdown.' + OPEN_CLASS)
+                .forEach(function (item) {
+                    item.classList.remove(OPEN_CLASS);
+                    const innerMenu = item.querySelector('.mobile-sub-menu');
+                    if (innerMenu) {
+                        innerMenu.style.display = 'none';
+                    }
+                });
+
+            // 2) 원래 닫혀 있던 경우만 다시 열기
+            if (!wasOpen) {
+                parentItem.classList.add(OPEN_CLASS);
+                subMenu.style.display = 'block';
             }
-            // (만약 이전에 열려 있었다면, 위에서 이미 닫혔으므로 아무것도 안 함)
         });
     });
 

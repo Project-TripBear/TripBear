@@ -7,9 +7,9 @@
   Data: Controller가 "trendList" (List<PlaceDTO>)를 전달합니다.
 --%>
 
-<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/allplace/listcard.css">
 <%-- [중요] 이 CSS 링크가 있어야 합니다. --%>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/allplace/listsidebutton.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/main.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/allplace.css">
 
 <main>
     <div class="trend-header">

@@ -20,7 +20,10 @@
 	    <bean id="bCryptPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" />
 		
 		
-		 <bean id="sessionUrlSavingFilter" class="com.project.trip.auth.SessionUrlSavingFilter" />
+		<bean id="sessionUrlSavingFilter" class="com.project.trip.auth.SessionUrlSavingFilter" />
+		 
+		<security:http pattern="/resources/**" security="none" />
+		 
 		<!-- restapi 보안 구윤추가 -->
 		<security:http pattern="/api/**" security="none" />
 
@@ -52,7 +55,6 @@
 
 	    <!-- 일반 사용자용 Security 설정 -->
 	    <security:http>
-	        <security:intercept-url pattern="/resources/**" access="permitAll" />
 	        <security:intercept-url pattern="/member/login" access="permitAll" />
 	        <security:intercept-url pattern="/" access="permitAll" />
 	        
