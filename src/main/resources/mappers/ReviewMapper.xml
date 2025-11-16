@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.project.trip.board.review.mapper.ReviewMapper">
+
+    <select id="list" parameterType="map" resultType="ReviewDTO">
+        SELECT * FROM (
+            SELECT ROWNUM AS rnum, a.*
+            FROM (
+                SELECT
+                    r.review_post_id            AS reviewPostId,
+                    r.user_id                   AS userId,
+                    u.nickname                  AS nickname,
+                    r.review_board_title        AS reviewBoardTitle,
+                    r.review_board_content      AS reviewBoardContent,
+                    r.review_board_count        AS reviewBoardCount,
+                    r.review_board_scrap_count  AS reviewBoardScrapCount,
+                    r.review_board_report_status AS reviewBoardReportStatus,
+                    r.review_board_report_count AS reviewBoardReportCount,
+                    NVL(l.like_count, 0)        AS likeCount,
+                    NVL(c.comment_count, 0)     AS commentCount,
+                    TO_CHAR(r.review_board_regdate, 'YYYY-MM-DD HH24:MI:SS') AS reviewBoardRegdate
+                FROM tblReviewBoard r
+                    JOIN tblUser u ON r.user_id = u.user_id
+                    LEFT JOIN (
+                        SELECT review_post_id, COUNT(*) AS like_count
+                        FROM tblReviewLike
+                        GROUP BY review_post_id
+                    ) l ON r.review_post_id = l.review_post_id
+                    LEFT JOIN (
+                        SELECT review_post_id, COUNT(*) AS comment_count
+                        FROM tblReviewComment
+                        WHERE review_comment_status = 'A'
+                        GROUP BY review_post_id
+                    ) c ON r.review_post_id = c.review_post_id
+                <where>
+                    <if test="keyword != null and keyword != ''">
+                        AND (
+                            LOWER(r.review_board_title) LIKE '%' || LOWER(#{keyword}) || '%'
+                            OR LOWER(r.review_board_content) LIKE '%' || LOWER(#{keyword}) || '%'
+                            OR LOWER(u.nickname) LIKE '%' || LOWER(#{keyword}) || '%'
+                        )
+                    </if>
+                </where>
+                ORDER BY r.review_board_regdate DESC
+            ) a
+           WHERE ROWNUM &lt;= #{end, jdbcType=NUMERIC}
+        )
+        WHERE rnum &gt;= #{start, jdbcType=NUMERIC}
+    </select>
+
+    <select id="totalCount" parameterType="map" resultType="int">
+        SELECT COUNT(*)
+        FROM tblReviewBoard r
+            JOIN tblUser u ON r.user_id = u.user_id
+        <where>
+            <if test="keyword != null and keyword != ''">
+                AND (
+                    LOWER(r.review_board_title) LIKE '%' || LOWER(#{keyword}) || '%'
+                    OR LOWER(r.review_board_content) LIKE '%' || LOWER(#{keyword}) || '%'
+                    OR LOWER(u.nickname) LIKE '%' || LOWER(#{keyword}) || '%'
+                )
+            </if>
+        </where>
+    </select>
+    
+     <update id="increaseViewCount" parameterType="int">
+        UPDATE tblReviewBoard
+        SET review_board_count = review_board_count + 1
+        WHERE review_post_id = #{reviewPostId}
+    </update>
+
+    <select id="get" parameterType="int" resultType="ReviewDTO">
+        SELECT
+            r.review_post_id            AS reviewPostId,
+            r.user_id                   AS userId,
+            u.nickname                  AS nickname,
+            r.review_board_title        AS reviewBoardTitle,
+            r.review_board_content      AS reviewBoardContent,
+            r.review_board_count        AS reviewBoardCount,
+            r.review_board_scrap_count  AS reviewBoardScrapCount,
+            r.review_board_report_status AS reviewBoardReportStatus,
+            r.review_board_report_count AS reviewBoardReportCount,
+            NVL(l.like_count, 0)        AS likeCount,
+            TO_CHAR(r.review_board_regdate, 'YYYY-MM-DD HH24:MI:SS') AS reviewBoardRegdate,
+            TO_CHAR(r.review_board_update, 'YYYY-MM-DD HH24:MI:SS') AS reviewBoardUpdate
+        FROM tblReviewBoard r
+            JOIN tblUser u ON r.user_id = u.user_id
+            LEFT JOIN (
+                SELECT review_post_id, COUNT(*) AS like_count
+                FROM tblReviewLike
+                GROUP BY review_post_id
+            ) l ON r.review_post_id = l.review_post_id
+        WHERE r.review_post_id = #{reviewPostId}
+    </select>
+
+    <insert id="add" parameterType="ReviewDTO">
+        <selectKey keyProperty="reviewPostId" resultType="int" order="BEFORE">
+            SELECT seqReviewBoard.NEXTVAL FROM dual </selectKey>
+        INSERT INTO tblReviewBoard (
+            review_post_id,
+            user_id,
+            review_board_title,
+            review_board_content,
+            review_board_count,
+            review_board_scrap_count,
+            review_board_report_status,
+            review_board_report_count,
+            review_board_regdate,
+            review_board_update
+        ) VALUES (
+            #{reviewPostId},
+            #{userId},
+            #{reviewBoardTitle},
+            #{reviewBoardContent},
+            0,
+            0,
+            'A', 0,
+            SYSDATE,
+            SYSDATE
+        )
+    </insert>
+
+    <update id="edit" parameterType="ReviewDTO">
+        UPDATE tblReviewBoard
+        SET review_board_title   = #{reviewBoardTitle},
+            review_board_content = #{reviewBoardContent},
+            review_board_update  = SYSDATE
+        WHERE review_post_id = #{reviewPostId}
+    </update>
+
+    <delete id="del" parameterType="int">
+        DELETE FROM tblReviewBoard
+        WHERE review_post_id = #{reviewPostId}
+    </delete>
+
+    <select id="getImages" parameterType="int" resultType="ReviewImageDTO">
+        SELECT
+            review_image_id       AS reviewImageId,
+            review_post_id        AS reviewPostId,
+            review_image_url      AS reviewImageUrl,
+            review_image_sequence AS reviewImageSequence
+        FROM tblReviewImage
+        WHERE review_post_id = #{reviewPostId}
+        ORDER BY review_image_sequence ASC
+    </select>
+
+    <insert id="addImage" parameterType="ReviewImageDTO">
+        INSERT INTO tblReviewImage (
+            review_image_id,
+            review_post_id,
+            review_image_url,
+            review_image_sequence
+        ) VALUES (
+            seqReviewImage.NEXTVAL, #{reviewPostId},
+            #{reviewImageUrl},
+            (SELECT NVL(MAX(review_image_sequence), 0) + 1 FROM tblReviewImage WHERE review_post_id = #{reviewPostId})
+        )
+    </insert>
+
+    <delete id="delImages" parameterType="int">
+        DELETE FROM tblReviewImage
+        WHERE review_post_id = #{reviewPostId}
+    </delete>
+    
+    <select id="checkLike" parameterType="map" resultType="int">
+        SELECT COUNT(*) 
+        FROM tblReviewLike
+        WHERE user_id = #{userId} 
+          AND review_post_id = #{reviewPostId}
+    </select>
+
+    <insert id="addLike" parameterType="map">
+        INSERT INTO tblReviewLike (user_id, review_post_id)
+        VALUES (#{userId}, #{reviewPostId})
+    </insert>
+
+    <delete id="removeLike" parameterType="map">
+        DELETE FROM tblReviewLike
+        WHERE user_id = #{userId} 
+          AND review_post_id = #{reviewPostId}
+    </delete>
+
+    <select id="checkScrap" parameterType="map" resultType="int">
+        SELECT COUNT(*) 
+        FROM tblReviewScrap
+        WHERE user_id = #{userId} 
+          AND review_post_id = #{reviewPostId}
+    </select>
+
+    <insert id="addScrap" parameterType="map">
+        INSERT INTO tblReviewScrap (
+            review_scrap_id, user_id, review_post_id
+        ) VALUES (
+            seqReviewScrap.NEXTVAL, #{userId},
+            #{reviewPostId}
+        )
+    </insert>
+</mapper>

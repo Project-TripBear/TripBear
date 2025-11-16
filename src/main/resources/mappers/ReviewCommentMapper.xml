@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.project.trip.board.review.mapper.ReviewCommentMapper">
+
+    <select id="list" parameterType="int" resultType="ReviewCommentDTO">
+        SELECT 
+            c.review_comment_id         AS reviewCommentId,
+            c.user_id                   AS userId,
+            u.nickname                  AS nickname,
+            c.review_post_id            AS reviewPostId,
+            c.review_comment_content    AS reviewCommentContent,
+            TO_CHAR(c.review_comment_regdate, 'YYYY-MM-DD HH24:MI:SS') AS reviewCommentRegdate,
+            c.review_comment_report_count AS reviewCommentReportCount,
+            c.review_comment_status     AS reviewCommentStatus
+        FROM tblReviewComment c
+            JOIN tblUser u ON c.user_id = u.user_id
+        WHERE c.review_post_id = #{reviewPostId}
+          AND c.review_comment_status = 'A' ORDER BY c.review_comment_regdate ASC
+    </select>
+
+    <insert id="add" parameterType="ReviewCommentDTO">
+        INSERT INTO tblReviewComment (
+            review_comment_id,
+            user_id,
+            review_post_id,
+            review_comment_content,
+            review_comment_regdate,
+            review_comment_report_count,
+            review_comment_status
+        ) VALUES (
+            seqReviewComment.NEXTVAL, #{userId},
+            #{reviewPostId},
+            #{reviewCommentContent},
+            SYSDATE,
+            0,
+            'A'
+        )
+    </insert>
+
+    <update id="del" parameterType="int">
+        UPDATE tblReviewComment
+        SET review_comment_status = 'D' WHERE review_comment_id = #{reviewCommentId}
+    </update>
+    
+    <update id="edit" parameterType="ReviewCommentDTO">
+        UPDATE tblReviewComment
+        SET review_comment_content = #{reviewCommentContent}
+        WHERE review_comment_id = #{reviewCommentId}
+    </update>
+
+    <select id="count" parameterType="int" resultType="int">
+        SELECT COUNT(*)
+        FROM tblReviewComment
+        WHERE review_post_id = #{reviewPostId}
+          AND review_comment_status = 'A'
+    </select>
+
+</mapper>
