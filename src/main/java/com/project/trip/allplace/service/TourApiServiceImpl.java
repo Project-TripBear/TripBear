@@ -38,7 +38,6 @@ public class TourApiServiceImpl implements TourApiService {
     private final String AREA_BASED_URL = "https://apis.data.go.kr/B551011/KorService2/areaBasedList2";
     private final String LOCATION_BASED_URL = "https://apis.data.go.kr/B551011/KorService2/locationBasedList2";
     private final String DETAIL_INTRO_URL = "https://apis.data.go.kr/B551011/KorService2/detailIntro2";
-    private final String DETAIL_EVENT_URL = "https://apis.data.go.kr/B551011/KorService2/detailEvent2";
    
     
     @Override
@@ -89,16 +88,24 @@ public class TourApiServiceImpl implements TourApiService {
     }
 
     @Override
-    public TourApiResponseVO searchFestival(String eventStartDate, String arrange) {
-        URI uri = UriComponentsBuilder.fromHttpUrl(SEARCH_FESTIVAL_URL)
+    public TourApiResponseVO searchFestival(String eventStartDate, String arrange, String areaCode) {
+        
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(SEARCH_FESTIVAL_URL)
                 .queryParam("serviceKey", serviceKey)
                 .queryParam("MobileApp", "TripBear")
                 .queryParam("MobileOS", "ETC")
                 .queryParam("eventStartDate", eventStartDate)
                 .queryParam("arrange", arrange)
-                .queryParam("_type", "json")
-                .build(true).toUri();
+                .queryParam("numOfRows", 100) // 100개 가져오기
+                .queryParam("pageNo", 1)
+                .queryParam("_type", "json");
 
+        // [핵심] areaCode가 null이 아니거나 비어있지 않으면 파라미터로 추가
+        if (areaCode != null && !areaCode.isEmpty()) {
+            builder.queryParam("areaCode", areaCode);
+        }
+
+        URI uri = builder.build(true).toUri();
         return restTemplate.getForObject(uri, TourApiResponseVO.class);
     }
 
@@ -280,7 +287,11 @@ public class TourApiServiceImpl implements TourApiService {
     @Override
     public TourIntroEventVO getEventIntro(String contentId, String contentTypeId) {
         // (contentTypeId=15, 행사)
-        URI uri = buildIntroUri(DETAIL_EVENT_URL, contentId, contentTypeId);
+        
+        // [★핵심★]
+        // 이 부분이 DETAIL_INTRO_URL이 아닌 "DETAIL_EVENT_URL"을 사용해야 합니다.
+        URI uri = buildIntroUri(DETAIL_INTRO_URL, contentId, contentTypeId);
+        
          try {
             return restTemplate.getForObject(uri, TourIntroEventVO.class);
         } catch (Exception e) {

@@ -20,7 +20,7 @@ public interface AllPlaceService {
     // 2. 해시태그로 장소 목록 검색
     public List<PlaceDTO> findPlacesByKeyword(String keywordName);
     
-    public TourApiResponseVO searchFestival(String eventStartDate, String arrange);
+    public TourApiResponseVO searchFestival(String eventStartDate, String arrange, long locationId);
 	
     public TourApiResponseVO searchByArea(long locationId, String contentTypeId, String arrange);
     

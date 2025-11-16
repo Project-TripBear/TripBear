@@ -13,7 +13,7 @@ public interface TourApiService {
 
     // (기존)
     TourApiResponseVO searchByKeyword(String keyword, String arrange, String contentTypeId);
-    TourApiResponseVO searchFestival(String eventStartDate, String arrange);
+    TourApiResponseVO searchFestival(String eventStartDate, String arrange, String areaCode);
     TourApiResponseVO searchByArea(String areaCode, String contentTypeId, String arrange, int pageNo, int rows);
     List<TourItemVO> searchByAreaAllRaw(String areaCode, String contentTypeId, String arrange, int rows, int maxPages);
     TourItemVO getPlaceDetail(String contentId);

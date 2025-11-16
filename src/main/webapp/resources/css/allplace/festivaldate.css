@@ -1,0 +1,22 @@
+/* ================================
+   축제/행사 (festival.jsp) 월 선택
+================================ */
+.month-search-box {
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+}
+.month-search-box label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+}
+.month-search-box select {
+    width: 100%;
+    padding: 10px 10px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-sizing: border-box; 
+    font-size: 1rem;
+}

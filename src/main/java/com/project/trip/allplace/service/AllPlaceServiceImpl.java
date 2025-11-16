@@ -133,10 +133,10 @@ public class AllPlaceServiceImpl implements AllPlaceService {
                     TourIntroEventVO.Item introItem =
                             eventResponse.getResponse().getBody().getItems().getItem().get(0);
 
-                    eventDetail.setEventStart(introItem.getEventStart());
-                    eventDetail.setEventEnd(introItem.getEventEnd());
-                    eventDetail.setEventInfo(introItem.getEventInfo());
-                    eventDetail.setEventLink(introItem.getEventLink());
+                    eventDetail.setEventStart(clean(introItem.getEventStart()));
+                    eventDetail.setEventEnd(clean(introItem.getEventEnd()));
+                    eventDetail.setEventInfo(clean(introItem.getEventInfo())); // 다른 값들도 해주면 더 안전합니다.
+                    eventDetail.setEventLink(clean(introItem.getEventLink()));
                 }
 
                 placeMapper.insertEvent(eventDetail);
@@ -308,8 +308,11 @@ public class AllPlaceServiceImpl implements AllPlaceService {
     
     // (arrange 파라미터가 있는 버전)
     @Override
-    public TourApiResponseVO searchFestival(String eventStartDate, String arrange) {
-        return tourApiService.searchFestival(eventStartDate, arrange);
+    public TourApiResponseVO searchFestival(String eventStartDate, String arrange, long locationId) {
+        // [핵심] locationId를 areaCode로 변환 (0L이면 null 반환)
+        String apiAreaCode = mapLocationIdToAreaCode(locationId);
+        
+        return tourApiService.searchFestival(eventStartDate, arrange, apiAreaCode);
     }
     
     
@@ -324,6 +327,13 @@ public class AllPlaceServiceImpl implements AllPlaceService {
         
         // 2. TourApiService 호출
         return tourApiService.searchByArea(apiAreaCode, contentTypeId, arrange);
+    }
+    
+    private String clean(String s) {
+        if (s == null || s.trim().isEmpty() || s.trim().equals("false")) {
+            return null;
+        }
+        return s.trim(); // 혹시 모를 공백 제거
     }
     
 

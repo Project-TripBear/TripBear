@@ -22,7 +22,7 @@ import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j;
 
 @Log4j
-@Service
+@Service("krWeatherService")
 public class KrWeatherServiceImpl implements KrWeatherService {
 
     @Autowired

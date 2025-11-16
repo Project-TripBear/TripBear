@@ -80,14 +80,17 @@ public class AllPlaceController {
     public String searchFestival(
             @RequestParam(value = "eventStartDate", required = false) String eventStartDate,
             @RequestParam(value = "arrange", defaultValue = "A") String arrange,
+            @RequestParam(value = "locationId", defaultValue = "0") long locationId, 
             Model model) {
 
         if (eventStartDate == null || eventStartDate.isEmpty()) {
             eventStartDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
         }
 
-        log.info("[Controller] 축제 검색 (API Only): " + eventStartDate); 
-        TourApiResponseVO apiResponse = allPlaceService.searchFestival(eventStartDate, arrange);
+        log.info("[Controller] 축제 검색 (API Only): " + eventStartDate + ", LocationID: " + locationId); 
+        
+        // 2. [수정] 3번째 인자로 locationId를 전달합니다.
+        TourApiResponseVO apiResponse = allPlaceService.searchFestival(eventStartDate, arrange, locationId);
 
         List<PlaceDTO> placeList = convertApiItemsToDtoList(apiResponse);
 
@@ -275,35 +278,38 @@ public class AllPlaceController {
         return "allplace.weatherPage";
     }
     
-    @GetMapping("/festival") // 1. URL을 "/festival"로 변경
+    @GetMapping("/festival")
     public String showFestivalPage(
-            @RequestParam(value="locationId", defaultValue="0") long locationId, 
+            @RequestParam(value="locationId", defaultValue="0") long locationId,
+            @RequestParam(value="eventStartDate", required=false) String eventStartDate,
             Model model) {
         
-        log.info("[Controller] 축제/행사 페이지 요청 (LocationID: " + locationId + ")");
+        // 1. "오늘 날짜" (yyyyMMdd)를 변수로 저장
+        String todayDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
         
-        String contentTypeId = "15";   // 2. contentTypeId를 "15" (축제/행사)로 변경
-        String arrange = "A";          // (A: 인기순 정렬)
-        TourApiResponseVO apiResponse; 
-        
-        if (locationId == 0) {
-            log.info("[Controller] '#전체' 축제 목록을 요청합니다.");
-            apiResponse = allPlaceService.searchByArea(0L, contentTypeId, arrange); // '0L'을 그대로 사용
-        } else {
-            log.info("[Controller] '#" + locationId + "' 지역 축제 목록을 요청합니다.");
-            apiResponse = allPlaceService.searchByArea(locationId, contentTypeId, arrange);
+        // 2. 날짜가 없으면 "오늘 날짜"로 기본값 설정
+        if (eventStartDate == null || eventStartDate.isEmpty()) {
+            eventStartDate = todayDate;
         }
         
-        List<PlaceDTO> trendList = convertApiItemsToDtoList(apiResponse); // (이름은 재사용)
+        log.info("[Controller] 축제/행사 페이지 요청 (LocationID: " + locationId + ", Date: " + eventStartDate + ")");
+        
+        String arrange = "A";
+        
+        TourApiResponseVO apiResponse = allPlaceService.searchFestival(eventStartDate, arrange, locationId);
+        
+        List<PlaceDTO> trendList = convertApiItemsToDtoList(apiResponse); 
         
         if (trendList.size() > 100) {
             trendList = trendList.subList(0, 100);
         }
         
-        model.addAttribute("currentLocationId", locationId); 
-        model.addAttribute("trendList", trendList); // (JSP에서 trendList 이름 재사용)
+        model.addAttribute("currentLocationId", locationId);
+        model.addAttribute("eventStartDate", eventStartDate); // 3. 선택된 날짜 (혹은 오늘)
+        model.addAttribute("todayDate", todayDate); // 4. [추가] "오늘" 날짜
+        model.addAttribute("trendList", trendList);
         
-        return "allplace.festival"; // 3. 뷰 이름을 "allplace.festival"로 변경
+        return "allplace.festival";
     }
     
     

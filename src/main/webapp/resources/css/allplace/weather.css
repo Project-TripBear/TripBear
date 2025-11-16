@@ -1,0 +1,102 @@
+/* ===========================
+   전체 페이지 레이아웃
+=========================== */
+.weather-page-container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 20px 30px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    font-family: "Pretendard", sans-serif;
+}
+
+/* ===========================
+   타이틀
+=========================== */
+.weather-page-container h2 {
+    text-align: center;
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.weather-page-container p {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 16px;
+    color: #555;
+}
+
+/* ===========================
+   지역 버튼 리스트
+=========================== */
+.region-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 30px;
+}
+
+.weather-btn {
+    padding: 10px 18px;
+    border: none;
+    background-color: #4a90e2;
+    color: white;
+    font-weight: 600;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all .2s ease;
+    font-size: 15px;
+}
+
+.weather-btn:hover {
+    background-color: #357bc7;
+    transform: translateY(-2px);
+}
+
+/* ===========================
+   결과 박스
+=========================== */
+#weather-result-display {
+    padding: 20px;
+    background: #f7f9fc;
+    border-radius: 10px;
+    text-align: center;
+    border: 1px solid #e3e6ed;
+}
+
+#weather-result-display h3 {
+    font-size: 24px;
+    margin-bottom: 15px;
+    color: #222;
+}
+
+#weather-result-display p {
+    font-size: 18px;
+    line-height: 1.6;
+    margin: 10px 0;
+}
+
+#weather-result-display small {
+    margin-top: 10px;
+    display: block;
+    font-size: 14px;
+    color: #666;
+}
+
+/* ===========================
+   반응형 모바일
+=========================== */
+@media (max-width: 600px) {
+    .weather-page-container {
+        padding: 15px;
+    }
+
+    .weather-btn {
+        width: 100%;
+        text-align: center;
+    }
+}

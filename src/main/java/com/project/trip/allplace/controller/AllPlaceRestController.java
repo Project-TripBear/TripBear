@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController; // ⭐
 
 // (필요한 DTO/Service import)
@@ -28,23 +29,40 @@ import lombok.extern.log4j.Log4j;
 public class AllPlaceRestController {
 
     @Autowired
-    private KrWeatherService weatherService;
+    private KrWeatherService krweatherService;
 
     @Autowired
     private TourApiService tourApiService;
     
+ // AllPlaceController.java
+
     @GetMapping("/weatherok")
-    public ResponseEntity<WeatherVO> getWeatherByCoords(
-            @RequestParam("lat") String lat,
-            @RequestParam("lon") String lon) {
+    @ResponseBody
+    public ResponseEntity<?> getWeatherByCoords(
+            @RequestParam(required = true) String lat,
+            @RequestParam(required = true) String lon) {
 
-        log.info("[REST] REST 날씨 요청: lat=" + lat + ", lon=" + lon);
-        WeatherVO weather = weatherService.getTodayWeather(lat, lon);
+        log.info("[REST] 날씨 요청 lat=" + lat + ", lon=" + lon);
 
-        return (weather != null)
-                ? new ResponseEntity<>(weather, HttpStatus.OK)
-                : new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        // 1) 좌표 비어 있으면 400 반환
+        if (lat == null || lat.isEmpty() || lon == null || lon.isEmpty()) {
+            log.warn("[REST] 잘못된 좌표 요청");
+            return new ResponseEntity<>("Invalid coordinates", HttpStatus.BAD_REQUEST);
+        }
+
+        // 2) Service 호출
+        WeatherVO weather = krweatherService.getTodayWeather(lat, lon);
+
+        // 3) 실패 시 500
+        if (weather == null) {
+            log.error("[REST] 날씨 조회 실패 (service returned null)");
+            return new ResponseEntity<>("Weather API error", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        // 4) 성공 시 JSON 반환
+        return new ResponseEntity<>(weather, HttpStatus.OK);
     }
+
 
     @GetMapping("/mapok")
     public ResponseEntity<List<PlaceDTO>> getSpotsForMapOk(
