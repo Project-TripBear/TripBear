@@ -3,6 +3,45 @@
    - 메인 홈/랜딩 페이지 전용
    ========================================================= */
 
+/* -------------------- 0. HOME WRAPPER -------------------- */
+
+.home-main {
+    position: relative;
+    padding: 42px 32px 90px;
+    border-radius: 36px;
+    background: radial-gradient(circle at top, rgba(239,250,247,0.8), rgba(255,255,255,0.65)),
+        linear-gradient(135deg, #f7fbff 0%, #ffffff 55%, #fef6ff 100%);
+    box-shadow: 0 40px 80px rgba(15, 42, 61, 0.08);
+    overflow: hidden;
+}
+
+.home-main::before,
+.home-main::after {
+    content: "";
+    position: absolute;
+    width: 320px;
+    height: 320px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,255,255,0.8), rgba(255,255,255,0));
+    z-index: 0;
+    pointer-events: none;
+}
+
+.home-main::before {
+    top: -120px;
+    right: -40px;
+}
+
+.home-main::after {
+    bottom: -160px;
+    left: -60px;
+}
+
+.home-main > * {
+    position: relative;
+    z-index: 1;
+}
+
 /* -------------------- 1. HERO 영역 -------------------- */
 
 .hero-section {
@@ -67,7 +106,7 @@
 .hero-search-input {
     flex: 1;
     position: relative;
-	margin-right: 20px
+    margin-right: 20px;
 }
 .hero-search-input input {
     width: 100%;
@@ -92,7 +131,27 @@
 /* CTA 버튼 – 공통 .btn-primary 사용 */
 .hero-search .btn-primary {
     padding-inline: 22px;
-	margin-left: 16px;
+    margin-left: 16px;
+}
+
+.hero-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border-radius: 999px;
+    text-decoration: none;
+    box-shadow: 0 18px 35px rgba(67, 93, 79, 0.25);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.hero-cta:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 20px 45px rgba(67, 93, 79, 0.3);
+}
+
+.hero-cta-arrow {
+    font-size: 1.3rem;
+    line-height: 1;
 }
 
 /* 서브 정보 */
@@ -653,12 +712,155 @@
 /* 날씨 전체 카드는 기존 home-section 사용 */
 
 .home-weather-hero {
-    max-width: 650px;    /* ← 크기 반으로 줄이기 */
-    margin: 0 auto;      /* ← 가운데 정렬 */
-    flex-direction: column;  /* ← 예보를 아래로 보내기 */
-    gap: 20px; 
-    padding: 26px 26px 32px;
-	border-radius: 18px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    padding: 28px;
+    border-radius: 22px;
+    background: linear-gradient(135deg, rgba(33,150,243,0.16), rgba(33,203,243,0.08)),
+        radial-gradient(circle at top right, rgba(255,255,255,0.2), rgba(255,255,255,0));
+    border: 1px solid rgba(255,255,255,0.6);
+    box-shadow: 0 24px 45px rgba(41,65,87,0.08);
+    overflow: hidden;
+}
+
+.home-weather-hero.morning {
+    background: linear-gradient(135deg, rgba(255,213,153,0.32), rgba(255,255,255,0.1)),
+        radial-gradient(circle at 10% 20%, rgba(255,255,255,0.7), rgba(255,255,255,0));
+}
+
+.home-weather-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 26px;
+}
+
+.weather-left {
+    flex: 1;
+}
+
+.weather-right {
+    width: 260px;
+    flex-shrink: 0;
+}
+
+.weather-detail {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    padding: 16px;
+    border-radius: 18px;
+    background-color: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(6px);
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.6);
+}
+
+.weather-detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.weather-detail-item .label {
+    font-size: 0.78rem;
+    color: var(--text-light);
+    letter-spacing: 0.02em;
+}
+
+.weather-detail-item .value {
+    font-weight: 600;
+    font-size: 0.92rem;
+    color: var(--text);
+}
+
+.weather-detail-item .value.good {
+    color: #0f8d5d;
+}
+
+.weather-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.45);
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.6);
+    font-size: 0.85rem;
+}
+
+.weather-temp-row {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin: 12px 0 6px;
+}
+
+.weather-temp {
+    font-size: 3.5rem;
+    font-weight: 800;
+    color: var(--primary-dark);
+}
+
+.weather-feels {
+    font-size: 1rem;
+    color: rgba(0,0,0,0.65);
+}
+
+.weather-desc {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: rgba(15, 30, 47, 0.75);
+}
+
+.weather-date {
+    font-size: 0.82rem;
+    color: rgba(0,0,0,0.55);
+    margin-top: 6px;
+}
+
+.weather-week {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 12px;
+    margin: 0;
+    padding: 0;
+}
+
+.weather-week li {
+    border-radius: 16px;
+    padding: 10px;
+    background: rgba(255,255,255,0.45);
+    backdrop-filter: blur(6px);
+    text-align: center;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.5);
+    font-size: 0.85rem;
+}
+
+.weather-week .day {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: var(--text);
+}
+
+.weather-week .ico {
+    display: block;
+    font-size: 1.2rem;
+    margin-bottom: 4px;
+}
+
+.weather-week .t {
+    font-variant-numeric: tabular-nums;
+    color: var(--text-light);
+}
+
+.weather-sun {
+    position: absolute;
+    right: 24px;
+    top: 18px;
+    font-size: 2.4rem;
 }
 
 
@@ -928,4 +1130,255 @@
         grid-template-columns: 1fr;
         gap: 20px;
     }
+
+    .home-weather-top {
+        flex-direction: column;
+    }
+
+    .weather-right {
+        width: 100%;
+    }
+}
+
+/* ==================== 지역별 추천 루트 ==================== */
+
+.region-section {
+    margin-top: 64px;
+}
+
+.region-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+}
+
+.region-card {
+    position: relative;
+    border-radius: 24px;
+    padding: 24px;
+    color: #0f1f2c;
+    background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,255,255,0.6));
+    border: 1px solid rgba(255,255,255,0.8);
+    box-shadow: 0 18px 35px rgba(15, 42, 61, 0.08);
+    overflow: hidden;
+}
+
+.region-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(circle at 0% 0%, rgba(255,255,255,0.4), rgba(255,255,255,0));
+    pointer-events: none;
+}
+
+.region-card.seoul {
+    background: linear-gradient(145deg, #f2f6ff 0%, #ffffff 55%);
+}
+
+.region-card.busan {
+    background: linear-gradient(145deg, #fef6f1 0%, #ffffff 55%);
+}
+
+.region-card.jeju {
+    background: linear-gradient(145deg, #f2fff3 0%, #ffffff 55%);
+}
+
+.region-card-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    margin-bottom: 14px;
+    color: rgba(15,31,44,0.7);
+}
+
+.region-badge {
+    font-weight: 600;
+}
+
+.region-temp {
+    font-weight: 500;
+}
+
+.region-card h3 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+}
+
+.region-desc {
+    font-size: 0.92rem;
+    color: rgba(15,31,44,0.75);
+    margin-bottom: 14px;
+}
+
+.region-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.region-tags span {
+    padding: 6px 12px;
+    border-radius: 999px;
+    background-color: rgba(15,31,44,0.06);
+    font-size: 0.82rem;
+}
+
+.region-card-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    font-size: 0.85rem;
+    color: rgba(15,31,44,0.75);
+}
+
+.region-cta {
+    border: none;
+    border-radius: 999px;
+    padding: 8px 16px;
+    background-color: var(--primary);
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 10px 18px rgba(67, 93, 79, 0.2);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.region-cta:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 18px 30px rgba(67, 93, 79, 0.25);
+}
+
+/* ==================== 트렌드 / 순위 ==================== */
+
+.trend-section {
+    margin-top: 60px;
+}
+
+.trend-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 22px;
+}
+
+.trend-panel {
+    border-radius: 26px;
+    padding: 24px;
+    background: rgba(255,255,255,0.85);
+    border: 1px solid rgba(255,255,255,0.6);
+    box-shadow: 0 20px 45px rgba(15, 42, 61, 0.08);
+}
+
+.trend-panel.highlight {
+    position: relative;
+    color: #fff;
+    background: linear-gradient(135deg, #4d66f3 0%, #8f7cf6 60%, #f09eea 100%);
+    overflow: hidden;
+}
+
+.trend-panel-body {
+    position: relative;
+    z-index: 1;
+}
+
+.trend-panel-pattern {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 20% 20%, rgba(255,255,255,0.35), transparent 60%);
+    opacity: 0.8;
+}
+
+.trend-panel-label {
+    display: inline-flex;
+    padding: 4px 12px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.2);
+    font-size: 0.82rem;
+    margin-bottom: 10px;
+}
+
+.trend-panel h3 {
+    font-size: 1.5rem;
+    line-height: 1.4;
+    margin-bottom: 10px;
+}
+
+.trend-panel h3 span {
+    color: #ffe8b5;
+}
+
+.trend-panel-desc {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    opacity: 0.92;
+    margin-bottom: 18px;
+}
+
+.trend-panel-cta {
+    display: inline-flex;
+    padding: 10px 20px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.18);
+    color: #fff;
+    font-weight: 600;
+    text-decoration: none;
+    backdrop-filter: blur(6px);
+}
+
+.trend-rank-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.trend-rank-list li {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(15, 42, 61, 0.07);
+}
+
+.trend-rank-list li:last-child {
+    border-bottom: none;
+}
+
+.rank-num {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--primary-dark);
+    width: 32px;
+}
+
+.rank-title {
+    font-weight: 600;
+    margin-bottom: 2px;
+}
+
+.rank-meta {
+    font-size: 0.85rem;
+    color: var(--text-light);
+}
+
+.rank-change {
+    margin-left: auto;
+    font-size: 0.82rem;
+    font-weight: 600;
+}
+
+.rank-change.up {
+    color: #0f8d5d;
+}
+
+.rank-change.down {
+    color: #c62828;
+}
+
+.rank-change.same {
+    color: var(--text-light);
 }
