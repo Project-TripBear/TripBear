@@ -182,6 +182,7 @@ body {
     justify-content: flex-end; /* 내용물을 오른쪽 끝으로 정렬 */
     align-items: center;
     gap: 20px;
+    margin-left: 32px; /* 공지사항 메뉴와 검색창 사이 여백 */
 }
 .search-bar {
     position: relative;
@@ -436,6 +437,7 @@ body {
     .header-right {
         flex: 0;
         justify-content: flex-end;
+        margin-left: 0;
         gap: 0;
     }
 

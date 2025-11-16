@@ -27,8 +27,8 @@
             </div>
             
             <div class="form-actions">
-                <button type="submit" class="btn btn-primary">등록</button>
-                <button type="button" class="btn" onclick="location.href='<c:url value="/notice/list"/>';">취소</button>
+                <button type="submit" class="notice-btn notice-btn-primary">등록</button>
+                <button type="button" class="notice-btn notice-btn-secondary" onclick="location.href='<c:url value="/notice/list"/>';">취소</button>
             </div>
         
         </form>
