@@ -42,6 +42,9 @@
 <script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=09d09e9035bb509e8f002c6fab6b12ac&libraries=services,clusterer"></script>
 
 <script>
+let map;
+let forceKakaoMode = false;
+let isZooming = false;
 document.addEventListener("DOMContentLoaded", function () {
 
     /* ===========================
@@ -49,7 +52,7 @@ document.addEventListener("DOMContentLoaded", function () {
     ============================ */
     const contextPath = document.getElementById("ctx").dataset.contextPath;
 
-    const map = new kakao.maps.Map(document.getElementById('map'), {
+    map = new kakao.maps.Map(document.getElementById('map'), {
         center: new kakao.maps.LatLng(37.566826, 126.9786567),
         level: 6
     });
@@ -128,29 +131,48 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
+    var ps = new kakao.maps.services.Places();
+     
     function searchGlobal(keyword) {
 
-        const geocoder = new kakao.maps.services.Geocoder();
+        if (!keyword) return;
 
-        geocoder.addressSearch(keyword, function(result, status) {
+        // 🔥 ① 카카오 키워드 검색 먼저 시도
+        ps.keywordSearch(keyword, function (data, status) {
 
-            if (status === kakao.maps.services.Status.OK) {
+            if (status === kakao.maps.services.Status.OK && data.length > 0) {
+				
+            	forceKakaoMode = true;
+            	setTimeout(() => forceKakaoMode = false, 1800);
 
-                const lat = result[0].y;
-                const lng = result[0].x;
-                const pos = new kakao.maps.LatLng(lat, lng);
-
-                // 지도 이동
+                // 검색 결과의 첫 장소로 지도 이동
+                const first = data[0];
+                const pos = new kakao.maps.LatLng(first.y, first.x);
                 map.setCenter(pos);
+                if (myLocationMarker) myLocationMarker.setPosition(pos);
 
-                // 이동된 좌표 기준으로 마커 갱신
-                updateMarkers();
-
-            } else {
-                alert("검색 결과가 없습니다.");
+                return;
             }
+
+            // 🔥 ② Kakao 검색 실패 → 기존 주소 검색 fallback
+            const geocoder = new kakao.maps.services.Geocoder();
+
+            geocoder.addressSearch(keyword, function(result, status) {
+
+                if (status === kakao.maps.services.Status.OK) {
+                    const lat = result[0].y;
+                    const lng = result[0].x;
+
+                    map.setCenter(new kakao.maps.LatLng(lat, lng));
+                    updateMarkers();
+                } else {
+                    alert("검색 결과가 없습니다.");
+                }
+            });
         });
     }
+
+
 
     /* ===========================
        상세 패널
@@ -215,15 +237,25 @@ document.addEventListener("DOMContentLoaded", function () {
     } else {
         updateMarkers();
     }
+    
+    kakao.maps.event.addListener(map, "zoom_changed", () => {
+        isZooming = true;
+        setTimeout(() => isZooming = false, 700);
+    });
 
     // 지도 이동 시 내 위치 마커는 지도 중심으로
-    kakao.maps.event.addListener(map, "idle", () => {
-        if (myLocationMarker) {
-            myLocationMarker.setPosition(map.getCenter());
-        }
+   kakao.maps.event.addListener(map, "idle", () => {
 
-        updateMarkers();  // 자동 갱신
-    });
+    if (forceKakaoMode) return;  // 검색 직후 자동 업데이트 금지
+    if (isZooming) return;       // ★ 추가: 줌 중에는 updateMarkers 금지
+
+    if (myLocationMarker) {
+        myLocationMarker.setPosition(map.getCenter());
+    }
+
+    updateMarkers();
+});
+
 
     /* ===========================
        updateMarkers()
@@ -362,4 +394,5 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 });
+
 </script>

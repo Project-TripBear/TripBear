@@ -37,30 +37,22 @@ public class AllPlaceRestController {
  // AllPlaceController.java
 
     @GetMapping("/weatherok")
-    @ResponseBody
-    public ResponseEntity<?> getWeatherByCoords(
-            @RequestParam(required = true) String lat,
-            @RequestParam(required = true) String lon) {
+    public ResponseEntity<WeatherVO> getWeatherByCoords( // [수정 1] 반환 타입을 ResponseEntity<?> -> ResponseEntity<WeatherVO>
+            @RequestParam("lat") String lat,
+            @RequestParam("lon") String lon) {
 
         log.info("[REST] 날씨 요청 lat=" + lat + ", lon=" + lon);
+        
+        WeatherVO weather = krweatherService.getTodayWeather(lat, lon); 
 
-        // 1) 좌표 비어 있으면 400 반환
-        if (lat == null || lat.isEmpty() || lon == null || lon.isEmpty()) {
-            log.warn("[REST] 잘못된 좌표 요청");
-            return new ResponseEntity<>("Invalid coordinates", HttpStatus.BAD_REQUEST);
+        // [수정 2] 로그를 추가하여 service가 null을 반환하는지 확인
+        if (weather != null) {
+            log.info("[REST] 날씨 조회 성공. JSON으로 반환합니다: " + weather.getSkyStatus());
+            return new ResponseEntity<>(weather, HttpStatus.OK);
+        } else {
+            log.warn("[REST] 날씨 조회 실패 (service returned null)");
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-        // 2) Service 호출
-        WeatherVO weather = krweatherService.getTodayWeather(lat, lon);
-
-        // 3) 실패 시 500
-        if (weather == null) {
-            log.error("[REST] 날씨 조회 실패 (service returned null)");
-            return new ResponseEntity<>("Weather API error", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
-        // 4) 성공 시 JSON 반환
-        return new ResponseEntity<>(weather, HttpStatus.OK);
     }
 
 
