@@ -4,7 +4,6 @@
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/mypage.css">
 
 <!-- views > content > member > add.jsp -->
-<h2>회원 가입</h2>
 
 <%-- <form method="POST" action="/trip/member/registerok">
 	<table class="borad-title">

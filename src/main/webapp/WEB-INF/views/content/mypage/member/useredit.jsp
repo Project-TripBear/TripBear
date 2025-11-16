@@ -11,7 +11,7 @@
 <body>
 	<div class="page-useredit-container">
 	<div id="main">
-		<h1>개인정보 <small>수정하기</small></h1>
+		<h1>회원정보 <small>수정하기</small></h1>
 		
 		<form method="POST" action="/trip/member/useredit" id="editForm">
 		<table class="vertical edit-form-table"> <tr>
@@ -89,9 +89,11 @@ readonly class="long form-control input-address"
 			</tr>
 		</table>
 		<div class="action-buttons-group"> 
-			<button type="submit" class="btn btn-primary">수정하기</button> </div>
-			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
+			<button type="submit" class="btn btn-primary">수정하기</button> 
 			<button type="button" class="btn btn-secondary" onclick="location.href='/trip/member/userinfo.do';">돌아가기</button>
+			</div>
+			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
+			
 		
 		</form>
 	</div>
