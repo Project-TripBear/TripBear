@@ -30,5 +30,6 @@ public interface RoutePostService {
 	boolean checkLike(Map<String, Object> map);
 
 	boolean checkScrap(Map<String, Object> map);
+	void deleteImageById(int parseInt);
 	
 }

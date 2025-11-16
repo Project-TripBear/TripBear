@@ -2,6 +2,10 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/reservation.css">
+
+<c:set var="userRouteId" value="${param.userRouteId}" />
+
 <!-- 🚗 차량 선택 페이지 -->
 <div class="container car-select-container">
 
@@ -75,23 +79,34 @@
             <input type="hidden" name="region" value="${region}">
             <input type="hidden" name="checkin" value="${checkin}">
             <input type="hidden" name="checkout" value="${checkout}">
-            <input type="hidden" name="people" value="${people}">
             <input type="hidden" name="roomId" value="${roomId}">
+            <input type="hidden" name="userRouteId" value="${userRouteId}">
 
             <button type="submit" class="filter-btn">필터 적용</button>
         </form>
 
         <!-- 스킵/뒤로가기 -->
         <button class="skip-btn"
-    onclick="location.href='${pageContext.request.contextPath}/reservation/confirm?region=${param.region}&checkin=${param.checkin}&checkout=${param.checkout}&people=${param.people}&roomId=${param.roomId}'">
+    onclick="location.href='${pageContext.request.contextPath}/reservation/confirm
+        ?region=${param.region}
+        &checkin=${param.checkin}
+        &checkout=${param.checkout}
+        &roomId=${param.roomId}
+        &userRouteId=${userRouteId}'">
 		    차량 선택 안 함 →
 		</button>
 
 
+
         <button class="skip-btn"
-            onclick="location.href='${pageContext.request.contextPath}/reservation/select-accom?region=${region}&checkin=${checkin}&checkout=${checkout}&people=${people}'">
-            ← 숙소 선택으로 돌아가기
-        </button>
+    onclick="location.href='${pageContext.request.contextPath}/reservation/select-accom
+        ?region=${region}
+        &checkin=${checkin}
+        &checkout=${checkout}
+        &userRouteId=${userRouteId}'">
+		    ← 숙소 선택으로 돌아가기
+		</button>
+
     </aside>
 
     <!-- 차량 목록 -->
@@ -99,7 +114,7 @@
 
         <div class="car-list-header">
             <h2>차량 선택</h2>
-            <p>지역: <strong>${region}</strong> · 인원: <strong>${people}</strong> · 기간: <strong>${checkin} ~ ${checkout}</strong></p>
+            <p>지역: <strong>${region}</strong> · 기간: <strong>${checkin} ~ ${checkout}</strong></p>
         </div>
 
         <c:forEach var="c" items="${carList}">
@@ -127,10 +142,11 @@
                     <input type="hidden" name="region" value="${region}">
                     <input type="hidden" name="checkin" value="${checkin}">
                     <input type="hidden" name="checkout" value="${checkout}">
-                    <input type="hidden" name="people" value="${people}">
                     <input type="hidden" name="roomId" value="${roomId}">
                     <input type="hidden" name="rentalStart" value="${checkin}">
                     <input type="hidden" name="rentalEnd" value="${checkout}">
+                    <input type="hidden" name="userRouteId" value="${userRouteId}">
+                    
                     <button type="submit" class="select-btn">이 차량 선택</button>
                 </form>
             </div>
@@ -142,112 +158,4 @@
     </main>
 </div>
 
-<!-- ✨ TripBear 스타일 -->
-<style>
-.container.car-select-container {
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    gap: 30px;
-    width: 80%;
-    margin: 40px auto;
-}
 
-.filter-section {
-    flex: 1;
-    max-width: 260px;
-    background: #f9f9f9;
-    border-radius: 15px;
-    padding: 20px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-}
-
-.filter-section h2 {
-    font-size: 1.2rem;
-    margin-bottom: 15px;
-}
-
-.filter-group {
-    margin-bottom: 15px;
-}
-
-.filter-btn {
-    width: 100%;
-    padding: 8px;
-    background: #6C9A8B;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-}
-
-.skip-btn {
-    margin-top: 15px;
-    width: 100%;
-    padding: 8px;
-    background: #ccc;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-}
-
-.car-list-section {
-    flex: 3;
-}
-
-.car-list-header {
-    margin-bottom: 20px;
-}
-
-.car-card {
-    display: flex;
-    align-items: center;
-    background: white;
-    border-radius: 15px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    margin-bottom: 20px;
-    overflow: hidden;
-}
-
-.car-image {
-    width: 250px;
-    height: 120px;
-    object-fit: cover;
-    border-right: 1px solid #eee;
-}
-
-.car-info {
-    flex: 1;
-    padding: 15px;
-}
-
-.car-price {
-    margin-top: 5px;
-    color: #444;
-}
-
-.select-btn {
-    background: #6C9A8B;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    padding: 10px 15px;
-    margin-right: 15px;
-    cursor: pointer;
-}
-
-.no-result {
-    text-align: center;
-    color: #777;
-}
-
-input[type=range] {
-    width: 100%;
-    margin-top: 5px;
-}
-
-#priceLabel {
-    font-size: 0.9rem;
-    color: #555;
-}
-</style>

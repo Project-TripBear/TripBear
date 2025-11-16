@@ -33,7 +33,6 @@ public class ReservationSelectAccomController {
         String region   = req.getParameter("region");    // 예: "부산"
         String checkin  = req.getParameter("checkin");   // 예: "2025-11-12"
         String checkout = req.getParameter("checkout");  // 예: "2025-11-14"
-        String people   = req.getParameter("people");    // 예: "2"
 
         // 방 카드 리스트 조회 (region 텍스트 → 내부에서 JOIN 처리)
         List<AccomRoomCardDTO> rooms = reservationService.findRoomsByRegion(region);
@@ -42,7 +41,6 @@ public class ReservationSelectAccomController {
         mav.addObject("region", region);
         mav.addObject("checkin", checkin);
         mav.addObject("checkout", checkout);
-        mav.addObject("people", people);
         mav.addObject("rooms", rooms);
         
         mav.addObject("roomsJson", new ObjectMapper().writeValueAsString(rooms));

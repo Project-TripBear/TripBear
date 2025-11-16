@@ -36,7 +36,15 @@ public class ReservationCompleteController {
         UserDTO user = loginUser.getUdto();
         
         long userId = Long.parseLong(user.getSeq()); // 문자열 → long
-        long userRouteId = 1L; // 만약 추후 AI 루트 기능 연동 시 따로 불러올 예정
+        String routeIdStr = req.getParameter("userRouteId");
+        
+        long userRouteId = 0L;
+        if (routeIdStr != null && !routeIdStr.isEmpty()) {
+            userRouteId = Long.parseLong(routeIdStr);
+        } else {
+            throw new IllegalArgumentException("userRouteId is missing");
+        }
+        
         int statusId = 1; // 예약요청 상태
 
         // ✅ 파라미터 받기
@@ -49,7 +57,6 @@ public class ReservationCompleteController {
         String rentalEnd = req.getParameter("rentalEnd");
         String accomNotes = req.getParameter("accomNotes");
         String carNotes = req.getParameter("carNotes");
-        String people = req.getParameter("people");
         String pickupLocation = req.getParameter("pickupLocation");
         String dropoffLocation = req.getParameter("dropoffLocation");
         String carIdParam = req.getParameter("carId");
@@ -84,7 +91,6 @@ public class ReservationCompleteController {
         AccomReservationDTO accomDTO = new AccomReservationDTO();
         accomDTO.setRoomId(roomId);
         accomDTO.setUserRouteId(userRouteId);
-        accomDTO.setGuestCount(Integer.parseInt(people));
         accomDTO.setRoomTotalPrice(roomTotal);
         accomDTO.setCheckinDate(checkin);
         accomDTO.setCheckoutDate(checkout);

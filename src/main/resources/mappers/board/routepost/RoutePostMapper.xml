@@ -153,7 +153,7 @@
             #{routepostSatisfaction},
             0,
             0,
-            'A',
+            'y',
             SYSDATE,
             SYSDATE
         )
@@ -164,8 +164,7 @@
         UPDATE tblRoutePost
         SET routepost_title        = #{routepostTitle},
             routepost_content      = #{routepostContent},
-            routepost_satisfaction = #{routepostSatisfaction},
-            routepost_report_status       = #{routepostReportStatus}
+            routepost_satisfaction = #{routepostSatisfaction}
         WHERE routepost_id = #{routepostId}
     </update>
 
@@ -260,7 +259,35 @@
           AND routepost_id = #{routepostId}
     </delete>
     
+	    <!-- 댓글 전체 삭제 -->
+	<delete id="deleteAllComments" parameterType="int">
+	    DELETE FROM tblRoutePostComment
+	    WHERE routepost_id = #{routepostId}
+	</delete>
+	
+	<!-- 좋아요 전체 삭제 -->
+	<delete id="deleteAllLikes" parameterType="int">
+	    DELETE FROM tblRoutePostLikes
+	    WHERE routepost_id = #{routepostId}
+	</delete>
+	
+	<!-- 스크랩 전체 삭제 -->
+	<delete id="deleteAllScrap" parameterType="int">
+	    DELETE FROM tblRoutePostScrap
+	    WHERE routepost_id = #{routepostId}
+	</delete>
+	
+	<!-- 이미지 전체 삭제 -->
+	<delete id="deleteAllImages" parameterType="int">
+	    DELETE FROM tblRoutePostImage
+	    WHERE routepost_id = #{routepostId}
+	</delete>
     
+    <!-- 이미지 단건 삭제 -->
+    <delete id="deleteImageById" parameterType="int">
+    DELETE FROM tblRoutePostImage
+    WHERE routepost_image_id = #{imageId}
+	</delete>
     
     
 

@@ -33,7 +33,7 @@ public class RoutePostRestController {
         return postService.toggleScrap(map);
     }
     
-    @GetMapping("/api/routepost/like/status")
+    @GetMapping("/like/status")
     @ResponseBody
     public boolean likeStatus(@RequestParam int routepostId,
                               @RequestParam int userId) {
@@ -45,7 +45,7 @@ public class RoutePostRestController {
         return postService.checkLike(map);
     }
 
-    @GetMapping("/api/routepost/scrap/status")
+    @GetMapping("/scrap/status")
     @ResponseBody
     public boolean scrapStatus(@RequestParam int routepostId,
                                @RequestParam int userId) {

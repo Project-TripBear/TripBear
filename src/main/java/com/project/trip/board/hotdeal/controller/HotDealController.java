@@ -1,11 +1,15 @@
 package com.project.trip.board.hotdeal.controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.http.ResponseEntity;
@@ -184,9 +188,32 @@ public class HotDealController {
 	            }
 
 	            // 조회수 증가 처리
-	            if ("n".equals(session.getAttribute("read"))) {
-	                mapper.updateReadcount(seq);
-	                session.setAttribute("read", "y");
+//	            if ("n".equals(session.getAttribute("read"))) {
+//	                mapper.updateReadcount(seq);
+//	                session.setAttribute("read", "y");
+//	            }
+	            
+	            try {
+	                // 1. 세션에서 "viewedPosts"라는 이름의 Set을 가져옵니다.
+	                @SuppressWarnings("unchecked") // 타입 변환 경고 무시
+	                Set<String> viewedPosts = (Set<String>) session.getAttribute("viewedPosts");
+
+	                // 2. Set이 세션에 없으면(null), 새로 만듭니다.
+	                if (viewedPosts == null) {
+	                    viewedPosts = new HashSet<>();
+	                }
+
+	                // 3. 이 Set에 현재 게시물 번호(seq)가 포함되어 있지 *않다면*
+	                if (!viewedPosts.contains(seq)) {
+	                    mapper.updateReadcount(seq);      // DB 조회수 증가
+	                    viewedPosts.add(seq);               // Set에 현재 게시물 번호 추가
+	                    session.setAttribute("viewedPosts", viewedPosts); // Set을 세션에 다시 저장
+	                }
+	                // 4. Set에 이미 seq가 있다면 (새로고침 등) 아무것도 하지 않습니다.
+
+	            } catch (Exception e) {
+	                // 조회수 처리 중 오류가 발생해도 페이지 로드는 계속되어야 하므로 로그만 남깁니다.
+	                System.err.println("조회수 증가 처리 중 오류 발생: " + e.getMessage());
 	            }
 
 	            // 게시글 조회
@@ -236,7 +263,6 @@ public class HotDealController {
 	    public String addForm() {
 	        return "board.hotdeal.add"; // src/main/webapp/WEB-INF/views/board/add.jsp 와 매칭
 	    }
-
 	    @PostMapping("/hotdeal/add")
 	    public String addPost(
 	            @RequestParam("subject") String subject,
@@ -247,6 +273,7 @@ public class HotDealController {
 	            @RequestParam("itemname") String itemname,
 	            @RequestParam("price") String price,
 	            @RequestParam("url") String url,
+	            HttpServletRequest request, // <-- 1. (추가) 파일 경로를 얻기 위해 추가
 	            Authentication auth,
 	            Model model) throws IOException {
 
@@ -272,10 +299,24 @@ public class HotDealController {
 	        if (result > 0) {
 	        	Long hotdealId = Long.parseLong(mapper.selectRecentSeq(dto)); 
 	            int imgResultSum = 0;
+
+	            String realPath = "C:/tripbear";
+	            File uploadDir = new File(realPath);
+	            if (!uploadDir.exists()) {
+	                uploadDir.mkdirs(); // 폴더가 없으면 생성
+	            }
 	            int imageSeq = 1; // 이미지 순서 컬럼 값(필요시)
 	            for (MultipartFile imgFile : imgFiles) {
 	            	 if (imgFile != null && !imgFile.isEmpty()) {
-	                     String savedFileName = imgFile.getOriginalFilename();
+	                     //String savedFileName = imgFile.getOriginalFilename();
+	                     
+	                  // 3-1. 고유한 파일명 생성 (예: 1678886400000_image.jpg)
+	                        String originalFilename = imgFile.getOriginalFilename();
+	                        String savedFileName = System.currentTimeMillis() + "_" + originalFilename; 
+
+	                        // 3-2. 위에서 설정한 경로(uploadDir)에 실제 파일 저장
+	                        File dest = new File(uploadDir, savedFileName);
+	                        imgFile.transferTo(dest);
 	                     
 	                     Map<String, Object> param = new HashMap<>();
 	                     param.put("hotdealId", hotdealId);
@@ -315,7 +356,7 @@ public class HotDealController {
 	        return "board.hotdeal.edit";
 	    }
 
-	    // POST: 수정 처리
+	 // POST: 수정 처리
 	    @PostMapping("/hotdeal/edit")
 	    public String editPost(
 	            @RequestParam("seq") String seq,
@@ -329,7 +370,7 @@ public class HotDealController {
 	            @RequestParam("url") String url,
 	            @RequestParam(value = "deleteImages", required = false) String[] deleteImages,
 	            Authentication auth,
-	            Model model) throws IOException {
+	            Model model) throws IOException { // throws IOException 확인
 
 	        String userId = auth.getName();
 	        
@@ -361,18 +402,34 @@ public class HotDealController {
 	                }
 	            }
 	            
-	            // 새 이미지 추가
+	            // 새 이미지 추가 (이 부분이 수정되었습니다)
 	            if (imgFiles != null && imgFiles.length > 0) {
 	                int maxSeq = mapper.selectMaxImageSeq(seq);
 	                int imageSeq = maxSeq + 1;
+
+	                // --- (추가) 파일 저장 경로 설정 (addPost와 동일하게) ---
+	                String realPath = "C:/tripbear";
+	                File uploadDir = new File(realPath);
+	                if (!uploadDir.exists()) {
+	                    uploadDir.mkdirs(); // 폴더가 없으면 생성
+	                }
+	                // ----------------------------------------------------
 	                
 	                for (MultipartFile imgFile : imgFiles) {
 	                    if (imgFile != null && !imgFile.isEmpty()) {
-	                        String savedFileName = imgFile.getOriginalFilename();
+	                        
+	                        // --- (수정) 고유한 파일명 생성 (addPost와 동일하게) ---
+	                        String originalFilename = imgFile.getOriginalFilename();
+	                        String savedFileName = System.currentTimeMillis() + "_" + originalFilename; 
+
+	                        // --- (추가) 실제 파일 저장 (addPost와 동일하게) ---
+	                        File dest = new File(uploadDir, savedFileName);
+	                        imgFile.transferTo(dest);
+	                        // -------------------------------------------------
 	                        
 	                        Map<String, Object> param = new HashMap<>();
 	                        param.put("hotdealId", seq);
-	                        param.put("img", savedFileName);
+	                        param.put("img", savedFileName); // (수정) 고유 파일명으로 DB에 저장
 	                        param.put("hotdealImageSeq", imageSeq++);
 	                        
 	                        mapper.insertBoardImage(param);
@@ -422,8 +479,14 @@ public class HotDealController {
 	            return "redirect:/hotdeal/list";
 	        }
 	        
+	        
+	        
 	        // 1. 이미지 먼저 삭제 (외래키 제약조건 때문에)
+	        mapper.deleteComment(seq);
+	        mapper.deleteLike(seq);
+	        mapper.deleteScrap(seq);
 	        mapper.deleteAllImages(seq);
+	        
 	        
 	        // 2. 게시글 삭제
 	        int result = mapper.deleteBoard(seq);

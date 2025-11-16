@@ -1,4 +1,4 @@
-package com.project.trip.mypage.model;
+ package com.project.trip.mypage.model;
 
 import lombok.Data;
 
