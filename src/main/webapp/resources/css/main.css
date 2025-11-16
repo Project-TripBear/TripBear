@@ -599,13 +599,15 @@ main {
 
 /* === 버튼 공통 스타일 === */
 .btn {
-    padding: 12px 28px;
+    padding: 8px 20px;
     border-radius: 30px;
     font-weight: 700;
     text-decoration: none;
     border: none;
     cursor: pointer;
     transition: all 0.3s;
+    font-size: 0.9rem; 
+    line-height: 1.5; 
 }
 .btn-primary {
     background-color: var(--primary);
@@ -620,7 +622,6 @@ main {
 /* === 로그인/사용자 정보 === */
 /* 보조 버튼 (테두리) - 기존 .btn-login 대체 */
 .btn-secondary {
-    padding: 8px 20px;
     border: 1px solid var(--primary);
     background-color: transparent;
     color: var(--primary);
@@ -628,9 +629,7 @@ main {
     font-weight: 700;
     text-decoration: none;
     transition: all 0.3s;
-    cursor: pointer; /* button 태그에도 적용되도록 */
-    font-size: 0.9rem; /* 폰트 크기 통일 */
-    line-height: 1.5; /* 버튼 높이 통일 */
+    cursor: pointer;
 }
 .btn-secondary:hover {
     background-color: var(--primary-light);
