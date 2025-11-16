@@ -52,6 +52,7 @@
         <div class="card-body p-0">
             <div class="table-responsive">
                 <table class="table table-striped admin-list-table mb-0">
+					<th style="width: 10%;">관리</th>
                     <thead>
                         <tr>
                             <th style="width: 5%;">번호</th>

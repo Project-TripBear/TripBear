@@ -12,4 +12,7 @@ public interface AdminBoardMapper {
     int getTotalBoardCount(@Param("boardType") String boardType);
 
     List<IntegratedBoardDTO> getIntegratedBoardList(Map<String, Object> paramMap);
+
+    void restorePost(int boardSeq);
+
 }

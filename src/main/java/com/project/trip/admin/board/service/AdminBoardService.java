@@ -10,4 +10,6 @@ public interface AdminBoardService {
 
     // 게시판 목록 조회
     List<IntegratedBoardDTO> getIntegratedBoardList(int startRow, int endRow, String boardType);
+
+	void restorePost(int boardSeq);
 }

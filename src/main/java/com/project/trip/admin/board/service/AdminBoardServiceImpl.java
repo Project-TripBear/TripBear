@@ -29,4 +29,9 @@ public class AdminBoardServiceImpl implements AdminBoardService {
         paramMap.put("boardType", boardType);
         return mapper.getIntegratedBoardList(paramMap);
     }
+    @Override
+    public void restorePost(int boardSeq) {
+        mapper.restorePost(boardSeq);
+    }
+
 }

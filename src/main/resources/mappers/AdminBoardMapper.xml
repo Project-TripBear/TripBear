@@ -82,24 +82,12 @@
                     hd.hotdeal_regdate AS regdate, hd.hotdeal_view_count AS viewCount,
                     (SELECT COUNT(*) FROM tblHotDealComment WHERE hotdeal_id = hd.hotdeal_id) AS commentCount,
                     (SELECT COUNT(*) FROM tblHotDealLikes WHERE hotdeal_id = hd.hotdeal_id) AS likeCount
+                
                 FROM tblHotDealPost hd LEFT JOIN tblUser u ON hd.user_id = u.user_id)
-                UNION ALL
-                (SELECT
-                    rp.routepost_id AS seq_id, 'tblRoutePost' AS boardType,
-                    rp.routepost_title AS title, u.nickname AS nickname,
-                    rp.routepost_regdate AS regdate, rp.routepost_view_count AS viewCount,
-                    (SELECT COUNT(*) FROM tblRoutePostComment WHERE routepost_id = rp.routepost_id) AS commentCount,
-                    (SELECT COUNT(*) FROM tblRoutePostLikes WHERE routepost_id = rp.routepost_id) AS likeCount
-                FROM tblRoutePost rp LEFT JOIN tblUser u ON rp.user_id = u.user_id)
+
             ) combined_boards
-            <where>
-                <if test="boardType != null and boardType != ''">
-                    boardType = #{boardType}
-                </if>
-            </where>
-        )
+            
+            ) paged_boards
         WHERE RNUM BETWEEN #{startRow} AND #{endRow}
-        ORDER BY RNUM
-    </select>
-    
+        </select>
 </mapper>
