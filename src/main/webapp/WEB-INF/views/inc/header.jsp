@@ -26,7 +26,6 @@
                     <a href="${pageContext.request.contextPath}/allplace/news">여행지 뉴스</a>
                     <a href="${pageContext.request.contextPath}/allplace/wether">날씨/공기질</a>
                     <a href="${pageContext.request.contextPath}/allplace/festival">시기별 축제/행사</a>
-
                 </div>
 
       
