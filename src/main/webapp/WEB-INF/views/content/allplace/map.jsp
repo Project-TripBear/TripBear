@@ -5,7 +5,7 @@
 <div id="ctx" data-context-path="${pageContext.request.contextPath}"></div>
 
 <!-- ★ 사이드바/지도 CSS -->
-<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/mapsidebar.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/allplace/mapsidebar.css">
 
 <div class="map-container">
 
@@ -161,7 +161,10 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("detail-title").innerText = place.name;
         document.getElementById("detail-addr").innerText = place.address || "";
         document.getElementById("detail-view-btn").onclick = () => {
-            window.open(contextPath + "/allplace/detail/" + place.placeApiId, "_blank");
+        	window.open(contextPath + "/allplace/view/" + place.placeApiId +
+        		    "?contentTypeId=" + place.contentTypeId);
+        	console.log("상세보기 URL = " + contextPath + "/allplace/view/" + place.placeApiId);
+
         };
 
         panel.classList.add("show");
@@ -261,7 +264,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 const visibleMarkers = []; // 클러스터러에 넣을 마커들
 
                 list.forEach(place => {
-
+                	place.contentTypeId = (place.placeTypeId == 3 ? 39 : 12);
                     const inView =
                         place.latitude >= sw.getLat() &&
                         place.latitude <= ne.getLat() &&

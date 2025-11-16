@@ -3,60 +3,53 @@
 
 <%-- 
   [Tiles Content]
-  컨트롤러로부터 'placeList' (List<PlaceDTO>)와 'keyword' (String)를 전달받습니다.
+  CSS: resources/css/trendcard.css (공통 레이아웃에서 로드)
+  Data: Controller가 "placeList" (List<PlaceDTO>)와 "keyword"를 전달합니다.
 --%>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/allplace/trendcard.css">
+<main>
+    <%-- .trend-header 클래스 공통 사용 --%>
+    <div class="trend-header">
+        <h2>'<c:out value="${keyword}"/>' 검색 결과</h2>
+        <p class="sub">총 ${placeList.size()}개의 결과가 있습니다.</p>
+    </div>
 
-<%-- (삭제) <head> ... <style> ... </style> </head> --%>
-
-<div class="search-result-container">
-    <h2>'${keyword}' 검색 결과</h2>
-    <p>총 ${placeList.size()}개의 결과가 있습니다.</p>
-    
-    <hr>
-    
-    <div class="search-grid">
+    <%-- .trend-gallery 클래스 공통 사용 --%>
+    <div class="trend-gallery">
     <c:choose>
         <c:when test="${not empty placeList}">
-            <c:forEach var="place" items="${placeList}">
-                <div class="place-card">
-
-                   
- <%-- --- [핵심 수정] --- --%>
-                    <%-- (기존) /allplace/detail/${place.placeId} --%>
-                    <%-- (변경) /allplace/view/${place.placeApiId} --%>
-                    <a href="${pageContext.request.contextPath}/allplace/view/${place.placeApiId}" style="text-decoration: none; color: inherit;">
-                    <%-- --- [수정 
-끝] --- --%>
-                    
-                        <c:choose>
-                            <c:when test="${not empty place.placeMainImageUrl}">
-       
+            <c:forEach var="item" items="${placeList}">
                 
-     <img src="${place.placeMainImageUrl}" alt="${place.name}">
-                            </c:when>
-                            <c:otherwise>
-     
-                       <img src="/resources/img/default_image.png" alt="기본 이미지">
-      
-                      </c:otherwise>
-                        </c:choose>
-      
-              
-                        <div class="place-card-content">
-         
-                   <h3><c:out value="${place.name}" /></h3>
-               
-         <p><c:out value="${place.address}" /></p>
-                        </div>
-                    </a>
-         
-       </div>
-         
-   </c:forEach>
-            </c:when>
-            <c:otherwise>
+                <%-- 
+                  [수정]
+                  1. .trend-card 클래스 사용
+                  2. onclick 버그 수정 (view/ + contentTypeId)
+                --%>
+                <div class="trend-card" 
+                     onclick="location.href='${pageContext.request.contextPath}/allplace/view/${item.placeApiId}?contentTypeId=${item.contentTypeId}'">
+                    
+                    <c:choose>
+                        <c:when test="${not empty item.placeMainImageUrl}">
+                            <img src="${item.placeMainImageUrl}" alt="${item.name}" class="card-img-top">
+                        </c:when>
+                        <c:otherwise>
+                            <img src="${pageContext.request.contextPath}/resources/img/icon/noimage.png" alt="이미지 없음" class="card-img-top">
+                        </c:otherwise>
+                    </c:choose>
+                    
+                    <div class="card-body">
+                        <h5 class="card-title"><c:out value="${item.name}" /></h5>
+                        <p class="card-text"><c:out value="${item.address}" /></p>
+                    </div>
+                </div>
+            </c:forEach>
+        </c:when>
+        <c:otherwise>
+            <%-- .no-result 클래스 공통 사용 --%>
+            <div class="no-result">
                 <p>검색 결과가 없습니다.</p>
-            </c:otherwise>
-        </c:choose>
+            </div>
+        </c:otherwise>
+    </c:choose>
     </div>
-</div>
+</main>

@@ -1,0 +1,147 @@
+/* ================================
+   페이지 공통 레이아웃
+================================ */
+main {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 30px;
+}
+
+/* ================================
+   페이지 헤더 (제목)
+================================ */
+.trend-header {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.trend-header h2 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 10px;
+}
+
+/* (trend.jsp 전용 검색창 - 나중에 삭제/수정 가능) */
+.trend-header .search-box {
+    max-width: 500px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.trend-header .search-box input {
+    width: 100%;
+    padding: 12px 20px;
+    border: 1px solid var(--border);
+    border-radius: 30px;
+    background: var(--surface);
+    transition: all 0.3s;
+    font-size: 1rem;
+}
+
+.trend-header .search-box input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(108, 154, 139, 0.1);
+}
+
+/* (search_result.jsp 전용 부제목) */
+.trend-header .sub {
+    font-size: 1.1rem;
+    color: var(--text-light);
+    margin-top: 10px;
+}
+
+
+/* ================================
+   카드 갤러리 (그리드)
+================================ */
+.trend-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 30px;
+}
+
+
+/* ================================
+   카드 디자인 (핵심)
+================================ */
+.trend-card {
+    background-color: var(--surface);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-soft);
+    overflow: hidden;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+/* 마우스 오버 강조 효과 */
+.trend-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.08);
+}
+
+.trend-card .card-img-top {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.trend-card .card-body {
+    padding: 25px;
+}
+
+.trend-card .card-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin: 0 0 10px 0;
+    color: var(--text);
+    
+    /* (제목이 길 경우 말줄임) */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.trend-card .card-text {
+    font-size: 0.95rem;
+    color: var(--text-light);
+    margin-bottom: 10px; /* (card-tags가 없으므로 여백 줄임) */
+    
+    /* (주소가 길 경우 2줄 말줄임) */
+    height: 3em; /* 약 2줄 높이 */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+/* (gallery.jsp의 태그 - 지금은 사용 안 함) */
+.trend-card .card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.trend-card .tag {
+    background-color: var(--bg);
+    color: var(--primary);
+    font-size: 0.8rem;
+    font-weight: 500;
+    padding: 5px 12px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+}
+
+/* ================================
+   결과 없음
+================================ */
+.no-result {
+    /* .trend-gallery의 자식이므로 grid-column을 전체로 확장 */
+    grid-column: 1 / -1; 
+    text-align: center;
+    padding: 80px 20px;
+    color: var(--text-light);
+    font-size: 1.1rem;
+}

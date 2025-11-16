@@ -1,0 +1,81 @@
+/* 1. 사이드바 + 콘텐츠 레이아웃 */
+.trend-container {
+    display: flex;
+    gap: 30px; /* 사이드바와 콘텐츠 사이 여백 */
+}
+
+/* 2. [수정] 사이드바 (오른쪽) - 너비 260px로 증가 */
+.trend-sidebar {
+    width: 260px;     /* 너비 220px -> 260px */
+    flex-shrink: 0; 
+}
+
+/* 3. 메인 콘텐츠 (왼쪽) */
+.trend-content {
+    flex-grow: 1; 
+    min-width: 0; 
+    background: #f3f0f7;
+    border: 1px solid #e9e4f0;
+    border-radius: var(--radius);
+    padding: 24px; 
+    box-sizing: border-box;
+}
+
+/* 4. 카드 4줄 만들기 */
+.trend-content .trend-gallery {
+    /* (이 부분은 trendcard.css의 .trend-gallery를 덮어쓰기 위해
+       minmax(220px, 1fr)이 아닌 3줄 그리드로 수정해야 합니다.) */
+    
+    /* ★ 수정: 3줄 그리드로 변경 */
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px; 
+}
+
+/* 5. 버튼을 담는 영역 (하얀 박스) */
+.sidebar-box {
+    background: var(--surface); 
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px; 
+    box-sizing: border-box;
+    position: sticky;
+    top: 100px; 
+}
+
+/* 6. [수정] 버튼 목록 (3열 그리드) */
+.trend-sidebar .region-tags {
+    display: grid; /* ★ 'flex' -> 'grid' */
+    grid-template-columns: repeat(3, 1fr); /* ★ 3열 그리드 */
+    gap: 8px;      /* ★ 버튼 사이 간격 */
+}
+
+/* 7. [수정] 버튼 크기 (그리드 셀 채우기) */
+.trend-sidebar .tag-btn {
+    width: 100%; /* ★ 'auto' -> '100%' (그리드 셀 꽉 채우기) */
+    
+    padding: 8px 10px; /* (패딩 살짝 조절) */
+    border: 1px solid transparent; 
+    border-radius: var(--radius); 
+    background: transparent; 
+    color: var(--text-light);
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s;
+    box-sizing: border-box;
+    font-size: 0.95rem;
+    
+    text-align: center; /* (가운데 정렬) */
+}
+
+.trend-sidebar .tag-btn:hover {
+    background: var(--bg); 
+    color: var(--text);
+}
+
+.trend-sidebar .tag-btn.active {
+    background: var(--primary-soft); 
+    border-color: var(--primary);    
+    color: var(--primary);
+    font-weight: 700;
+}

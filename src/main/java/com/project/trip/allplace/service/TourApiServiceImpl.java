@@ -37,9 +37,7 @@ public class TourApiServiceImpl implements TourApiService {
     private final String SEARCH_FESTIVAL_URL = "https://apis.data.go.kr/B551011/KorService2/searchFestival2";
     private final String AREA_BASED_URL = "https://apis.data.go.kr/B551011/KorService2/areaBasedList2";
     private final String LOCATION_BASED_URL = "https://apis.data.go.kr/B551011/KorService2/locationBasedList2";
-
     private final String DETAIL_INTRO_URL = "https://apis.data.go.kr/B551011/KorService2/detailIntro2";
-  
     private final String DETAIL_EVENT_URL = "https://apis.data.go.kr/B551011/KorService2/detailEvent2";
    
     
@@ -50,26 +48,28 @@ public class TourApiServiceImpl implements TourApiService {
                 .queryParam("MobileApp", "TripBear")
                 .queryParam("MobileOS", "ETC")
                 .queryParam("contentId", contentId)
-                .queryParam("defaultYN", "Y")
-                .queryParam("mapinfoYN", "Y")
-                .queryParam("firstImageYN", "Y")
-                .queryParam("overviewYN", "Y")
                 .queryParam("_type", "json")
                 .build(true).toUri();
-
+        log.info("[DETAIL] 요청 URL = " + uri.toString());
         try {
             TourApiResponseVO r = restTemplate.getForObject(uri, TourApiResponseVO.class);
             if (r != null &&
-                    r.getResponse().getBody().getItems() != null &&
-                    r.getResponse().getBody().getItems().getItem() != null &&
-                    !r.getResponse().getBody().getItems().getItem().isEmpty()) {
+                r.getResponse() != null &&
+                r.getResponse().getBody() != null &&
+                r.getResponse().getBody().getItems() != null &&
+                r.getResponse().getBody().getItems().getItem() != null &&
+                !r.getResponse().getBody().getItems().getItem().isEmpty()) {
+
                 return r.getResponse().getBody().getItems().getItem().get(0);
             }
         } catch (Exception e) {
+        	
             log.error("Detail API error", e);
         }
+
         return null;
     }
+    
 
     @Override
     public TourApiResponseVO searchByKeyword(String keyword, String arrange, String contentTypeId) {
@@ -80,8 +80,10 @@ public class TourApiServiceImpl implements TourApiService {
                 .queryParam("keyword", keyword)
                 .queryParam("arrange", arrange)
                 .queryParam("contentTypeId", contentTypeId)
+                .queryParam("numOfRows", 100) // <-- 이 줄 추가
+                .queryParam("pageNo", 1)       // <-- 이 줄 추가
                 .queryParam("_type", "json")
-                .build(true).toUri();
+                .build(false).toUri();
 
         return restTemplate.getForObject(uri, TourApiResponseVO.class);
     }
@@ -113,17 +115,24 @@ public class TourApiServiceImpl implements TourApiService {
     @Override
     public TourApiResponseVO searchByArea(String areaCode, String contentTypeId, String arrange, int pageNo, int rows) {
 
-        URI uri = UriComponentsBuilder.fromHttpUrl(AREA_BASED_URL)
+        // 1. 'UriComponentsBuilder' 타입의 'builder' 변수로 선언합니다.
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(AREA_BASED_URL)
                 .queryParam("serviceKey", serviceKey)
                 .queryParam("MobileApp", "TripBear")
                 .queryParam("MobileOS", "ETC")
                 .queryParam("arrange", arrange)
-                .queryParam("areaCode", areaCode)
                 .queryParam("contentTypeId", contentTypeId)
                 .queryParam("pageNo", pageNo)
                 .queryParam("numOfRows", rows)
-                .queryParam("_type", "json")
-                .build(true).toUri();
+                .queryParam("_type", "json");
+        
+        // 2. areaCode가 null이나 빈 값이 아닐 때만 builder에 파라미터를 추가합니다.
+        if (areaCode != null && !areaCode.isEmpty()) {
+            builder.queryParam("areaCode", areaCode);
+        }
+
+        // 3. 최종 URI 빌드
+        URI uri = builder.build(true).toUri(); // 'uri' 변수는 여기서 한 번만 선언합니다.
 
         return restTemplate.getForObject(uri, TourApiResponseVO.class);
     }
@@ -251,10 +260,15 @@ public class TourApiServiceImpl implements TourApiService {
                 .build(true).toUri();
     }
 
+
     @Override
     public TourIntroVO getPlaceIntro(String contentId, String contentTypeId) {
         // (contentTypeId=12, 관광지)
         URI uri = buildIntroUri(DETAIL_INTRO_URL, contentId, contentTypeId);
+        
+        // 🚨 이 로그를 추가해야 디버깅이 가능합니다!
+        log.info("[INTRO] 요청 URL = " + uri.toString()); 
+        
         try {
             return restTemplate.getForObject(uri, TourIntroVO.class);
         } catch (Exception e) {
