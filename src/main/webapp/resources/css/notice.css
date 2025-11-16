@@ -252,8 +252,13 @@ main {
     text-align: right;
 }
 
-/* 공지 페이지 공통 버튼 스타일 */
-.btn {
+/* 공지 페이지 공통 버튼 스타일 (헤더 버튼 영향을 피하기 위해 영역 한정) */
+.notice-form-container .btn,
+.notice-view-container .btn,
+.notice-container .btn,
+.notice-footer .btn,
+.notice-actions .btn,
+.table-options .btn {
     padding: 12px 28px;
     border-radius: 30px;
     font-weight: 700;
@@ -262,11 +267,23 @@ main {
     cursor: pointer;
     transition: all 0.3s;
 }
-.btn-primary {
+
+.notice-form-container .btn-primary,
+.notice-view-container .btn-primary,
+.notice-container .btn-primary,
+.notice-footer .btn-primary,
+.notice-actions .btn-primary,
+.table-options .btn-primary {
     background-color: var(--primary);
     color: white;
 }
-.btn-primary:hover {
+
+.notice-form-container .btn-primary:hover,
+.notice-view-container .btn-primary:hover,
+.notice-container .btn-primary:hover,
+.notice-footer .btn-primary:hover,
+.notice-actions .btn-primary:hover,
+.table-options .btn-primary:hover {
     background-color: var(--primary-dark);
     transform: translateY(-2px);
     box-shadow: 0 4px 15px rgba(108, 154, 139, 0.2);
