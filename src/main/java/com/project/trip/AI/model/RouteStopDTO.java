@@ -27,5 +27,5 @@ public class RouteStopDTO {
 
     //헬스케어 구윤추가
     private long healthcareId;
-    private int healthcareCaloriesBurned;
+    private double healthcareCaloriesBurned;
 }
