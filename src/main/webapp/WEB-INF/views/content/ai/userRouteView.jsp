@@ -372,7 +372,7 @@ async function displayDay(day) {
 
   map.setBounds(bounds);
   renderEditableStops(stops);
-  renderHealth(stops);
+  /* renderHealth(stops); */
 }
 
 

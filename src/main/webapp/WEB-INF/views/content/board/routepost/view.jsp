@@ -18,8 +18,8 @@
 
 <body>
 
-<div class="container">
-
+<div class="routepost-page">
+	<div class="container">   
   <!-- ===== 게시글 헤더 ===== -->
   <div class="header-area">
     <h2>${post.routepostTitle}</h2>
@@ -81,7 +81,7 @@
     </div>
   </div>
 </div>
-
+</div>
 <!-- ======================= JS ======================= -->
 <script>
 
