@@ -17,7 +17,10 @@
                 <div class="hero-search-input">
                     <input type="text" placeholder="어디로 떠날까요? (도시, 지역명 입력)">
                 </div>
-                <button type="button" class="btn btn-primary">AI 루트 만들기</button>
+                <a href="${pageContext.request.contextPath}/ai/plan" class="btn btn-primary hero-cta">
+                    <span>AI 루트 만들기</span>
+                    <span class="hero-cta-arrow">→</span>
+                </a>
             </div>
 
             <div class="hero-meta">
@@ -68,22 +71,45 @@
                 </div>
 
                 <div class="home-weather-hero morning">
-                    <div class="weather-left">
-                        <div class="weather-label">남양주시 · 아침</div>
+                    <div class="home-weather-top">
+                        <div class="weather-left">
+                            <div class="weather-label">남양주시 · 아침</div>
 
-                        <div class="weather-temp-row">
-                            <span class="weather-temp">6°</span>
-                            <span class="weather-feels">체감 2°</span>
+                            <div class="weather-temp-row">
+                                <span class="weather-temp">6°</span>
+                                <span class="weather-feels">체감 2°</span>
+                            </div>
+
+                            <p class="weather-desc">
+                                오전엔 맑지만 약간 쌀쌀해요.<br>
+                                가벼운 외투 하나 챙기면 좋아요.
+                            </p>
+
+                            <p class="weather-date">
+                                2025. 11. 17 (월) · Morning
+                            </p>
                         </div>
 
-                        <p class="weather-desc">
-                            오전엔 맑지만 약간 쌀쌀해요.<br>
-                            가벼운 외투 하나 챙기면 좋아요.
-                        </p>
-
-                        <p class="weather-date">
-                            2025. 11. 17 (월) · Morning
-                        </p>
+                        <div class="weather-right">
+                            <div class="weather-detail">
+                                <div class="weather-detail-item">
+                                    <span class="label">습도</span>
+                                    <span class="value">48%</span>
+                                </div>
+                                <div class="weather-detail-item">
+                                    <span class="label">미세먼지</span>
+                                    <span class="value good">좋음</span>
+                                </div>
+                                <div class="weather-detail-item">
+                                    <span class="label">UV</span>
+                                    <span class="value">2 낮음</span>
+                                </div>
+                                <div class="weather-detail-item">
+                                    <span class="label">체크 포인트</span>
+                                    <span class="value">산책 · 야외활동 O</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <ul class="weather-week">
@@ -145,6 +171,139 @@
                 </div>
             </div>
 
+        </div>
+    </section>
+
+    <!-- 3) 지역별 루트 & 실시간 순위 -->
+    <section class="home-section region-section">
+        <div class="home-section-header">
+            <div>
+                <h2 class="home-section-title">지역별 추천 루트</h2>
+                <p class="home-section-sub">이번 주 여행자들이 가장 많이 찾는 지역별 시그니처 동선을 만나보세요.</p>
+            </div>
+            <div class="home-section-link">
+                <a href="${pageContext.request.contextPath}/ai/plan">AI 루트 전체 보기</a>
+            </div>
+        </div>
+
+        <div class="region-grid">
+            <article class="region-card seoul">
+                <div class="region-card-header">
+                    <span class="region-badge">서울 · 1일 코스</span>
+                    <span class="region-temp">7° 맑음</span>
+                </div>
+                <h3>한강부터 익선동까지 감성 가득 루트</h3>
+                <p class="region-desc">아침 요가 · 브런치 · 감성카페 · 야경까지 하루에 담았어요.</p>
+                <div class="region-tags">
+                    <span>#호캉스</span>
+                    <span>#브런치</span>
+                    <span>#야경산책</span>
+                </div>
+                <div class="region-card-meta">
+                    <span>AI 만족도 94%</span>
+                    <button class="region-cta" onclick="location.href='${pageContext.request.contextPath}/ai/plan'">루트 만들기</button>
+                </div>
+            </article>
+
+            <article class="region-card busan">
+                <div class="region-card-header">
+                    <span class="region-badge">부산 · 주말 여행</span>
+                    <span class="region-temp">12° 흐림</span>
+                </div>
+                <h3>서핑 · 미식 · 밤바다 감성 버스킹</h3>
+                <p class="region-desc">기장 해안 드라이브와 남포동 골목 투어까지 이어지는 루트.</p>
+                <div class="region-tags">
+                    <span>#바다</span>
+                    <span>#푸드트립</span>
+                    <span>#버스킹</span>
+                </div>
+                <div class="region-card-meta">
+                    <span>추천 이유 · 걷기 40% · 대중교통 60%</span>
+                    <button class="region-cta" onclick="location.href='${pageContext.request.contextPath}/ai/plan'">지금 생성</button>
+                </div>
+            </article>
+
+            <article class="region-card jeju">
+                <div class="region-card-header">
+                    <span class="region-badge">제주 · 2일 코스</span>
+                    <span class="region-temp">10° 흐림</span>
+                </div>
+                <h3>서쪽 드라이브와 감귤 수확 체험</h3>
+                <p class="region-desc">오름 트래킹과 로컬카페를 잇는 드라이브 중심 루트.</p>
+                <div class="region-tags">
+                    <span>#드라이브</span>
+                    <span>#감귤체험</span>
+                    <span>#힐링</span>
+                </div>
+                <div class="region-card-meta">
+                    <span>렌터카 · 커플 여행 선호 1위</span>
+                    <button class="region-cta" onclick="location.href='${pageContext.request.contextPath}/ai/plan'">AI 제안 받기</button>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <section class="home-section trend-section">
+        <div class="trend-grid">
+            <div class="trend-panel">
+                <div class="home-section-header small">
+                    <h3>현재 뜨는 지역 순위</h3>
+                    <span class="home-section-sub">실시간 생성 루트 기준</span>
+                </div>
+
+                <ol class="trend-rank-list">
+                    <li>
+                        <span class="rank-num">01</span>
+                        <div>
+                            <p class="rank-title">강릉 · 커피 투어</p>
+                            <p class="rank-meta">따뜻한 겨울바다 + 카페 5선</p>
+                        </div>
+                        <span class="rank-change up">▲ +3</span>
+                    </li>
+                    <li>
+                        <span class="rank-num">02</span>
+                        <div>
+                            <p class="rank-title">여수 · 미식 여행</p>
+                            <p class="rank-meta">굴 · 게장 제철 시즌</p>
+                        </div>
+                        <span class="rank-change same">—</span>
+                    </li>
+                    <li>
+                        <span class="rank-num">03</span>
+                        <div>
+                            <p class="rank-title">순천 · 정원 힐링</p>
+                            <p class="rank-meta">억새 · 갈대장관</p>
+                        </div>
+                        <span class="rank-change up">▲ +1</span>
+                    </li>
+                    <li>
+                        <span class="rank-num">04</span>
+                        <div>
+                            <p class="rank-title">경주 · 야경 투어</p>
+                            <p class="rank-meta">동궁과 월지 루미나리에</p>
+                        </div>
+                        <span class="rank-change down">▼ -1</span>
+                    </li>
+                    <li>
+                        <span class="rank-num">05</span>
+                        <div>
+                            <p class="rank-title">담양 · 감성 드라이브</p>
+                            <p class="rank-meta">메타세쿼이아 뷰</p>
+                        </div>
+                        <span class="rank-change up">▲ +2</span>
+                    </li>
+                </ol>
+            </div>
+
+            <div class="trend-panel highlight">
+                <div class="trend-panel-body">
+                    <p class="trend-panel-label">AI 추천 TIP</p>
+                    <h3>이번 주엔 <span>눈 덜 오는 남해안</span>으로 떠나보세요</h3>
+                    <p class="trend-panel-desc">따뜻한 남해권으로 이동하면 야외 활동 지수가 32% 상승하고, 교통 정체도 적어요. 나만의 루트를 지금 바로 생성해 보세요.</p>
+                    <a href="${pageContext.request.contextPath}/ai/plan" class="trend-panel-cta">맞춤 루트 만들기</a>
+                </div>
+                <div class="trend-panel-pattern"></div>
+            </div>
         </div>
     </section>
 
