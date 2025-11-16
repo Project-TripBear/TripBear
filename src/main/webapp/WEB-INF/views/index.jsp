@@ -9,7 +9,7 @@
 <!-- <link rel="stylesheet" href="http://bit.ly/3WJ5ilK" /> -->
 
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/notice.css">
-<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/index.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/home.css">
 
 </head>
 <body>

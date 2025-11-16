@@ -3,6 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>  
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/main.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/notice.css">
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/mainpage.css">
 
 
@@ -11,9 +12,11 @@
 
         <%-- 왼쪽: 로고 --%>
         <div class="header-column">
-            <div class="logo">
-                <a href="${pageContext.request.contextPath}/">LOGO</a>
-            </div>
+			<div class="logo">
+			    <a href="${pageContext.request.contextPath}/" class="logo-wordmark">
+			        <span class="logo-trip">Trip</span><span class="logo-bear">Bear</span>
+			    </a>
+			</div>
         </div>
 
         <%-- 중앙: 내비게이션 메뉴 --%>
@@ -83,11 +86,12 @@
 <%-- 모바일 메뉴 패널 --%>
 <div id="mobile-menu" class="mobile-menu-panel">
     <div class="menu-header">
-        <div class="logo">
+		<div class="logo">
+		    <a href="${pageContext.request.contextPath}/" class="logo-wordmark">
+		        <span class="logo-trip">Trip</span><span class="logo-bear">Bear</span>
+		    </a>
+		</div>
 
-            <a href="${pageContext.request.contextPath}/main">LOGO</a>
-
-        </div>
         <button id="close-menu-btn" class="close-btn" aria-label="메뉴 닫기">
             <i class="fa-solid fa-times"></i>
         </button>
