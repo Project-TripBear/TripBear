@@ -186,7 +186,7 @@ body {
     background: #F8F9FA;
     padding: 8px 15px;
     border-radius: 30px;
-    width: 180px;
+    width: 150px;
     font-size: 14px;
     transition: all 0.3s;
 }
@@ -617,25 +617,38 @@ main {
     box-shadow: 0 4px 15px rgba(108,154,139,0.2);
 }
 
-/* 로그인/회원가입 버튼 그룹 (추가) */
-.header-right .login-actions {
+/* === 로그인/사용자 정보 === */
+/* 보조 버튼 (테두리) - 기존 .btn-login 대체 */
+.btn-secondary {
+    padding: 8px 20px;
+    border: 1px solid var(--primary);
+    background-color: transparent;
+    color: var(--primary);
+    border-radius: 30px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.3s;
+    cursor: pointer; /* button 태그에도 적용되도록 */
+    font-size: 0.9rem; /* 폰트 크기 통일 */
+    line-height: 1.5; /* 버튼 높이 통일 */
+}
+.btn-secondary:hover {
+    background-color: var(--primary-light);
+    color: var(--primary-dark);
+}
+
+/* .user-info 와 .btn-logout 대체 */
+.user-info {
     display: flex;
     align-items: center;
     gap: 10px; /* 버튼 사이 간격 */
+    font-size: 0.95rem;
 }
-.header-right .btn {
-    padding: 8px 15px;
-    border-radius: 5px;
-    text-decoration: none;
-    font-weight: 500;
+.user-info strong {
+    color: var(--primary-dark);
 }
-.header-right .btn-login {
-    background-color: #f0f0f0;
-    color: #333;
-}
-.header-right .btn-register {
-    background-color: #007bff;
-    color: white;
+.user-info form {
+    margin: 0; /* form 태그 기본 마진 제거 */
 }
 
 /* 프로필 아이콘 스타일 (로그인 후) */
