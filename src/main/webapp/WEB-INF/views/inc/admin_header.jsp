@@ -1,4 +1,6 @@
-<%-- 파일 경로: /WEB-INF/views/inc/admin_header.jsp --%><%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%><%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%-- 파일 경로: /WEB-INF/views/inc/admin_header.jsp --%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <header id="admin-header-tuned">
     <div class="header-inner">
         <div class="header-column">
