@@ -5,6 +5,8 @@
 <html lang="ko">
 <head>
 	<meta charset="UTF-8">
+	<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/hotdeal.css">
+	
 </head>
 <body>
 	<div class="page-board-edit-container"> 
@@ -19,6 +21,27 @@
                     <th>제목</th>
                     <td><input type="text" name="subject" required class="full form-control" value="${dto.subject}"></td>
                 </tr>
+                
+                <tr>
+					<th>판매상태</th>
+						<td><select name="status" class="form-control-select">
+								<option value="1" ${dto.status == '1' ? 'selected' : ''}>판매예정</option>
+								<option value="2" ${dto.status == '2' ? 'selected' : ''}>진행중</option>
+								<option value="3" ${dto.status == '3' ? 'selected' : ''}>판매종료</option>
+						</select></td>
+					</tr>
+					
+					<tr>
+						<th>카테고리</th>
+						<td><select name="category" class="form-control-select">
+								<option value="1" ${dto.category == '1' ? 'selected' : ''}>잡화</option>
+								<option value="2" ${dto.category == '2' ? 'selected' : ''}>전자기기·액세서리</option>
+								<option value="3" ${dto.category == '3' ? 'selected' : ''}>세면·뷰티</option>
+								<option value="4" ${dto.category == '4' ? 'selected' : ''}>수납·안전용품</option>
+								<option value="5" ${dto.category == '5' ? 'selected' : ''}>e쿠폰·입장권</option>
+								<option value="6" ${dto.category == '6' ? 'selected' : ''}>아웃도어·캠핑</option>
+						</select></td>
+					</tr>
                 <tr>
                     <th>내용</th>
                     <td><textarea name="content" required class="full form-control">${dto.content}</textarea></td>
@@ -63,7 +86,8 @@
                 </table>
             
             <div class="action-buttons-group"> <button type="button" class="btn btn-secondary" onclick="location.href='/trip/hotdeal/view?seq=${dto.seq}';">취소</button> <button type="submit" class="btn btn-primary">수정</button> </div>
-            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
+			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
+
         </form>
     </div>
 </div>		

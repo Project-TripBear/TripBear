@@ -1,0 +1,2405 @@
+@charset "UTF-8";
+
+
+
+
+/* ------------------------------------------------------------ */
+/* 로그인 (1번) */
+/* 폼을 감싸는 컨테이너 스타일 */
+.page-login-container {
+    max-width: 420px; /* 너비 약간 증가 */
+    margin: 80px auto; 
+    padding: 50px 40px; /* 내부 여백 증가로 여유로운 느낌 부여 */
+    background-color: var(--surface); 
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-soft);
+    box-sizing: border-box;
+}
+
+/* <h2>로그인</h2> 스타일 */
+.page-login-container h2 {
+    text-align: center;
+    font-size: 2rem; /* 글자 크기 키우기 */
+    font-weight: 700;
+    color: var(--primary-dark);
+    margin-bottom: 30px;
+    border-bottom: 2px solid var(--primary-light); /* 연한 테마 색상으로 구분선 */
+    padding-bottom: 15px;
+}
+
+/* 폼 내부 테이블 스타일 */
+.page-login-container form table.vertical.content {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 25px;
+}
+
+/* 테이블 셀 패딩 및 레이블 스타일 조정 */
+.page-login-container form table.vertical.content tr {
+    border-bottom: none; /* 테이블 행 구분선 제거 (미니멀) */
+}
+.page-login-container form table.vertical.content th {
+    font-weight: 500;
+    color: var(--text); /* 일반 텍스트 색상 사용 */
+    padding: 10px 15px 10px 0;
+    width: 25%; /* 아이디/암호 레이블 너비 줄임 */
+    text-align: left;
+    font-size: 1rem;
+}
+.page-login-container form table.vertical.content td {
+    padding: 10px 0;
+}
+
+
+/* 입력 필드 스타일 (.short 클래스) */
+.page-login-container form input.short {
+    width: 100%; /* 100%로 변경 */
+    padding: 12px;
+    border: 1px solid var(--border); /* 연한 테두리 */
+    border-radius: 8px;
+    font-size: 1rem;
+    color: var(--text);
+    background-color: var(--surface); /* 배경색을 흰색으로 변경하여 깔끔하게 */
+    transition: all 0.3s;
+    box-sizing: border-box;
+}
+
+.page-login-container form input.short:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(108, 154, 139, 0.15); /* 테마 색상으로 더 뚜렷한 포커스 효과 */
+    background-color: var(--surface);
+}
+
+
+
+
+/* 로그인 버튼 스타일 (로그인 버튼을 별도 div 안에 넣어주셨으므로 div button 선택자 사용) */
+.page-login-container form > div button:not(.find-links button) {
+    display: block;
+    width: 100%;
+    padding: 14px; /* 높이 증가 */
+    border: none;
+    border-radius: 30px;
+    background-color: var(--primary); /* 주 색상 적용 */
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: 30px; /* 위쪽 마진 증가 */
+    box-shadow: 0 4px 10px rgba(108, 154, 139, 0.2); /* 은은한 그림자 추가 */
+}
+
+.page-login-container form > div button:not(.find-links button):hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-2px); /* 호버 시 약간 띄우는 효과 */
+    box-shadow: 0 6px 15px rgba(108, 154, 139, 0.3);
+}
+
+/* 아이디/비밀번호 찾기 링크 영역 */
+.page-login-container .find-links {
+    text-align: center;
+    margin-top: 25px;
+    padding-top: 15px;
+    /* border-top: 1px solid var(--border);  구분선 제거 (미니멀) */
+}
+
+/* 아이디/비밀번호 찾기 버튼 스타일 (보조 역할로 변경) */
+.page-login-container .find-links button {
+    background: none;
+    border: none;
+    color: var(--text-light); /* 보조 텍스트 색상 */
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 5px 10px;
+    transition: color 0.2s;
+}
+
+.page-login-container .find-links button:hover {
+    color: var(--primary); /* 호버 시 테마 색상으로 강조 */
+    text-decoration: none; /* 밑줄 대신 색상 변화로 강조 */
+}
+
+.page-login-container .find-links button:not(:last-child) {
+    /* 구분선을 | 문자 대신 약간의 간격과 연한 색으로 처리 */
+    border-right: 1px solid var(--border);
+    padding-right: 15px;
+    margin-right: 5px;
+}
+
+/* ------------------------------------------------------------ */
+
+
+/* 아이디 찾기(2번) */
+
+
+
+/* 1. 컨테이너 스타일 (외곽 카드 복구 및 중앙 정렬) */
+.page-findid-container {
+    max-width: 550px; 
+    /* !important를 사용하여 다른 스타일의 마진/배경을 강제로 덮어씁니다. */
+    margin: 80px auto !important; 
+    padding: 50px 40px;
+    background-color: var(--surface) !important; /* 흰색 카드 배경 */
+    border-radius: var(--radius) !important; /* 둥근 모서리 */
+    box-shadow: var(--shadow-soft) !important; /* 그림자 */
+    box-sizing: border-box;
+}
+
+/* <h1>아이디 찾기</h1> 스타일 */
+.page-findid-container h1 {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary-dark);
+    margin-bottom: 30px;
+    border-bottom: 2px solid var(--primary-light); 
+    padding-bottom: 15px;
+}
+
+/* 2. 테이블 레이아웃 및 정렬 */
+.page-findid-container form table.board-title {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 30px;
+}
+.page-findid-container form table.board-title th {
+    font-weight: 600;
+    color: var(--text);
+    padding: 15px 15px 15px 0;
+    width: 20%; /* 레이블 너비 조정 */
+    text-align: left;
+    vertical-align: middle; /* 세로 중앙 정렬 */
+}
+.page-findid-container form table.board-title td {
+    padding: 15px 0;
+    vertical-align: middle; /* 세로 중앙 정렬 */
+}
+
+/* 3. 입력 필드 공통 스타일 및 크기 제한 */
+.page-findid-container form input[type="text"],
+.page-findid-container form input[type="email"] {
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 1rem;
+    background-color: var(--surface);
+    box-sizing: border-box;
+    transition: all 0.3s;
+}
+
+/* 이름 입력 필드 (#name) 스타일 */
+.page-findid-container form input#name {
+    width: 100%;
+    max-width: 350px; /* 불필요한 확장 방지 */
+}
+
+/* 포커스 효과 (모든 인풋) */
+.page-findid-container form input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(108, 154, 139, 0.15);
+}
+
+/* 4. 이메일/인증 섹션 (Flexbox 기반 정렬) */
+
+/* 이메일 발송 박스 (인풋 + 버튼) */
+.page-findid-container .email-send-box {
+    display: flex;
+    gap: 10px;
+    align-items: center; 
+    width: 100%;
+    max-width: 450px; 
+}
+
+/* 이메일 입력 필드 (#email) */
+.page-findid-container form input#email {
+    flex-grow: 1; 
+    min-width: 150px;
+}
+
+/* 인증 메일 보내기 버튼 */
+.page-findid-container .btn-mail-send {
+    padding: 10px 15px;
+    border-radius: 20px;
+    background-color: var(--primary-light); 
+    color: var(--text);
+    font-weight: 500;
+    font-size: 0.95rem;
+    white-space: nowrap;
+    height: 40px; 
+    line-height: 18px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+/* 인증 번호 입력 및 타이머 박스 */
+.page-findid-container .validation-box {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-top: 10px;
+}
+
+/* 인증 번호 입력 필드 */
+.page-findid-container input#validNumber {
+    max-width: 100px;
+    text-align: center;
+}
+
+/* 인증 번호 입력 버튼 */
+.page-findid-container .btn-valid-check {
+    padding: 10px 15px;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    background-color: var(--surface);
+    color: var(--text-light);
+    font-weight: 500;
+    font-size: 0.95rem;
+    white-space: nowrap;
+    height: 40px;
+    line-height: 18px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+/* 남은 시간 타이머 */
+.page-findid-container #remainTime {
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 0.95rem;
+    white-space: nowrap;
+}
+
+/* 5. 하단 버튼 그룹 */
+.page-findid-container .action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 40px;
+}
+
+/* 버튼 스타일 (크기 및 색상 통일) */
+.page-findid-container .action-buttons .btn {
+    padding: 12px 28px;
+    min-width: 120px;
+    text-align: center;
+    border-radius: 30px;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+.page-findid-container .btn-primary { 
+    background-color: var(--primary);
+    color: white;
+}
+.page-findid-container .btn-secondary {
+    background-color: #E9ECEF;
+    color: var(--text-light);
+}
+.page-findid-container .btn-primary:hover {
+    background-color: var(--primary-dark);
+}
+.page-findid-container .btn-secondary:hover {
+    background-color: #dee2e6;
+    color: var(--text);
+}
+/* ------------------------------------------------------------ */
+
+
+
+
+/* 비밀번호 찾기(3번) */
+
+/* =========================================================
+ 🔑 FIND PASSWORD PAGE STYLES (page-findpw-container)
+ ========================================================= */
+
+/* 1. 컨테이너 스타일 (외곽 카드 및 중앙 정렬) */
+.page-findpw-container {
+    max-width: 500px; /* 아이디 찾기보다 약간 작게 조정 */
+    margin: 80px auto !important; 
+    padding: 50px 40px;
+    background-color: var(--surface) !important; 
+    border-radius: var(--radius) !important; 
+    box-shadow: var(--shadow-soft) !important; 
+    box-sizing: border-box;
+}
+
+/* <h1>비밀번호 찾기</h1> 스타일 */
+.page-findpw-container h1 {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary-dark);
+    margin-bottom: 30px;
+    border-bottom: 2px solid var(--primary-light); 
+    padding-bottom: 15px;
+}
+
+/* 2. 테이블 레이아웃 및 정렬 */
+.page-findpw-container form table.board-title {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 30px;
+}
+.page-findpw-container form table.board-title th {
+    font-weight: 600;
+    color: var(--text);
+    padding: 15px 15px 15px 0;
+    width: 20%; 
+    text-align: left;
+    vertical-align: middle; 
+}
+.page-findpw-container form table.board-title td {
+    padding: 15px 0;
+    vertical-align: middle; 
+}
+
+/* 3. 입력 필드 스타일 통일 */
+.page-findpw-container form input[type="text"],
+.page-findpw-container form input[type="email"] {
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 1rem;
+    background-color: var(--surface);
+    box-sizing: border-box;
+    transition: all 0.3s;
+    width: 100%; /* 너비 100%로 설정 후 max-width로 제한 */
+    max-width: 300px; /* 💡 아이디/이메일 필드 너비 제한 */
+}
+
+.page-findpw-container form input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(108, 154, 139, 0.15);
+}
+
+/* 아이디 필드 (#id)와 이메일 필드 (#email)에 max-width 300px 적용됨 */
+
+/* 4. 하단 버튼 그룹 */
+.page-findpw-container .action-buttons {
+    /* 💡 Flexbox 속성을 다시 강조하여 중앙 정렬 복구 */
+    display: flex !important;
+    justify-content: center !important;
+    gap: 15px;
+    margin-top: 40px;
+}
+
+/* 버튼 스타일 (크기 및 색상 통일) */
+.page-findpw-container .action-buttons .btn {
+    padding: 12px 28px;
+    /* 💡 버튼 너비를 고정하여 폼 전체를 차지하지 않도록 방지 */
+    min-width: 150px; 
+    text-align: center;
+    border-radius: 30px;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: none;
+}
+
+/* 비밀번호 발급 버튼 (Primary) */
+.page-findpw-container .btn-primary { 
+    background-color: var(--primary);
+    color: white;
+}
+/* 돌아가기 버튼 (Secondary) */
+.page-findpw-container .btn-secondary {
+    background-color: #E9ECEF;
+    color: var(--text-light);
+}
+.page-findpw-container .btn-primary:hover {
+    background-color: var(--primary-dark);
+}
+.page-findpw-container .btn-secondary:hover {
+    background-color: #dee2e6;
+    color: var(--text);
+}
+
+/* ------------------------------------------------------------ */
+
+/* 마이페이지 (4번) */
+/* =========================================================
+ 🔑 MYPAGE STYLES - FINAL VERSION (전체)
+ * 제목 스타일 개선 및 활동 요약 정렬 *
+ ========================================================= */
+
+/* 마이페이지 전체 컨테이너 (레이아웃) */
+.page-mypage-container {
+    max-width: 850px; 
+    margin: 0 auto !important; /* 중앙 정렬 */
+    /* 💡 상단 패딩 추가로 전체 콘텐츠를 헤더 아래로 내리고 공간 확보 */
+    padding: 40px 30px !important; 
+}
+
+/* 1. 마이페이지 제목 */
+.page-mypage-container h1 {
+    font-size: 3rem; /* 💡 글자 크기 키움 */
+    font-weight: 700;
+    color: var(--primary-dark) !important; /* 💡 글자색을 테마색으로 강조 */
+    margin-top: 0; 
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    /* 💡 아래 구분선을 얇고 연한 색으로 처리 */
+    border-bottom: 1px solid var(--border) !important; 
+    max-width: 850px; 
+    width: 100%;
+}
+
+/* --- 2. 내 활동 요약 섹션 (텍스트 블록) --- */
+#my-summary.summary-text-block {
+    max-width: 600px; 
+    margin: 0 auto 40px auto; /* 중앙 정렬 및 아래 메뉴 테이블과의 간격 확보 */
+    padding: 10px 0;
+    background: none; 
+    border: none;
+    box-shadow: none;
+    /* 💡 텍스트 블록 전체를 Flex로 설정하여 내부 요소 정렬 */
+    display: flex; 
+    align-items: center; /* 💡 수직 중앙 정렬 (높이 균형) */
+    flex-wrap: wrap;
+    gap: 15px; 
+}
+
+/* "내 활동:" 메인 레이블 */
+.summary-label {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--primary-dark);
+    margin-right: 5px;
+    padding-right: 15px;
+    border-right: 1px solid var(--primary-light);
+    white-space: nowrap;
+}
+
+/* "게시글 수: 0" 전체 항목 스타일 (가독성 강조) */
+.summary-item {
+    font-size: 1rem;
+    font-weight: 700; /* 💡 항목 전체를 굵게 */
+    color: var(--primary); /* 💡 항목 전체를 테마색으로 변경 */
+    margin-right: 20px;
+    padding: 0;
+    display: inline-block;
+    white-space: nowrap;
+    line-height: 1.5; /* 텍스트 높이 통일 */
+}
+
+
+/* --- 3. 마이페이지 메뉴 테이블 (카드 컨테이너) --- */
+.menu-card-wrapper {
+    width: 100%;
+    max-width: 600px; 
+    margin: 0 auto !important; /* 중앙 정렬 */
+    background-color: var(--surface) !important;
+    border-radius: var(--radius) !important;
+    overflow: hidden;
+    box-shadow: var(--shadow-soft) !important;
+    border: 1px solid var(--border);
+}
+
+.page-mypage-container table.mypage-menu-table {
+    width: 100%;
+    margin: 0;
+    border-collapse: collapse;
+    background: none; 
+    border: none; 
+}
+
+.mypage-menu-table tr {
+    border-bottom: 1px solid var(--border);
+    transition: background-color 0.3s;
+}
+.mypage-menu-table tr:hover {
+    background-color: #F8F9FA !important;
+}
+.mypage-menu-table tr:last-child {
+    border-bottom: none;
+}
+
+/* 💡 테이블 왼쪽 빈 셀 (<th>) 스타일 */
+.mypage-menu-table th {
+    width: 20px; /* 💡 <th>의 너비를 최소화 */
+    padding: 18px 5px;
+    text-align: left;
+    color: var(--primary-dark);
+    font-weight: 700;
+    font-size: 1rem;
+    background-color: #F8F9FA; 
+    border-right: 1px solid var(--border);
+    vertical-align: middle;
+}
+
+/* 💡 테이블 내용 (<td>) 스타일 - 클릭 영역 */
+.mypage-menu-table td {
+    padding: 18px 20px;
+    vertical-align: middle;
+    width: auto; /* 남은 공간 모두 차지 */
+}
+
+.mypage-menu-table td a {
+    display: block;
+    text-decoration: none;
+    color: var(--primary-dark) !important; /* 💡 메뉴 텍스트 강조색 */
+    font-size: 1.1rem;
+    font-weight: 700;
+    transition: color 0.3s;
+}
+.mypage-menu-table td a:hover {
+    color: var(--primary);
+    text-decoration: none;
+}
+/* ------------------------------------------------------------ */
+
+/* 회원정보(5번) */
+
+/* =========================================================
+ 🔑 USER INFO PAGE STYLES (page-userinfo-container) - COLOR HOVER
+ ========================================================= */
+
+/* 페이지 컨테이너 및 테이블 스타일은 유지 */
+.page-userinfo-container {
+    max-width: 700px; 
+    margin: 40px auto !important;
+    padding: 40px 50px;
+    background-color: var(--surface) !important;
+    border-radius: var(--radius) !important;
+    box-shadow: var(--shadow-soft) !important;
+    border: 1px solid var(--border);
+}
+
+.page-userinfo-container h1 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--primary-dark);
+    margin-bottom: 30px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--primary-light);
+    text-align: center;
+}
+
+/* ... (테이블 스타일 유지) ... */
+.page-userinfo-container table.user-view-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 40px;
+}
+.user-view-table th, .user-view-table td {
+    padding: 15px 20px;
+    border-bottom: 1px solid var(--border);
+}
+
+
+/* --- 하단 버튼 그룹 (색상 호버 효과 복구) --- */
+.action-buttons-group {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.action-buttons-group .btn {
+    padding: 12px 28px;
+    min-width: 120px;
+    border-radius: 30px;
+    font-weight: 700;
+    cursor: pointer;
+    /* 💡 transform: translateY(0) 고정으로 정렬 유지 */
+    transform: translateY(0); 
+    transition: all 0.3s;
+    border: none;
+}
+
+/* 1. 돌아가기 버튼 (Secondary) */
+.action-buttons-group .btn-secondary {
+    background-color: #E9ECEF;
+    color: var(--text-light);
+}
+.action-buttons-group .btn-secondary:hover {
+    /* 💡 호버: 배경/글자색 변환 유지 */
+    background-color: #dee2e6;
+    color: var(--text);
+}
+
+/* 2. 수정하기 버튼 (Primary - 테마 색상) */
+.action-buttons-group .btn-primary {
+    background-color: var(--primary);
+    color: white;
+}
+.action-buttons-group .btn-primary:hover {
+    /* 💡 호버: 배경/글자색 변환 유지 */
+    background-color: var(--primary-dark);
+    color: white;
+    /* 튀어나오는 그림자 효과는 제거 */
+    box-shadow: none; 
+}
+
+/* 3. 회원탈퇴 버튼 (Danger - 강조색) */
+.action-buttons-group .btn-danger {
+    background-color: var(--accent);
+    color: white;
+}
+.action-buttons-group .btn-danger:hover {
+    /* 💡 호버: 배경/글자색 변환 유지 */
+    background-color: #E57355;
+    color: white;
+}
+
+/* ------------------------------------------------------------ */
+
+/* 회원정보수정(6번) */
+
+
+
+/* =========================================================
+ 🔑 USER EDIT PAGE STYLES (page-useredit-container)
+ ========================================================= */
+
+/* 페이지 컨테이너: 중앙 배치 및 화이트 카드 스타일 */
+.page-useredit-container {
+    max-width: 800px; 
+    margin: 40px auto !important; /* 중앙 정렬 */
+    padding: 40px 50px;
+    background-color: var(--surface) !important;
+    border-radius: var(--radius) !important;
+    box-shadow: var(--shadow-soft) !important;
+    border: 1px solid var(--border);
+}
+
+/* <h1>제목 스타일 */
+.page-useredit-container h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--primary-dark);
+    margin-bottom: 30px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--primary-light);
+    text-align: center;
+}
+/* small 태그 스타일 */
+.page-useredit-container h1 small {
+    display: block;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--text-light);
+    margin-top: 5px;
+}
+
+/* --- 수정 폼 테이블 스타일 --- */
+.page-useredit-container table.edit-form-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 40px;
+    font-size: 1rem;
+}
+.edit-form-table tr {
+    border-bottom: 1px solid var(--border);
+}
+.edit-form-table tr:last-child {
+    border-bottom: none;
+}
+
+/* 테이블 제목 (<th>) - 항목 이름 */
+.edit-form-table th {
+    width: 25%;
+    padding: 15px 20px;
+    text-align: left;
+    font-weight: 600;
+    color: var(--text-light);
+    background-color: #F8F9FA; 
+    border-right: 1px solid var(--border);
+    vertical-align: middle;
+}
+
+/* 테이블 내용 (<td>) - 입력 필드 영역 */
+.edit-form-table td {
+    padding: 15px 20px;
+    text-align: left;
+    vertical-align: middle;
+    display: table-cell; /* td 정렬 문제 방지 */
+}
+
+/* --- 입력 필드 스타일 통일 (form-control) --- */
+.page-useredit-container .form-control {
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 1rem;
+    background-color: var(--surface);
+    box-sizing: border-box;
+    transition: all 0.3s;
+}
+.page-useredit-container .form-control:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(108, 154, 139, 0.15);
+}
+
+/* 개별 필드 너비 조정 */
+.edit-form-table .short {
+    width: 180px;
+}
+.edit-form-table .long {
+    width: 100%;
+    max-width: 350px;
+}
+
+/* 성별 라디오 버튼 */
+.edit-form-table .radio-label {
+    margin-right: 15px;
+    cursor: pointer;
+    font-weight: 400;
+    color: var(--text);
+}
+
+/* 주소 검색 필드 그룹 */
+.edit-form-table td > input.input-address {
+    margin-right: 10px;
+    width: calc(100% - 110px); /* 버튼 너비 고려 */
+    max-width: 300px;
+}
+.edit-form-table .btn-small {
+    padding: 8px 15px;
+    font-size: 0.9rem;
+    min-width: 90px;
+}
+
+/* --- 하단 버튼 그룹 --- */
+.action-buttons-group {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.action-buttons-group .btn {
+    padding: 12px 28px;
+    min-width: 120px;
+    border-radius: 30px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: none;
+    transform: translateY(0); 
+}
+
+/* 1. 돌아가기 버튼 (Secondary) */
+.action-buttons-group .btn-secondary {
+    background-color: #E9ECEF;
+    color: var(--text-light);
+}
+.action-buttons-group .btn-secondary:hover {
+    background-color: #dee2e6;
+    color: var(--text);
+}
+
+/* 2. 수정하기 버튼 (Primary) */
+.action-buttons-group .btn-primary {
+    background-color: var(--primary);
+    color: white;
+}
+.action-buttons-group .btn-primary:hover {
+    background-color: var(--primary-dark);
+}
+
+/* ------------------------------------------------------------ */
+
+/* 회원탈퇴(6번) */
+
+/* =========================================================
+ 🔑 USER DELETE PAGE STYLES (page-userdel-container)
+ ========================================================= */
+
+/* 페이지 컨테이너: 중앙 배치 및 화이트 카드 스타일 */
+.page-userdel-container {
+    max-width: 550px; 
+    margin: 80px auto !important; /* 중앙 정렬 */
+    padding: 40px 50px;
+    background-color: var(--surface) !important;
+    border-radius: var(--radius) !important;
+    box-shadow: var(--shadow-soft) !important;
+    border: 1px solid var(--border);
+}
+
+/* <h1>탈퇴하기</h1> 제목 스타일 */
+.page-userdel-container h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--primary-dark);
+    margin-bottom: 30px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--primary-light);
+    text-align: center;
+}
+
+/* --- 폼 필드 스타일 (Flexbox 레이블-인풋 정렬) --- */
+.page-userdel-container .form-row {
+    display: flex;
+    align-items: flex-start; /* 레이블과 인풋/텍스트 영역 상단 정렬 */
+    margin-bottom: 20px;
+}
+
+.page-userdel-container label {
+    display: block;
+    width: 120px; /* 레이블 너비 고정 */
+    padding-top: 12px; /* 인풋 패딩과 맞춤 */
+    padding-right: 15px;
+    font-weight: 600;
+    color: var(--text-light);
+    flex-shrink: 0;
+    text-align: right;
+    line-height: 1.5;
+}
+
+/* 입력 필드 (비밀번호, 탈퇴사유) */
+.page-userdel-container .form-control {
+    width: 100%;
+    max-width: 350px;
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 1rem;
+    background-color: var(--surface);
+    box-sizing: border-box;
+    transition: all 0.3s;
+}
+
+.page-userdel-container .form-control:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(108, 154, 139, 0.15);
+}
+
+/* 텍스트 영역 (탈퇴사유) */
+.page-userdel-container textarea.form-control {
+    min-height: 120px;
+    resize: vertical;
+}
+
+
+/* --- 하단 버튼 그룹 --- */
+.del-form-actions { /* 💡 클래스 이름 변경 */
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 40px;
+}
+
+.del-form-actions .btn { /* 💡 클래스 이름 변경 */
+    padding: 12px 28px;
+    min-width: 120px;
+    border-radius: 30px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: none;
+    transform: translateY(0); 
+}
+
+/* 1. 돌아가기 버튼 (Secondary) */
+.del-form-actions .btn-secondary { /* 💡 클래스 이름 변경 */
+    background-color: #E9ECEF;
+    color: var(--text-light);
+}
+.del-form-actions .btn-secondary:hover { /* 💡 클래스 이름 변경 */
+    background-color: #dee2e6;
+    color: var(--text);
+}
+
+/* 2. 삭제하기 버튼 (Danger - 강조색) */
+.del-form-actions .btn-danger { /* 💡 클래스 이름 변경 */
+    background-color: var(--accent);
+    color: white;
+}
+.del-form-actions .btn-danger:hover { /* 💡 클래스 이름 변경 */
+    background-color: #E57355;
+}
+
+/* ------------------------------------------------------------ */
+
+/* 내가 쓴 개시글 (7번) */
+/* =========================================================
+ 🔑 BOARD ACTIVITIES STYLES - FINAL VERSION
+ ========================================================= */
+
+/* 페이지 컨테이너: 전체 페이지의 좌우 여백만 담당 */
+.page-boardactivities-container {
+    max-width: 1000px;
+    margin: 40px auto !important; /* 중앙 정렬 */
+    padding: 0 30px; /* 좌우 패딩 */
+}
+
+/* 실제 콘텐츠 영역을 감싸는 #main (제목, 테이블 중앙 정렬 기준) */
+.page-boardactivities-container #main {
+    max-width: 900px; /* 💡 콘텐츠의 최대 너비를 900px로 제한 */
+    margin: 0 auto; /* 💡 #main 자체를 중앙 정렬 */
+    padding: 0;
+}
+
+/* <h1>페이지 제목 스타일 (내가 쓴 게시글) */
+.page-boardactivities-container #main h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 25px;
+    padding-bottom: 0;
+    border-bottom: none;
+    text-align: left; /* 제목은 왼쪽 정렬 */
+}
+
+
+/* --- 1. 서브 메뉴 (내가 쓴 게시글/댓글/좋아요/스크랩) --- */
+.board-sub-header {
+    margin-bottom: 40px;
+    background-color: var(--surface); /* 흰색 배경 */
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-soft);
+    border: 1px solid var(--border);
+    padding: 15px 20px;
+    max-width: 900px; /* 💡 #main과 동일한 너비 */
+    margin-left: auto; /* 💡 중앙 정렬 */
+    margin-right: auto; /* 💡 중앙 정렬 */
+}
+
+.sub-header-inner {
+    display: flex;
+    gap: 20px;
+    justify-content: center; /* 메뉴 중앙 정렬 */
+}
+
+.board-sub-header a {
+    text-decoration: none;
+    color: var(--text-light);
+    font-weight: 600;
+    padding: 8px 15px;
+    border-radius: 8px;
+    transition: all 0.3s;
+    white-space: nowrap;
+}
+
+.board-sub-header a:hover {
+    background-color: #F0F4F7;
+    color: var(--primary-dark);
+}
+
+.board-sub-header a.active {
+    background-color: var(--primary-light); /* 현재 메뉴 강조 */
+    color: var(--primary-dark);
+    font-weight: 700;
+}
+
+
+/* --- 2. 게시글 목록 테이블 스타일 --- */
+.page-boardactivities-container .activity-list-table {
+    max-width: 900px; /* 💡 테이블의 최대 너비 제한 */
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    margin-left: auto; /* 중앙 정렬 */
+    margin-right: auto; /* 중앙 정렬 */
+    background-color: var(--surface);
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    overflow: hidden;
+}
+
+/* 테이블 헤더 */
+.activity-list-table tr:first-child {
+    background-color: var(--bg);
+    border-bottom: 2px solid var(--border);
+}
+.activity-list-table th {
+    padding: 15px 20px;
+    text-align: left; 
+    font-weight: 600;
+    color: var(--text-light);
+}
+
+/* 테이블 데이터 셀 공통 */
+.activity-list-table td {
+    padding: 15px 20px;
+    color: var(--text);
+    font-size: 0.95rem;
+    vertical-align: middle;
+    text-align: left; 
+}
+
+/* 💡 게시판 이름 셀 (1열) */
+.activity-list-table td:nth-child(1),
+.activity-list-table th:nth-child(1) {
+    width: 150px; 
+    min-width: 150px;
+    font-weight: 600;
+    color: var(--primary); 
+    text-align: left;
+}
+
+/* 💡 제목 셀 (2열) - 남은 공간 자동 차지 */
+.activity-list-table td:nth-child(2),
+.activity-list-table th:nth-child(2) {
+    width: auto;
+    text-align: left;
+}
+
+/* 💡 날짜 셀 (3열) - 너비 고정 및 중앙 정렬 */
+.activity-list-table td:nth-child(3),
+.activity-list-table th:nth-child(3) {
+    width: 120px; 
+    min-width: 120px;
+    text-align: center; 
+    color: var(--text-light);
+    font-size: 0.9rem;
+}
+
+/* 테이블 바디 행 및 호버 효과 */
+.activity-list-table tr:not(:first-child) {
+    border-bottom: 1px solid var(--border);
+    transition: background-color 0.3s;
+}
+.activity-list-table tr:not(:first-child):hover {
+    background-color: #F8F9FA;
+}
+
+/* 제목 링크 스타일 */
+.activity-list-table a {
+    text-decoration: none;
+    color: var(--text);
+    font-weight: 600;
+    transition: color 0.3s;
+}
+.activity-list-table a:hover {
+    color: var(--primary-dark);
+    text-decoration: underline;
+}
+
+
+/* --- 3. 페이징 영역 스타일 --- */
+
+/* 컨테이너 중앙 정렬 */
+#pagebar.pagebar-container {
+    text-align: center;
+    margin-top: 30px;
+}
+
+/* 페이지 링크 및 현재 페이지 번호 스타일 */
+.pagebar-container a,
+.pagebar-container span { 
+    display: inline-block;
+    min-width: 36px;
+    height: 36px;
+    line-height: 36px;
+    text-align: center;
+    border-radius: 50%; /* 원형 */
+    color: var(--text-light);
+    font-weight: 500;
+    text-decoration: none;
+    margin: 0 4px;
+    transition: all 0.2s;
+}
+
+.pagebar-container a:hover {
+    background-color: #E9ECEF;
+    color: var(--text);
+}
+
+/* 현재 페이지 번호 강조 */
+.pagebar-container span { 
+    background-color: var(--primary);
+    color: #fff;
+    cursor: default;
+    font-weight: 700;
+}
+
+
+/* ------------------------------------------------------------ */
+
+/* 내가 쓴 댓글 (8번) */
+
+/* =========================================================
+ 🔑 COMMENT ACTIVITIES STYLES - FINAL OPTIMIZED VERSION
+ ========================================================= */
+
+/* 페이지 컨테이너 및 제목 스타일 */
+.page-commentactivities-container {
+    max-width: 1000px;
+    margin: 40px auto !important; 
+    padding: 0 30px;
+}
+.page-commentactivities-container #main {
+    max-width: 900px; 
+    margin: 0 auto;
+    padding: 0;
+}
+.page-commentactivities-container #main h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 25px;
+    text-align: left;
+}
+
+
+/* --- 1. 서브 메뉴 (내가 쓴 게시글/댓글/좋아요/스크랩) --- */
+.board-sub-header {
+    margin-bottom: 40px;
+    background-color: var(--surface); 
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-soft);
+    border: 1px solid var(--border);
+    padding: 15px 20px;
+    max-width: 900px; 
+    margin-left: auto;
+    margin-right: auto;
+}
+/* ... (board-sub-header a, a:hover, a.active 스타일은 기존 CSS에서 공유) ... */
+
+
+/* --- 2. 댓글 목록 테이블 스타일 (2단 행 구조) --- */
+.page-commentactivities-container .comment-list-table {
+    width: 100%;
+    max-width: 900px;
+    border-collapse: collapse;
+    margin-top: 20px;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: var(--surface);
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    overflow: hidden;
+}
+
+/* 테이블 헤더 */
+.comment-list-table thead th {
+    padding: 15px 20px;
+    text-align: left; 
+    font-weight: 600;
+    color: var(--text-light);
+    background-color: var(--bg);
+    border-bottom: 2px solid var(--border);
+}
+
+/* 데이터 셀 공통 스타일 */
+.comment-list-table tbody td {
+    padding: 15px 20px;
+    color: var(--text);
+    font-size: 0.95rem;
+    vertical-align: middle;
+    text-align: left; 
+}
+
+/* 1. 게시글 정보 행 (.comment-post-row) */
+.comment-list-table tr.comment-post-row {
+    border-bottom: none; /* 하단 테두리는 댓글 내용이 있는 행에만 적용 */
+    transition: background-color 0.3s;
+}
+.comment-list-table tr.comment-post-row:hover {
+    background-color: #F8F9FA;
+}
+
+/* 2. 댓글 내용 상세 행 (.comment-content-row) */
+.comment-list-table tr.comment-content-row {
+    background-color: #F8F9FA; /* 💡 연한 배경색으로 데이터 구분 */
+    border-bottom: 1px solid var(--border); /* 💡 구분선 적용 */
+}
+.comment-list-table tr:last-of-type {
+    border-bottom: none; /* 마지막 데이터 세트는 테두리 제거 */
+}
+
+/* 💡 게시판 이름 셀 (1열) */
+.comment-list-table .board-title-cell {
+    width: 150px; 
+    font-weight: 500;
+    color: var(--primary); 
+}
+
+/* 💡 작성일 셀 (3열) */
+.comment-list-table .regdate-cell {
+    width: 120px; 
+    text-align: center;
+    color: var(--text-light);
+    font-size: 0.9rem;
+}
+
+/* 💡 제목 링크 스타일 */
+.comment-list-table .post-subject-cell a {
+    text-decoration: none;
+    color: var(--text-dark);
+    font-weight: 600;
+}
+.comment-list-table .post-subject-cell a:hover {
+    color: var(--primary-dark);
+    text-decoration: underline;
+}
+
+/* 💡 댓글 내용 상세 셀 스타일 */
+.comment-list-table .content-cell {
+    padding: 10px 25px 10px 45px; /* 왼쪽 여백을 더 주어 들여쓰기 */
+    font-size: 0.95rem;
+    color: var(--text);
+    border-left: 4px solid var(--primary-light); /* 댓글 내용을 강조하는 보더 라인 */
+}
+.comment-list-table .content-label {
+    font-weight: 600;
+    color: var(--text-light);
+    margin-right: 5px;
+}
+
+
+/* --- 3. 페이징 영역 스타일 --- */
+/* (pagebar-container 스타일은 기존 CSS와 공유) */ 
+
+
+
+/* ------------------------------------------------------------ */
+
+/* 좋아요한 게시글 (9번) */
+
+
+/* =========================================================
+ 🔑 LIKE ACTIVITIES STYLES - FINAL ALIGNMENT FIX
+ ========================================================= */
+
+/* 페이지 컨테이너: 전체 페이지의 좌우 여백만 담당 */
+.page-likeactivities-container {
+    max-width: 1000px;
+    margin: 40px auto !important; 
+    padding: 0 30px;
+}
+
+/* 실제 콘텐츠 영역을 감싸는 #main */
+.page-likeactivities-container #main {
+    max-width: 900px; /* 💡 테이블의 최대 너비와 동일하게 설정 */
+    margin: 0 auto; 
+    padding: 0;
+}
+
+/* <h1>페이지 제목 스타일 */
+.page-likeactivities-container h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 25px;
+    padding-bottom: 0;
+    border-bottom: none;
+    text-align: left;
+}
+
+/* --- 1. 서브 메뉴 (board-sub-header) --- */
+.board-sub-header {
+    margin-bottom: 40px;
+    background-color: var(--surface);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-soft);
+    border: 1px solid var(--border);
+    padding: 15px 20px;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+}
+/* ... (board-sub-header a, a:hover, a.active 스타일은 기존 CSS에서 공유) ... */
+
+
+/* --- 2. 게시글 목록 테이블 스타일 --- */
+.page-likeactivities-container .activity-list-table {
+    width: 100%;
+    max-width: 900px; /* 💡 테이블의 최대 너비 제한 */
+    border-collapse: collapse;
+    margin-top: 20px;
+    margin-left: auto; 
+    margin-right: auto; 
+    background-color: var(--surface);
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    overflow: hidden;
+}
+
+/* 테이블 헤더 */
+.activity-list-table tr:first-child {
+    background-color: var(--bg);
+    border-bottom: 2px solid var(--border);
+}
+.activity-list-table th {
+    padding: 15px 20px;
+    text-align: left; /* 💡 헤더 텍스트 왼쪽 정렬 */
+    font-weight: 600;
+    color: var(--text-light);
+}
+
+/* 테이블 데이터 셀 공통 */
+.activity-list-table td {
+    padding: 15px 20px;
+    color: var(--text);
+    font-size: 0.95rem;
+    vertical-align: middle;
+    text-align: left; 
+}
+
+/* 💡 게시판 이름 셀 (1열) */
+.activity-list-table td:nth-child(1),
+.activity-list-table th:nth-child(1) {
+    width: 150px; 
+    min-width: 150px;
+    font-weight: 600;
+    color: var(--primary); 
+    text-align: left;
+}
+
+/* 💡 날짜 셀 (3열) - 너비 고정 및 중앙 정렬 */
+.activity-list-table td:nth-child(3),
+.activity-list-table th:nth-child(3) {
+    width: 120px; 
+    min-width: 120px;
+    text-align: center; 
+    color: var(--text-light);
+    font-size: 0.9rem;
+}
+
+/* 제목 셀 (2열) - 남은 공간 자동 차지 */
+.activity-list-table td:nth-child(2),
+.activity-list-table th:nth-child(2) {
+    width: auto;
+    text-align: left;
+}
+
+/* 데이터가 없을 때의 셀 정렬 */
+.activity-list-table tr td[colspan="5"] {
+    text-align: center; /* 💡 게시물이 없을 경우 중앙 정렬 */
+    font-style: italic;
+    color: var(--text-light);
+    padding: 30px;
+    border-bottom: none;
+}
+
+/* 테이블 바디 행 및 호버 효과 */
+.activity-list-table tr:not(:first-child) {
+    border-bottom: 1px solid var(--border);
+    transition: background-color 0.3s;
+}
+.activity-list-table tr:not(:first-child):hover {
+    background-color: #F8F9FA;
+}
+
+/* 제목 링크 스타일 */
+.activity-list-table a {
+    text-decoration: none;
+    color: var(--text);
+    font-weight: 600;
+    transition: color 0.3s;
+}
+.activity-list-table a:hover {
+    color: var(--primary-dark);
+    text-decoration: underline;
+}
+
+
+/* --- 3. 페이징 영역 스타일 --- */
+#pagebar.pagebar-container {
+    text-align: center; 
+    margin-top: 30px;
+}
+
+/* 페이지 링크 및 현재 페이지 번호 스타일 (기존 CSS 공유) */
+.pagebar-container a,
+.pagebar-container span { 
+    display: inline-block;
+    min-width: 36px;
+    height: 36px;
+    line-height: 36px;
+    text-align: center;
+    border-radius: 50%;
+    color: var(--text-light);
+    font-weight: 500;
+    text-decoration: none;
+    margin: 0 4px;
+    transition: all 0.2s;
+}
+
+.pagebar-container a:hover {
+    background-color: #E9ECEF;
+    color: var(--text);
+}
+
+.pagebar-container span { 
+    background-color: var(--primary);
+    color: #fff;
+    cursor: default;
+    font-weight: 700;
+}
+
+
+/* ------------------------------------------------------------ */
+
+/* 스크랩한 게시글 (9번) */
+
+/* =========================================================
+ 🔑 SCRAP ACTIVITIES STYLES - FINAL VERSION (배경색 FIX 포함)
+ ========================================================= */
+
+/* 페이지 컨테이너: 전체 페이지의 좌우 여백만 담당 */
+.page-scrapactivities-container {
+    max-width: 1000px;
+    margin: 40px auto !important; 
+    padding: 0 30px;
+}
+
+/* 실제 콘텐츠 영역을 감싸는 #main */
+.page-scrapactivities-container #main {
+    max-width: 900px; 
+    margin: 0 auto; 
+    padding: 0;
+}
+
+/* <h1>페이지 제목 스타일 */
+.page-scrapactivities-container #main h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 25px;
+    padding-bottom: 0;
+    border-bottom: none;
+    text-align: left;
+}
+
+/* --- 1. 서브 메뉴 (board-sub-header) --- */
+.board-sub-header {
+    margin-bottom: 40px;
+    background-color: var(--surface);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-soft);
+    border: 1px solid var(--border);
+    padding: 15px 20px;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+}
+/* (board-sub-header a, a:hover, a.active 스타일은 기존 CSS에서 공유) */
+
+
+/* --- 2. 게시글 목록 테이블 스타일 --- */
+.page-scrapactivities-container .activity-list-table {
+    width: 100%;
+    max-width: 900px; 
+    border-collapse: collapse;
+    margin-top: 20px;
+    margin-left: auto; 
+    margin-right: auto; 
+    background-color: var(--surface);
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    overflow: hidden;
+}
+
+/* 테이블 헤더 */
+.activity-list-table tr:first-child {
+    background-color: var(--bg);
+    border-bottom: 2px solid var(--border);
+}
+.activity-list-table th {
+    padding: 15px 20px;
+    text-align: left; 
+    font-weight: 600;
+    color: var(--text-light);
+}
+
+/* 테이블 데이터 셀 공통 */
+.activity-list-table td {
+    padding: 15px 20px;
+    color: var(--text);
+    font-size: 0.95rem;
+    vertical-align: middle;
+    text-align: left; 
+}
+
+/* 💡 게시판 이름 셀 (1열) */
+.activity-list-table td:nth-child(1),
+.activity-list-table th:nth-child(1) {
+    width: 150px; 
+    min-width: 150px;
+    font-weight: 600;
+    color: var(--primary); 
+    text-align: left;
+}
+
+/* 💡 제목 셀 (2열) - 남은 공간 자동 차지 */
+.activity-list-table td:nth-child(2),
+.activity-list-table th:nth-child(2) {
+    width: auto;
+    text-align: left;
+}
+
+/* 💡 날짜 셀 (3열) - 너비 고정 및 중앙 정렬 */
+.activity-list-table td:nth-child(3),
+.activity-list-table th:nth-child(3) {
+    width: 120px; 
+    min-width: 120px;
+    text-align: center; 
+    color: var(--text-light);
+    font-size: 0.9rem;
+}
+
+/* 테이블 바디 행 및 호버 효과 */
+.activity-list-table tr:not(:first-child) {
+    border-bottom: 1px solid var(--border);
+    transition: background-color 0.3s;
+}
+.activity-list-table tr:not(:first-child):hover {
+    background-color: #F8F9FA;
+}
+
+/* 💡 데이터가 없을 때의 셀 정렬 및 배경색 수정 */
+.activity-list-table tr td[colspan="3"],
+.activity-list-table tr td[colspan="5"] {
+    text-align: center; 
+    font-style: italic;
+    color: var(--text-light);
+    padding: 30px;
+    border-bottom: none;
+    background-color: var(--surface) !important; /* 💡 배경색을 흰색 카드로 강제 */
+}
+
+/* 제목 링크 스타일 */
+.activity-list-table a {
+    text-decoration: none;
+    color: var(--text);
+    font-weight: 600;
+    transition: color 0.3s;
+}
+.activity-list-table a:hover {
+    color: var(--primary-dark);
+    text-decoration: underline;
+}
+
+
+/* --- 3. 페이징 영역 스타일 --- */
+#pagebar.pagebar-container {
+    text-align: center; 
+    margin-top: 30px;
+}
+
+/* 페이지 링크 및 현재 페이지 번호 스타일 (기존 CSS 공유) */
+.pagebar-container a,
+.pagebar-container span { 
+    display: inline-block;
+    min-width: 36px;
+    height: 36px;
+    line-height: 36px;
+    text-align: center;
+    border-radius: 50%;
+    color: var(--text-light);
+    font-weight: 500;
+    text-decoration: none;
+    margin: 0 4px;
+    transition: all 0.2s;
+}
+
+.pagebar-container a:hover {
+    background-color: #E9ECEF;
+    color: var(--text);
+}
+
+.pagebar-container span { 
+    background-color: var(--primary);
+    color: #fff;
+    cursor: default;
+    font-weight: 700;
+}
+
+
+/* ------------------------------------------------------------ */
+
+/* 회원가입 (10번) */
+
+/* =========================================================
+ 🔑 USER REGISTER PAGE STYLES (page-register-container)
+ ========================================================= */
+
+/* 페이지 컨테이너: 중앙 배치 및 화이트 카드 스타일 */
+.page-register-container {
+    max-width: 800px; 
+    margin: 40px auto !important; /* 중앙 정렬 */
+    padding: 40px 50px;
+    background-color: var(--surface) !important;
+    border-radius: var(--radius) !important;
+    box-shadow: var(--shadow-soft) !important;
+    border: 1px solid var(--border);
+}
+
+/* <h2>회원 가입</h2> 제목 스타일 */
+.page-register-container h2 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--primary-dark);
+    margin-bottom: 30px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--primary-light);
+    text-align: center;
+}
+
+/* --- 폼 테이블 스타일 --- */
+.page-register-container table.register-form-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 40px;
+    font-size: 1rem;
+}
+.register-form-table tr {
+    border-bottom: 1px solid var(--border);
+}
+.register-form-table tr:last-child {
+    border-bottom: none;
+}
+
+/* 테이블 제목 (<th>) - 항목 이름 */
+.register-form-table th {
+    width: 25%;
+    padding: 15px 20px;
+    text-align: left;
+    font-weight: 600;
+    color: var(--text-light);
+    background-color: #F8F9FA; /* 연한 배경 */
+    border-right: 1px solid var(--border);
+    vertical-align: middle;
+}
+
+/* 테이블 내용 (<td>) - 입력 필드 영역 */
+.register-form-table td {
+    padding: 15px 20px;
+    text-align: left;
+    vertical-align: middle;
+    display: table-cell;
+}
+
+/* --- 입력 필드 공통 스타일 (form-control) --- */
+.page-register-container .form-control {
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 1rem;
+    background-color: var(--surface);
+    box-sizing: border-box;
+    transition: all 0.3s;
+}
+.page-register-container .form-control:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(108, 154, 139, 0.15);
+}
+
+/* 필드 너비 조정 */
+.register-form-table .short {
+    width: 180px;
+}
+.register-form-table .long {
+    width: 100%;
+    max-width: 350px;
+}
+
+
+/* --- 아이디/이메일 인증 영역 (Flexbox 사용) --- */
+.register-form-table .email-input-group,
+.register-form-table .address-input-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* 이메일 발송, 입력하기 버튼 */
+.register-form-table .validation-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 5px;
+}
+.register-form-table .btn-small {
+    padding: 8px 15px;
+    font-size: 0.9rem;
+    min-width: 90px;
+    border-radius: 30px;
+    white-space: nowrap;
+}
+
+/* 인증 시간 타이머 */
+.register-form-table .validation-timer {
+    font-weight: 700;
+    color: var(--accent);
+    white-space: nowrap;
+    font-size: 0.9rem;
+}
+
+/* 유효성 메시지 (아이디 중복 검사) */
+.register-form-table .validation-message {
+    display: block;
+    margin-top: 5px;
+    font-size: 0.9rem;
+}
+
+
+/* 주소 검색 버튼 */
+.register-form-table .address-input-group .form-control.input-address {
+    flex-grow: 1;
+}
+
+/* 성별 라디오 버튼 */
+.register-form-table .radio-label {
+    margin-right: 15px;
+    cursor: pointer;
+    font-weight: 400;
+    color: var(--text);
+}
+
+
+/* --- 하단 버튼 그룹 (가입하기) --- */
+.action-buttons-group {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+.action-buttons-group .btn {
+    padding: 14px 40px; /* 더 크고 눈에 띄게 */
+    min-width: 180px;
+    border-radius: 30px;
+    font-weight: 700;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: none;
+    transform: translateY(0); 
+    
+    /* Primary (가입하기 버튼) */
+    background-color: var(--primary);
+    color: white;
+}
+.action-buttons-group .btn-primary:hover {
+    background-color: var(--primary-dark);
+    box-shadow: 0 4px 15px rgba(108, 154, 139, 0.3);
+}
+
+
+
+/* ------------------------------------------------------------ */
+
+/* 내 여행 루트 (11번) */
+
+
+/* =========================================================
+ 🔑 USER ROUTE PAGE STYLES (page-userroute-container)
+ ========================================================= */
+
+/* 페이지 컨테이너 및 제목 */
+.page-userroute-container {
+    max-width: 1200px;
+    margin: 40px auto !important;
+    padding: 0 30px;
+}
+.page-userroute-container #main {
+    max-width: 900px; 
+    margin: 0 auto;
+    padding: 0;
+}
+.page-userroute-container h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--primary-dark);
+    margin-bottom: 30px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--primary-light);
+    text-align: left;
+}
+
+
+/* --- 1. 루트 목록 컨테이너 --- */
+#route-list-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* 루트 항목 사이 간격 */
+}
+
+/* --- 2. 개별 루트 항목 카드 --- */
+.route-card-item {
+    display: flex;
+    justify-content: space-between; /* 내용과 버튼을 양 끝으로 분리 */
+    align-items: center;
+    
+    background-color: var(--surface); /* 흰색 카드 배경 */
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-soft);
+    border: 1px solid var(--border);
+    padding: 20px;
+    transition: box-shadow 0.3s, transform 0.2s;
+}
+
+.route-card-item:hover {
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    transform: translateY(-2px); /* 약간 튀어나오는 효과 */
+}
+
+/* 루트 항목 내용 (제목 + 상세 정보) */
+.route-item-content {
+    flex-grow: 1;
+    cursor: pointer;
+    padding-right: 20px;
+}
+
+.route-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 10px;
+}
+
+.route-details span {
+    font-size: 0.95rem;
+    color: var(--text-light);
+    margin-right: 20px;
+}
+
+/* --- 3. 예약하기 버튼 (폼) --- */
+.route-booking-form {
+    flex-shrink: 0; /* 버튼이 줄어들지 않도록 */
+}
+
+.route-booking-form .btn-book {
+    padding: 10px 25px;
+    min-width: 120px;
+    border-radius: 30px;
+    font-weight: 600;
+}
+
+/* --- 4. 루트 없음 메시지 --- */
+.no-route-message {
+    text-align: center;
+    padding: 40px;
+    font-size: 1.2em;
+    color: var(--text-light);
+    background-color: var(--surface);
+    border-radius: var(--radius);
+    border: 1px dashed var(--border);
+}
+
+/* --- 5. 더보기 버튼 --- */
+.load-more-container {
+    text-align: center;
+    margin-top: 30px;
+}
+.load-more-container .btn-secondary {
+    padding: 12px 40px;
+    border-radius: 30px;
+    background-color: var(--bg);
+    color: var(--text-light);
+    font-weight: 600;
+    border: 1px solid var(--border);
+}
+.load-more-container .btn-secondary:hover {
+    background-color: #E9ECEF;
+    color: var(--text);
+}
+
+
+/* ------------------------------------------------------------ */
+
+/* 랜터카 예약 (12번) */
+
+/* 페이지 컨테이너 및 제목 스타일 */
+.page-carreservation-container {
+    max-width: 1100px; /* 테이블 너비 고려하여 확장 */
+    margin: 40px auto !important; 
+    padding: 0 30px;
+}
+.page-carreservation-container #main {
+    max-width: 1000px; /* 내부 콘텐츠 최대 너비 */
+    margin: 0 auto;
+    padding: 0;
+}
+.page-carreservation-container #main h1 {
+    font-size: 2.5rem; /* 제목 크기 키움 */
+    font-weight: 700;
+    color: var(--primary-dark);
+    margin-bottom: 25px;
+    padding-bottom: 0;
+    border-bottom: none;
+    text-align: left;
+}
+
+/* --- 1. 서브 메뉴 (렌트카/숙소 예약) --- */
+.page-carreservation-container .board-sub-header {
+    margin-bottom: 40px;
+    background-color: var(--surface); 
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-soft);
+    border: 1px solid var(--border);
+    padding: 15px 20px;
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.page-carreservation-container .sub-header-inner {
+    display: flex;
+    gap: 20px;
+    justify-content: flex-start; /* 좌측 정렬 */
+}
+/* (board-sub-header a, a:hover, a.active 스타일은 기존 CSS와 공유) */
+
+
+/* --- 2. 예약 목록 테이블 스타일 --- */
+.page-carreservation-container .reservation-list-table {
+    width: 100%;
+    max-width: 1000px; /* 테이블 최대 너비 제한 */
+    border-collapse: collapse;
+    margin-top: 20px;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: var(--surface);
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    overflow: hidden;
+    cursor: default;
+}
+
+/* 테이블 헤더 */
+.reservation-list-table thead th {
+    padding: 15px 20px;
+    text-align: center; /* 💡 헤더 중앙 정렬 */
+    font-weight: 600;
+    color: var(--text-light);
+    background-color: var(--bg);
+    border-bottom: 2px solid var(--border);
+}
+
+/* 데이터 행 */
+.reservation-list-table tbody tr.data-row {
+    border-bottom: 1px solid var(--border);
+    transition: background-color 0.3s;
+    cursor: pointer; /* 클릭 가능 표시 */
+}
+.reservation-list-table tbody tr.data-row:hover {
+    background-color: #F8F9FA;
+}
+
+/* 데이터 셀 */
+.reservation-list-table td {
+    padding: 15px 20px;
+    color: var(--text);
+    font-size: 1rem;
+    vertical-align: middle;
+    text-align: center; /* 💡 데이터 중앙 정렬 */
+}
+
+/* 예약번호, 차종, 모델 강조 */
+.reservation-list-table td:nth-child(1), /* 예약번호 */
+.reservation-list-table td:nth-child(2), /* 차종 */
+.reservation-list-table td:nth-child(3) { /* 차량모델 */
+    font-weight: 600;
+    color: var(--primary-dark);
+}
+
+/* 예약 내역 없음 셀 */
+.reservation-list-table td.no-data-cell {
+    text-align: center;
+    font-style: italic;
+    color: var(--text-light);
+    padding: 30px;
+    background-color: var(--surface);
+}
+
+
+/* ------------------------------------------------------------ */
+
+/* 랜터카 예약 세부정보 (13번) */
+
+
+/* =========================================================
+ 🔑 CAR RESERVATION VIEW STYLES (page-carview-container)
+ ========================================================= */
+
+/* 페이지 컨테이너: 중앙 배치 및 화이트 카드 스타일 */
+.page-carview-container {
+    max-width: 800px; 
+    margin: 40px auto !important; 
+    padding: 0 30px;
+}
+.page-carview-container #main {
+    max-width: 700px;
+    margin: 0 auto;
+    padding-top: 20px; /* 제목 위 여백 조정 */
+}
+
+/* <h1>차량 예약 상세 내역 제목 스타일 */
+.page-carview-container h1 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--primary-dark);
+    margin-bottom: 30px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--primary-light);
+    text-align: center;
+}
+
+
+/* --- 1. 서브 메뉴 (board-sub-header) --- */
+.page-carview-container .board-sub-header {
+    margin-bottom: 40px;
+    background-color: var(--surface); 
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-soft);
+    border: 1px solid var(--border);
+    padding: 15px 20px;
+    max-width: 700px; /* 테이블 너비와 맞춤 */
+    margin-left: auto;
+    margin-right: auto;
+}
+.page-carview-container .sub-header-inner {
+    justify-content: center; /* 메뉴 중앙 정렬 */
+    gap: 20px;
+}
+
+
+/* --- 2. 상세 정보 테이블 스타일 --- */
+.page-carview-container table.view-detail-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 40px;
+    background-color: var(--surface);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-soft);
+    overflow: hidden;
+    border: 1px solid var(--border);
+}
+
+.view-detail-table tr {
+    border-bottom: 1px solid var(--border);
+}
+.view-detail-table tr:last-child {
+    border-bottom: none;
+}
+
+/* 테이블 제목 (<th>) - 항목 이름 */
+.view-detail-table th {
+    width: 35%; /* 레이블 너비 확보 */
+    padding: 15px 20px;
+    text-align: left;
+    font-weight: 600;
+    color: var(--text-light);
+    background-color: #F8F9FA; 
+    border-right: 1px solid var(--border);
+    vertical-align: middle;
+}
+
+/* 테이블 내용 (<td>) - 값 */
+.view-detail-table td {
+    padding: 15px 20px;
+    text-align: left;
+    font-weight: 500;
+    color: var(--text);
+    vertical-align: middle;
+}
+
+/* 💡 총비용 강조 행 */
+.view-detail-table .highlight-row th {
+    background-color: var(--primary-light);
+    color: var(--primary-dark);
+    font-weight: 700;
+}
+.view-detail-table .price-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--accent); /* 강조색 */
+}
+
+/* 💡 요청사항 셀 (장문 처리를 위해 상단 정렬) */
+.view-detail-table .notes-cell {
+    white-space: pre-wrap; /* 줄바꿈 유지 */
+    min-height: 100px;
+    vertical-align: top;
+}
+
+
+/* --- 3. 하단 버튼 그룹 --- */
+.action-buttons-group {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.action-buttons-group .btn {
+    padding: 12px 28px;
+    min-width: 150px;
+    border-radius: 30px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: none;
+    transform: translateY(0); 
+}
+
+/* 돌아가기 버튼 (Secondary) */
+.action-buttons-group .btn-secondary {
+    background-color: #E9ECEF;
+    color: var(--text-light);
+}
+.action-buttons-group .btn-secondary:hover {
+    background-color: #dee2e6;
+    color: var(--text);
+}
+
+/* 예약 취소하기 버튼 (Danger) */
+.action-buttons-group .btn-danger {
+    background-color: var(--accent); /* 강조색 (빨강/주황 계열) */
+    color: white;
+}
+.action-buttons-group .btn-danger:hover {
+    background-color: #E57355; 
+}
+
+/* ------------------------------------------------------------ */
+
+/* 숙소 예약 (14번) */
+
+
+
+/* =========================================================
+ 🔑 ACCOM RESERVATION STYLES (page-accomreservation-container)
+ ========================================================= */
+
+/* 페이지 컨테이너 및 제목 스타일 (차량 예약과 동일) */
+.page-accomreservation-container {
+    max-width: 1100px;
+    margin: 40px auto !important; 
+    padding: 0 30px;
+}
+.page-accomreservation-container #main {
+    max-width: 1000px; 
+    margin: 0 auto;
+    padding: 0;
+}
+.page-accomreservation-container #main h1 {
+    font-size: 2.5rem; 
+    font-weight: 700;
+    color: var(--primary-dark);
+    margin-bottom: 25px;
+    padding-bottom: 0;
+    border-bottom: none;
+    text-align: left;
+}
+
+/* --- 1. 서브 메뉴 (렌트카/숙소 예약) --- */
+.page-accomreservation-container .board-sub-header {
+    margin-bottom: 40px;
+    background-color: var(--surface); 
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-soft);
+    border: 1px solid var(--border);
+    padding: 15px 20px;
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.page-accomreservation-container .sub-header-inner {
+    display: flex;
+    gap: 20px;
+    justify-content: flex-start; /* 💡 좌측 정렬 유지 */
+}
+/* (board-sub-header a, a:hover, a.active 스타일은 기존 CSS에서 공유) */
+
+
+/* --- 2. 예약 목록 테이블 스타일 (차량 예약 스타일 공유) --- */
+.page-accomreservation-container .reservation-list-table {
+    width: 100%;
+    max-width: 1000px; 
+    border-collapse: collapse;
+    margin-top: 20px;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: var(--surface);
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    overflow: hidden;
+    cursor: default;
+}
+
+/* 테이블 헤더 및 셀 (reservation-list-table 공통 스타일 사용) */
+.page-accomreservation-container .reservation-list-table thead th {
+    padding: 15px 20px;
+    text-align: center;
+    font-weight: 600;
+    color: var(--text-light);
+    background-color: var(--bg);
+    border-bottom: 2px solid var(--border);
+}
+
+/* 데이터 셀 */
+.page-accomreservation-container .reservation-list-table td {
+    padding: 15px 20px;
+    color: var(--text);
+    font-size: 1rem;
+    vertical-align: middle;
+    text-align: center; /* 데이터 중앙 정렬 */
+}
+
+/* 예약번호, 객실명 강조 (1, 2열) */
+.page-accomreservation-container .reservation-list-table td:nth-child(1), /* 예약번호 */
+.page-accomreservation-container .reservation-list-table td:nth-child(2) { /* 객실명 */
+    font-weight: 600;
+    color: var(--primary-dark);
+}
+
+/* 예약 내역 없음 셀 (colspan=4로 수정) */
+.page-accomreservation-container .reservation-list-table td.no-data-cell {
+    text-align: center;
+    font-style: italic;
+    color: var(--text-light);
+    padding: 30px;
+    background-color: var(--surface);
+}
+
+/* ------------------------------------------------------------ */
+
+/* 숙소 예약 상세정보 (15번) */
+
+/* =========================================================
+ 🔑 ACCOM RESERVATION VIEW STYLES (page-accomview-container)
+ ========================================================= */
+
+/* 페이지 컨테이너: 중앙 배치 및 제목 스타일 */
+.page-accomview-container {
+    max-width: 800px; 
+    margin: 40px auto !important; 
+    padding: 0 30px;
+}
+.page-accomview-container #main {
+    max-width: 700px;
+    margin: 0 auto;
+    padding-top: 20px;
+}
+
+/* <h1>숙소 예약 상세 내역 제목 스타일 */
+.page-accomview-container h1 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--primary-dark);
+    margin-bottom: 30px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--primary-light);
+    text-align: center;
+}
+
+
+/* --- 1. 서브 메뉴 (board-sub-header) --- */
+.page-accomview-container .board-sub-header {
+    margin-bottom: 40px;
+    background-color: var(--surface); 
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-soft);
+    border: 1px solid var(--border);
+    padding: 15px 20px;
+    max-width: 700px; /* 테이블 너비와 맞춤 */
+    margin-left: auto;
+    margin-right: auto;
+}
+.page-accomview-container .sub-header-inner {
+    justify-content: center;
+    gap: 20px;
+}
+/* (board-sub-header a, a:hover, a.active 스타일은 기존 CSS에서 공유) */
+
+
+/* --- 2. 상세 정보 테이블 스타일 --- */
+.page-accomview-container table.view-detail-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 40px;
+    background-color: var(--surface);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-soft);
+    overflow: hidden;
+    border: 1px solid var(--border);
+}
+
+.view-detail-table tr {
+    border-bottom: 1px solid var(--border);
+}
+.view-detail-table tr:last-child {
+    border-bottom: none;
+}
+
+/* 테이블 제목 (<th>) - 항목 이름 */
+.view-detail-table th {
+    width: 35%; 
+    padding: 15px 20px;
+    text-align: left;
+    font-weight: 600;
+    color: var(--text-light);
+    background-color: #F8F9FA; 
+    border-right: 1px solid var(--border);
+    vertical-align: middle;
+}
+
+/* 테이블 내용 (<td>) - 값 */
+.view-detail-table td {
+    padding: 15px 20px;
+    text-align: left;
+    font-weight: 500;
+    color: var(--text);
+    vertical-align: middle;
+}
+
+/* 💡 총비용 강조 행 */
+.view-detail-table .highlight-row th {
+    background-color: var(--primary-light);
+    color: var(--primary-dark);
+    font-weight: 700;
+}
+.view-detail-table .price-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--accent); /* 강조색 */
+}
+
+
+/* --- 3. 하단 버튼 그룹 --- */
+.action-buttons-group {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.action-buttons-group .btn {
+    padding: 12px 28px;
+    min-width: 150px;
+    border-radius: 30px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: none;
+    transform: translateY(0); 
+}
+
+/* 돌아가기 버튼 (Secondary) */
+.action-buttons-group .btn-secondary {
+    background-color: #E9ECEF;
+    color: var(--text-light);
+}
+.action-buttons-group .btn-secondary:hover {
+    background-color: #dee2e6;
+    color: var(--text);
+}
+
+/* 예약 취소하기 버튼 (Danger) */
+.action-buttons-group .btn-danger {
+    background-color: var(--accent); 
+    color: white;
+}
+.action-buttons-group .btn-danger:hover {
+    background-color: #E57355; 
+}
+

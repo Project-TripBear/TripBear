@@ -356,7 +356,7 @@ public class HotDealController {
 	        return "board.hotdeal.edit";
 	    }
 
-	    // POST: 수정 처리
+	 // POST: 수정 처리
 	    @PostMapping("/hotdeal/edit")
 	    public String editPost(
 	            @RequestParam("seq") String seq,
@@ -370,7 +370,7 @@ public class HotDealController {
 	            @RequestParam("url") String url,
 	            @RequestParam(value = "deleteImages", required = false) String[] deleteImages,
 	            Authentication auth,
-	            Model model) throws IOException {
+	            Model model) throws IOException { // throws IOException 확인
 
 	        String userId = auth.getName();
 	        
@@ -402,18 +402,34 @@ public class HotDealController {
 	                }
 	            }
 	            
-	            // 새 이미지 추가
+	            // 새 이미지 추가 (이 부분이 수정되었습니다)
 	            if (imgFiles != null && imgFiles.length > 0) {
 	                int maxSeq = mapper.selectMaxImageSeq(seq);
 	                int imageSeq = maxSeq + 1;
+
+	                // --- (추가) 파일 저장 경로 설정 (addPost와 동일하게) ---
+	                String realPath = "C:/tripbear";
+	                File uploadDir = new File(realPath);
+	                if (!uploadDir.exists()) {
+	                    uploadDir.mkdirs(); // 폴더가 없으면 생성
+	                }
+	                // ----------------------------------------------------
 	                
 	                for (MultipartFile imgFile : imgFiles) {
 	                    if (imgFile != null && !imgFile.isEmpty()) {
-	                        String savedFileName = imgFile.getOriginalFilename();
+	                        
+	                        // --- (수정) 고유한 파일명 생성 (addPost와 동일하게) ---
+	                        String originalFilename = imgFile.getOriginalFilename();
+	                        String savedFileName = System.currentTimeMillis() + "_" + originalFilename; 
+
+	                        // --- (추가) 실제 파일 저장 (addPost와 동일하게) ---
+	                        File dest = new File(uploadDir, savedFileName);
+	                        imgFile.transferTo(dest);
+	                        // -------------------------------------------------
 	                        
 	                        Map<String, Object> param = new HashMap<>();
 	                        param.put("hotdealId", seq);
-	                        param.put("img", savedFileName);
+	                        param.put("img", savedFileName); // (수정) 고유 파일명으로 DB에 저장
 	                        param.put("hotdealImageSeq", imageSeq++);
 	                        
 	                        mapper.insertBoardImage(param);

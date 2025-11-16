@@ -23,10 +23,17 @@ public class SessionUrlSavingFilter extends OncePerRequestFilter {
 		    !requestURI.contains("/logout") &&
 		    !requestURI.contains("/auth") &&
 		    !requestURI.contains("/static") &&
+		    !requestURI.contains("/script") &&
+		    !requestURI.contains("/like") &&
+		    !requestURI.contains("/scrap") &&
+		    !requestURI.contains("/allplace") &&
 		    !requestURI.contains("/css") &&
 		    !requestURI.contains("/js") &&
+		    !requestURI.contains("/morecomment") &&
 			!requestURI.contains("/resources") &&
 			!requestURI.contains("/upload") &&  // ★★★ 추가 ★★★
+			!requestURI.contains("/findpw") &&
+			!requestURI.contains("/findid") &&
 			!requestURI.contains("/images")){
 			
 			String fullUrl = requestURI;

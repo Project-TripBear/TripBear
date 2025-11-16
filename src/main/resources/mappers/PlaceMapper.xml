@@ -11,9 +11,8 @@
     WHERE place_location_id = #{locationId}
       AND place_type_id = #{typeId}
       AND place_id != #{placeId}
-    ORDER BY RAND()
-    LIMIT 6
-	</select>
+    ORDER BY DBMS_RANDOM.VALUE  FETCH FIRST 6 ROWS ONLY    
+    </select>
 
     <select id="findPlaceByContentId" 
             parameterType="string" 
@@ -246,6 +245,13 @@
         #{restaurantOpenTime},
         #{restaurantCloseTime}
     )
-</insert>
+	</insert>
+
+	<select id="findHashtagsByPlaceId" parameterType="long" resultType="string">
+        SELECT k.keyword_name
+        FROM tblKeyword k
+        JOIN tblKeywordLink l ON k.keyword_id = l.keyword_id
+        WHERE l.place_id = #{placeId}
+    </select>
 
 </mapper>

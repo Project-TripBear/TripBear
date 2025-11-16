@@ -6,6 +6,7 @@
     <meta charset="UTF-8">
     <%-- jQuery 라이브러리를 꼭 추가해주세요 --%>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/mypage.css">
     
     <%-- ▼▼▼ 분리한 CSS 파일을 연결합니다 ▼▼▼ --%>
 

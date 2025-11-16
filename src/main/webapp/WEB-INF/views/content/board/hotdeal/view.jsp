@@ -7,6 +7,8 @@
 	<meta charset="UTF-8">
 	<meta name="_csrf" content="${_csrf.token}">
 <meta name="_csrf_header" content="${_csrf.headerName}">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/hotdeal.css">
+
 	
 </head>
 <body>
@@ -73,7 +75,7 @@
         <h3>댓글</h3>
         <table id="comment" class="comment-list-table"> <tbody>
                 <c:forEach items="${clist}" var="cdto">
-                    <tr class="comment-row"> <td class="commentContent">
+                    <tr class="comment-row" id="comment-row-${cdto.seq}"> <td class="commentContent">
                             <div>${cdto.content}</div>
                             <div>${cdto.regdate}</div>
                         </td>
@@ -241,18 +243,19 @@
 	                    console.log('---------------------------------');  
 	                    
 	                    let buttonHtml = '';
-	                    
-	                    if ('${useq}' && ('${useq}' == Number(obj.id))) {  
-	                        buttonHtml = `
-	                            <span class="material-symbols-outlined" onclick="edit(${obj.seq});">수정</span>
-	                            <span class="material-symbols-outlined" onclick="del(${obj.seq});">삭제</span>
-	                        `;
+	          
+
+	                    if ('${useq}' && '${useq}' == String(obj.id)) {  
+	                        buttonHtml = 
+	                            '<span class="material-symbols-outlined" onclick="edit(' + obj.seq + ')">수정</span>' +
+	                            '<span class="material-symbols-outlined" onclick="del(' + obj.seq + ')">삭제</span>';
 	                    }
 
 	                    // 💡 newRow 생성 시, 클래스와 인라인 스타일을 모두 추가합니다. (클릭 모션 FIX)
 	                    const newRow = $('<tr>')
 	                        .addClass('comment-row')
-	                        .css('cursor', 'pointer') 
+	                        .css('cursor', 'pointer')
+	                        .attr('id', 'comment-row-' + obj.seq)
 	                        .append(
 	                            $('<td>').addClass('commentContent').append(
 	                                $('<div>').text(obj.content), 
@@ -286,46 +289,51 @@
 	// ==========================================================
 	// 3. 댓글 수정 기능 (Edit Comment) - seq 누락 방지 및 타입 변환
 	// ==========================================================
-	function edit(seq) {
-	    $('.commentEditRow').remove();
-	    let content = $(event.target).parents('tr').children().eq(0).children().eq(0).text();
-	    
-	    // 💡 seq를 문자열로 가져왔든 숫자로 가져왔든, 그대로 HTML에 삽입합니다.
-	    const commentSeq = seq; 
-	    console.log('edit가 받은 seq:', seq);
+	function edit(seq) { // 👈 event 인수 제거
+    $('.commentEditRow').remove();
+    
+    // seq로 현재 댓글 행을 찾음
+    const commentRow = $('#comment-row-' + seq);
+    if (!commentRow.length) {
+        console.error('댓글 행을 찾을 수 없습니다: ' + seq);
+        return;
+    }
+    
+    // 
+    let content = commentRow.find('.commentContent div').first().text();
+    
+    const commentSeq = seq; 
 
-	    // 💡 댓글 수정 행 템플릿 (버튼에 seq 값 정확히 전달)
-	    $(event.target).parents('tr').after(
-	        '<tr class="commentEditRow">' +
-	            '<td colspan="2">' + 
-	                '<div>' +
-	                    '<input type="text" name="content" class="full" required value="' + content.replace(/"/g, '&quot;') + '" id="txtComment" style="width: 100%; box-sizing: border-box;">' +
-	                '</div>' +
-	                '<div style="margin-top: 10px; text-align: right;">' +
-	                    // 💡 editComment 호출 시 인수로 commentSeq 전달
-	                    '<button type="button" class="btn btn-primary btn-small" onclick="editComment(' + commentSeq + ');">확인</button>' +
-	                    '<button type="button" class="btn btn-secondary btn-small" onclick="$(event.target).parents(\'tr\').remove();" style="margin-left: 5px;">닫기</button>' +
-	                '</div>' +
-	            '</td>' +
-	        '</tr>'
-	    );
-	}
+    // 
+    commentRow.after(
+        '<tr class="commentEditRow">' +
+            '<td colspan="2">' + 
+                '<div>' +
+                    '<input type="text" name="content" class="full" required value="' + content.replace(/"/g, '&quot;') + '" id="txtComment" style="width: 100%; box-sizing: border-box;">' +
+                '</div>' +
+                '<div style="margin-top: 10px; text-align: right;">' +
+                    // 
+                    '<button type="button" class="btn btn-primary btn-small" onclick="editComment(' + commentSeq + ');">확인</button>' +
+                    // 
+                    '<button type="button" class="btn btn-secondary btn-small" onclick="$(\'.commentEditRow\').remove();" style="margin-left: 5px;">닫기</button>' +
+                '</div>' +
+            '</td>' +
+        '</tr>'
+    );
+}
 
-	function editComment(seq) {
-	    // 💡 1. 전달받은 seq 인수를 Number()로 강제 변환하여 유효성 및 타입 오류 방지
-console.log('editComment가 받은 seq:', seq);
-
-	    const commentSeq = (seq) ? Number(seq) : 0; 
-
+	function editComment(seq) { // 👈 event 인수 제거
+	    const commentSeq = Number(seq);
 	    if (isNaN(commentSeq) || commentSeq <= 0) {
 	        console.error('댓글 번호가 유효하지 않아 수정 중단:', seq);
 	        alert('댓글 번호 정보가 유효하지 않습니다. 수정에 실패했습니다.');
 	        return;
 	    }
 	    
-	    let editRow = $(event.target).parents('tr');
-	    let commentRow = editRow.prev();
-	    let newContent = $('#txtComment').val().trim();
+	    // 
+	    let commentRow = $('#comment-row-' + seq);
+	    let editRow = commentRow.next('.commentEditRow'); // 
+	    let newContent = editRow.find('#txtComment').val().trim(); // 
 	    
 	    if (!newContent) {
 	        alert('댓글 내용을 입력해주세요.');
@@ -337,9 +345,8 @@ console.log('editComment가 받은 seq:', seq);
 	        method: 'POST',
 	        contentType: 'application/json',
 	        data: JSON.stringify({
-	            seq: commentSeq, // 💡 숫자로 변환된 안전한 값 사용
-	            content: newContent
-	            
+	            seq: commentSeq, 
+	            content: newContent // 👈 
 	        }),
 	        dataType: 'json',
 	        success: function(result) {
@@ -356,9 +363,10 @@ console.log('editComment가 받은 seq:', seq);
 	    });
 	}
 
-	function del(seq) {
+	function del(seq) { // 👈 event 인수 제거
 	    $('.commentEditRow').remove();
-	    let tr = $(event.target).parents('tr');
+	    let tr = $('#comment-row-' + seq); // 
+	    
 	    if (confirm('삭제하겠습니까?')) {
 	        $.ajax({
 	            url: '/trip/hotdeal/delcomment',

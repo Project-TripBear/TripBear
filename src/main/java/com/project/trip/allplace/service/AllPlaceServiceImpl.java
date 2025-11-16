@@ -85,78 +85,92 @@ public class AllPlaceServiceImpl implements AllPlaceService {
             
             // 3. contentTypeId에 따라 분기
             if (apiContentTypeId.equals("12")) {
-                
-                TourIntroVO introResponse = tourApiService.getPlaceIntro(contentId, apiContentTypeId);
-                
-                TouristSpotDTO spotDetail = new TouristSpotDTO();
-                spotDetail.setPlaceId(newPlace.getPlaceId()); 
-                spotDetail.setSpotOverinfo(item.getOverview()); 
 
-                if (introResponse != null && 
+                TourIntroVO introResponse = tourApiService.getPlaceIntro(contentId, apiContentTypeId);
+
+                TouristSpotDTO spotDetail = new TouristSpotDTO();
+                spotDetail.setPlaceId(newPlace.getPlaceId());
+                spotDetail.setSpotOverinfo(item.getOverview());
+
+                // ★★★ NULL 안전 검사 추가 ★★★
+                if (introResponse != null &&
+                    introResponse.getResponse() != null &&
+                    introResponse.getResponse().getBody() != null &&
+                    introResponse.getResponse().getBody().getItems() != null &&
                     introResponse.getResponse().getBody().getItems().getItem() != null &&
                     !introResponse.getResponse().getBody().getItems().getItem().isEmpty()) {
-                    
-                    TourIntroVO.Item introItem = introResponse.getResponse().getBody().getItems().getItem().get(0);
-                    
+
+                    TourIntroVO.Item introItem =
+                            introResponse.getResponse().getBody().getItems().getItem().get(0);
+
                     spotDetail.setAdmissionFee(introItem.getAdmissionFee());
                     spotDetail.setOpeningHours(introItem.getOpeningHours());
                     spotDetail.setContactInfo(introItem.getContactInfo());
                     spotDetail.setParkingInfo(introItem.getParkingInfo());
                     spotDetail.setRestDay(introItem.getRestDay());
                 }
-                
+
                 placeMapper.insertTouristSpot(spotDetail);
                 System.out.println("[OnDemand] tblTouristSpot INSERT 성공! (placeId: " + newPlace.getPlaceId() + ")");
-            
-            } else if (apiContentTypeId.equals("15")) {
-                
-                TourIntroEventVO eventResponse = tourApiService.getEventIntro(contentId, apiContentTypeId);
-                
-                EventDTO eventDetail = new EventDTO();
-                eventDetail.setPlaceId(newPlace.getPlaceId()); 
-                eventDetail.setEventName(newPlace.getName());  
-                eventDetail.setEventThemeId(1L); // (1=기타)
 
-                if (eventResponse != null && 
+            } else if (apiContentTypeId.equals("15")) {
+
+                TourIntroEventVO eventResponse = tourApiService.getEventIntro(contentId, apiContentTypeId);
+
+                EventDTO eventDetail = new EventDTO();
+                eventDetail.setPlaceId(newPlace.getPlaceId());
+                eventDetail.setEventName(newPlace.getName());
+                eventDetail.setEventThemeId(1L); // 기본값
+
+                // ★★★ NULL 안전 검사 추가 ★★★
+                if (eventResponse != null &&
+                    eventResponse.getResponse() != null &&
+                    eventResponse.getResponse().getBody() != null &&
+                    eventResponse.getResponse().getBody().getItems() != null &&
                     eventResponse.getResponse().getBody().getItems().getItem() != null &&
                     !eventResponse.getResponse().getBody().getItems().getItem().isEmpty()) {
-                    
-                    TourIntroEventVO.Item introItem = eventResponse.getResponse().getBody().getItems().getItem().get(0);
-                    
+
+                    TourIntroEventVO.Item introItem =
+                            eventResponse.getResponse().getBody().getItems().getItem().get(0);
+
                     eventDetail.setEventStart(introItem.getEventStart());
                     eventDetail.setEventEnd(introItem.getEventEnd());
                     eventDetail.setEventInfo(introItem.getEventInfo());
                     eventDetail.setEventLink(introItem.getEventLink());
                 }
-                
+
                 placeMapper.insertEvent(eventDetail);
                 System.out.println("[OnDemand] tblEvent INSERT 성공! (placeId: " + newPlace.getPlaceId() + ")");
-            
+
             } else if (apiContentTypeId.equals("39")) {
-                
+
                 TourIntroRestaurantVO introResponse = tourApiService.getRestaurantIntro(contentId, apiContentTypeId);
-                
+
                 RestaurantDTO restDetail = new RestaurantDTO();
                 restDetail.setPlaceId(newPlace.getPlaceId());
-                
-                // (ERD 기반 DTO 필드 매핑)
-                if (introResponse != null && 
+
+                // ★★★ NULL 안전 검사 추가 ★★★
+                if (introResponse != null &&
+                    introResponse.getResponse() != null &&
+                    introResponse.getResponse().getBody() != null &&
+                    introResponse.getResponse().getBody().getItems() != null &&
                     introResponse.getResponse().getBody().getItems().getItem() != null &&
                     !introResponse.getResponse().getBody().getItems().getItem().isEmpty()) {
-                    
-                    TourIntroRestaurantVO.Item introItem = introResponse.getResponse().getBody().getItems().getItem().get(0);
-                    
-                    // API(VO) -> DTO(ERD)
-                    restDetail.setRestaurantCategory(introItem.getTreatMenu()); 
+
+                    TourIntroRestaurantVO.Item introItem =
+                            introResponse.getResponse().getBody().getItems().getItem().get(0);
+
+                    restDetail.setRestaurantCategory(introItem.getTreatMenu());
                     restDetail.setRestaurantCall(introItem.getContactInfo());
                     restDetail.setRestaurantPrice(introItem.getFirstMenu());
                     restDetail.setRestaurantOpenTime(introItem.getOpeningHours());
-                    // (rating, count, close_time은 API에 없으므로 DTO 기본값(null, 0.0) 사용)
+                    // closeTime, rating 등은 API에 없으니 그대로 기본값
                 }
-                
+
                 placeMapper.insertRestaurant(restDetail);
                 System.out.println("[OnDemand] tblRestaurant INSERT 성공! (placeId: " + newPlace.getPlaceId() + ")");
             }
+
             
             return newPlace;
         }
@@ -350,6 +364,10 @@ public class AllPlaceServiceImpl implements AllPlaceService {
      * (헬퍼2) DB의 place_location_id(long)를 TourAPI의 areacode(String)로 변환합니다.
      */
     private String mapLocationIdToAreaCode(long locationId) {
+    	if (locationId == 0) {
+            return null;
+        }
+    	
         switch ((int) locationId) {
             case 1:  return "1";   // 서울
             case 2:  return "6";   // 부산
@@ -377,5 +395,4 @@ public class AllPlaceServiceImpl implements AllPlaceService {
             default: return "1";   // 기본값: 서울
         }
     }
-    // --- [여기까지] ---
 }

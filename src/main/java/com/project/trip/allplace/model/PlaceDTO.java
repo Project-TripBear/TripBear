@@ -25,9 +25,12 @@ public class PlaceDTO {
     private String placeMainImageUrl;
     private double distance;
     
+    
+    private String overview;
     private List<String> hashtags;
     
     private TouristSpotDTO touristSpotDetail;
     private EventDTO eventDetail;
-    private RestaurantDTO restaurantDetail;   
+    private RestaurantDTO restaurantDetail;
+    private String contentTypeId;
 }
