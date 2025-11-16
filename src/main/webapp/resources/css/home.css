@@ -377,3 +377,458 @@
         grid-template-columns: 1fr;
     }
 }
+
+/* 섹션 공통 */
+.home-section {
+    background-color: var(--surface);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-soft);
+    padding: 24px 20px;
+    margin-top: 24px;
+}
+
+.home-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.home-section-header h2 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--primary-dark);
+}
+
+.home-more-link {
+    font-size: 0.9rem;
+    color: var(--primary);
+    text-decoration: none;
+}
+
+.home-more-link:hover {
+    text-decoration: underline;
+}
+
+/* 날씨 */
+.home-weather-location {
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.home-weather-temp {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.home-weather-tip {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+}
+
+/* 카드 그리드 (핫 여행지) */
+.home-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 16px;
+}
+
+.home-card {
+    background-color: var(--bg);
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+}
+
+.home-card-thumb-wrap {
+    width: 100%;
+    height: 150px;
+    overflow: hidden;
+}
+
+.home-card-thumb {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.home-card-body {
+    padding: 12px 14px 14px;
+}
+
+.home-card-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.home-card-meta {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+}
+
+.home-card-desc {
+    font-size: 0.9rem;
+    color: var(--text-primary);
+}
+
+/* 축제 리스트 */
+.home-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.home-list-item {
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.home-list-item:last-child {
+    border-bottom: none;
+}
+
+.home-list-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
+.home-list-title {
+    font-weight: 600;
+}
+
+.home-list-badge {
+    font-size: 0.8rem;
+    padding: 3px 8px;
+    border-radius: 999px;
+    background-color: var(--primary-light);
+    color: #fff;
+}
+
+.home-list-sub {
+    display: flex;
+    gap: 8px;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.home-list-tag {
+    padding-left: 6px;
+    border-left: 1px solid var(--border);
+}
+
+/* 공통 텍스트 */
+.home-ai-text {
+    font-size: 0.95rem;
+    color: var(--text-primary);
+}
+
+.home-empty-text {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+/* 날씨 섹션 디테일 */
+.home-weather-main {
+    display: flex;
+    justify-content: space-between;
+    gap: 32px;
+    align-items: center;
+}
+
+.home-weather-left {
+    flex: 1;
+}
+
+.home-weather-temp {
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--primary-dark);
+    margin-bottom: 4px;
+}
+
+.home-weather-desc {
+    font-size: 0.95rem;
+    margin-bottom: 6px;
+}
+
+.home-weather-location {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.home-weather-forecast {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    flex: 1;
+}
+
+.home-weather-forecast li {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background-color: #f3f5f4;
+    margin-bottom: 6px;
+}
+
+.home-weather-forecast li:last-child {
+    margin-bottom: 0;
+}
+
+.home-weather-forecast .day {
+    font-weight: 600;
+}
+
+/* 핫한 여행지 태그 */
+.home-card-tags {
+    margin-top: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    font-size: 0.8rem;
+}
+
+.home-card-tags span {
+    padding: 3px 8px;
+    border-radius: 999px;
+    background-color: rgba(108, 154, 139, 0.08);
+    color: var(--primary-dark);
+}
+
+/* AI 타임라인 */
+.home-ai-text-title {
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.home-ai-timeline {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.home-ai-timeline li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 8px 0;
+}
+
+.home-ai-timeline li + li {
+    border-top: 1px solid var(--border);
+}
+
+.home-ai-timeline .step {
+    width: 22px;
+    height: 22px;
+    border-radius: 999px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.8rem;
+    font-weight: 600;
+    background-color: var(--primary-light);
+    color: #fff;
+    flex-shrink: 0;
+}
+
+.home-ai-timeline .content .title {
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.home-ai-timeline .content .desc {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+/* 날씨 전체 카드는 기존 home-section 사용 */
+
+.home-weather-hero {
+    max-width: 650px;    /* ← 크기 반으로 줄이기 */
+    margin: 0 auto;      /* ← 가운데 정렬 */
+    flex-direction: column;  /* ← 예보를 아래로 보내기 */
+    gap: 20px; 
+    padding: 26px 26px 32px;
+	border-radius: 18px;
+}
+
+
+.home-weather-main-left {
+    flex: 1 1 auto;
+    max-width: 55%;
+}
+
+.home-weather-label {
+    display: inline-block;
+    font-size: 0.8rem;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background-color: rgba(0, 0, 0, 0.25);
+    margin-bottom: 10px;
+}
+
+.home-weather-temp-row {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 4px;
+}
+
+.home-weather-temp {
+    font-size: 3.2rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.home-weather-feels {
+    font-size: 0.95rem;
+    opacity: 0.85;
+}
+
+.home-weather-desc {
+    font-size: 0.9rem;
+    margin: 10px 0 4px;
+    line-height: 1.5;
+}
+
+.home-weather-date {
+    font-size: 0.8rem;
+    opacity: 0.8;
+}
+
+/* 주간 예보 리스트 */
+
+.home-weather-week {
+    flex-direction: row;      /* 가로 배치 */
+    justify-content: space-between;
+    gap: 10px;
+    width: 100%;
+}
+
+.home-weather-week li {
+    flex: 1;
+    padding: 8px 0;
+    text-align: center;
+    border-radius: 14px;
+}
+
+
+
+.home-weather-week .day {
+    width: 40px;
+    font-weight: 500;
+}
+
+.home-weather-week .icon {
+    font-size: 1.1rem;
+}
+
+
+.home-weather-week .temp {
+    font-variant-numeric: tabular-nums;
+}
+
+/* 오른쪽 위 달 아이콘 */
+
+.home-weather-moon {
+    position: absolute;
+    right: 26px;
+    top: 18px;
+    font-size: 1.6rem;
+    opacity: 0.9;
+}
+
+/* 이 섹션 안에서는 기본 텍스트 색을 강제로 밝게 */
+.home-weather-hero p,
+.home-weather-hero span {
+    color: inherit;
+}
+
+/* ===== 아침 테마 수정 버전 ===== */
+
+.home-weather-hero.morning {
+    background:
+        radial-gradient(circle at 40% 40%, rgba(255,255,255,0.25), transparent 60%),
+        linear-gradient(135deg, #7EC9FF 0%, #3C95E8 55%, #2870C4 100%);
+    color: #ffffff;
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    gap: 26px;
+    padding: 20px 22px 18px; /* 더 compact */
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+/* 라벨 */
+.home-weather-label.morning {
+    background: rgba(255,255,255,0.30);
+    color: #fff;
+}
+
+/* 온도 줄끼리 간격 */
+.home-weather-temp-row {
+    margin-bottom: 2px;
+}
+
+/* 텍스트 */
+.home-weather-desc {
+    margin-top: 4px;
+    margin-bottom: 6px;
+}
+
+/* 우측 요일 리스트 폭 축소 */
+.home-weather-week {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    flex: 0 0 160px; /* 더 좁게 */
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+/* 겹침 방지를 위한 grid 레이아웃 */
+.home-weather-week li {
+    display: grid;
+    grid-template-columns: 40px 24px 1fr;
+    align-items: center;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background-color: rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(8px);
+}
+
+.home-weather-week .day {
+    font-weight: 600;
+    color: #fff;
+}
+
+.home-weather-week .icon {
+    font-size: 1.1rem;
+    text-align: center;
+}
+
+.home-weather-week .temp {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    color: #fff;
+}
+
+/* 아침 햇살 위치 */
+.home-weather-sun {
+    position: absolute;
+    right: 22px;
+    top: 12px;
+    font-size: 1.8rem;
+    opacity: 0.9;
+}
