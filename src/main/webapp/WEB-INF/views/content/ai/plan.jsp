@@ -2,7 +2,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 <head>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/route.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/main.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/ai-route.css">
 <title>AI 여행 루트 계획</title>
     
     <meta name="_csrf" content="${_csrf.token}">
