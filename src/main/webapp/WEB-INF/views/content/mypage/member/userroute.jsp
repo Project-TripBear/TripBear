@@ -63,7 +63,7 @@
         <div id="route-list-wrapper"> <c:choose>
                 <c:when test="${not empty list}">
                     <c:forEach items="${list}" var="dto">
-                        <div class="route-card-item"> <div class="route-item-content" onclick="location.href='/trip/route/userRouteView.do?id=${dto.seq}'">
+                        <div class="route-card-item"> <div class="route-item-content" onclick="location.href='/trip/ai/mapview?id=${dto.seq}'">
                                 <div class="route-title">${dto.userroutetitle}</div>
                                 <div class="route-details">
                                     <span><i class="fa-solid fa-calendar"></i> 여행일자: ${dto.userroutedays}</span>
