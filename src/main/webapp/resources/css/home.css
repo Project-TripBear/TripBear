@@ -61,12 +61,13 @@
 .hero-search {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 16px;
     margin-bottom: 14px;
 }
 .hero-search-input {
     flex: 1;
     position: relative;
+	margin-right: 20px
 }
 .hero-search-input input {
     width: 100%;
@@ -91,6 +92,7 @@
 /* CTA 버튼 – 공통 .btn-primary 사용 */
 .hero-search .btn-primary {
     padding-inline: 22px;
+	margin-left: 16px;
 }
 
 /* 서브 정보 */
