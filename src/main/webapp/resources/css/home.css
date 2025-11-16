@@ -832,3 +832,100 @@
     font-size: 1.8rem;
     opacity: 0.9;
 }
+/* ==================== 하이라이트 : 날씨 + 축제 2컬럼 ==================== */
+
+.home-section.home-highlights {
+    margin-top: 40px;
+}
+
+/* 날씨/축제 2열 레이아웃 */
+.home-highlight-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr; /* 날씨가 살짝 더 넓게 */
+    gap: 24px;
+    align-items: flex-start;
+}
+
+.home-highlight-block .home-section-header.small {
+    margin-bottom: 12px;
+}
+
+.home-highlight-block .home-section-header.small h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text);
+}
+
+/* 축제 카드 비주얼 */
+.festival-card {
+    background: radial-gradient(circle at top left, #F4F8FF 0, #FFFFFF 55%, #FFFFFF 100%);
+    border-radius: 18px;
+    padding: 18px 20px;
+    border: 1px solid #E1E6F5;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.05);
+}
+
+.festival-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.festival-item {
+    padding: 10px 0;
+    border-bottom: 1px solid #E9EDF5;
+}
+.festival-item:last-child {
+    border-bottom: none;
+}
+
+.festival-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
+.festival-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text);
+}
+
+.festival-location-badge {
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    background-color: rgba(108,154,139,0.12);
+    color: var(--primary-dark);
+}
+
+.festival-sub {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+}
+
+.festival-date {
+    font-variant-numeric: tabular-nums;
+}
+
+.festival-tags {
+    padding-left: 8px;
+    border-left: 1px solid #E1E6F5;
+}
+
+/* 호버 시 살짝 강조 */
+.festival-item:hover {
+    background-color: rgba(255,255,255,0.5);
+}
+
+/* 반응형 : 모바일에서는 위아래로 쌓이게 */
+@media (max-width: 768px) {
+    .home-highlight-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+}
