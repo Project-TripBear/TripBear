@@ -94,8 +94,8 @@ pageEncoding="UTF-8"%>
 		
 			<div class="table-options">
 				<sec:authorize access="hasRole('ROLE_ADMIN')">
-					<button type="button" class="btn btn-primary" 
-						onclick="location.href='<c:url value='/admin/notice/add'/>';">글쓰기</button> 
+                                <button type="button" class="notice-btn notice-btn-primary"
+                                                onclick="location.href='<c:url value='/admin/notice/add'/>';">글쓰기</button>
                         <%-- 👆 경로를 절대 경로 '/admin/notice/add'로 수정 --%>
 				</sec:authorize>
 			</div>

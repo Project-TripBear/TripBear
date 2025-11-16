@@ -93,14 +93,16 @@ public class HotDealController {
 	        String pagebar = generatePageBar(page, totalPage, 10);
 
 	        // 모델에 데이터 추가
-	        model.addAttribute("list", list);
-	        model.addAttribute("map", map);
-	        model.addAttribute("pagebar", pagebar);
+                model.addAttribute("list", list);
+                model.addAttribute("map", map);
+                model.addAttribute("pagebar", pagebar);
+                model.addAttribute("currentPage", page);
+                model.addAttribute("totalPages", totalPage);
 
-	        // 로그인한 사용자 정보
-	        if (auth != null) {
-	            model.addAttribute("id", auth.getName());
-	        }
+                // 로그인한 사용자 정보
+                if (auth != null) {
+                    model.addAttribute("id", auth.getName());
+                }
 
 	        return "board.hotdeal.list";
 	    }
