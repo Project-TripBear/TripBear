@@ -76,7 +76,7 @@
                             	<input type="hidden" name="region" value="${dto.userrouteregion}">
                             	<input type="hidden" name="checkin" value="${dto.userroutestartdate}">
                                 <input type="hidden" name="checkout" value="${dto.userrouteenddate}">
-                                <input type="hidden" name="people" value="${dto.userroutedays}">
+                                <input type="hidden" name="userRouteId" value="${dto.seq}">
                                 <button type="submit" class="btn btn-primary btn-book">예약하기</button> </form>
                             
                         </div>
