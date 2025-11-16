@@ -12,7 +12,10 @@ import com.project.trip.AI.mapper.AiMapper;
 import com.project.trip.AI.model.AiRouteRequestDTO;
 import com.project.trip.AI.model.RouteDTO;
 import com.project.trip.AI.model.RouteStopDTO;
-import com.project.trip.AI.model.WeatherDTO;
+import com.project.trip.weather.model.WeatherDTO;
+import com.project.trip.weather.service.OpenWeatherService;
+import com.project.trip.weather.service.WeatherService;
+
 
 @Service
 public class AiServiceImpl implements AiService {
@@ -28,15 +31,17 @@ public class AiServiceImpl implements AiService {
 	
 	@Autowired
 	private HealthCareService healthCareService;
+	
 
 	@Override
 	@Transactional
 	public RouteDTO createAndSaveAiRoute(AiRouteRequestDTO preferences,long longUserId, double userWeight) { 
         
-		WeatherDTO weather = weatherService.getWeather(preferences.getCity(), preferences.getStartDate());
-		
-        RouteDTO generatedRoute = geminiService.generateRoute(preferences, weather);
-        
+		WeatherDTO weather =
+			    weatherService.getWeather(preferences.getCity(), preferences.getStartDate());
+			RouteDTO generatedRoute =
+			    geminiService.generateRoute(preferences, weather);
+			
         generatedRoute.setUserId(longUserId); 
         
        generatedRoute.setAiRouteRegion(preferences.getCity());

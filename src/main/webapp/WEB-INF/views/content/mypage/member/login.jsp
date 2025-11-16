@@ -2,11 +2,8 @@
     pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>    
 <!-- login.jsp -->
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/mypage.css">
 
-<style>
-
-
-</style>
 
 
 <div class="page-login-container">

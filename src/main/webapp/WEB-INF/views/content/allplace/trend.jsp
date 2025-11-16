@@ -13,7 +13,7 @@
 
 <main>
     <div class="trend-header">
-        <h2>여행 트렌드</h2>
+        <h2>여행 트렌드/Top 100</h2>
         <p class="sub">지금 가장 인기있는 추천 여행지입니다.</p>
     </div>
 

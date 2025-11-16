@@ -1,5 +1,4 @@
-// 파일 경로: com.project.trip.board.find.service.FindBoardServiceImpl.java (신규 생성)
-
+// 파일 경로: com.project.trip.board.find.service.FindBoardServiceImpl.java
 package com.project.trip.board.find.service;
 
 import java.util.HashMap;
@@ -16,26 +15,34 @@ import com.project.trip.board.find.model.findcommentDTO;
 import com.project.trip.common.mapper.ReportMapper;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j; // 로깅을 위한 Lombok 추가
+import lombok.extern.slf4j.Slf4j; 
 
 @Service
 @RequiredArgsConstructor
-@Slf4j // 로깅 활성화
+@Slf4j 
 public class FindBoardServiceImpl implements FindBoardService {
 
     private final FindBoardMapper mapper;
 
-    private final FindBoardMapper findBoardMapper; // 1. 동행찾기 Mapper
-    private final ReportMapper reportMapper;     // 2. ★★★ [추가] 공용 신고 Mapper
+    private final FindBoardMapper findBoardMapper;
+    private final ReportMapper reportMapper;    
     
-    // ★★★ [추가] 파일 업로드 경로 설정 (프로퍼티 또는 상수) ★★★
-	
 	 @Value("${app.uploadPath}") private String uploadPath;
 	 
 
-    // 1. 목록 조회 및 페이징 (findboardList.java 대체)
+    // [수정됨 ✅] 1-1. 사용자용 (기존 FindBoardController에서 호출)
+    // 이 메서드가 호출되면, 자동으로 isAdmin=false를 붙여 메인 로직을 호출합니다.
     @Override
     public Map<String, Object> getPostList(int currentPage, String searchType, String searchKeyword) {
+        // (Based on the original getPostList)
+        return this.getPostList(currentPage, searchType, searchKeyword, false); // isAdmin=false로 고정
+    }
+
+    // [수정됨 ✅] 1-2. 메인 로직 (관리자용 + 내부용)
+    // isAdmin 플래그를 받아서 Mapper에게 전달합니다.
+    @Override
+    public Map<String, Object> getPostList(int currentPage, String searchType, String searchKeyword, boolean isAdmin) {
+        // (Based on the original getPostList)
         
         // 1. 페이징 계산
         int postPerPage = 10;
@@ -48,68 +55,49 @@ public class FindBoardServiceImpl implements FindBoardService {
         map.put("searchType", searchType);
         map.put("searchKeyword", searchKeyword);
         
+        // ★★★ 여기가 핵심: isAdmin 플래그를 맵에 추가합니다 ★★★
+        map.put("isAdmin", isAdmin);
+        
         // 2. DAO(Mapper) 호출
         List<findboardDTO> list = mapper.getList(map);
         int totalCount = mapper.getTotalCount(map);
 
-        // 3. 페이징 HTML 생성 (PagingUtil 클래스가 있다고 가정)
-        // String paging = PagingUtil.generatePagingHtml(currentPage, totalCount, postPerPage, searchType, searchKeyword);
+        // 3. 페이징 HTML (생략)
         
         // 4. 결과 Map에 담아 반환
         Map<String, Object> result = new HashMap<>();
         result.put("list", list);
         result.put("totalCount", totalCount);
         result.put("currentPage", currentPage);
-        // result.put("paging", paging); // 페이징 HTML은 Controller 또는 JSP에서 처리하도록 단순화
         result.put("map", map);
         
         return result;
     }
     
-    // 2. 게시글 등록 (addFindboard.java 대체)
+    // --- (이하 코드는 원본과 동일) ---
+    
     @Override
     public void addPost(findboardDTO dto) {
-        // ★★★ 파일 처리 로직 (MultipartFile을 Controller에서 DTO에 담아 넘겨야 함) ★★★
-        // DTO에 파일 처리 로직이 들어갈 경우, 매개변수 변경이 필요. 여기서는 DTO에 이미 파일 경로가 설정되었다고 가정.
-       
-        
+        // ★★★ 'N'으로 수정된 FindBoardMapper.xml의 addPost 쿼리가 호출되어야 합니다 ★★★
         mapper.addPost(dto);
     }
     
-    // 2-2. 게시글 수정 (editfindBoard.java의 POST 대체)
     @Override
     public void updatePost(findboardDTO dto) {
-        // ★★★ 파일 처리 로직 (DTO에 이미 파일 경로가 설정되었다고 가정) ★★★
-       
         mapper.updatePost(dto);
     }
 
-    // 2-3. 게시글 삭제 (deletefindBoard.java 대체)
     @Override
-    @Transactional // 트랜잭션 적용
+    @Transactional
     public void deletePost(int boardSeq) {
-        // FK 제약 조건으로 인해 관련 데이터(댓글, 좋아요, 스크랩)를 먼저 삭제하는 트랜잭션 필요
-        // 1. 댓글 삭제
-        // mapper.deleteCommentsByBoardId(boardSeq); 
-        // 2. 좋아요 삭제
-        // mapper.deleteLikesByBoardId(boardSeq);
-        // 3. 스크랩 삭제
-        // mapper.deleteScrapsByBoardId(boardSeq);
-        
-        // 4. 게시글 삭제 (실제로는 외래키 옵션 CASCADE DELETE를 사용하는 것이 더 효율적)
         mapper.deletePost(boardSeq);
     }
 
-    // 3. 상세 조회 (viewfindBoard.java 대체)
     @Override
     public findboardDTO getPostDetail(int boardSeq, Integer userId) {
-        // 1. 조회수 증가
         mapper.updateViewCount(boardSeq);
-        
-        // 2. 게시글 정보 가져오기
         findboardDTO dto = mapper.getPost(boardSeq);
 
-        // 3. 좋아요/스크랩 정보 설정
         if (dto != null && userId != null) {
             dto.setLikeCount(mapper.getLikeCount(boardSeq));
             dto.setLiked(mapper.checkLike(boardSeq, userId) > 0);
@@ -119,39 +107,35 @@ public class FindBoardServiceImpl implements FindBoardService {
         return dto;
     }
     
-    // 3-2. 순수 게시물 정보 조회
     @Override
     public findboardDTO getPostById(int boardSeq) {
         return mapper.getPost(boardSeq);
     }
 
-    // 4. 댓글 목록 조회
     @Override
     public List<findcommentDTO> getCommentList(int boardSeq) {
         return mapper.getCommentList(boardSeq);
     }
 
-    // 5. 좋아요 토글 (likefindBoard.java 대체)
     @Override
     public boolean toggleLike(int boardSeq, int userId) {
         if (mapper.checkLike(boardSeq, userId) > 0) {
             mapper.removeLike(boardSeq, userId);
-            return false; // 취소됨
+            return false; 
         } else {
             mapper.addLike(boardSeq, userId);
-            return true; // 추가됨
+            return true; 
         }
     }
 
-    // 5-2. 스크랩 토글 (scrapfindBoard.java 대체)
     @Override
     public boolean toggleScrap(int boardSeq, int userId) {
         if (mapper.checkScrap(boardSeq, userId) > 0) {
             mapper.removeScrap(boardSeq, userId);
-            return false; // 취소됨
+            return false; 
         } else {
             mapper.addScrap(boardSeq, userId);
-            return true; // 추가됨
+            return true; 
         }
     }
     
@@ -164,23 +148,18 @@ public class FindBoardServiceImpl implements FindBoardService {
         params.put("reporterId", reporterId);
         params.put("reportedUserId", reportedUserId);
         params.put("reason", reason);
-        params.put("report_target_type", "findboard"); // ★★★ [추가] 신고 대상 타입 명시
+        params.put("report_target_type", "findboard");
         
-        // 1. [수정] 공용 ReportMapper를 호출하여 신고 내역 등록
         reportMapper.addReport(params);
-        
-        // 2. [수정] FindBoardMapper를 호출하여 "동행찾기" 게시판 상태 변경
         findBoardMapper.updateReportStatus(boardSeq);
         
         return 1; 
     }
     
-    // ... 나머지 댓글 관련 Service 메서드 구현 생략 ...
     @Override
     public int getCommentAuthor(int commentId) {
         return mapper.getCommentAuthor(commentId);
     }
-    // ...
     @Override
     public void addComment(findcommentDTO dto) {
         mapper.addComment(dto);

@@ -52,7 +52,7 @@
             #{reservationId},        <!-- 통합예약 PK FK -->
             #{userRouteId},
             NVL(#{statusId, jdbcType=INTEGER}, 1),
-            #{guestCount},
+            2,
             #{roomTotalPrice},
             TO_DATE(#{checkinDate},  'YYYY-MM-DD'),
             TO_DATE(#{checkoutDate}, 'YYYY-MM-DD'),

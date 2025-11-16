@@ -109,14 +109,13 @@ public class ReservationServiceImpl implements ReservationService {
 	@Override
 	public IntegratedReservation getIntegratedReservationPreview(
 	        String region, String checkin, String checkout, 
-	        String people, String roomId, String carId) throws Exception {
+	        String roomId, String carId) throws Exception {
 	    
 	    IntegratedReservation data = new IntegratedReservation();
 	    
 	    data.setRegion(region);
 	    data.setCheckin(checkin);
 	    data.setCheckout(checkout);
-	    data.setPeople(people);
 	    
 	    // 숙소 정보
 	    if (roomId != null && !roomId.isBlank()) {

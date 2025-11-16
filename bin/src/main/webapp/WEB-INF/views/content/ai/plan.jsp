@@ -116,7 +116,7 @@
                 <div class="question-step" data-question-key="transportation">
                     <h2>이동 수단🚗</h2>
                     <div class="card-options grid-2">
-                        <div class="card" data-value="렌터카">렌터카</div>
+                        <div class="card" data-value="렌터카">차</div>
                         <div class="card" data-value="대중교통">대중교통</div>
                     </div>
                 </div>

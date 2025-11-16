@@ -10,7 +10,6 @@
    
 </head>
 <body class="ai-plan-page">
-    <%@ include file="/WEB-INF/views/inc/header.jsp" %>
     
     <main class="ai-plan-main-container">
         <div class="progress-container">
@@ -210,15 +209,28 @@
                 <p class="loading-subtext">루트 만드는 중입니다</p>
             </div>
         </div>
+        
+        <div id="weatherAdviceModal" class="weather-modal hidden">
+            <div class="weather-modal-content">
+                <h3>날씨 기반 추천 안내</h3>
+                <p id="weatherAdviceText"></p>
+
+                <button type="button" id="weatherAdviceOkBtn" onclick="closeWeatherModal()">
+                    확인
+                </button>
+            </div>
+        </div>
     </main>
         
     <script>
     document.addEventListener('DOMContentLoaded', function() {
-    	
-    	const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+        
+        const csrfToken = document.querySelector('meta[name="_csrf"]').content;
         const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
         
-    	const userChoices = {};
+        const base = '${pageContext.request.contextPath}';
+        
+        const userChoices = {};
         const progressBar = document.getElementById('progressBar');
         const generalQuestionContainer = document.getElementById('general-questions');
         const healthcareQuestionContainer = document.getElementById('healthcare-questions');
@@ -235,6 +247,10 @@
         
         const totalGeneralSteps = 10;
         const totalHealthcareSteps = 4;
+        
+        const weatherModal = document.getElementById('weatherAdviceModal');
+        const weatherText  = document.getElementById('weatherAdviceText');
+        const weatherOkBtn = document.getElementById('weatherAdviceOkBtn');
       
         function renderCalendar(year, month) {
             calendarDates.innerHTML = '';
@@ -382,6 +398,11 @@
                 submitPlan();
                 return;
             }
+            
+            if (nextStepElement.dataset.questionKey === 'activityType') {
+                checkWeatherAndShowAdvice();
+            }
+            
             nextStepElement.classList.add('active');
         }
 
@@ -428,51 +449,108 @@
             progressBar.style.width = '100%';
 
             // 2. 서버에 AJAX POST 요청
-			const base = '${pageContext.request.contextPath}';
-			
+            
             fetch( base + '/ai/generate', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json', 
-					[csrfHeader]: csrfToken,            
-					'X-Requested-With': 'XMLHttpRequest'
+                    [csrfHeader]: csrfToken,            
+                    'X-Requested-With': 'XMLHttpRequest'
                 },
-				credentials: 'same-origin',
+                credentials: 'same-origin',
                 body: JSON.stringify(userChoices)
             })
-			  .then(async (res) => {
-			    const ctype = res.headers.get('content-type') || '';
+              .then(async (res) => {
+                const ctype = res.headers.get('content-type') || '';
 
-			    if (!res.ok) {
-			      // 401/403/302 등 상태를 그대로 보여주자
-			      const text = await res.text();
-			      throw new Error('HTTP ' + res.status + '. Body: ' + text.slice(0, 200));
-			    }
+                if (!res.ok) {
+                  // 401/403/302 등 상태를 그대로 보여주자
+                  const text = await res.text();
+                  throw new Error('HTTP ' + res.status + '. Body: ' + text.slice(0, 200));
+                }
 
-			    if (!ctype.includes('application/json')) {
-			      // 시큐리티 302 → 로그인 페이지 HTML, 혹은 에러 HTML이 온 경우
-			      const text = await res.text();
-			      throw new Error('JSON 아님. 서버가 HTML 반환. 일부: ' + text.slice(0, 200));
-			    }
+                if (!ctype.includes('application/json')) {
+                  // 시큐리티 302 → 로그인 페이지 HTML, 혹은 에러 HTML이 온 경우
+                  const text = await res.text();
+                  throw new Error('JSON 아님. 서버가 HTML 반환. 일부: ' + text.slice(0, 200));
+                }
 
-			    return res.json();
-			  })
-			  .then((data) => {
-			    if (data.success && data.routeId) {
-			      // 4) 성공 이동
-			    	window.location.href = base + '/ai/mapview?id=' + data.routeId;
-			    } else {
-			      loadingContainer.style.display = 'none';
-			      alert('루트 생성 실패: ' + (data.message || '알 수 없는 오류'));
-			    }
-			  })
-			  .catch((err) => {
-			    console.error(err);
-			    loadingContainer.style.display = 'none';
-			    alert('서버 통신 오류: ' + err.message);
-			  });
-			}
+                return res.json();
+              })
+              .then((data) => {
+                if (data.success && data.routeId) {
+                  // 4) 성공 이동
+                    window.location.href = base + '/ai/mapview?id=' + data.routeId;
+                } else {
+                  loadingContainer.style.display = 'none';
+                  alert('루트 생성 실패: ' + (data.message || '알 수 없는 오류'));
+                }
+              })
+              .catch((err) => {
+                console.error(err);
+                loadingContainer.style.display = 'none';
+                alert('서버 통신 오류: ' + err.message);
+              });
+            }
+        
+            function checkWeatherAndShowAdvice() {
+                const city = userChoices.city;
+                const startDate = userChoices.startDate;
+
+                if (!city || !startDate) {
+                    console.warn('날씨 체크 불가: city 또는 startDate 없음', userChoices);
+                    return;
+                }
+
+                const activityStep = document.querySelector('[data-question-key="activityType"]');
+                const indoorCard  = activityStep ? activityStep.querySelector('.card[data-value="실내"]') : null;
+                const outdoorCard = activityStep ? activityStep.querySelector('.card[data-value="실외"]') : null;
+
+                if (indoorCard) indoorCard.classList.remove('recommended');
+                if (outdoorCard) outdoorCard.classList.remove('recommended');
+
+                const url = base + '/weather/advice?city=' 
+                            + encodeURIComponent(city)
+                            + '&date=' + startDate;
+
+                fetch(url)
+                    .then(res => res.json())
+                    .then(data => {
+                        console.log('weather advice:', data);
+
+                        if (!data || !data.recommendType || data.recommendType === 'NONE') {
+                            return;
+                        }
+
+                        // 카드 강조
+                        if (data.recommendType === 'INDOOR' && indoorCard) {
+                            indoorCard.classList.add('recommended');
+                        } else if ((data.recommendType === 'OUTDOOR' || data.recommendType === 'FOLIAGE') && outdoorCard) {
+                            outdoorCard.classList.add('recommended');
+                        }
+
+                        // OUTDOOR면 팝업 띄우지 않음
+                        if (data.recommendType === 'OUTDOOR') {
+                            return;
+                        }
+
+                        // INDOOR / FOLIAGE만 팝업
+                        weatherText.textContent = data.message || '날씨 정보를 기반으로 여행을 추천드려요.';
+                        weatherModal.classList.remove('hidden');
+                    })
+                    .catch(err => {
+                        console.error('weather advice error', err);
+                    });
+            }
+
         renderCalendar(currentDate.getFullYear(), currentDate.getMonth());
-    });
+        }); // DOMContentLoaded 끝
+    
+        // ✅ 전역 함수
+        function closeWeatherModal() {
+            const modal = document.getElementById('weatherAdviceModal');
+            if (modal) {
+                modal.classList.add('hidden');
+            }
+        }
     </script>
-

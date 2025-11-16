@@ -45,23 +45,19 @@
 	        WHERE r.report_status != 'PENDING'
 	        ORDER BY r.report_regdate DESC
 	    </select>
-	<update id="hidePost">
+	<update id="hidePost" parameterType="map">
     <choose>
         <when test="targetType == 'findboard'">
             UPDATE tblFindBoard
-            SET find_board_report_status = 'N'
-            WHERE find_board_id = #{targetId}
+            SET find_board_report_status = 'H'  WHERE find_board_id = #{targetId}
         </when>
 
         <when test="targetType == 'hotdeal'">
             UPDATE tblHotDealPost
-            SET hotdeal_status = 'N'
-            WHERE hotdeal_id = #{targetId}
+            SET hotdeal_status = 'H' WHERE hotdeal_id = #{targetId}
         </when>
 
         <otherwise>
-            <!-- 아무런 UPDATE도 하지 않도록 강제 -->
-            <!-- MyBatis 문법: 아무 영향 없는 where 1=0 처리 -->
             UPDATE tblReports SET report_id = report_id WHERE 1 = 0
         </otherwise>
     </choose>

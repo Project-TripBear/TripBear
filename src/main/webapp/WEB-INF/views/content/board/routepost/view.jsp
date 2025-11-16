@@ -59,11 +59,12 @@
   <!-- ===== 목록 / 수정 / 삭제 ===== -->
   <div class="btn-area">
     <a href="${pageContext.request.contextPath}/routepost/list" class="btn-list">목록</a>
-    <c:if test="${sessionScope.userId eq post.userId}">
-      <a href="${pageContext.request.contextPath}/routepost/edit/${post.routepostId}" class="btn-edit">수정</a>
-      <a href="${pageContext.request.contextPath}/routepost/del/${post.routepostId}" class="btn-delete"
-         onclick="return confirm('정말 삭제하시겠습니까?');">삭제</a>
-    </c:if>
+    <c:if test="${userId == post.userId}">
+    <a href="${pageContext.request.contextPath}/routepost/edit/${post.routepostId}" class="btn-edit">수정</a>
+    <a href="${pageContext.request.contextPath}/routepost/del/${post.routepostId}" class="btn-delete"
+       onclick="return confirm('정말 삭제하시겠습니까?');">삭제</a>
+	</c:if>
+
   </div>
 
   <!-- ===== 댓글 영역 ===== -->
@@ -88,32 +89,40 @@ const routepostId = "${post.routepostId}";
 const userId = "${userId}"; // 숫자
 const userName = "${userName}"; // 아이디
 const contextPath = "${pageContext.request.contextPath}";
-// ✅ 댓글 목록 불러오기
+//댓글 목록 불러오기
 function loadComments() {
-  $.getJSON("${pageContext.request.contextPath}/api/routepost/comment/list/" + routepostId, function(list) {
-    let html = "";
-    if (list.length === 0) {
+
+  $.getJSON(contextPath + "/api/routepost/comment/list/" + routepostId, function(list) {
+
+    var html = "";
+
+    if (!list || list.length === 0) {
       html = "<p>등록된 댓글이 없습니다 😶</p>";
+
     } else {
-      list.forEach(c => {
-        html += `
-          <div class="comment-item" data-id="${c.routepostCommentId}">
-            <b>${c.nickname}</b>
-            <small style="color:#999;">${c.routepostCommentRegdate}</small>
-            <div class="comment-content">${c.routepostContent}</div>
-            <div class="comment-actions">`;
-        if (userId === c.userId) {
-          html += `
-            <button class="btn-edit">수정</button>
-            <button class="btn-delete">삭제</button>`;
+
+      list.forEach(function(c) {
+
+        html += "<div class='comment-item' data-id='" + c.routepostCommentId + "'>";
+        html += "<b>" + c.nickname + "</b>";
+        html += "<small style='color:#999;'>" + c.routepostCommentRegdate + "</small>";
+        html += "<div class='comment-content'>" + c.routepostContent + "</div>";
+        html += "<div class='comment-actions'>";
+
+        if (String(userId) === String(c.userId)) {
+          html += "<button class='btn-edit'>수정</button>";
+          html += "<button class='btn-delete'>삭제</button>";
         }
-        html += `</div></div>`;
+
+        html += "</div></div>";
       });
     }
+
     $("#comment-list").html(html);
     $("#comment-count").text("(" + list.length + ")");
   });
 }
+
 
 // ✅ 댓글 등록
 $("#btn-comment-add").click(function() {

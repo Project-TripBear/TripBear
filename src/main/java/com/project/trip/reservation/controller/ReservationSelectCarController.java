@@ -30,7 +30,6 @@ public class ReservationSelectCarController {
         String region   = req.getParameter("region");
         String checkin  = req.getParameter("checkin");
         String checkout = req.getParameter("checkout");
-        String people   = req.getParameter("people");
         String roomId   = req.getParameter("roomId");
 
         // ✅ 필터 파라미터
@@ -53,7 +52,6 @@ public class ReservationSelectCarController {
         mav.addObject("region", region);
         mav.addObject("checkin", checkin);
         mav.addObject("checkout", checkout);
-        mav.addObject("people", people);
         mav.addObject("roomId", roomId);
 
         mav.addObject("carType", carType);

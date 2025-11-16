@@ -55,9 +55,17 @@ public interface HotDealMapper {
 
 	int selectMaxImageSeq(String seq);
 
-	void deleteAllImages(String seq);
+
 
 	int deleteBoard(String seq);
+	
+	void deleteAllImages(String seq);
+
+	void deleteComment(String seq);
+
+	void deleteLike(String seq);
+
+	void deleteScrap(String seq);
 
 
 }

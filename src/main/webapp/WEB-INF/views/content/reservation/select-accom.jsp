@@ -3,128 +3,11 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
-<!-- 예약: 숙소 선택 (지도 60 : 카드 40) -->
-<style>
-body {
-	max-width: 100% !important;
-	width: 100% !important;
-	padding: 0;
-}
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/reservation.css">
 
-#wrap, #container, .container {
-	max-width: 100% !important;
-	width: 100% !important;
-	margin: 0 !important;
-	padding: 0 !important;
-}
+<c:set var="userRouteId" value="${param.userRouteId}" />
 
-.select-layout {
-    width: 100%;
-    display: grid;
-    grid-template-columns: 55% 45%;
-    gap: 12px;
-    height: calc(100vh - 120px);
-}
-
-#map {
-	width: 100%;
-	height: 100%;
-}
-
-.cards {
-	overflow: auto;
-	border-radius: 16px;
-	background: #fff;
-	padding: 12px;
-}
-
-.toolbar {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	margin-bottom: 8px;
-}
-
-.chip {
-	border: 1px solid #ddd;
-	padding: 6px 10px;
-	border-radius: 999px;
-	cursor: pointer;
-}
-
-.card {
-	display: flex;
-	gap: 12px;
-	padding: 12px;
-	border: 1px solid #eee;
-	border-radius: 12px;
-	margin-bottom: 10px;
-	align-items: center;
-}
-
-.thumb {
-	width: 96px;
-	height: 96px;
-	border-radius: 10px;
-	object-fit: cover;
-	background: #f2f2f2;
-}
-
-.meta h4 {
-	margin: 0 0 4px;
-	font-size: 16px;
-}
-
-.meta .sub {
-	color: #666;
-	font-size: 13px;
-}
-
-.price {
-	font-weight: 700;
-	margin-top: 6px;
-}
-
-.actions {
-	margin-left: auto;
-	display: flex;
-	gap: 8px;
-}
-
-.btn {
-	padding: 8px 12px;
-	border-radius: 10px;
-	border: 1px solid #ddd;
-	background: #fff;
-	cursor: pointer;
-}
-
-.btn.primary {
-	background: #6C9A8B;
-	color: #fff;
-	border-color: #6C9A8B;
-}
-
-.empty {
-	padding: 24px;
-	color: #888;
-	text-align: center;
-}
-
-.map-wrap {
-    border-radius: 20px;
-    overflow: hidden;
-    min-height: 520px;
-}
-
-.page-inner,
-.select-layout {
-    width: 100%;
-    margin: 100px auto 10px auto;
-    max-width: 1400px;
-}
-
-</style>
+<div class="select-accom-page">
 
 <div class="page-inner">
 <div class="select-layout">
@@ -140,8 +23,7 @@ body {
 				<span class="chip" id="showAll">모두 보기</span>
 			</div>
 			<div class="sub">
-				지역: <b>${region}</b> · 인원: <b>${people}</b>명 · 기간: <b>${checkin}</b>
-				~ <b>${checkout}</b>
+				지역: <b>${region}</b> · 기간: <b>${checkin}</b> ~ <b>${checkout}</b>
 			</div>
 		</div>
 
@@ -174,11 +56,12 @@ body {
 								<!-- 다음 단계: 차량 선택 페이지로 이동 -->
 								<form method="get"
 									action="${pageContext.request.contextPath}/reservation/select-car">
+									<input type="hidden" name="userRouteId" value="${userRouteId}" />
 									<input type="hidden" name="region" value="${region}" /> 
 									<input type="hidden" name="checkin" value="${checkin}" /> 
 									<input type="hidden" name="checkout" value="${checkout}" /> 
-									<input type="hidden" name="people" value="${people}" /> 
 									<input type="hidden" name="roomId" value="${r.roomId}" />
+									
 									<button class="btn primary" type="submit">이 방 선택</button>
 								</form>
 							</div>
@@ -189,6 +72,7 @@ body {
 		</c:choose>
 	</div>
 	
+</div>
 </div>
 </div>
 

@@ -25,7 +25,6 @@ public class ReservationConfirmController {
         String region = req.getParameter("region");
         String checkin = req.getParameter("checkin");
         String checkout = req.getParameter("checkout");
-        String people = req.getParameter("people");
         String roomId = req.getParameter("roomId");
         String carId = req.getParameter("carId");
         String rentalStart = req.getParameter("rentalStart");
@@ -33,7 +32,7 @@ public class ReservationConfirmController {
 
         // 숙소·차량 정보 불러오기 (이미 존재)
         IntegratedReservation data = reservationService.getIntegratedReservationPreview(
-                region, checkin, checkout, people, roomId, carId);
+                region, checkin, checkout, roomId, carId);
 
         // 날짜 정보도 같이 셋팅
         data.setCheckin(rentalStart);
