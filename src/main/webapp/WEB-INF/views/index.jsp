@@ -73,11 +73,11 @@
                 <div class="home-weather-hero morning">
                     <div class="home-weather-top">
                         <div class="weather-left">
-                            <div class="weather-label">남양주시 · 아침</div>
+                            <div class="weather-label">서울시 · 아침</div>
 
                             <div class="weather-temp-row">
-                                <span class="weather-temp">6°</span>
-                                <span class="weather-feels">체감 2°</span>
+                                <span class="weather-temp">4.3°</span>
+                                <span class="weather-feels">체감 1.3°</span>
                             </div>
 
                             <p class="weather-desc">
