@@ -1,7 +1,8 @@
 .map-container {
     display: flex;
     width: 100%;
-    height: calc(100vh - 70px);
+    margin-top: 43px; /* 헤더 높이만큼 내려주기 */
+    height: calc(100vh - 120px);
     position: relative;
 }
 
