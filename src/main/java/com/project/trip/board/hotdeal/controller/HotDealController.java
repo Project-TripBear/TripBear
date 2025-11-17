@@ -40,14 +40,23 @@ public class HotDealController {
 	 private final MemberMapper membermapper;
 	 private final HotDealLikeMapper likemapper;
 	 
-	    @GetMapping("/hotdeal/list")
-	    public String list(
-	            @RequestParam(value = "column", required = false) String column,
-	            @RequestParam(value = "word", required = false) String word,
-	            @RequestParam(value = "page", required = false, defaultValue = "1") int page,
-	            Authentication auth,
-	            Model model) {
-
+	        /**
+	         * 핫딜 게시글 목록을 조회하고 페이징 및 검색 기능을 제공하여 뷰에 전달합니다.
+	         *
+	         * @param column 검색할 컬럼 (예: "subject", "content")
+	         * @param word   검색어
+	         * @param page   현재 페이지 번호 (기본값: 1)
+	         * @param auth   Spring Security의 Authentication 객체 (로그인 여부 확인용)
+	         * @param model  뷰에 데이터를 전달하기 위한 Model 객체
+	         * @return "board.hotdeal.list" 핫딜 게시글 목록 뷰 이름
+	         */
+	        @GetMapping("/hotdeal/list")
+	        public String list(
+	                @RequestParam(value = "column", required = false) String column,
+	                @RequestParam(value = "word", required = false) String word,
+	                @RequestParam(value = "page", required = false, defaultValue = "1") int page,
+	                Authentication auth,
+	                Model model) {
 	        // 검색 여부 판단
 	        String search = "n";
 	        if (column != null && word != null && !word.trim().equals("")) {
@@ -107,7 +116,15 @@ public class HotDealController {
 	        return "board.hotdeal.list";
 	    }
 
-	    private String generatePageBar(int nowPage, int totalPage, int blockSize) {
+	    /**
+     * 페이지네이션을 위한 페이지 바 HTML 문자열을 생성하는 헬퍼 함수입니다.
+     *
+     * @param nowPage   현재 페이지 번호
+     * @param totalPage 총 페이지 수
+     * @param blockSize 페이지 블록 크기
+     * @return 생성된 페이지 바 HTML 문자열
+     */
+    private String generatePageBar(int nowPage, int totalPage, int blockSize) {
 	        StringBuilder pagebar = new StringBuilder();
 
 	        int loop = 1;
@@ -145,15 +162,26 @@ public class HotDealController {
 	    
 	    
 	    
-	    @GetMapping("/hotdeal/view")
-	    public String view(
-	            @RequestParam("seq") String seq,
-	            @RequestParam(value = "column", required = false) String column,
-	            @RequestParam(value = "word", required = false) String word,
-	            Authentication auth,
-	            HttpSession session,
-	            Model model) {
-
+	        /**
+	         * 특정 핫딜 게시글의 상세 내용을 조회하고 뷰에 전달합니다.
+	         * 조회수 증가 처리, 로그인한 사용자의 좋아요/스크랩 여부 확인, 댓글 목록 조회 등을 포함합니다.
+	         *
+	         * @param seq     조회할 게시글의 고유 번호
+	         * @param column  검색 컬럼 (이전 검색 조건 유지를 위함)
+	         * @param word    검색어 (이전 검색 조건 유지를 위함)
+	         * @param auth    Spring Security의 Authentication 객체
+	         * @param session HttpSession 객체 (조회수 중복 방지용)
+	         * @param model   뷰에 데이터를 전달하기 위한 Model 객체
+	         * @return "board.hotdeal.view" 핫딜 게시글 상세 뷰 이름, 또는 에러 발생 시 "error.page"
+	         */
+	        @GetMapping("/hotdeal/view")
+	        public String view(
+	                @RequestParam("seq") String seq,
+	                @RequestParam(value = "column", required = false) String column,
+	                @RequestParam(value = "word", required = false) String word,
+	                Authentication auth,
+	                HttpSession session,
+	                Model model) {
 	        boolean isLiked = false;
 	        boolean isScrapped = false;
 	        String userSeq = null;
@@ -261,24 +289,45 @@ public class HotDealController {
 	    }
 	    
 	    
-	    @GetMapping("/hotdeal/add")
-	    public String addForm() {
-	        return "board.hotdeal.add"; // src/main/webapp/WEB-INF/views/board/add.jsp 와 매칭
+	        /**
+	         * 핫딜 게시글 등록 폼 페이지를 표시합니다.
+	         *
+	         * @return "board.hotdeal.add" 핫딜 게시글 등록 폼 뷰 이름
+	         */
+	        @GetMapping("/hotdeal/add")
+	        public String addForm() {	        return "board.hotdeal.add"; // src/main/webapp/WEB-INF/views/board/add.jsp 와 매칭
 	    }
-	    @PostMapping("/hotdeal/add")
-	    public String addPost(
-	            @RequestParam("subject") String subject,
-	            @RequestParam("content") String content,
-	            @RequestParam("imgs") MultipartFile[] imgFiles,
-	            @RequestParam("status") String status,
-	            @RequestParam("category") String category,
-	            @RequestParam("itemname") String itemname,
-	            @RequestParam("price") String price,
-	            @RequestParam("url") String url,
-	            HttpServletRequest request, // <-- 1. (추가) 파일 경로를 얻기 위해 추가
-	            Authentication auth,
-	            Model model) throws IOException {
-
+	        /**
+	         * 새로운 핫딜 게시글을 등록하는 요청을 처리합니다.
+	         * 게시글 정보와 함께 업로드된 이미지 파일을 처리하고 데이터베이스에 저장합니다.
+	         *
+	         * @param subject    게시글 제목
+	         * @param content    게시글 내용
+	         * @param imgFiles   첨부 이미지 파일 배열
+	         * @param status     핫딜 상태
+	         * @param category   핫딜 카테고리
+	         * @param itemname   상품명
+	         * @param price      가격
+	         * @param url        상품 URL
+	         * @param request    HttpServletRequest 객체 (파일 저장 경로 획득용)
+	         * @param auth       Spring Security의 Authentication 객체
+	         * @param model      에러 발생 시 뷰에 데이터를 전달하기 위한 Model 객체
+	         * @return "redirect:/hotdeal/list" 게시글 목록 페이지로 리다이렉트, 또는 "board.hotdeal.add" (등록 실패 시)
+	         * @throws IOException 파일 처리 중 발생할 수 있는 예외
+	         */
+	        @PostMapping("/hotdeal/add")
+	        public String addPost(
+	                @RequestParam("subject") String subject,
+	                @RequestParam("content") String content,
+	                @RequestParam("imgs") MultipartFile[] imgFiles,
+	                @RequestParam("status") String status,
+	                @RequestParam("category") String category,
+	                @RequestParam("itemname") String itemname,
+	                @RequestParam("price") String price,
+	                @RequestParam("url") String url,
+	                HttpServletRequest request, // <-- 1. (추가) 파일 경로를 얻기 위해 추가
+	                Authentication auth,
+	                Model model) throws IOException {
 	        String userId = auth.getName();
 	        UserDTO userdto = membermapper.get(userId);
 	        HotDealDTO dto = new HotDealDTO();
@@ -335,9 +384,17 @@ public class HotDealController {
 	         return "board.hotdeal.add";
 	    }
 	    
-	 // GET: 수정 폼 보기
-	    @GetMapping("/hotdeal/edit")
-	    public String editForm(@RequestParam("seq") String seq, Model model, Authentication auth) {
+    /**
+     * 핫딜 게시글 수정 폼 페이지를 표시합니다.
+     * 로그인한 사용자의 게시글 수정 권한을 확인하고, 권한이 없는 경우 목록 페이지로 리다이렉트합니다.
+     *
+     * @param seq   수정할 게시글의 고유 번호
+     * @param model 뷰에 데이터를 전달하기 위한 Model 객체
+     * @param auth  Spring Security의 Authentication 객체
+     * @return "board.hotdeal.edit" 핫딜 게시글 수정 폼 뷰 이름, 또는 "redirect:/hotdeal/list" (권한 없음)
+     */
+    @GetMapping("/hotdeal/edit")
+    public String editForm(@RequestParam("seq") String seq, Model model, Authentication auth) {
 	        String userId = auth.getName();
 	        
 	        // 게시글 정보 조회 (기존 get 메서드 사용)
@@ -358,21 +415,39 @@ public class HotDealController {
 	        return "board.hotdeal.edit";
 	    }
 
-	 // POST: 수정 처리
-	    @PostMapping("/hotdeal/edit")
-	    public String editPost(
-	            @RequestParam("seq") String seq,
-	            @RequestParam("subject") String subject,
-	            @RequestParam("content") String content,
-	            @RequestParam(value = "imgs", required = false) MultipartFile[] imgFiles,
-	            @RequestParam("status") String status,
-	            @RequestParam("category") String category,
-	            @RequestParam("itemname") String itemname,
-	            @RequestParam("price") String price,
-	            @RequestParam("url") String url,
-	            @RequestParam(value = "deleteImages", required = false) String[] deleteImages,
-	            Authentication auth,
-	            Model model) throws IOException { // throws IOException 확인
+    /**
+     * 핫딜 게시글 수정 요청을 처리합니다.
+     * 로그인한 사용자의 게시글 수정 권한을 확인하고, 게시글 정보 및 이미지 파일을 업데이트합니다.
+     *
+     * @param seq          수정할 게시글의 고유 번호
+     * @param subject      게시글 제목
+     * @param content      게시글 내용
+     * @param imgFiles     새로 업로드된 이미지 파일 배열
+     * @param status       핫딜 상태
+     * @param category     핫딜 카테고리
+     * @param itemname     상품명
+     * @param price        가격
+     * @param url          상품 URL
+     * @param deleteImages 삭제할 이미지 ID 배열
+     * @param auth         Spring Security의 Authentication 객체
+     * @param model        에러 발생 시 뷰에 데이터를 전달하기 위한 Model 객체
+     * @return "redirect:/hotdeal/view?seq={seq}" 게시글 상세 페이지로 리다이렉트, 또는 "board.hotdeal.edit" (수정 실패 시)
+     * @throws IOException 파일 처리 중 발생할 수 있는 예외
+     */
+    @PostMapping("/hotdeal/edit")
+    public String editPost(
+            @RequestParam("seq") String seq,
+            @RequestParam("subject") String subject,
+            @RequestParam("content") String content,
+            @RequestParam(value = "imgs", required = false) MultipartFile[] imgFiles,
+            @RequestParam("status") String status,
+            @RequestParam("category") String category,
+            @RequestParam("itemname") String itemname,
+            @RequestParam("price") String price,
+            @RequestParam("url") String url,
+            @RequestParam(value = "deleteImages", required = false) String[] deleteImages,
+            Authentication auth,
+            Model model) throws IOException { // throws IOException 확인
 
 	        String userId = auth.getName();
 	        
@@ -447,9 +522,17 @@ public class HotDealController {
 	    }
 	    
 	    
-	 // GET: 삭제 확인 페이지
-	    @GetMapping("/hotdeal/del")
-	    public String delForm(@RequestParam("seq") String seq, Model model, Authentication auth) {
+    /**
+     * 핫딜 게시글 삭제 확인 페이지를 표시합니다.
+     * 로그인한 사용자의 게시글 삭제 권한을 확인하고, 권한이 없는 경우 목록 페이지로 리다이렉트합니다.
+     *
+     * @param seq   삭제할 게시글의 고유 번호
+     * @param model 뷰에 데이터를 전달하기 위한 Model 객체
+     * @param auth  Spring Security의 Authentication 객체
+     * @return "board.hotdeal.del" 핫딜 게시글 삭제 확인 뷰 이름, 또는 "redirect:/hotdeal/list" (권한 없음)
+     */
+    @GetMapping("/hotdeal/del")
+    public String delForm(@RequestParam("seq") String seq, Model model, Authentication auth) {
 	        String userId = auth.getName();
 	        
 	        // 게시글 정보 조회
@@ -465,12 +548,21 @@ public class HotDealController {
 	        return "board.hotdeal.del";
 	    }
 
-	    // POST: 삭제 처리
-	    @PostMapping("/hotdeal/del")
-	    public String delPost(
-	            @RequestParam("seq") String seq,
-	            Authentication auth,
-	            Model model) {
+    /**
+     * 핫딜 게시글 삭제 요청을 처리합니다.
+     * 로그인한 사용자의 게시글 삭제 권한을 확인하고, 게시글과 관련된 모든 데이터(댓글, 좋아요, 스크랩, 이미지)를
+     * 먼저 삭제한 후 게시글을 삭제합니다.
+     *
+     * @param seq   삭제할 게시글의 고유 번호
+     * @param auth  Spring Security의 Authentication 객체
+     * @param model 에러 발생 시 뷰에 데이터를 전달하기 위한 Model 객체
+     * @return "redirect:/hotdeal/list" 게시글 목록 페이지로 리다이렉트, 또는 "board.hotdeal.del" (삭제 실패 시)
+     */
+    @PostMapping("/hotdeal/del")
+    public String delPost(
+            @RequestParam("seq") String seq,
+            Authentication auth,
+            Model model) {
 	        
 	        String userId = auth.getName();
 	        
@@ -502,11 +594,18 @@ public class HotDealController {
 	        }
 	    }
 	    
-	    @PostMapping("/hotdeal/like")
-	    public ResponseEntity<Map<String, Object>> toggleLike(
-	            @RequestBody Map<String, String> request, 
-	            Authentication auth) {
-	        
+	        /**
+	         * 핫딜 게시글에 대한 좋아요 상태를 토글하는 REST API입니다.
+	         * 로그인한 사용자만 좋아요를 누를 수 있으며, 처리 후 좋아요 상태와 개수를 반환합니다.
+	         *
+	         * @param request 게시글 ID("bseq")를 포함하는 {@code Map<String, String>}
+	         * @param auth    Spring Security의 Authentication 객체
+	         * @return 처리 결과(result), 좋아요 상태(action), 좋아요 개수(likeCount)를 담은 {@code ResponseEntity<Map<String, Object>>}
+	         */
+	        @PostMapping("/hotdeal/like")
+	        public ResponseEntity<Map<String, Object>> toggleLike(
+	                @RequestBody Map<String, String> request, 
+	                Authentication auth) {	        
 	        Map<String, Object> response = new HashMap<>();
 	        
 	        if (auth == null || !auth.isAuthenticated()) {
@@ -542,11 +641,18 @@ public class HotDealController {
 	        return ResponseEntity.ok(response);
 	    }
 
-	    @PostMapping("/hotdeal/scrap")
-	    public ResponseEntity<Map<String, Object>> toggleScrap(
-	            @RequestBody Map<String, String> request, 
-	            Authentication auth) {
-	        
+	        /**
+	         * 핫딜 게시글에 대한 스크랩 상태를 토글하는 REST API입니다.
+	         * 로그인한 사용자만 스크랩할 수 있으며, 처리 후 스크랩 상태를 반환합니다.
+	         *
+	         * @param request 게시글 ID("bseq")를 포함하는 {@code Map<String, String>}
+	         * @param auth    Spring Security의 Authentication 객체
+	         * @return 처리 결과(result), 스크랩 상태(action)를 담은 {@code ResponseEntity<Map<String, Object>>}
+	         */
+	        @PostMapping("/hotdeal/scrap")
+	        public ResponseEntity<Map<String, Object>> toggleScrap(
+	                @RequestBody Map<String, String> request, 
+	                Authentication auth) {	        
 	        Map<String, Object> response = new HashMap<>();
 	        
 	        if (auth == null || !auth.isAuthenticated()) {

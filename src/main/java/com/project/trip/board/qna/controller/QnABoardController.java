@@ -29,9 +29,14 @@ public class QnABoardController {
 
     private final QnABoardService qnaBoardService;
 
-    /* -------------------------------
-       🔹 로그인 유저 ID 가져오는 메서드
-    -------------------------------- */
+    /**
+     * Spring Security의 {@link Authentication} 객체로부터 현재 로그인한 사용자의 ID를 추출하는 헬퍼 함수입니다.
+     * <p>
+     * 로그인 정보가 없거나 ID를 파싱할 수 없는 경우 null을 반환합니다.
+     * </p>
+     * @param authentication Spring Security의 Authentication 객체
+     * @return 로그인한 사용자의 ID (Integer), 로그인 정보가 없거나 파싱 실패 시 null
+     */
     private Integer getLoggedInUserId(Authentication authentication) {
 
         if (authentication == null || authentication.getPrincipal() == null) {
@@ -49,9 +54,16 @@ public class QnABoardController {
     }
 
 
-    /* -------------------------------
-       🔹 1. 목록 조회
-    -------------------------------- */
+    /**
+     * Q&A 게시글 목록을 조회하고 페이징, 검색, 카테고리 필터링 기능을 제공하여 뷰에 전달합니다.
+     *
+     * @param model         뷰에 데이터를 전달하기 위한 Model 객체
+     * @param currentPage   현재 페이지 번호 (기본값: 1)
+     * @param searchType    검색 타입 (예: "title", "content", "writer")
+     * @param searchKeyword 검색 키워드
+     * @param category      조회할 카테고리
+     * @return "qna.list" Q&A 게시글 목록 뷰 이름
+     */
     @GetMapping("/list")
     public String getQnaBoardList(
             Model model,
@@ -79,9 +91,13 @@ public class QnABoardController {
 
 
 
-    /* -------------------------------
-       🔹 2. 게시글 등록 GET
-    -------------------------------- */
+    /**
+     * Q&A 게시글 등록 폼 페이지를 표시합니다.
+     * 카테고리 목록을 뷰에 전달합니다.
+     *
+     * @param model 뷰에 데이터를 전달하기 위한 Model 객체
+     * @return "qna.add" Q&A 게시글 등록 폼 뷰 이름
+     */
     @GetMapping("/add")
     public String addQnaBoardForm(Model model) {
     	model.addAttribute("categoryList", qnaBoardService.getCategoryList());
@@ -89,9 +105,15 @@ public class QnABoardController {
     }
 
 
-    /* -------------------------------
-       🔹 2-2. 게시글 등록 POST
-    -------------------------------- */
+    /**
+     * Q&A 게시글 등록 요청을 처리합니다.
+     * 로그인한 사용자만 게시글을 등록할 수 있으며, 등록 후 목록 페이지로 리다이렉트합니다.
+     *
+     * @param dto            등록할 게시글 정보를 담은 {@link QnABoardDTO}
+     * @param authentication Spring Security의 Authentication 객체
+     * @param rttr           리다이렉트 시 메시지를 전달하기 위한 {@link RedirectAttributes}
+     * @return "redirect:/qnaboard/list" 게시글 목록 페이지로 리다이렉트, 로그인 정보가 유효하지 않으면 "/login"으로 리다이렉트
+     */
     @PostMapping("/add")
     public String addQnaBoardProcess(
             QnABoardDTO dto,
@@ -115,9 +137,14 @@ public class QnABoardController {
 
 
 
-    /* -------------------------------
-       🔹 3. 상세 조회
-    -------------------------------- */
+    /**
+     * 특정 Q&A 게시글의 상세 내용을 조회하고, 해당 게시글의 댓글 목록과 함께 뷰에 전달합니다.
+     *
+     * @param boardSeq       조회할 게시글의 고유 번호
+     * @param model          뷰에 데이터를 전달하기 위한 Model 객체
+     * @param authentication Spring Security의 Authentication 객체
+     * @return "qna.view" Q&A 게시글 상세 뷰 이름
+     */
     @GetMapping("/view")
     public String viewQnaBoard(
             @RequestParam("seq") int boardSeq,
@@ -138,9 +165,16 @@ public class QnABoardController {
 
 
 
-    /* -------------------------------
-       🔹 4. 게시글 수정 GET
-    -------------------------------- */
+    /**
+     * Q&A 게시글 수정 폼 페이지를 표시합니다.
+     * 로그인 여부 및 수정 권한을 확인하여, 권한이 없는 경우 상세 페이지로 리다이렉트합니다.
+     *
+     * @param boardSeq       수정할 게시글의 고유 번호
+     * @param model          뷰에 데이터를 전달하기 위한 Model 객체
+     * @param authentication Spring Security의 Authentication 객체
+     * @param rttr           리다이렉트 시 메시지를 전달하기 위한 {@link RedirectAttributes}
+     * @return "qna.edit" Q&A 게시글 수정 폼 뷰 이름, 또는 권한이 없는 경우 상세 페이지로 리다이렉트
+     */
     @GetMapping("/edit")
     public String editQnaBoardForm(
             @RequestParam("seq") int boardSeq,
@@ -169,9 +203,15 @@ public class QnABoardController {
 
 
 
-    /* -------------------------------
-       🔹 4-2. 게시글 수정 POST
-    -------------------------------- */
+    /**
+     * Q&A 게시글 수정 요청을 처리합니다.
+     * 로그인 여부 및 수정 권한을 확인하여, 권한이 없는 경우 상세 페이지로 리다이렉트합니다.
+     *
+     * @param dto            수정할 게시글 정보를 담은 {@link QnABoardDTO}
+     * @param authentication Spring Security의 Authentication 객체
+     * @param rttr           리다이렉트 시 메시지를 전달하기 위한 {@link RedirectAttributes}
+     * @return "redirect:/qnaboard/view?seq={boardSeq}" Q&A 게시글 상세 페이지로 리다이렉트
+     */
     @PostMapping("/edit")
     public String editQnaBoardProcess(
             QnABoardDTO dto,
@@ -198,9 +238,15 @@ public class QnABoardController {
 
 
 
-    /* -------------------------------
-       🔹 5. 게시글 삭제
-    -------------------------------- */
+    /**
+     * Q&A 게시글 삭제 요청을 처리합니다.
+     * 로그인 여부 및 삭제 권한을 확인하여, 권한이 없는 경우 상세 페이지로 리다이렉트합니다.
+     *
+     * @param boardSeq       삭제할 게시글의 고유 번호
+     * @param authentication Spring Security의 Authentication 객체
+     * @param rttr           리다이렉트 시 메시지를 전달하기 위한 {@link RedirectAttributes}
+     * @return "redirect:/qnaboard/list" Q&A 게시글 목록 페이지로 리다이렉트
+     */
     @GetMapping("/delete")
     public String deleteQnaBoard(
             @RequestParam("seq") int boardSeq,
@@ -229,9 +275,15 @@ public class QnABoardController {
 
 
 
-    /* -------------------------------
-       🔹 6. 좋아요 토글
-    -------------------------------- */
+    /**
+     * Q&A 게시글에 대한 좋아요 상태를 토글합니다.
+     * 로그인한 사용자만 좋아요를 누를 수 있으며, 처리 후 게시글 상세 페이지로 리다이렉트합니다.
+     *
+     * @param boardSeq       좋아요를 토글할 게시글의 고유 번호
+     * @param authentication Spring Security의 Authentication 객체
+     * @param rttr           리다이렉트 시 메시지를 전달하기 위한 {@link RedirectAttributes}
+     * @return "redirect:/qnaboard/view?seq={boardSeq}" Q&A 게시글 상세 페이지로 리다이렉트
+     */
     @GetMapping("/like")
     public String toggleLike(
             @RequestParam("seq") int boardSeq,
@@ -250,9 +302,15 @@ public class QnABoardController {
 
 
 
-    /* -------------------------------
-       🔹 7. 스크랩 토글
-    -------------------------------- */
+    /**
+     * Q&A 게시글에 대한 스크랩 상태를 토글합니다.
+     * 로그인한 사용자만 스크랩할 수 있으며, 처리 후 게시글 상세 페이지로 리다이렉트합니다.
+     *
+     * @param boardSeq       스크랩을 토글할 게시글의 고유 번호
+     * @param authentication Spring Security의 Authentication 객체
+     * @param rttr           리다이렉트 시 메시지를 전달하기 위한 {@link RedirectAttributes}
+     * @return "redirect:/qnaboard/view?seq={boardSeq}" Q&A 게시글 상세 페이지로 리다이렉트
+     */
     @GetMapping("/scrap")
     public String toggleScrap(
             @RequestParam("seq") int boardSeq,
@@ -272,9 +330,15 @@ public class QnABoardController {
 
 
 
-    /* -------------------------------
-       🔹 8. 신고 폼 GET
-    -------------------------------- */
+    /**
+     * Q&A 게시글 신고 폼 페이지를 표시합니다.
+     * 신고할 게시글 ID와 신고 대상 사용자 ID를 뷰에 전달합니다.
+     *
+     * @param boardSeq       신고할 게시글의 고유 번호
+     * @param reportedUserId 신고 대상 사용자의 ID
+     * @param model          뷰에 데이터를 전달하기 위한 Model 객체
+     * @return "qna.report" 신고 폼 뷰 이름
+     */
     @GetMapping("/report")
     public String reportForm(
             @RequestParam("boardSeq") int boardSeq,
@@ -290,9 +354,17 @@ public class QnABoardController {
 
 
 
-    /* -------------------------------
-       🔹 8-2. 신고 POST
-    -------------------------------- */
+    /**
+     * Q&A 게시글 신고 요청을 처리합니다.
+     * 로그인한 사용자만 신고할 수 있으며, 신고 처리 후 성공 또는 실패 알림 페이지로 포워드합니다.
+     *
+     * @param boardSeq       신고할 게시글의 고유 번호
+     * @param reportedUserId 신고 대상 사용자의 ID
+     * @param reason         신고 사유
+     * @param authentication Spring Security의 Authentication 객체
+     * @return "forward:/WEB-INF/views/inc/report_success_alert.jsp" 신고 성공 시,
+     *         "forward:/WEB-INF/views/inc/report_failure_alert.jsp" 신고 실패 시
+     */
     @PostMapping("/report")
     public String reportProcess(
             @RequestParam int boardSeq,
@@ -318,9 +390,14 @@ public class QnABoardController {
 
 
 
-    /* -------------------------------
-       🔹 9. 댓글 등록
-    -------------------------------- */
+    /**
+     * Q&A 게시글에 댓글을 등록하는 요청을 처리합니다.
+     * 로그인한 사용자만 댓글을 등록할 수 있으며, 등록 후 게시글 상세 페이지로 리다이렉트합니다.
+     *
+     * @param dto            등록할 댓글 정보를 담은 {@link QnACommentDTO}
+     * @param authentication Spring Security의 Authentication 객체
+     * @return "redirect:/qnaboard/view?seq={boardSeq}" Q&A 게시글 상세 페이지로 리다이렉트
+     */
     @PostMapping("/addcomment")
     public String addCommentProcess(
             QnACommentDTO dto,
@@ -339,14 +416,19 @@ public class QnABoardController {
 
 
 
-    /* -------------------------------
-    🔹 10. 댓글 수정 (AJAX)
- -------------------------------- */
-	 @PostMapping("/editcomment")
-	 @ResponseBody
-	 public String editCommentProcess(
-	         QnACommentDTO dto,
-	         Authentication authentication) {
+    /**
+     * 댓글 수정 요청을 처리하는 REST API입니다.
+     * 로그인 여부 및 수정 권한을 확인하여, 권한이 없는 경우 적절한 응답 메시지를 반환합니다.
+     *
+     * @param dto            수정할 댓글 정보를 담은 {@link QnACommentDTO}
+     * @param authentication Spring Security의 Authentication 객체
+     * @return "OK" (성공), "NOT_LOGIN" (로그인 필요), "NO_PERMISSION" (권한 없음)
+     */
+    @PostMapping("/editcomment")
+    @ResponseBody
+    public String editCommentProcess(
+            QnACommentDTO dto,
+            Authentication authentication) {
 	
 	     Integer userId = getLoggedInUserId(authentication);
 	     if (userId == null) {
@@ -365,15 +447,22 @@ public class QnABoardController {
 
 
 
-    /* -------------------------------
-       🔹 11. 댓글 삭제
-    -------------------------------- */
-	 @GetMapping("/deletecomment")
-	 public String deleteCommentProcess(
-	         @RequestParam int commentId,
-	         @RequestParam int boardSeq,
-	         Authentication authentication,
-	         RedirectAttributes rttr) {
+    /**
+     * 댓글 삭제 요청을 처리합니다.
+     * 로그인 여부 및 삭제 권한을 확인하여, 권한이 없는 경우 메시지와 함께 게시글 상세 페이지로 리다이렉트합니다.
+     *
+     * @param commentId      삭제할 댓글의 고유 번호
+     * @param boardSeq       댓글이 속한 게시글의 고유 번호
+     * @param authentication Spring Security의 Authentication 객체
+     * @param rttr           리다이렉트 시 메시지를 전달하기 위한 {@link RedirectAttributes}
+     * @return "redirect:/qnaboard/view?seq={boardSeq}" Q&A 게시글 상세 페이지로 리다이렉트
+     */
+    @GetMapping("/deletecomment")
+    public String deleteCommentProcess(
+            @RequestParam int commentId,
+            @RequestParam int boardSeq,
+            Authentication authentication,
+            RedirectAttributes rttr) {
 
 	     Integer userId = getLoggedInUserId(authentication);
 

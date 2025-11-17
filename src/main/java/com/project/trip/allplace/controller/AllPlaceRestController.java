@@ -36,6 +36,14 @@ public class AllPlaceRestController {
     
  // AllPlaceController.java
 
+    /**
+     * 위도와 경도를 기반으로 해당 위치의 현재 날씨 정보를 조회하여 반환합니다.
+     *
+     * @param lat 조회할 위치의 위도
+     * @param lon 조회할 위치의 경도
+     * @return ResponseEntity<WeatherVO> 날씨 정보를 담은 {@link WeatherVO} 객체와 HTTP 상태 코드를 포함하는 응답.
+     *         성공 시 날씨 정보와 OK(200), 실패 시 INTERNAL_SERVER_ERROR(500).
+     */
     @GetMapping("/weatherok")
     public ResponseEntity<WeatherVO> getWeatherByCoords( // [수정 1] 반환 타입을 ResponseEntity<?> -> ResponseEntity<WeatherVO>
             @RequestParam("lat") String lat,
@@ -56,6 +64,19 @@ public class AllPlaceRestController {
     }
 
 
+    /**
+     * 지도에 표시할 장소 목록을 조회하는 REST API입니다.
+     * 중심 좌표(위도, 경도)와 반경, 콘텐츠 타입 등을 기반으로 주변 장소를 검색하고,
+     * 거리순으로 정렬하여 최대 300개의 결과를 반환합니다.
+     *
+     * @param lat           중심점의 위도
+     * @param lng           중심점의 경도
+     * @param radius        검색 반경 (미터 단위, 기본값: 20000m)
+     * @param contentTypeId 조회할 콘텐츠 타입 ID (기본값: "12,39" - 관광지, 음식점)
+     * @param keyword       선택적인 검색 키워드
+     * @return ResponseEntity<List<PlaceDTO>> 장소 목록({@link PlaceDTO})과 HTTP 상태 코드를 포함하는 응답.
+     *         결과가 있으면 목록과 OK(200), 없으면 NO_CONTENT(204).
+     */
     @GetMapping("/mapok")
     public ResponseEntity<List<PlaceDTO>> getSpotsForMapOk(
             @RequestParam("lat") double lat,
@@ -121,6 +142,13 @@ public class AllPlaceRestController {
         return new ResponseEntity<>(out, HttpStatus.OK);
     }
     
+    /**
+     * 키워드를 사용하여 장소를 검색하고, 결과 목록을 JSON으로 반환하는 REST API입니다.
+     *
+     * @param keyword 검색할 키워드
+     * @return ResponseEntity<List<PlaceDTO>> 검색된 장소의 기본 정보 목록({@link PlaceDTO})과 HTTP 상태 코드를 포함하는 응답.
+     *         결과가 있으면 목록과 OK(200), 없으면 NO_CONTENT(204).
+     */
     @GetMapping("/searchLocation")
     public ResponseEntity<List<PlaceDTO>> searchLocation(@RequestParam("keyword") String keyword) {
 

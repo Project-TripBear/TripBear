@@ -45,6 +45,15 @@ public class GeminiServiceImpl implements GeminiService {
         private List<Content> contents;
     }
 
+    /**
+     * Gemini API를 사용하여 사용자 요청 및 날씨 정보 기반의 여행 루트를 생성합니다.
+     *
+     * @param dto AiRouteRequestDTO 사용자 요청 정보를 담은 DTO
+     * @param weather WeatherDTO 날씨 정보를 담은 DTO
+     * @return RouteDTO 생성된 여행 루트 정보를 담은 DTO
+     * @throws IllegalStateException GEMINI_API_KEY가 설정되지 않았을 경우
+     * @throws RuntimeException Gemini API 호출 중 오류가 발생했을 경우
+     */
     @Override
     public RouteDTO generateRoute(AiRouteRequestDTO dto, WeatherDTO weather) {
 
@@ -119,8 +128,13 @@ public class GeminiServiceImpl implements GeminiService {
     }
 
     /**
-     * Gemini 응답 JSON을 직접 파싱해서
-     * candidates[0].content.parts[0].text 안의 JSON만 뽑아서 RouteDTO로 변환
+     * Gemini API의 JSON 응답 문자열을 파싱하여 {@link RouteDTO} 객체로 변환합니다.
+     * <p>
+     * 응답에서 실제 경로 데이터가 포함된 JSON 텍스트를 추출하고,
+     * 이를 {@link RouteDTO}로 역직렬화합니다.
+     *
+     * @param jsonResponse Gemini API로부터 받은 원시 JSON 응답 문자열
+     * @return RouteDTO 파싱 및 변환에 성공한 경우 {@link RouteDTO} 객체, 실패 시 {@code null}
      */
     private RouteDTO parseGeminiResponse(String jsonResponse) {
         try {
@@ -195,7 +209,13 @@ public class GeminiServiceImpl implements GeminiService {
         }
     }
 
-    // 질문 카드 + DTO 반영된 프롬프트 생성
+    /**
+     * 사용자 요청 데이터와 날씨 정보를 기반으로 Gemini API에 전송할 프롬프트 문자열을 생성합니다.
+     *
+     * @param dto     사용자 여행 요청 정보를 담은 {@link AiRouteRequestDTO} 객체
+     * @param weather 해당 지역의 날씨 정보를 담은 {@link WeatherDTO} 객체
+     * @return Gemini API 요청을 위해 구성된 전체 프롬프트 문자열
+     */
     private String createPrompt(AiRouteRequestDTO dto, WeatherDTO weather) {
         StringBuilder prompt = new StringBuilder();
 

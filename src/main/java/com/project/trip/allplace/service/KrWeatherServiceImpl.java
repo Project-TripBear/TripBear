@@ -41,7 +41,12 @@ public class KrWeatherServiceImpl implements KrWeatherService { // 기존 인터
     }
 
     /**
-     * [로직 변경] OpenWeatherMap 'Current Weather' API를 호출합니다.
+     * 위도(lat)와 경도(lon)를 문자열로 받아 OpenWeatherMap API를 호출하여
+     * 현재 날씨 정보를 조회하고, 이를 {@link WeatherVO} 객체로 가공하여 반환합니다.
+     *
+     * @param lat 위도 (예: "37.579043")
+     * @param lon 경도 (예: "126.974055")
+     * @return 가공된 날씨 정보 {@link WeatherVO}
      */
     @Override
     public WeatherVO getTodayWeather(String lat, String lon) {
@@ -73,7 +78,13 @@ public class KrWeatherServiceImpl implements KrWeatherService { // 기존 인터
     }
     
     /**
-     * [신규] 위도/경도로 '현재 날씨' (/weather) API를 호출합니다.
+     * 위도와 경도를 사용하여 OpenWeatherMap '현재 날씨' API를 호출하고,
+     * 그 응답을 {@link JsonNode} 형태로 반환합니다.
+     * API 키 설정 여부 및 API 응답 오류를 처리합니다.
+     *
+     * @param lat 위도 문자열
+     * @param lon 경도 문자열
+     * @return API 응답 JSON 노드, 또는 오류 발생 시 null
      */
     private JsonNode callOpenWeatherApi(String lat, String lon) {
         try {
@@ -109,8 +120,12 @@ public class KrWeatherServiceImpl implements KrWeatherService { // 기존 인터
     }
     
     /**
-     * [신규] OpenWeatherMap 'Current' API (JsonNode)를
-     * 프론트엔드 'WeatherVO'로 가공 (Adapter 역할)
+     * OpenWeatherMap 'Current Weather' API의 JSON 응답({@link JsonNode})을 받아,
+     * 프론트엔드에서 사용하기 위한 {@link WeatherVO} 객체로 가공합니다.
+     * 시간 변환, 핵심 날씨 정보 추출, 하늘 상태 및 강수 정보 처리를 포함합니다.
+     *
+     * @param root OpenWeatherMap API의 JSON 응답 루트 노드
+     * @return 가공된 날씨 정보 {@link WeatherVO}
      */
     private WeatherVO processOpenWeatherResponse(JsonNode root) {
         WeatherVO vo = new WeatherVO();

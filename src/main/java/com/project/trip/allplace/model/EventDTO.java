@@ -5,26 +5,50 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * tblEvent (행사/축제) 테이블과 매핑되는 DTO
+ * 축제 또는 행사 정보를 나타내는 데이터 전송 객체(DTO)입니다.
+ * `tblEvent` 테이블과 매핑됩니다.
  */
 @Data
 @NoArgsConstructor
 public class EventDTO {
 
-    // (ERD 'tblEvent' 컬럼 기준)
-    
-    // 1. PK (tblEvent)
-    private long eventId; 
-    
-    // 2. FK (tblPlace 참조)
-    private long placeId; 
-    
-    // 3. FK (tblEventTheme 참조)
-    private long eventThemeId; 
+    /**
+     * 행사의 고유 식별자 (PK)
+     */
+    private long eventId;
 
+    /**
+     * 행사가 열리는 장소의 고유 식별자 (FK, tblPlace 참조)
+     */
+    private long placeId;
+
+    /**
+     * 행사 테마의 고유 식별자 (FK, tblEventTheme 참조)
+     */
+    private long eventThemeId;
+
+    /**
+     * 행사 이름
+     */
     private String eventName;
-    private String eventStart; // (행사시작일)
-    private String eventEnd;   // (행사종료일)
-    private String eventInfo;  // (행사정보)
-    private String eventLink;  // (관련링크)
+
+    /**
+     * 행사 시작일 (yyyyMMdd 형식의 문자열)
+     */
+    private String eventStart;
+
+    /**
+     * 행사 종료일 (yyyyMMdd 형식의 문자열)
+     */
+    private String eventEnd;
+
+    /**
+     * 행사 관련 추가 정보
+     */
+    private String eventInfo;
+
+    /**
+     * 행사 관련 외부 링크 URL
+     */
+    private String eventLink;
 }
