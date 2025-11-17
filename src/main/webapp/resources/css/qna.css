@@ -2,6 +2,23 @@
 /*                           list.jsp                          */
 /* =========================================================== */
 
+/* Q&A 전용 팔레트 (전역 변수 미정의 시 대비) */
+:root {
+    --primary: #6C9A8B;
+    --primary-dark: #4F7B6C;
+    --primary-light: #8BB3A4;
+    --accent: #FF8C69;
+    --bg: #F8F9FB;
+    --surface: #FFFFFF;
+    --border: #E3E6ED;
+    --text: #2D2D2D;
+    --text-light: #6C757D;
+    --text-dark: #1B1B1B;
+    --radius: 14px;
+    --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.06);
+    --danger: #D9534F;
+}
+
 /* ---------------------- 전체 컨테이너 ---------------------- */
 .card-container {
     width: 100%;
