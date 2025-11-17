@@ -23,5 +23,4 @@ public class ReviewDTO {
     private int likeCount; // 좋아요 수 (tblReviewLike Join)
     private long commentCount; // 댓글 수 (tblReviewComment Join)
     
-    private List<ReviewImageDTO> images; // 이미지 목록
 }

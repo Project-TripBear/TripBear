@@ -17,6 +17,12 @@ import com.project.trip.admin.auth.mapper.AdminMapper; // 👈 AdminMapper impor
 
 import lombok.RequiredArgsConstructor;
 
+/**
+ * 관리자 페이지의 공지사항 관리와 관련된 HTTP 요청을 처리하는 컨트롤러입니다.
+ * <p>
+ * 공지사항 등록, 수정, 삭제 기능을 제공합니다.
+ * </p>
+ */
 @Controller
 @RequestMapping("/admin/notice") 
 @RequiredArgsConstructor
@@ -25,15 +31,26 @@ public class AdminNoticeController {
 	private final NoticeService noticeService;
     private final AdminMapper adminMapper; // 👈 AdminMapper 주입 완료!
 	
-    // ------------------------------------------------------------------
-    // 관리자 기능 (글쓰기, 수정, 삭제)
-    // ------------------------------------------------------------------
-
+    /**
+     * 신규 공지사항 등록 폼 페이지를 반환합니다.
+     * @return 신규 공지사항 등록 페이지의 뷰 이름
+     */
 	@GetMapping("/add")
 	public String addForm() {
 		return "notice.add"; 
 	}
 
+	/**
+     * 신규 공지사항을 등록 처리합니다.
+     * <p>
+     * 현재 로그인된 관리자의 ID를 조회하여 작성자 정보로 설정한 후,
+     * 공지사항을 데이터베이스에 저장합니다.
+     * </p>
+     * @param dto 공지사항 정보를 담은 DTO
+     * @param rttr 리다이렉트 시 메시지를 전달하기 위한 RedirectAttributes 객체
+     * @param authentication 현재 인증 정보를 담고 있는 Authentication 객체
+     * @return 성공 시 공지사항 목록 페이지로 리다이렉트
+     */
 	@PostMapping("/add")
 	public String addAction(NoticeDTO dto, RedirectAttributes rttr, Authentication authentication) {
         
@@ -74,6 +91,12 @@ public class AdminNoticeController {
 		return "redirect:/notice/list"; 
 	}
 	
+	/**
+     * 공지사항 수정 폼 페이지를 반환합니다.
+     * @param noticePostId 수정할 공지사항의 고유 ID
+     * @param model 뷰에 공지사항 데이터를 전달하기 위한 Model 객체
+     * @return 공지사항 수정 페이지의 뷰 이름
+     */
 	@GetMapping("/edit")
 	public String editForm(@RequestParam("id") Long noticePostId, Model model) {
 		
@@ -84,6 +107,12 @@ public class AdminNoticeController {
 		return "notice.edit";
 	}
 
+	/**
+     * 공지사항 정보를 수정 처리합니다.
+     * @param dto 수정된 공지사항 정보를 담은 DTO
+     * @param rttr 리다이렉트 시 메시지를 전달하기 위한 RedirectAttributes 객체
+     * @return 수정된 공지사항의 상세 보기 페이지로 리다이렉트
+     */
 	@PostMapping("/edit")
 	public String editAction(NoticeDTO dto, RedirectAttributes rttr) {
 		
@@ -94,6 +123,12 @@ public class AdminNoticeController {
 		return "redirect:/notice/view?id=" + dto.getNoticePostId();
 	}
 	
+	/**
+     * 공지사항을 삭제 처리합니다.
+     * @param noticePostId 삭제할 공지사항의 고유 ID
+     * @param rttr 리다이렉트 시 메시지를 전달하기 위한 RedirectAttributes 객체
+     * @return 공지사항 목록 페이지로 리다이렉트
+     */
 	@PostMapping("/delete")
 	public String delete(@RequestParam("id") Long noticePostId, RedirectAttributes rttr) {
 		

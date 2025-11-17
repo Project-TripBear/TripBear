@@ -237,12 +237,14 @@ public class GeminiServiceImpl implements GeminiService {
         prompt.append("- 날씨와 실내/실외 선호를 고려하여, 실내 활동 또는 실외 활동 비율을 조정하세요.\n");
         prompt.append("- 전반적인 날씨 반영 내용은 weatherConsideration 필드에 한국어 문장으로 요약하세요.\n\n");
 
-        // 3. 장소/스탑 공통 규칙
+        String city = dto.getCity();
+
         prompt.append("### 조건 2: 장소 정보 규칙 (매우 중요)\n");
-        prompt.append("- stops 배열의 각 원소는 하나의 실제 장소(명소, 카페, 식당 등)입니다.\n");
-        prompt.append("- 이번 여행 도시는 반드시 '부산광역시'입니다.\n");
-        prompt.append("- 모든 장소와 식당은 반드시 '부산광역시' 안에 실제로 존재해야 합니다.\n");
-        prompt.append("- 제주도, 서울, 기타 다른 시/도에 있는 장소/식당을 사용하는 순간, 그 답변은 잘못된 답변입니다.\n\n");
+        prompt.append("- stops 배열의 각 원소는 실제 장소(명소, 카페, 식당 등)여야 합니다.\n");
+        prompt.append("- 이번 여행 도시는 반드시 '").append(city).append("'입니다.\n");
+        prompt.append("- 모든 장소와 식당은 반드시 '").append(city).append("' 안에 실제로 존재해야 합니다.\n");
+        prompt.append("- '").append(city).append("' 외의 다른 시/도에 있는 장소/식당을 사용하는 순간, 그 답변은 잘못된 답변입니다.\n");
+        prompt.append("- 실제 장소명만 사용하고, 가짜 상호명/키워드형 장소명은 절대 금지합니다.\n\n");
 
         prompt.append("- 각 필드의 규칙은 다음과 같습니다.\n");
         prompt.append("  1. aiRouteDay: 여행 며칠차인지 (1부터 시작하는 정수).\n");

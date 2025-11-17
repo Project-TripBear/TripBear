@@ -5,25 +5,39 @@ package com.project.trip.admin.board.model;
 import lombok.Getter;
 import lombok.ToString;
 
+/**
+ * 페이징 처리에 필요한 모든 정보를 계산하고 관리하는 데이터 전송 객체(DTO)입니다.
+ * <p>
+ * 생성자에서 현재 페이지, 전체 아이템 수, 페이지당 아이템 수, 페이지 블록 크기를 받아
+ * 페이징 UI를 구현하는 데 필요한 모든 값(총 페이지, 시작/끝 행, 시작/끝 페이지 등)을 계산합니다.
+ * </p>
+ */
 @Getter
 @ToString
 public class PagingDTO {
 
-    private int page;
-    private int totalCount;
-    private int pageSize;
-    private int pageBlock;
+    private int page;           // 현재 페이지 번호
+    private int totalCount;     // 전체 아이템 수
+    private int pageSize;       // 한 페이지에 보여줄 아이템 수
+    private int pageBlock;      // 한 화면에 보여줄 페이지 번호 개수
 
-    private int totalPage;
-    private int startRow;
-    private int endRow;
+    private int totalPage;      // 전체 페이지 수
+    private int startRow;       // DB 조회용 시작 행 번호
+    private int endRow;         // DB 조회용 끝 행 번호
     
-    private int startPage;
-    private int endPage;
+    private int startPage;      // 페이지 블록의 시작 페이지 번호
+    private int endPage;        // 페이지 블록의 끝 페이지 번호
 
-    private boolean prev;
-    private boolean next;
+    private boolean prev;       // '이전' 버튼 표시 여부
+    private boolean next;       // '다음' 버튼 표시 여부
 
+    /**
+     * 페이징 정보를 계산하는 생성자입니다.
+     * @param page 현재 페이지 번호
+     * @param totalCount 전체 아이템 수
+     * @param pageSize 한 페이지에 보여줄 아이템 수
+     * @param pageBlock 한 화면에 보여줄 페이지 번호 개수
+     */
     public PagingDTO(int page, int totalCount, int pageSize, int pageBlock) {
         
         // ★★★ 1. [수정] page가 0 또는 음수일 경우 1로 강제 보정 ★★★

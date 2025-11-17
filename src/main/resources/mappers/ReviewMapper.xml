@@ -198,4 +198,34 @@
             #{reviewPostId}
         )
     </insert>
+    <delete id="removeScrap" parameterType="map">
+	    DELETE FROM tblReviewScrap
+	    WHERE user_id = #{userId}
+	      AND review_post_id = #{reviewPostId}
+	</delete>
+	
+	<!-- 댓글 전체 삭제 -->
+	<delete id="deleteAllComments" parameterType="int">
+	    DELETE FROM tblReviewComment
+	    WHERE review_post_id = #{reviewPostId}
+	</delete>
+	
+	<!-- 좋아요 전체 삭제 -->
+	<delete id="deleteAllLikes" parameterType="int">
+	    DELETE FROM tblReviewLike
+	    WHERE review_post_id = #{reviewPostId}
+	</delete>
+	
+	<!-- 스크랩 전체 삭제 -->
+	<delete id="deleteAllScrap" parameterType="int">
+	    DELETE FROM tblReviewScrap
+	    WHERE review_post_id = #{reviewPostId}
+	</delete>
+	
+	<!-- 이미지 전체 삭제 -->
+	<delete id="deleteAllImages" parameterType="int">
+	    DELETE FROM tblReviewImage
+	    WHERE review_post_id = #{reviewPostId}
+	</delete>
+    
 </mapper>

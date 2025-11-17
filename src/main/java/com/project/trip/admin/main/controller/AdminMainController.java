@@ -11,6 +11,9 @@ import com.project.trip.admin.main.service.AdminMainService;
 
 import lombok.RequiredArgsConstructor;
 
+/**
+ * 관리자 페이지의 메인 및 대시보드 관련 요청을 처리하는 컨트롤러입니다.
+ */
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/admin")
@@ -19,7 +22,13 @@ public class AdminMainController {
     private final AdminMainService mainService;
     
     /**
-     * 어드민 메인 대시보드 (로그인 후)
+     * 관리자 메인 대시보드 페이지를 반환합니다.
+     * <p>
+     * 대시보드에 필요한 통계 데이터(예: 신규 회원 수, 총 예약 수 등)와
+     * 최신 신고 내역을 조회하여 모델에 추가한 후, 메인 페이지 뷰를 반환합니다.
+     * </p>
+     * @param model 뷰에 데이터를 전달하기 위한 Model 객체
+     * @return 관리자 메인 페이지의 뷰 이름
      */
     @GetMapping({"/main", "/dashboard"})
     public String adminMain(Model model) {
@@ -35,8 +44,8 @@ public class AdminMainController {
     }
     
     /**
-     * ▼▼▼ 이 메서드를 추가했습니다! ▼▼▼
-     * 어드민 로그인 폼 페이지를 보여주는 메서드 (GET 요청)
+     * 관리자 로그인 폼 페이지를 반환합니다.
+     * @return 관리자 로그인 페이지의 뷰 이름
      */
     @GetMapping("/loginPage")
     public String adminLoginForm() {

@@ -99,8 +99,8 @@
             <a href="#" class="dropdown-toggle">여행정보 <i class="fa-solid fa-chevron-down dropdown-arrow"></i></a>
             <div class="mobile-sub-menu">
                 <a href="${pageContext.request.contextPath}/allplace/map">관광지 지도</a>
-                <a href="${pageContext.request.contextPath}/allplace/trend">여행트렌드</a>
-                <a href="${pageContext.request.contextPath}/allplace/news">여행지 뉴스</a>
+                <%-- <a href="${pageContext.request.contextPath}/allplace/trend">여행트렌드</a>
+                <a href="${pageContext.request.contextPath}/allplace/news">여행지 뉴스</a> --%>
                 <a href="${pageContext.request.contextPath}/allplace/weather">날씨/공기질</a>
                 <a href="${pageContext.request.contextPath}/allplace/searchFestival">시기별 축제/행사</a>
 
