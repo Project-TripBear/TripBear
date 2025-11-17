@@ -2,6 +2,23 @@
 /*                           list.jsp                          */
 /* =========================================================== */
 
+/* Q&A 전용 팔레트 (전역 변수 미정의 시 대비) */
+:root {
+    --primary: #6C9A8B;
+    --primary-dark: #4F7B6C;
+    --primary-light: #8BB3A4;
+    --accent: #FF8C69;
+    --bg: #F8F9FB;
+    --surface: #FFFFFF;
+    --border: #E3E6ED;
+    --text: #2D2D2D;
+    --text-light: #6C757D;
+    --text-dark: #1B1B1B;
+    --radius: 14px;
+    --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.06);
+    --danger: #D9534F;
+}
+
 /* ---------------------- 전체 컨테이너 ---------------------- */
 .card-container {
     width: 100%;
@@ -191,8 +208,144 @@
 }
 
 /* =========================================================== */
+/*                   add.jsp / edit.jsp 공통 폼 스타일          */
+/* =========================================================== */
+
+.notice-form-container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 40px;
+    background-color: var(--surface);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-soft);
+}
+
+.notice-form-container h2 {
+    text-align: center;
+    font-size: 2rem;
+    color: var(--primary-dark);
+    margin-bottom: 30px;
+    border-bottom: 2px solid var(--border);
+    padding-bottom: 15px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--text);
+    font-size: 1.1rem;
+}
+
+.form-control {
+    width: calc(100% - 24px);
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-size: 1rem;
+    color: var(--text);
+    background-color: var(--bg);
+    transition: border-color 0.3s, box-shadow 0.3s;
+    box-sizing: border-box;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(108, 154, 139, 0.1);
+    background-color: var(--surface);
+}
+
+textarea.form-control {
+    resize: vertical;
+    min-height: 150px;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    margin-top: 40px;
+}
+
+/* =========================================================== */
 /*                           view.jsp                          */
 /* =========================================================== */
+
+
+.notice-view-container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 40px;
+    background-color: var(--surface);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-soft);
+}
+
+.notice-view-container h2 {
+    text-align: center;
+    font-size: 2rem;
+    color: var(--primary-dark);
+    margin-bottom: 30px;
+    border-bottom: 2px solid var(--border);
+    padding-bottom: 15px;
+}
+
+.notice-header {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 20px;
+    margin-bottom: 30px;
+}
+
+.notice-header h3 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-top: 0;
+    margin-bottom: 15px;
+    line-height: 1.4;
+    color: var(--text);
+}
+
+.notice-meta {
+    font-size: 0.9rem;
+    color: var(--text-light);
+}
+
+.notice-meta span {
+    margin-right: 15px;
+}
+
+.notice-content {
+    padding: 20px 0;
+    min-height: 250px;
+    font-size: 1rem;
+    line-height: 1.8;
+    color: var(--text);
+}
+
+.notice-content p {
+    margin-bottom: 1.5em;
+}
+
+.notice-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    margin: 10px 0;
+}
+
+.notice-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    margin-top: 40px;
+    padding-top: 25px;
+    border-top: 1px solid var(--border);
+}
 
 
 /* 좋아요/스크랩 기본 글자색 바꾸기 */
