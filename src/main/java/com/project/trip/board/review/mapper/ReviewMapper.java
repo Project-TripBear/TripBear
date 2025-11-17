@@ -47,4 +47,10 @@ public interface ReviewMapper {
     int checkScrap(Map<String, Object> map);
     int addScrap(Map<String, Object> map);
     int removeScrap(Map<String, Object> map);
+
+	void deleteAllComments(int reviewPostId);
+
+	void deleteAllScrap(int reviewPostId);
+
+	void deleteAllImages(int reviewPostId);
 }
