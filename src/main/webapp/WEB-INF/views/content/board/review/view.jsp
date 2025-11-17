@@ -11,77 +11,78 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 </head>
 <body>
-<div class="page-board-view-container">
-    <div id="main">
-        <div class="post-container">
-            <div class="post-header">
-                <span class="category">여행 후기</span>
-                <h2 class="subject">${review.reviewBoardTitle}</h2>
-                <div class="post-meta">
-                    <span>작성자: <strong>${review.nickname}</strong></span>
-                    <span>|</span>
-                    <span>작성일: ${review.reviewBoardRegdate}</span>
-                    <span>|</span>
-                    <span>조회수: ${review.reviewBoardCount}</span>
-                </div>
-            </div>
-
-            <div class="post-content">${review.reviewBoardContent}</div>
-
-            <c:if test="${not empty images}">
-                <div class="post-images review-gallery">
-                    <span class="image-nav-arrow left">&#10094;</span>
-                    <div class="image-area">
-                        <c:forEach var="img" items="${images}">
-                            <img class="review-img"
-                                 src="${pageContext.request.contextPath}/upload/review/${img.reviewImageUrl}"
-                                 alt="게시글 이미지">
-                        </c:forEach>
-                    </div>
-                    <span class="image-nav-arrow right">&#10095;</span>
-                </div>
-            </c:if>
-
-            <div class="post-actions action-buttons-group">
-                <button type="button" class="btn like" id="btn-like" data-id="${review.reviewPostId}">🤍 추천</button>
-                <button type="button" class="btn scrap" id="btn-scrap" data-id="${review.reviewPostId}">📁 스크랩</button>
-            </div>
-
-            <div class="comment-section">
-                <h3>댓글 <span id="comment-count">(0)</span></h3>
-                <table id="comment" class="comment-list-table">
-                    <tbody>
-                    <tr>
-                        <td class="comment-empty" colspan="2">등록된 댓글이 없습니다 😶</td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <c:if test="${not empty userId}">
-                <div class="comment-add-form">
-                    <textarea id="comment-content" placeholder="댓글을 입력하세요" rows="3"></textarea>
-                    <div class="form-actions">
-                        <button type="button" class="btn btn-primary" id="btn-comment-add">댓글 등록</button>
-                    </div>
-                </div>
-            </c:if>
-
-            <div class="bottom-buttons action-buttons-group">
-                <a href="${pageContext.request.contextPath}/review/list" class="btn btn-secondary">목록</a>
-                <div class="action-buttons-group">
-                    <c:if test="${userId eq review.userId}">
-                        <a href="${pageContext.request.contextPath}/review/edit/${review.reviewPostId}" class="btn btn-primary">수정</a>
-                        <a href="${pageContext.request.contextPath}/review/del/${review.reviewPostId}"
-                           class="btn btn-danger"
-                           onclick="return confirm('정말 삭제하시겠습니까?');">삭제</a>
-                    </c:if>
-                </div>
-            </div>
-        </div>
-    </div>
+<div class="review-page">
+	<div class="page-board-view-container">
+	    <div id="main">
+	        <div class="post-container">
+	            <div class="post-header">
+	                <span class="category">여행 후기</span>
+	                <h2 class="subject">${review.reviewBoardTitle}</h2>
+	                <div class="post-meta">
+	                    <span>작성자: <strong>${review.nickname}</strong></span>
+	                    <span>|</span>
+	                    <span>작성일: ${review.reviewBoardRegdate}</span>
+	                    <span>|</span>
+	                    <span>조회수: ${review.reviewBoardCount}</span>
+	                </div>
+	            </div>
+	
+	            <div class="post-content">${review.reviewBoardContent}</div>
+	
+	            <c:if test="${not empty images}">
+	                <div class="post-images review-gallery">
+	                    <span class="image-nav-arrow left">&#10094;</span>
+	                    <div class="image-area">
+	                        <c:forEach var="img" items="${images}">
+	                            <img class="review-img"
+	                                 src="${pageContext.request.contextPath}/upload/review/${img.reviewImageUrl}"
+	                                 alt="게시글 이미지">
+	                        </c:forEach>
+	                    </div>
+	                    <span class="image-nav-arrow right">&#10095;</span>
+	                </div>
+	            </c:if>
+	
+	            <div class="post-actions action-buttons-group">
+	                <button type="button" class="btn like" id="btn-like" data-id="${review.reviewPostId}">🤍 추천</button>
+	                <button type="button" class="btn scrap" id="btn-scrap" data-id="${review.reviewPostId}">📁 스크랩</button>
+	            </div>
+	
+	            <div class="comment-section">
+	                <h3>댓글 <span id="comment-count">(0)</span></h3>
+	                <table id="comment" class="comment-list-table">
+	                    <tbody>
+	                    <tr>
+	                        <td class="comment-empty" colspan="2">등록된 댓글이 없습니다 😶</td>
+	                    </tr>
+	                    </tbody>
+	                </table>
+	            </div>
+	
+	            <c:if test="${not empty userId}">
+	                <div class="comment-add-form">
+	                    <textarea id="comment-content" placeholder="댓글을 입력하세요" rows="3"></textarea>
+	                    <div class="form-actions">
+	                        <button type="button" class="btn btn-primary" id="btn-comment-add">댓글 등록</button>
+	                    </div>
+	                </div>
+	            </c:if>
+	
+	            <div class="bottom-buttons action-buttons-group">
+	                <a href="${pageContext.request.contextPath}/review/list" class="btn btn-secondary">목록</a>
+	                <div class="action-buttons-group">
+	                    <c:if test="${userId eq review.userId}">
+	                        <a href="${pageContext.request.contextPath}/review/edit/${review.reviewPostId}" class="btn btn-primary">수정</a>
+	                        <a href="${pageContext.request.contextPath}/review/del/${review.reviewPostId}"
+	                           class="btn btn-danger"
+	                           onclick="return confirm('정말 삭제하시겠습니까?');">삭제</a>
+	                    </c:if>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+	</div>
 </div>
-
 <script>
 const reviewId = "${review.reviewPostId}";
 const userId = "${userId}";

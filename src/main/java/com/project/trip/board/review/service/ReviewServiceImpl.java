@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.project.trip.board.review.mapper.ReviewMapper;
 import com.project.trip.board.review.model.ReviewDTO;
@@ -43,10 +44,22 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
+    @Transactional
     public int del(int reviewPostId) {
-        // 게시글 삭제 전 이미지 삭제 (연관 데이터 정리)
-        mapper.delImages(reviewPostId);
-        // (추가) 댓글, 좋아요, 스크랩 데이터도 삭제 정책에 따라 처리 필요
+
+        // 1) 댓글 전체 삭제
+        mapper.deleteAllComments(reviewPostId);
+
+        // 2) 좋아요 전체 삭제
+        mapper.deleteAllComments(reviewPostId);
+
+        // 3) 스크랩 전체 삭제
+        mapper.deleteAllScrap(reviewPostId);
+
+        // 4) 이미지 전체 삭제
+        mapper.deleteAllImages(reviewPostId);
+
+        // 5) 최종 게시글 삭제
         return mapper.del(reviewPostId);
     }
 
