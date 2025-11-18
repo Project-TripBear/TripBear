@@ -140,6 +140,51 @@
     border-color: var(--primary, #6C9A8B);
 }
 
+/* 좋아요/스크랩 버튼 통일 컬러 팔레트 */
+.action-buttons-group .btn.like,
+.post-actions .btn.like {
+    border-color: var(--like-color, #ff6b81);
+    color: var(--like-color, #ff6b81);
+    background-color: var(--like-soft, #ffe5ed);
+}
+
+.action-buttons-group .btn.scrap,
+.post-actions .btn.scrap {
+    border-color: var(--scrap-color, #ffd166);
+    color: #8c6400;
+    background-color: var(--scrap-soft, #fff5d6);
+}
+
+.action-buttons-group .btn.like:hover,
+.post-actions .btn.like:hover {
+    background-color: var(--like-color, #ff6b81);
+    color: #fff;
+    border-color: var(--like-color, #ff6b81);
+    box-shadow: 0 6px 16px rgba(255, 107, 129, 0.25);
+}
+
+.action-buttons-group .btn.scrap:hover,
+.post-actions .btn.scrap:hover {
+    background-color: var(--scrap-color, #ffd166);
+    color: #5e4700;
+    border-color: var(--scrap-color, #ffd166);
+    box-shadow: 0 6px 16px rgba(255, 209, 102, 0.25);
+}
+
+.action-buttons-group .btn.like.active,
+.post-actions .btn.like.active {
+    background-color: var(--like-color, #ff6b81);
+    color: #fff;
+    border-color: var(--like-color, #ff6b81);
+}
+
+.action-buttons-group .btn.scrap.active,
+.post-actions .btn.scrap.active {
+    background-color: var(--scrap-color, #ffd166);
+    color: #5e4700;
+    border-color: var(--scrap-color, #ffd166);
+}
+
 .action-buttons-group .btn.btn-secondary {
     background-color: var(--surface, #fff);
 }

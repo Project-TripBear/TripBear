@@ -45,7 +45,7 @@
 .routepost-page #btn-like,
 .routepost-page #btn-scrap {
     padding: 8px 18px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--border, #e9ecef);
     border-radius: 25px;
     background-color: #fff;
     cursor: pointer;
@@ -55,11 +55,30 @@
     font-weight: 600;
 }
 
+.routepost-page #btn-like {
+    color: var(--like-color, #ff6b81);
+    border-color: var(--like-color, #ff6b81);
+    background-color: var(--like-soft, #ffe5ed);
+}
+
+.routepost-page #btn-scrap {
+    color: #8c6400;
+    border-color: var(--scrap-color, #ffd166);
+    background-color: var(--scrap-soft, #fff5d6);
+}
+
 .routepost-page #btn-like.active,
-.routepost-page #btn-scrap.active {
-    background-color: #007BFF;
-    color: white;
-    border-color: #007BFF;
+.routepost-page #btn-like:hover {
+    background-color: var(--like-color, #ff6b81);
+    color: #fff;
+    border-color: var(--like-color, #ff6b81);
+}
+
+.routepost-page #btn-scrap.active,
+.routepost-page #btn-scrap:hover {
+    background-color: var(--scrap-color, #ffd166);
+    color: #5e4700;
+    border-color: var(--scrap-color, #ffd166);
 }
 
 /* 버튼 영역 */
