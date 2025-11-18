@@ -31,7 +31,7 @@ import lombok.extern.log4j.Log4j;
  * </p>
  */
 @Log4j
-@RestController // ⭐ @Controller 대신 @RestController
+@RestController // ⭐ @Controller 대신
 @RequestMapping("/allplace")
 public class AllPlaceRestController {
 
