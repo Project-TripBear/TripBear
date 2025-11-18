@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/main.css">
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/board-view.css">
 
-<fmt:parseDate value="${dto.question_board_regdate}" var="regDateObj" pattern="yyyy-MM-dd HH:mm:ss"/>
+<fmt:parseDate value="${dto.question_board_regdate}" var="regDateObj" pattern="EEE MMM dd HH:mm:ss zzz yyyy" parseLocale="en"/>
 <c:set var="currentUserId" value="0"/>
 <sec:authorize access="hasAuthority('ACTIVE')">
     <sec:authentication property="principal.udto.seq" var="currentUserId" />
@@ -59,7 +59,7 @@
                         </c:when>
                         <c:otherwise>
                             <c:forEach var="comment" items="${commentList}">
-                                <fmt:parseDate value="${comment.question_answer_regdate}" var="commentDate" pattern="yyyy-MM-dd HH:mm:ss"/>
+                                <fmt:parseDate value="${comment.question_answer_regdate}" var="commentDate" pattern="EEE MMM dd HH:mm:ss zzz yyyy" parseLocale="en"/>
                                 <tr class="comment-row" id="comment-row-${comment.question_answer_id}">
                                     <td class="commentContent">
                                         <div id="comment-content-${comment.question_answer_id}">${comment.question_answer_content}</div>
