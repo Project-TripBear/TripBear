@@ -8,6 +8,12 @@ import org.springframework.web.bind.annotation.*;
 import com.project.trip.weather.model.WeatherAdviceDTO;
 import com.project.trip.weather.service.WeatherAdviceService;
 
+/**
+ * 날씨 관련 HTTP 요청을 처리하는 컨트롤러입니다.
+ * <p>
+ * 특정 도시와 날짜에 대한 날씨 조언을 제공하는 기능을 담당합니다.
+ * </p>
+ */
 @Controller
 @RequestMapping("/weather")
 public class WeatherController {

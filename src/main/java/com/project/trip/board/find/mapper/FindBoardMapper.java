@@ -10,6 +10,13 @@ import org.apache.ibatis.annotations.Param;
 import com.project.trip.board.find.model.findboardDTO;
 import com.project.trip.board.find.model.findcommentDTO;
 
+/**
+ * 동행 찾기 게시판과 관련된 데이터베이스 연동을 위한 매퍼 인터페이스입니다.
+ * <p>
+ * 게시글 목록 조회, 등록, 수정, 삭제, 상세 조회, 댓글 관리, 좋아요/스크랩 기능,
+ * 그리고 게시글 신고 및 키워드 추출 등 다양한 데이터베이스 작업을 정의합니다.
+ * </p>
+ */
 @Mapper // (또는 Spring 설정에 따라 인터페이스만 두고 XML과 연결)
 public interface FindBoardMapper {
 

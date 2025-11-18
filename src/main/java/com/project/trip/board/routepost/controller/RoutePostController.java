@@ -31,6 +31,13 @@ import com.project.trip.mypage.mapper.MemberMapper;
 import com.project.trip.mypage.model.CustomUser;
 import com.project.trip.mypage.model.UserDTO;
 
+/**
+ * 여행 경로 게시판(RoutePost)과 관련된 HTTP 요청을 처리하는 컨트롤러입니다.
+ * <p>
+ * 게시글 목록 조회, 상세 보기, 작성, 수정, 삭제 기능을 제공하며,
+ * 이미지 파일 업로드 및 Spring Security를 활용한 사용자 인증을 포함합니다.
+ * </p>
+ */
 @Controller
 @RequestMapping("/routepost")
 public class RoutePostController {
@@ -199,6 +206,14 @@ public class RoutePostController {
     }
 
 
+    /**
+     * 게시글 수정 폼 페이지를 표시합니다.
+     *
+     * @param routepostId 수정할 게시글의 고유 번호
+     * @param model       뷰에 데이터를 전달하기 위한 Model 객체
+     * @param authentication Spring Security의 Authentication 객체
+     * @return "board.routepost.edit" 게시글 수정 폼 뷰 이름
+     */
     @GetMapping("/edit/{routepostId}")
     public String editForm(@PathVariable int routepostId,
                            Model model,
@@ -226,6 +241,16 @@ public class RoutePostController {
 
         return "board.routepost.edit";
     }
+    /**
+     * 게시글 수정 요청을 처리합니다.
+     *
+     * @param dto            수정할 게시글 정보를 담은 {@link RoutePostDTO}
+     * @param images         새로 업로드할 이미지 파일 배열
+     * @param deleteImageIds 삭제할 이미지 ID들을 콤마로 구분한 문자열
+     * @param req            HttpServletRequest 객체
+     * @return "redirect:/routepost/view/{routepostId}" 게시글 상세 페이지로 리다이렉트
+     * @throws Exception 파일 업로드 및 처리 중 발생할 수 있는 예외
+     */
     @PostMapping(value = "/edit", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public String edit(@ModelAttribute RoutePostDTO dto,
                        @RequestParam(value = "images", required = false) MultipartFile[] images,
@@ -272,6 +297,12 @@ public class RoutePostController {
 
 
     // 게시글 삭제
+    /**
+     * 게시글 삭제 요청을 처리합니다.
+     *
+     * @param routepostId 삭제할 게시글의 고유 번호
+     * @return "redirect:/routepost/list" 게시글 목록 페이지로 리다이렉트
+     */
     @GetMapping("/del/{routepostId}")
     public String del(@PathVariable int routepostId) {
         postService.del(routepostId);

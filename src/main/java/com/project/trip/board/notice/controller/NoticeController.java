@@ -13,6 +13,12 @@ import com.project.trip.board.notice.service.NoticeService;
 
 import lombok.RequiredArgsConstructor;
 
+/**
+ * 공지사항 게시판과 관련된 HTTP 요청을 처리하는 컨트롤러입니다.
+ * <p>
+ * 일반 사용자 및 비회원이 공지사항 목록을 조회하고 상세 내용을 볼 수 있는 기능을 제공합니다.
+ * </p>
+ */
 // NoticeController.java (일반 사용자 접근용)
 @Controller
 @RequestMapping("/notice") 

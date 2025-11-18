@@ -12,25 +12,40 @@ import com.project.trip.admin.report.model.reportDTO;
 
 import lombok.RequiredArgsConstructor;
 
+/**
+ * {@link AdminReportService} 인터페이스의 구현 클래스입니다.
+ * <p>
+ * {@link AdminReportMapper}를 통해 데이터베이스와 연동하여 관리자 페이지의 신고 관리
+ * (목록 조회, 신고 처리 등) 관련 비즈니스 로직을 처리합니다.
+ * </p>
+ */
 @Service
 @RequiredArgsConstructor
 public class AdminReportServiceImpl implements AdminReportService {
 
     private final AdminReportMapper mapper;
 
+    /**
+     * {@inheritDoc}
+     */
     public List<reportDTO> getPendingReports() {
         return mapper.getPendingReports();
     }
 
-   
+    /**
+     * {@inheritDoc}
+     */
     public List<reportDTO> getProcessedReports() {
         return mapper.getProcessedReports();
     }
 
     /**
-     * 신고 처리 (숨김 또는 반려)
-     * - 숨김(approve) 시에는 해당 게시글을 숨기고(hidePost) 신고 상태를 승인(APPROVED)으로 변경합니다.
-     * - 반려(reject) 시에는 신고 상태만 반려(REJECTED)로 변경합니다.
+     * {@inheritDoc}
+     * <p>
+     * 이 메소드는 {@code @Transactional}로 관리됩니다.
+     * 'approve'(승인) 액션의 경우, 신고된 게시글을 숨김 처리하고 신고 상태를 'APPROVED'로 변경합니다.
+     * 'reject'(반려) 액션의 경우, 신고 상태만 'REJECTED'로 변경합니다.
+     * </p>
      */
     @Override
     @Transactional

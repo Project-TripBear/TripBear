@@ -18,6 +18,13 @@ import com.project.trip.AI.mapper.AiRouteViewMapper;
 import com.project.trip.AI.model.RouteDTO;
 import com.project.trip.AI.model.RouteStopDTO; // ← 스탑 모델 클래스 (필요시 추가)
 
+/**
+ * {@link AiRouteViewService} 인터페이스의 구현 클래스입니다.
+ * <p>
+ * {@link AiRouteViewMapper}를 통해 데이터베이스에서 AI 여행 경로의 기본 정보와 경유지 목록을 조회하고,
+ * 카카오 모빌리티 API를 연동하여 각 경유지 간의 이동 경로선을 가져와 경로 정보에 추가하는 역할을 합니다.
+ * </p>
+ */
 @Service
 public class AiRouteViewServiceImpl implements AiRouteViewService {
 
@@ -28,6 +35,16 @@ public class AiRouteViewServiceImpl implements AiRouteViewService {
     private static final String KAKAO_REST_API_KEY = "43d0c1f4f0c2ff0bd368637ae2fa9b7a";
     private static final String MOBILITY_URL = "https://apis-navi.kakaomobility.com/v1/directions";
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * 특정 AI 여행 경로의 기본 정보와 경유지 목록을 데이터베이스에서 조회합니다.
+     * 또한, 각 경유지 간의 이동 경로를 카카오 모빌리티 API를 통해 조회하여
+     * {@link RouteDTO} 객체에 {@code mobilityRoutes}로 추가합니다.
+     * </p>
+     * @param aiRouteId 조회할 AI 여행 경로의 고유 ID
+     * @return AI 여행 경로의 전체 정보를 담은 {@link RouteDTO} 객체
+     */
     @Override
     public RouteDTO getAiRoute(long aiRouteId) {
         // ① 기본 경로 정보 조회

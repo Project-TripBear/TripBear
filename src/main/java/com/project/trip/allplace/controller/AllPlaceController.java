@@ -38,6 +38,15 @@ public class AllPlaceController {
     private TourApiService tourApiService;
 
     
+    /**
+     * 키워드를 사용하여 장소를 검색하고 결과를 뷰에 전달합니다.
+     *
+     * @param keyword       검색할 키워드
+     * @param contentTypeId 콘텐츠 타입 ID (기본값: 12 - 관광지)
+     * @param arrange       정렬 방식 (기본값: A - 제목순)
+     * @param model         뷰에 데이터를 전달하기 위한 Model 객체
+     * @return "allplace.search_result" 검색 결과 뷰 이름
+     */
     @GetMapping("/search")
     public String searchByKeyword(
             @RequestParam("keyword") String keyword,
@@ -57,6 +66,15 @@ public class AllPlaceController {
         return "allplace.search_result";
     }
 
+    /**
+     * 지역 코드를 기반으로 장소를 검색하고 결과를 뷰에 전달합니다.
+     *
+     * @param locationId    검색할 지역의 ID
+     * @param contentTypeId 콘텐츠 타입 ID (기본값: 12 - 관광지)
+     * @param arrange       정렬 방식 (기본값: A - 제목순)
+     * @param model         뷰에 데이터를 전달하기 위한 Model 객체
+     * @return "allplace.search_result" 검색 결과 뷰 이름
+     */
     @GetMapping("/searchByArea")
     public String searchByArea(
             @RequestParam("locationId") long locationId,
@@ -76,6 +94,15 @@ public class AllPlaceController {
         return "allplace.search_result";
     }
 
+    /**
+     * 날짜와 지역을 기준으로 축제 정보를 검색하고 결과를 뷰에 전달합니다.
+     *
+     * @param eventStartDate 행사 시작일 (yyyyMMdd 형식, 기본값: 오늘)
+     * @param arrange        정렬 방식 (기본값: A - 제목순)
+     * @param locationId     검색할 지역의 ID (기본값: 0 - 전체)
+     * @param model          뷰에 데이터를 전달하기 위한 Model 객체
+     * @return "allplace.search_result" 검색 결과 뷰 이름
+     */
     @GetMapping("/searchFestival")
     public String searchFestival(
             @RequestParam(value = "eventStartDate", required = false) String eventStartDate,
@@ -101,6 +128,15 @@ public class AllPlaceController {
         return "allplace.search_result";
     }
     
+    /**
+     * Tour API로부터 contentId와 contentTypeId를 이용해 장소 상세 정보를 조회하고,
+     * 해당 정보를 DB에 저장(또는 업데이트)한 후, 내부 상세 페이지로 리다이렉트합니다.
+     *
+     * @param contentId     API에서 사용하는 콘텐츠 ID
+     * @param contentTypeId API에서 사용하는 콘텐츠 타입 ID
+     * @param model         오류 발생 시 뷰에 메시지를 전달하기 위한 Model 객체
+     * @return 성공 시 "redirect:/allplace/detail/{placeId}", 실패 시 "common/error"
+     */
     @GetMapping("/view/{contentId}")
     public String viewAndSave(
             @PathVariable("contentId") String contentId,
@@ -133,6 +169,14 @@ public class AllPlaceController {
     }
 
 
+    /**
+     * 데이터베이스에 저장된 장소의 상세 정보를 조회합니다.
+     * 주변 추천 장소 목록과 해시태그 정보를 함께 조회하여 뷰에 전달합니다.
+     *
+     * @param placeId DB에 저장된 장소의 고유 ID
+     * @param model   뷰에 장소 상세 정보, 추천 목록, 해시태그 등을 전달하기 위한 Model 객체
+     * @return "allplace.detail" 상세 페이지 뷰 이름, 정보가 없을 경우 "common/error"
+     */
     @GetMapping("/detail/{placeId}")
     public String placeDetail(@PathVariable("placeId") long placeId, Model model) {
         log.info("[Controller] 상세 조회: " + placeId);
@@ -204,12 +248,25 @@ public class AllPlaceController {
 
     /* --- 헬퍼 함수들 --- */
 
+    /**
+     * 문자열에서 불필요한 공백을 제거하고, "false" 문자열을 null로 처리합니다.
+     *
+     * @param s 처리할 문자열
+     * @return 처리된 문자열 또는 null
+     */
     private String clean(String s) {
         if (s == null) return null;
         if (s.trim().equals("") || s.trim().equals("false")) return null;
         return s;
     }
 
+    /**
+     * 문자열을 double 타입으로 안전하게 변환합니다.
+     * 변환 중 오류 발생 시 0.0을 반환합니다.
+     *
+     * @param s 변환할 문자열
+     * @return 변환된 double 값 또는 0.0
+     */
     private double safeDouble(String s) {
         try { return Double.parseDouble(s); }
         catch (Exception e) { return 0; }
@@ -219,12 +276,25 @@ public class AllPlaceController {
     
     
     // --- 단순 페이지 이동 ---
+    /**
+     * 관광지 지도 페이지를 표시합니다.
+     *
+     * @param model 뷰에 데이터를 전달하기 위한 Model 객체 (현재 사용 안 함)
+     * @return "allplace.map" 지도 페이지 뷰 이름
+     */
     @GetMapping("/map")
     public String showMapPage(Model model) {
         log.info("[Controller] 관광지 지도 페이지 요청");
         return "allplace.map";
     }
    
+    /**
+     * 특정 지역의 인기 여행 트렌드(관광지)를 조회하여 여행 트렌드 페이지를 표시합니다.
+     *
+     * @param locationId 조회할 지역의 ID (기본값: 0 - 전체)
+     * @param model      뷰에 트렌드 목록과 현재 지역 ID를 전달하기 위한 Model 객체
+     * @return "allplace.trend" 트렌드 페이지 뷰 이름
+     */
     @GetMapping("/trend")
     public String showTrendPage(
             // 1. 기본값을 '0' (#전체)으로 변경
@@ -266,18 +336,38 @@ public class AllPlaceController {
         return "allplace.trend";
     }
 
+    /**
+     * 여행지 뉴스 페이지를 표시합니다.
+     *
+     * @param model 뷰에 데이터를 전달하기 위한 Model 객체 (현재 사용 안 함)
+     * @return "allplace.news" 뉴스 페이지 뷰 이름
+     */
     @GetMapping("/news")
     public String showNewsPage(Model model) {
         log.info("[Controller] 여행지 뉴스 페이지 요청");
         return "allplace.news";
     }
 
+    /**
+     * 날씨 및 공기질 정보 페이지를 표시합니다.
+     *
+     * @param model 뷰에 데이터를 전달하기 위한 Model 객체 (현재 사용 안 함)
+     * @return "allplace.weatherPage" 날씨 정보 페이지 뷰 이름
+     */
     @GetMapping("/weather")
     public String showWeatherPage(Model model) {
         log.info("[Controller] 날씨/공기질 페이지 요청");
         return "allplace.weatherPage";
     }
     
+    /**
+     * 특정 지역과 날짜의 축제/행사 정보를 조회하여 축제/행사 페이지를 표시합니다.
+     *
+     * @param locationId     조회할 지역의 ID (기본값: 0 - 전체)
+     * @param eventStartDate 행사 시작일 (yyyyMMdd 형식, 기본값: 오늘)
+     * @param model          뷰에 축제 목록, 현재 지역 ID, 선택된 날짜 등을 전달하기 위한 Model 객체
+     * @return "allplace.festival" 축제/행사 페이지 뷰 이름
+     */
     @GetMapping("/festival")
     public String showFestivalPage(
             @RequestParam(value="locationId", defaultValue="0") long locationId,
@@ -313,6 +403,14 @@ public class AllPlaceController {
     }
     
     
+    /**
+     * Tour API 응답 객체에 포함된 장소 목록(TourItemVO)을
+     * 화면 표시에 적합한 PlaceDTO 객체 목록으로 변환합니다.
+     * 위경도 정보가 없거나 유효하지 않은 아이템은 목록에서 제외됩니다.
+     *
+     * @param apiResponse Tour API로부터 받은 전체 응답 객체
+     * @return 변환된 PlaceDTO 객체의 리스트
+     */
     private List<PlaceDTO> convertApiItemsToDtoList(TourApiResponseVO apiResponse) {
         List<PlaceDTO> placeList = new ArrayList<>();
 

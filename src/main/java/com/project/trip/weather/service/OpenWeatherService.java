@@ -9,6 +9,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.trip.weather.model.OpenWeatherVo;
 
+/**
+ * OpenWeatherMap API를 호출하여 날씨 데이터를 조회하는 서비스 클래스입니다.
+ * <p>
+ * 특정 도시와 날짜에 대한 날씨 예보 정보를 가져오는 기능을 제공합니다.
+ * </p>
+ */
 @Service
 public class OpenWeatherService {
 
@@ -25,6 +31,16 @@ public class OpenWeatherService {
         this.restTemplate = restTemplate;
     }
 
+    /**
+     * 특정 도시와 날짜에 대한 날씨 예보 정보를 OpenWeatherMap API로부터 가져옵니다.
+     * <p>
+     * API 응답에서 해당 날짜의 정오(12:00:00) 데이터를 우선적으로 선택하며,
+     * 없으면 해당 날짜의 첫 번째 데이터를 반환합니다.
+     * </p>
+     * @param city 날씨 정보를 조회할 도시 이름
+     * @param date 날씨 정보를 조회할 날짜 (yyyy-MM-dd 형식)
+     * @return 조회된 날씨 정보를 담은 {@link OpenWeatherVo} 객체, 또는 조회 실패 시 null
+     */
     public OpenWeatherVo getForecastByCityAndDate(String city, String date) {
         try {
             String url = UriComponentsBuilder

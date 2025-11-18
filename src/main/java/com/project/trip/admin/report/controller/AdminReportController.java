@@ -17,6 +17,12 @@ import com.project.trip.admin.report.service.AdminReportService;
 
 import lombok.RequiredArgsConstructor;
 
+/**
+ * 관리자 페이지의 신고 관리와 관련된 HTTP 요청을 처리하는 컨트롤러입니다.
+ * <p>
+ * 신고 목록 조회, 신고 내역 조회, 신고 처리 등의 기능을 제공합니다.
+ * </p>
+ */
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/admin") // '/admin' 최상위 경로 사용
@@ -25,8 +31,9 @@ public class AdminReportController {
     private final AdminReportService reportService;
     
     /**
-     * 1. 신고 접수 목록 (reportList.java 대체)
-     * URL: /admin/report/list (메인 경로)
+     * 처리 대기 중인 신고 목록 페이지를 반환합니다.
+     * @param model 뷰에 신고 목록 데이터를 전달하기 위한 Model 객체
+     * @return 신고 목록 페이지의 뷰 이름
      */
     @GetMapping({"/report/list"}) // 기존: /report.do
     public String getPendingReports(Model model) {
@@ -41,8 +48,9 @@ public class AdminReportController {
     }
 
     /**
-     * 2. 신고 처리 내역 (reportHistory.java 대체)
-     * URL: /admin/report/history
+     * 처리 완료된 신고 내역 페이지를 반환합니다.
+     * @param model 뷰에 신고 내역 데이터를 전달하기 위한 Model 객체
+     * @return 신고 내역 페이지의 뷰 이름
      */
     @GetMapping("/report/history") // 기존: /report/history.do
     public String getProcessedReports(Model model) {
@@ -55,9 +63,13 @@ public class AdminReportController {
     }
 
     /**
-     * 3. 신고 처리 (processReport.java 대체)
-     * URL: /admin/report/process
-     * JSP에서 전송하는 파라미터: reportId, action, targetType, targetId
+     * 신고를 처리합니다. (게시글 숨김 또는 신고 반려)
+     * @param reportId 처리할 신고의 고유 ID
+     * @param processType 처리 유형 ("HIDE" 또는 "REJECT")
+     * @param targetType 신고 대상 유형 (예: "findboard", "review")
+     * @param targetId 신고 대상의 고유 ID
+     * @param rttr 리다이렉트 시 메시지를 전달하기 위한 RedirectAttributes 객체
+     * @return 신고 목록 페이지로 리다이렉트
      */
     @PostMapping("/report/process")
     public String processReport(

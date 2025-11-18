@@ -6,12 +6,27 @@ import org.springframework.stereotype.Service;
 import com.project.trip.weather.model.OpenWeatherVo;
 import com.project.trip.weather.model.WeatherDTO;
 
+/**
+ * {@link WeatherService} 인터페이스의 구현 클래스입니다.
+ * <p>
+ * OpenWeatherMap API를 통해 날씨 정보를 가져오고, 이를 가공하여 제공하는 비즈니스 로직을 처리합니다.
+ * 도시 이름 정규화 및 API 호출 실패 시 기본값 처리 로직을 포함합니다.
+ * </p>
+ */
 @Service
 public class WeatherServiceImpl implements WeatherService{
     
     @Autowired
     private OpenWeatherService openWeatherService;
 
+    /**
+     * 한글 도시 이름을 OpenWeatherMap API에서 사용하는 영문 도시 이름으로 정규화합니다.
+     * <p>
+     * 지원하는 도시 외의 이름은 그대로 반환합니다.
+     * </p>
+     * @param city 정규화할 도시 이름 (한글 또는 영문)
+     * @return 정규화된 영문 도시 이름
+     */
     private String normalizeCity(String city) {
         if (city == null) return null;
         switch (city) {

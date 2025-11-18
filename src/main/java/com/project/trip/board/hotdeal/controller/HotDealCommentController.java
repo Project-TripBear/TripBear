@@ -21,7 +21,13 @@ import com.project.trip.mypage.model.UserDTO;
 
 import lombok.RequiredArgsConstructor;
 
-
+/**
+ * 핫딜 게시글의 댓글과 관련된 RESTful API 요청을 처리하는 컨트롤러입니다.
+ * <p>
+ * 댓글 추가, 수정, 삭제 및 추가 댓글 목록 조회 기능을 제공합니다.
+ * Spring Security를 활용하여 사용자 인증 정보를 확인합니다.
+ * </p>
+ */
 @RestController
 @RequiredArgsConstructor
 public class HotDealCommentController {
@@ -31,6 +37,14 @@ public class HotDealCommentController {
 	 private final HotDealLikeMapper likemapper;
 	 
 	   
+    /**
+     * 핫딜 게시글에 댓글을 추가하는 REST API입니다.
+     * 로그인한 사용자의 정보를 기반으로 댓글을 등록하고, 등록된 댓글 정보와 함께 응답을 반환합니다.
+     *
+     * @param dto  등록할 댓글 정보를 담은 {@link HotDealCommentDTO} 객체
+     * @param auth Spring Security의 Authentication 객체
+     * @return 처리 결과(result)와 등록된 댓글 정보(dto)를 담은 {@code ResponseEntity<Map<String, Object>>}
+     */
     @PostMapping("/hotdeal/addcomment")
     public ResponseEntity<Map<String, Object>> addComment(@RequestBody HotDealCommentDTO dto, Authentication auth) {
         String userId = auth.getName();
@@ -83,6 +97,14 @@ public class HotDealCommentController {
 //        return response;
 //    }
     
+    /**
+     * 핫딜 게시글의 댓글을 수정하는 REST API입니다.
+     * 로그인한 사용자의 정보를 확인하고, 댓글 수정 권한이 있는 경우 댓글을 업데이트합니다.
+     *
+     * @param dto  수정할 댓글 정보를 담은 {@link HotDealCommentDTO} 객체
+     * @param auth Spring Security의 Authentication 객체
+     * @return 처리 결과(result)와 메시지(message)를 담은 {@code Map<String, String>}
+     */
     @PostMapping("/hotdeal/editcomment")
     @ResponseBody
     public Map<String, String> editComment(@RequestBody HotDealCommentDTO dto, Authentication auth) {
@@ -130,6 +152,14 @@ public class HotDealCommentController {
         return response;
     }
 
+    /**
+     * 핫딜 게시글의 댓글을 삭제하는 REST API입니다.
+     * 로그인한 사용자의 정보를 확인하고, 댓글 삭제 권한이 있는 경우 댓글을 삭제합니다.
+     *
+     * @param payload 삭제할 댓글의 ID("seq")를 포함하는 {@code Map<String, Object>}
+     * @param auth    Spring Security의 Authentication 객체
+     * @return 처리 결과(result)와 메시지(message)를 담은 {@code Map<String, String>}
+     */
     @PostMapping("/hotdeal/delcomment")
     @ResponseBody
     public Map<String, String> deleteComment(@RequestBody Map<String, Object> payload, Authentication auth) {
@@ -171,6 +201,14 @@ public class HotDealCommentController {
 //    }
     
     
+    /**
+     * 특정 핫딜 게시글의 추가 댓글 목록을 조회하는 REST API입니다.
+     * 페이지네이션을 위해 `begin` 파라미터를 사용합니다.
+     *
+     * @param bseq  댓글을 조회할 핫딜 게시글의 고유 번호
+     * @param begin 조회를 시작할 댓글의 인덱스
+     * @return 조회된 댓글 {@link HotDealCommentDTO}의 리스트
+     */
     @GetMapping("/hotdeal/morecomment")
     @ResponseBody
     public List<HotDealCommentDTO> moreComment(

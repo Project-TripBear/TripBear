@@ -26,6 +26,13 @@ import com.project.trip.board.review.model.ReviewImageDTO;
 import com.project.trip.board.review.service.ReviewService;
 import com.project.trip.mypage.model.CustomUser; // CustomUser 경로는 동일하다고 가정
 
+/**
+ * 여행 후기 게시판과 관련된 HTTP 요청을 처리하는 컨트롤러입니다.
+ * <p>
+ * 게시글 목록 조회, 상세 보기, 작성, 수정, 삭제 기능을 제공하며,
+ * 이미지 파일 업로드 및 Spring Security를 활용한 사용자 인증을 포함합니다.
+ * </p>
+ */
 @Controller
 @RequestMapping("/review") // ✅ URL 경로는 /review 로 수정
 public class ReviewController {

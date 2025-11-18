@@ -23,8 +23,15 @@ import com.project.trip.allplace.service.KrWeatherService;
 
 import lombok.extern.log4j.Log4j;
 
+/**
+ * 모든 장소(AllPlace)와 관련된 RESTful API 요청을 처리하는 컨트롤러입니다.
+ * <p>
+ * 날씨 정보 조회, 지도에 표시할 장소 목록 조회, 키워드 기반 장소 검색 등
+ * 클라이언트 측에서 비동기적으로 데이터를 요청할 때 사용되는 엔드포인트를 제공합니다.
+ * </p>
+ */
 @Log4j
-@RestController // ⭐ @Controller 대신 @RestController
+@RestController // ⭐ @Controller 대신
 @RequestMapping("/allplace")
 public class AllPlaceRestController {
 
@@ -36,6 +43,14 @@ public class AllPlaceRestController {
     
  // AllPlaceController.java
 
+    /**
+     * 위도와 경도를 기반으로 해당 위치의 현재 날씨 정보를 조회하여 반환합니다.
+     *
+     * @param lat 조회할 위치의 위도
+     * @param lon 조회할 위치의 경도
+     * @return ResponseEntity<WeatherVO> 날씨 정보를 담은 {@link WeatherVO} 객체와 HTTP 상태 코드를 포함하는 응답.
+     *         성공 시 날씨 정보와 OK(200), 실패 시 INTERNAL_SERVER_ERROR(500).
+     */
     @GetMapping("/weatherok")
     public ResponseEntity<WeatherVO> getWeatherByCoords( // [수정 1] 반환 타입을 ResponseEntity<?> -> ResponseEntity<WeatherVO>
             @RequestParam("lat") String lat,
@@ -56,6 +71,19 @@ public class AllPlaceRestController {
     }
 
 
+    /**
+     * 지도에 표시할 장소 목록을 조회하는 REST API입니다.
+     * 중심 좌표(위도, 경도)와 반경, 콘텐츠 타입 등을 기반으로 주변 장소를 검색하고,
+     * 거리순으로 정렬하여 최대 300개의 결과를 반환합니다.
+     *
+     * @param lat           중심점의 위도
+     * @param lng           중심점의 경도
+     * @param radius        검색 반경 (미터 단위, 기본값: 20000m)
+     * @param contentTypeId 조회할 콘텐츠 타입 ID (기본값: "12,39" - 관광지, 음식점)
+     * @param keyword       선택적인 검색 키워드
+     * @return ResponseEntity<List<PlaceDTO>> 장소 목록({@link PlaceDTO})과 HTTP 상태 코드를 포함하는 응답.
+     *         결과가 있으면 목록과 OK(200), 없으면 NO_CONTENT(204).
+     */
     @GetMapping("/mapok")
     public ResponseEntity<List<PlaceDTO>> getSpotsForMapOk(
             @RequestParam("lat") double lat,
@@ -121,6 +149,13 @@ public class AllPlaceRestController {
         return new ResponseEntity<>(out, HttpStatus.OK);
     }
     
+    /**
+     * 키워드를 사용하여 장소를 검색하고, 결과 목록을 JSON으로 반환하는 REST API입니다.
+     *
+     * @param keyword 검색할 키워드
+     * @return ResponseEntity<List<PlaceDTO>> 검색된 장소의 기본 정보 목록({@link PlaceDTO})과 HTTP 상태 코드를 포함하는 응답.
+     *         결과가 있으면 목록과 OK(200), 없으면 NO_CONTENT(204).
+     */
     @GetMapping("/searchLocation")
     public ResponseEntity<List<PlaceDTO>> searchLocation(@RequestParam("keyword") String keyword) {
 
@@ -158,17 +193,40 @@ public class AllPlaceRestController {
 
     /* --- 헬퍼 함수들 --- */
 
+    /**
+     * 문자열에서 불필요한 공백을 제거하고, "false" 문자열을 null로 처리합니다.
+     *
+     * @param s 처리할 문자열
+     * @return 처리된 문자열 또는 null
+     */
     private String clean(String s) {
         if (s == null) return null;
         if (s.trim().equals("") || s.trim().equals("false")) return null;
         return s;
     }
 
+    /**
+     * 문자열을 double 타입으로 안전하게 변환합니다.
+     * 변환 중 오류 발생 시 0.0을 반환합니다.
+     *
+     * @param s 변환할 문자열
+     * @return 변환된 double 값 또는 0.0
+     */
     private double safeDouble(String s) {
         try { return Double.parseDouble(s); }
         catch (Exception e) { return 0; }
     }
 
+    /**
+     * 두 지점(위도, 경도) 간의 거리를 계산합니다.
+     * 하버사인 공식을 사용하여 지구 곡률을 고려한 거리를 반환합니다.
+     *
+     * @param lat1 첫 번째 지점의 위도
+     * @param lon1 첫 번째 지점의 경도
+     * @param lat2 두 번째 지점의 위도
+     * @param lon2 두 번째 지점의 경도
+     * @return 두 지점 간의 거리 (킬로미터 단위)
+     */
     private double calcDistance(double lat1, double lon1, double lat2, double lon2) {
         double R = 6371;
         double dLat = Math.toRadians(lat2 - lat1);

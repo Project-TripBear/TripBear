@@ -11,6 +11,9 @@ import com.project.trip.admin.board.model.IntegratedBoardDTO;
 import com.project.trip.admin.board.model.PagingDTO;
 import com.project.trip.admin.board.service.AdminBoardService;
 
+/**
+ * 관리자 페이지의 통합 게시판 관리와 관련된 HTTP 요청을 처리하는 컨트롤러입니다.
+ */
 @Controller
 @RequestMapping("/admin/board")
 public class AdminBoardController {
@@ -18,6 +21,17 @@ public class AdminBoardController {
     @Autowired
     private AdminBoardService adminBoardService;
     
+    /**
+     * 통합 게시판 목록 페이지를 반환합니다.
+     * <p>
+     * 게시판 유형({@code boardType})에 따라 게시글을 필터링하고,
+     * 페이징 처리를 하여 결과를 뷰에 전달합니다.
+     * </p>
+     * @param page 현재 페이지 번호
+     * @param boardType 조회할 게시판 유형 (선택 사항)
+     * @param model 뷰에 데이터를 전달하기 위한 Model 객체
+     * @return 통합 게시판 목록 페이지의 뷰 이름
+     */
     @RequestMapping(value = "/integratedList", method = RequestMethod.GET)
     public String getIntegratedBoardList(
         // ★ 1. JSP 페이징과 맞추기 위해 "currentPage" -> "page"로 수정

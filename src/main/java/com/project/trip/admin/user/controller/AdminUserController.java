@@ -21,6 +21,12 @@ import com.project.trip.admin.user.service.AdminUserService;
 
 import lombok.RequiredArgsConstructor;
 
+/**
+ * 관리자 페이지의 사용자 관리와 관련된 HTTP 요청을 처리하는 컨트롤러입니다.
+ * <p>
+ * 사용자 목록 조회, 사용자 정지, 정지된 사용자 목록 조회, 사용자 복구 등의 기능을 제공합니다.
+ * </p>
+ */
 // ★★★ 수정: 클래스 레벨에 기본 경로 설정 및 .do 제거 ★★★
 @Controller
 @RequiredArgsConstructor
@@ -29,6 +35,19 @@ public class AdminUserController {
     
     private final AdminUserService userService;
     
+    /**
+     * 사용자 목록 페이지를 반환합니다.
+     * <p>
+     * 검색 조건(searchType, keyword, status)과 페이징 정보(page)를 받아
+     * 조건에 맞는 사용자 목록을 조회하고 뷰에 전달합니다.
+     * </p>
+     * @param model 뷰에 데이터를 전달하기 위한 Model 객체
+     * @param searchType 검색 유형 (예: 닉네임, 이메일)
+     * @param keyword 검색어
+     * @param status 사용자 상태 (예: 활성, 정지, 탈퇴)
+     * @param page 현재 페이지 번호
+     * @return 사용자 목록 페이지의 뷰 이름
+     */
     @GetMapping("/list") 
     public String getUserList(
         Model model,
@@ -52,8 +71,19 @@ public class AdminUserController {
     }
     
 
-    
- // 2. ★★★ [수정] 회원 정지 처리 (adminId 세션 처리 추가) ★★★
+    /**
+     * 특정 사용자를 정지 처리합니다.
+     * <p>
+     * 사용자 ID, 정지 사유, 정지 기간을 받아 해당 사용자를 정지 상태로 변경하고
+     * 정지 로그를 기록합니다. 관리자 ID는 세션에서 가져오거나 임시로 하드코딩됩니다.
+     * </p>
+     * @param userId 정지할 사용자의 고유 ID
+     * @param reason 정지 사유
+     * @param duration 정지 기간 (일 단위)
+     * @param rttr 리다이렉트 시 메시지를 전달하기 위한 RedirectAttributes 객체
+     * @param session 현재 HTTP 세션
+     * @return 사용자 목록 페이지로 리다이렉트
+     */
     @PostMapping("/suspend") 
     public String suspendUser(
         @RequestParam int userId,
@@ -84,6 +114,14 @@ public class AdminUserController {
         return "redirect:/admin/user/list"; 
     }
     
+    /**
+     * 정지된 사용자 목록 페이지를 반환합니다.
+     * <p>
+     * 정지된 사용자들의 목록을 조회하여 뷰에 전달합니다.
+     * </p>
+     * @param model 뷰에 데이터를 전달하기 위한 Model 객체
+     * @return 정지된 사용자 목록 페이지의 뷰 이름
+     */
     @GetMapping("/suspendedlist")
     public String getSuspendedList(Model model) {
         
@@ -97,6 +135,15 @@ public class AdminUserController {
         return "admin/suspendedlist"; 
     }
     
+    /**
+     * 특정 사용자를 복구 처리합니다.
+     * <p>
+     * 사용자 ID를 받아 해당 사용자의 정지 상태를 해제하고 관련 정지 로그를 삭제합니다.
+     * </p>
+     * @param userId 복구할 사용자의 고유 ID
+     * @param rttr 리다이렉트 시 메시지를 전달하기 위한 RedirectAttributes 객체
+     * @return 정지된 사용자 목록 페이지로 리다이렉트
+     */
     @PostMapping("/restore")
     public String restoreUser(@RequestParam int userId, RedirectAttributes rttr) {
         
