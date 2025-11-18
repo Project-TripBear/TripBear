@@ -248,12 +248,25 @@ public class AllPlaceController {
 
     /* --- 헬퍼 함수들 --- */
 
+    /**
+     * 문자열에서 불필요한 공백을 제거하고, "false" 문자열을 null로 처리합니다.
+     *
+     * @param s 처리할 문자열
+     * @return 처리된 문자열 또는 null
+     */
     private String clean(String s) {
         if (s == null) return null;
         if (s.trim().equals("") || s.trim().equals("false")) return null;
         return s;
     }
 
+    /**
+     * 문자열을 double 타입으로 안전하게 변환합니다.
+     * 변환 중 오류 발생 시 0.0을 반환합니다.
+     *
+     * @param s 변환할 문자열
+     * @return 변환된 double 값 또는 0.0
+     */
     private double safeDouble(String s) {
         try { return Double.parseDouble(s); }
         catch (Exception e) { return 0; }

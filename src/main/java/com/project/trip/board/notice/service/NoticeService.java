@@ -4,7 +4,12 @@ import java.util.List;
 
 import com.project.trip.board.notice.model.NoticeDTO;
 
-
+/**
+ * 공지사항 게시판과 관련된 비즈니스 로직을 정의하는 서비스 인터페이스입니다.
+ * <p>
+ * 공지사항 목록 조회, 생성, 수정, 삭제 및 상세 조회 기능을 제공합니다.
+ * </p>
+ */
 public interface NoticeService {
 
     /**

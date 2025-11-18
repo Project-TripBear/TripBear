@@ -11,6 +11,13 @@ import com.project.trip.allplace.model.PlaceDTO;
 import com.project.trip.allplace.model.RestaurantDTO;
 import com.project.trip.allplace.model.TouristSpotDTO;
 
+/**
+ * 장소(Place) 정보와 관련된 데이터베이스 연동을 위한 매퍼 인터페이스입니다.
+ * <p>
+ * 장소의 조회, 삽입, 상세 정보(관광지, 축제, 음식점) 관리, 해시태그(키워드) 관리,
+ * 그리고 추천 장소 조회 등 다양한 데이터베이스 작업을 정의합니다.
+ * </p>
+ */
 public interface PlaceMapper {
 
     // ====== PLACE 기본 기능 ======

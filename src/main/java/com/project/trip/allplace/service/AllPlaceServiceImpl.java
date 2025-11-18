@@ -22,6 +22,13 @@ import com.project.trip.allplace.model.TourIntroVO;
 import com.project.trip.allplace.model.TourItemVO;
 import com.project.trip.allplace.model.TouristSpotDTO;
 
+/**
+ * {@link AllPlaceService} 인터페이스의 구현 클래스입니다.
+ * <p>
+ * Tour API 연동을 통한 장소 검색 및 상세 정보 조회, 데이터베이스 저장 및 관리,
+ * 해시태그 기능, 추천 장소 조회 등 다양한 장소 관련 비즈니스 로직을 처리합니다.
+ * </p>
+ */
 @Service
 public class AllPlaceServiceImpl implements AllPlaceService {
 

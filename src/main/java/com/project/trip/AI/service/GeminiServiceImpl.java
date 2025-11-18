@@ -27,6 +27,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * {@link GeminiService} 인터페이스의 구현 클래스입니다.
+ * <p>
+ * Google Gemini AI API를 호출하여 사용자 요청 및 날씨 정보를 기반으로 여행 경로를 생성하고,
+ * 그 결과를 파싱하여 {@link RouteDTO} 객체로 반환하는 비즈니스 로직을 처리합니다.
+ * </p>
+ */
 @Service
 public class GeminiServiceImpl implements GeminiService {
 
@@ -209,6 +216,13 @@ public class GeminiServiceImpl implements GeminiService {
         }
     }
 
+    /**
+     * 사용자 요청 데이터와 날씨 정보를 기반으로 Gemini API에 전송할 프롬프트 문자열을 생성합니다.
+     *
+     * @param dto     사용자 여행 요청 정보를 담은 {@link AiRouteRequestDTO} 객체
+     * @param weather 해당 지역의 날씨 정보를 담은 {@link WeatherDTO} 객체
+     * @return Gemini API 요청을 위해 구성된 전체 프롬프트 문자열
+     */
     /**
      * 사용자 요청 데이터와 날씨 정보를 기반으로 Gemini API에 전송할 프롬프트 문자열을 생성합니다.
      *

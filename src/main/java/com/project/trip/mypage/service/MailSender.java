@@ -14,6 +14,10 @@ import javax.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+/**
+ * 이메일 발송 기능을 제공하는 서비스 클래스입니다.
+ * 회원가입 인증, 아이디 찾기, 비밀번호 찾기 등 다양한 상황에서 이메일을 발송합니다.
+ */
 @Service
 public class MailSender {
 
@@ -23,6 +27,11 @@ public class MailSender {
 	@Value("${my.mail.password}")
 	private String password;
 
+	/**
+	 * 메일 전송에 필요한 SMTP 서버 속성을 설정합니다.
+	 *
+	 * @return 메일 속성 {@link Properties} 객체
+	 */
 	private Properties getMailProperties() {
 		Properties props = new Properties();
 		props.put("mail.smtp.auth", "true");
@@ -35,6 +44,12 @@ public class MailSender {
 	/**
 	 * (★) 디버깅용 파라미터 제거
 	 * @Value로 주입된 클래스 필드를 직접 사용합니다.
+	 */
+	/**
+	 * 메일 세션을 생성하고 반환합니다.
+	 * {@code @Value}로 주입된 사용자 이름과 비밀번호를 사용하여 인증합니다.
+	 *
+	 * @return 메일 세션 {@link Session} 객체
 	 */
 	private Session getMailSession() {
 		Properties props = getMailProperties();

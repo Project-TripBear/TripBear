@@ -10,6 +10,13 @@ import com.project.trip.AI.mapper.AiMapper;
 import com.project.trip.AI.model.HealthCareLogDTO;
 import com.project.trip.AI.model.RouteStopDTO;
 
+/**
+ * {@link HealthCareService} 인터페이스의 구현 클래스입니다.
+ * <p>
+ * AI 추천 경로를 이용한 사용자의 건강 관리 활동 기록을 처리합니다.
+ * 특정 경유지에서의 활동을 기반으로 칼로리 소모량 등을 계산하여 헬스케어 로그를 데이터베이스에 저장합니다.
+ * </p>
+ */
 @Service
 public class HealthCareServiceImpl implements HealthCareService{
 

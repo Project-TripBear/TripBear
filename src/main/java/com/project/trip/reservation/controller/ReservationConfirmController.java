@@ -12,6 +12,13 @@ import com.project.trip.reservation.service.ReservationService;
 
 import lombok.RequiredArgsConstructor;
 
+/**
+ * 예약 확인 페이지와 관련된 HTTP 요청을 처리하는 컨트롤러입니다.
+ * <p>
+ * 사용자가 선택한 숙소 및 렌터카 정보를 기반으로 통합 예약 미리보기를 제공하고,
+ * 최종 결제 금액을 계산하여 예약 확인 페이지로 전달하는 기능을 제공합니다.
+ * </p>
+ */
 @Controller
 @RequestMapping("/reservation")
 @RequiredArgsConstructor

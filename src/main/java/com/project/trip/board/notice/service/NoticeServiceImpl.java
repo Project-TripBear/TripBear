@@ -9,6 +9,13 @@ import com.project.trip.board.notice.model.NoticeDTO;
 
 import lombok.RequiredArgsConstructor;
 
+/**
+ * {@link NoticeService} 인터페이스의 구현 클래스입니다.
+ * <p>
+ * 공지사항 게시판과 관련된 비즈니스 로직을 처리합니다.
+ * 공지사항 목록 조회, 생성, 수정, 삭제 및 상세 조회 기능을 제공합니다.
+ * </p>
+ */
 @Service
 @RequiredArgsConstructor
 public class NoticeServiceImpl implements NoticeService{

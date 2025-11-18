@@ -31,6 +31,11 @@ import com.project.trip.mypage.model.UserRouteViewDTO;
 
 import lombok.RequiredArgsConstructor;
 
+/**
+ * 마이페이지 관련 HTTP 요청을 처리하는 컨트롤러입니다.
+ * 사용자 정보 조회 및 수정, 회원 탈퇴, 활동 내역 (게시글, 댓글, 좋아요, 스크랩),
+ * 숙소 및 렌터카 예약 내역, 사용자 루트 조회 등의 기능을 제공합니다.
+ */
 @Controller
 @RequiredArgsConstructor
 public class MyPageController {
@@ -42,6 +47,11 @@ public class MyPageController {
 
 
 	
+	/**
+	 * 마이페이지 메인 화면을 반환합니다.
+	 *
+	 * @return 마이페이지 메인 화면의 뷰 이름
+	 */
 	@GetMapping("/member/mypage")
 	public String mypage() {
 		
@@ -50,6 +60,13 @@ public class MyPageController {
 	
 
 	
+	/**
+	 * 현재 로그인한 사용자의 상세 정보를 조회하여 뷰에 전달합니다.
+	 *
+	 * @param authentication Spring Security의 Authentication 객체
+	 * @param model 뷰에 데이터를 전달하기 위한 Model 객체
+	 * @return 사용자 정보 페이지의 뷰 이름
+	 */
 	@GetMapping("/member/userinfo")
 	    public String userInfo(Authentication authentication, Model model) {
 		
@@ -62,6 +79,13 @@ public class MyPageController {
 	    }
 	
 	
+	   /**
+	    * 현재 로그인한 사용자의 정보 수정 폼 페이지를 반환합니다.
+	    *
+	    * @param authentication Spring Security의 Authentication 객체
+	    * @param model 뷰에 데이터를 전달하기 위한 Model 객체
+	    * @return 사용자 정보 수정 폼 페이지의 뷰 이름
+	    */
 	   @GetMapping("/member/useredit")
 	    public String userEdit(Authentication authentication, Model model) {
 	        
@@ -74,6 +98,15 @@ public class MyPageController {
 	        return "mypage.member.useredit";
 	    }
 	    
+	   /**
+	    * 사용자 정보 수정 요청을 처리합니다.
+	    * 비밀번호가 입력된 경우 암호화하여 업데이트하고, 수정 결과를 사용자에게 알립니다.
+	    *
+	    * @param dto 수정할 사용자 정보를 담은 {@link UserDTO} 객체
+	    * @param authentication Spring Security의 Authentication 객체
+	    * @param resp HTTP 응답 객체
+	    * @throws IOException 응답 작성 중 발생할 수 있는 예외
+	    */
 	   @PostMapping("/member/useredit")
 	    public void userEditOk(UserDTO dto, Authentication authentication, HttpServletResponse resp) throws IOException {
 	        
@@ -111,6 +144,13 @@ public class MyPageController {
 	    }
 	
 	   
+	   /**
+	    * 회원 탈퇴 폼 페이지를 반환합니다.
+	    *
+	    * @param authentication Spring Security의 Authentication 객체
+	    * @param model 뷰에 데이터를 전달하기 위한 Model 객체
+	    * @return 회원 탈퇴 폼 페이지의 뷰 이름
+	    */
 	   @GetMapping("/member/userdel")
 	    public String userDel(Authentication authentication, Model model) {
 	        
@@ -124,6 +164,17 @@ public class MyPageController {
 	        return "mypage.member.userdel";
 	    }
 	   
+	   /**
+	    * 회원 탈퇴 요청을 처리합니다.
+	    * 입력된 비밀번호를 확인하고, 일치하는 경우 회원 정보를 삭제하고 세션을 무효화합니다.
+	    *
+	    * @param pw 사용자가 입력한 비밀번호
+	    * @param reason 탈퇴 사유
+	    * @param authentication Spring Security의 Authentication 객체
+	    * @param session HTTP 세션 객체
+	    * @param resp HTTP 응답 객체
+	    * @throws IOException 응답 작성 중 발생할 수 있는 예외
+	    */
 	   @PostMapping("/member/userdel")
 	    public void userDelOk(@RequestParam("pw") String pw,
 	                          @RequestParam("name") String reason,
@@ -169,6 +220,17 @@ public class MyPageController {
 	    }
 	   
 	   
+	   /**
+	    * 현재 로그인한 사용자의 게시글 활동 내역을 조회하여 뷰에 전달합니다.
+	    * 검색 및 페이징 기능을 지원합니다.
+	    *
+	    * @param column 검색할 컬럼 (예: "title")
+	    * @param word 검색 키워드
+	    * @param page 현재 페이지 번호 (기본값: 1)
+	    * @param authentication Spring Security의 Authentication 객체
+	    * @param model 뷰에 데이터를 전달하기 위한 Model 객체
+	    * @return 게시글 활동 내역 페이지의 뷰 이름
+	    */
 	   @GetMapping("/member/boardactivities")
 	    public String boardActivities(
 	            @RequestParam(value = "column", required = false) String column,
@@ -246,6 +308,14 @@ public class MyPageController {
 	        return "mypage.member.boardactivities";
 	    }
 	    
+	    /**
+	     * 게시글 목록의 페이지 바 HTML을 생성합니다.
+	     *
+	     * @param nowPage 현재 페이지 번호
+	     * @param totalPage 전체 페이지 수
+	     * @param blockSize 페이지 블록 크기
+	     * @return 생성된 페이지 바 HTML 문자열
+	     */
 	    private String generatePageBar(int nowPage, int totalPage, int blockSize) {
 	        StringBuilder pagebar = new StringBuilder();
 	        
@@ -282,6 +352,17 @@ public class MyPageController {
 	   
 	    
 	    
+	    /**
+	     * 현재 로그인한 사용자의 댓글 활동 내역을 조회하여 뷰에 전달합니다.
+	     * 검색 및 페이징 기능을 지원합니다.
+	     *
+	     * @param column 검색할 컬럼 (예: "title")
+	     * @param word 검색 키워드
+	     * @param page 현재 페이지 번호 (기본값: 1)
+	     * @param authentication Spring Security의 Authentication 객체
+	     * @param model 뷰에 데이터를 전달하기 위한 Model 객체
+	     * @return 댓글 활동 내역 페이지의 뷰 이름
+	     */
 	    @GetMapping("/member/commentactivities")
 	    public String commentActivities(
 	            @RequestParam(value = "column", required = false) String column,
@@ -359,6 +440,14 @@ public class MyPageController {
 	        return "mypage.member.commentactivities";
 	    }
 
+	    /**
+	     * 댓글 목록의 페이지 바 HTML을 생성합니다.
+	     *
+	     * @param nowPage 현재 페이지 번호
+	     * @param totalPage 전체 페이지 수
+	     * @param blockSize 페이지 블록 크기
+	     * @return 생성된 페이지 바 HTML 문자열
+	     */
 	    private String generateCommentPageBar(int nowPage, int totalPage, int blockSize) {
 	        StringBuilder pagebar = new StringBuilder();
 	        
@@ -394,6 +483,17 @@ public class MyPageController {
 	    }
 	    
 	    
+	    /**
+	     * 현재 로그인한 사용자의 좋아요 활동 내역을 조회하여 뷰에 전달합니다.
+	     * 검색 및 페이징 기능을 지원합니다.
+	     *
+	     * @param column 검색할 컬럼 (예: "title")
+	     * @param word 검색 키워드
+	     * @param page 현재 페이지 번호 (기본값: 1)
+	     * @param authentication Spring Security의 Authentication 객체
+	     * @param model 뷰에 데이터를 전달하기 위한 Model 객체
+	     * @return 좋아요 활동 내역 페이지의 뷰 이름
+	     */
 	    @GetMapping("/member/likeactivities")
 	    public String likeActivities(
 	            @RequestParam(value = "column", required = false) String column,
@@ -470,6 +570,14 @@ public class MyPageController {
 	        return "mypage.member.likeactivities";
 	    }
 
+	    /**
+	     * 좋아요 활동 내역 목록의 페이지 바 HTML을 생성합니다.
+	     *
+	     * @param nowPage 현재 페이지 번호
+	     * @param totalPage 전체 페이지 수
+	     * @param blockSize 페이지 블록 크기
+	     * @return 생성된 페이지 바 HTML 문자열
+	     */
 	    private String generateLikePageBar(int nowPage, int totalPage, int blockSize) {
 	        StringBuilder pagebar = new StringBuilder();
 	        
@@ -505,6 +613,17 @@ public class MyPageController {
 	    }
 	    
 	    
+	    /**
+	     * 현재 로그인한 사용자의 스크랩 활동 내역을 조회하여 뷰에 전달합니다.
+	     * 검색 및 페이징 기능을 지원합니다.
+	     *
+	     * @param column 검색할 컬럼 (예: "title")
+	     * @param word 검색 키워드
+	     * @param page 현재 페이지 번호 (기본값: 1)
+	     * @param authentication Spring Security의 Authentication 객체
+	     * @param model 뷰에 데이터를 전달하기 위한 Model 객체
+	     * @return 스크랩 활동 내역 페이지의 뷰 이름
+	     */
 	    @GetMapping("/member/scrapactivities")
 	    public String scrapActivities(
 	            @RequestParam(value = "column", required = false) String column,
@@ -581,6 +700,14 @@ public class MyPageController {
 	        return "mypage.member.scrapactivities";
 	    }
 
+	    /**
+	     * 스크랩 활동 내역 목록의 페이지 바 HTML을 생성합니다.
+	     *
+	     * @param nowPage 현재 페이지 번호
+	     * @param totalPage 전체 페이지 수
+	     * @param blockSize 페이지 블록 크기
+	     * @return 생성된 페이지 바 HTML 문자열
+	     */
 	    private String generateScrapPageBar(int nowPage, int totalPage, int blockSize) {
 	        StringBuilder pagebar = new StringBuilder();
 	        
@@ -616,6 +743,17 @@ public class MyPageController {
 	    }
 	    
 	    
+	    /**
+	     * 현재 로그인한 사용자의 숙소 예약 내역을 조회하여 뷰에 전달합니다.
+	     * 검색 및 페이징 기능을 지원합니다.
+	     *
+	     * @param column 검색할 컬럼 (예: "title")
+	     * @param word 검색 키워드
+	     * @param page 현재 페이지 번호 (기본값: 1)
+	     * @param authentication Spring Security의 Authentication 객체
+	     * @param model 뷰에 데이터를 전달하기 위한 Model 객체
+	     * @return 숙소 예약 내역 페이지의 뷰 이름
+	     */
 	    @GetMapping("/member/accomreservation")
 	    public String accomReservation(
 	            @RequestParam(value = "column", required = false) String column,
@@ -677,6 +815,14 @@ public class MyPageController {
 	        return "mypage.member.accomreservation";
 	    }
 
+	    /**
+	     * 숙소 예약 내역 목록의 페이지 바 HTML을 생성합니다.
+	     *
+	     * @param nowPage 현재 페이지 번호
+	     * @param totalPage 전체 페이지 수
+	     * @param blockSize 페이지 블록 크기
+	     * @return 생성된 페이지 바 HTML 문자열
+	     */
 	    private String generateAccomPageBar(int nowPage, int totalPage, int blockSize) {
 	        StringBuilder pagebar = new StringBuilder();
 	        
@@ -711,6 +857,15 @@ public class MyPageController {
 	        return pagebar.toString();
 	    }
 	    
+	    /**
+	     * 특정 숙소 예약의 상세 정보를 조회하여 뷰에 전달합니다.
+	     *
+	     * @param seq 예약 고유 번호
+	     * @param accomseq 숙소 고유 번호
+	     * @param authentication Spring Security의 Authentication 객체
+	     * @param model 뷰에 데이터를 전달하기 위한 Model 객체
+	     * @return 숙소 예약 상세 정보 페이지의 뷰 이름
+	     */
 	    @GetMapping("/member/accomreservationview")
 	    public String accomReservationView(
 	            @RequestParam("seq") String seq,
@@ -731,6 +886,12 @@ public class MyPageController {
 	    }
 	    
 	    
+	    /**
+	     * 숙소 예약을 취소 처리합니다.
+	     *
+	     * @param accomseq 취소할 숙소 예약의 고유 번호
+	     * @return "success" 또는 "error" 문자열
+	     */
 	    @PostMapping("/member/accomcancel")
 	    @ResponseBody
 	    public String accomCancel(@RequestParam("accomseq") String accomseq) {
@@ -747,6 +908,17 @@ public class MyPageController {
 	    }
 	
 	
+	    /**
+	     * 현재 로그인한 사용자의 렌터카 예약 내역을 조회하여 뷰에 전달합니다.
+	     * 검색 및 페이징 기능을 지원합니다.
+	     *
+	     * @param column 검색할 컬럼 (예: "title")
+	     * @param word 검색 키워드
+	     * @param page 현재 페이지 번호 (기본값: 1)
+	     * @param authentication Spring Security의 Authentication 객체
+	     * @param model 뷰에 데이터를 전달하기 위한 Model 객체
+	     * @return 렌터카 예약 내역 페이지의 뷰 이름
+	     */
 	    @GetMapping("/member/carreservation")
 	    public String carReservation(
 	            @RequestParam(value = "column", required = false) String column,
@@ -808,6 +980,14 @@ public class MyPageController {
 	        return "mypage.member.carreservation";
 	    }
 
+	    /**
+	     * 렌터카 예약 내역 목록의 페이지 바 HTML을 생성합니다.
+	     *
+	     * @param nowPage 현재 페이지 번호
+	     * @param totalPage 전체 페이지 수
+	     * @param blockSize 페이지 블록 크기
+	     * @return 생성된 페이지 바 HTML 문자열
+	     */
 	    private String generateCarPageBar(int nowPage, int totalPage, int blockSize) {
 	        StringBuilder pagebar = new StringBuilder();
 	        
@@ -843,6 +1023,15 @@ public class MyPageController {
 	    }
 	    
 	    
+	    /**
+	     * 특정 렌터카 예약의 상세 정보를 조회하여 뷰에 전달합니다.
+	     *
+	     * @param seq 예약 고유 번호
+	     * @param carseq 렌터카 고유 번호
+	     * @param authentication Spring Security의 Authentication 객체
+	     * @param model 뷰에 데이터를 전달하기 위한 Model 객체
+	     * @return 렌터카 예약 상세 정보 페이지의 뷰 이름
+	     */
 	    @GetMapping("/member/carreservationview")
 	    public String carReservationView(
 	            @RequestParam("seq") String seq,
@@ -864,6 +1053,12 @@ public class MyPageController {
 	    }
 
 	    // 렌트카 예약 취소
+	    /**
+	     * 렌터카 예약을 취소 처리합니다.
+	     *
+	     * @param carseq 취소할 렌터카 예약의 고유 번호
+	     * @return "success" 또는 "error" 문자열
+	     */
 	    @PostMapping("/member/carcancel")
 	    @ResponseBody
 	    public String carCancel(@RequestParam("carseq") String carseq) {
@@ -879,6 +1074,18 @@ public class MyPageController {
 	        }
 	    }
 	    
+	    /**
+	     * 현재 로그인한 사용자의 루트 목록을 조회하여 뷰에 전달합니다.
+	     * 페이징 기능을 지원하며, AJAX 요청 시 JSON 형태로 데이터를 반환합니다.
+	     *
+	     * @param page 현재 페이지 번호 (기본값: 1)
+	     * @param ajax AJAX 요청 여부 ("true"인 경우 JSON 반환)
+	     * @param authentication Spring Security의 Authentication 객체
+	     * @param model 뷰에 데이터를 전달하기 위한 Model 객체
+	     * @param response HTTP 응답 객체
+	     * @return 사용자 루트 목록 페이지의 뷰 이름 또는 JSON 데이터
+	     * @throws Exception JSON 변환 또는 응답 작성 중 발생할 수 있는 예외
+	     */
 	    @GetMapping("/member/userroute")
 	    public String userRoute(
 	            @RequestParam(value = "page", required = false, defaultValue = "1") int page,

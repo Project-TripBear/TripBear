@@ -5,6 +5,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+/**
+ * 사용자가 저장한 여행 경로(내 여행)를 조회하고 지도에 표시하는 기능을 담당하는 컨트롤러입니다.
+ */
 @Controller
 public class UserRouteViewController {
 

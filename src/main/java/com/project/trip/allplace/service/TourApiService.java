@@ -9,6 +9,12 @@ import com.project.trip.allplace.model.TourIntroRestaurantVO;
 import com.project.trip.allplace.model.TourIntroVO;
 import com.project.trip.allplace.model.TourItemVO;
 
+/**
+ * 한국관광공사 Tour API와 연동하여 장소 정보를 조회하는 비즈니스 로직을 정의하는 서비스 인터페이스입니다.
+ * <p>
+ * 키워드, 지역, 위치 기반 검색 및 장소의 상세 정보, 소개 정보 등을 조회하는 기능을 제공합니다.
+ * </p>
+ */
 public interface TourApiService {
 
     /**

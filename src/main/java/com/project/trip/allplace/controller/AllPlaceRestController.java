@@ -23,6 +23,13 @@ import com.project.trip.allplace.service.KrWeatherService;
 
 import lombok.extern.log4j.Log4j;
 
+/**
+ * 모든 장소(AllPlace)와 관련된 RESTful API 요청을 처리하는 컨트롤러입니다.
+ * <p>
+ * 날씨 정보 조회, 지도에 표시할 장소 목록 조회, 키워드 기반 장소 검색 등
+ * 클라이언트 측에서 비동기적으로 데이터를 요청할 때 사용되는 엔드포인트를 제공합니다.
+ * </p>
+ */
 @Log4j
 @RestController // ⭐ @Controller 대신 @RestController
 @RequestMapping("/allplace")
@@ -186,17 +193,40 @@ public class AllPlaceRestController {
 
     /* --- 헬퍼 함수들 --- */
 
+    /**
+     * 문자열에서 불필요한 공백을 제거하고, "false" 문자열을 null로 처리합니다.
+     *
+     * @param s 처리할 문자열
+     * @return 처리된 문자열 또는 null
+     */
     private String clean(String s) {
         if (s == null) return null;
         if (s.trim().equals("") || s.trim().equals("false")) return null;
         return s;
     }
 
+    /**
+     * 문자열을 double 타입으로 안전하게 변환합니다.
+     * 변환 중 오류 발생 시 0.0을 반환합니다.
+     *
+     * @param s 변환할 문자열
+     * @return 변환된 double 값 또는 0.0
+     */
     private double safeDouble(String s) {
         try { return Double.parseDouble(s); }
         catch (Exception e) { return 0; }
     }
 
+    /**
+     * 두 지점(위도, 경도) 간의 거리를 계산합니다.
+     * 하버사인 공식을 사용하여 지구 곡률을 고려한 거리를 반환합니다.
+     *
+     * @param lat1 첫 번째 지점의 위도
+     * @param lon1 첫 번째 지점의 경도
+     * @param lat2 두 번째 지점의 위도
+     * @param lon2 두 번째 지점의 경도
+     * @return 두 지점 간의 거리 (킬로미터 단위)
+     */
     private double calcDistance(double lat1, double lon1, double lat2, double lon2) {
         double R = 6371;
         double dLat = Math.toRadians(lat2 - lat1);

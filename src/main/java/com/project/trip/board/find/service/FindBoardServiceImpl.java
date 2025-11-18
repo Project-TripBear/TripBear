@@ -17,6 +17,14 @@ import com.project.trip.common.mapper.ReportMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j; 
 
+/**
+ * {@link FindBoardService} 인터페이스의 구현 클래스입니다.
+ * <p>
+ * 동행 찾기 게시판과 관련된 비즈니스 로직을 처리합니다.
+ * 게시글 목록 조회, 등록, 수정, 삭제, 상세 보기, 댓글 관리, 좋아요/스크랩 기능,
+ * 그리고 게시글 신고 등 게시판 운영에 필요한 다양한 기능을 제공합니다.
+ * </p>
+ */
 @Service
 @RequiredArgsConstructor
 @Slf4j 

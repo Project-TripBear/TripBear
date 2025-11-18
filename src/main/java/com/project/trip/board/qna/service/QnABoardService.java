@@ -8,6 +8,13 @@ import java.util.Map;
 import com.project.trip.board.qna.model.QnABoardDTO;
 import com.project.trip.board.qna.model.QnACommentDTO;
 
+/**
+ * Q&A 게시판과 관련된 비즈니스 로직을 정의하는 서비스 인터페이스입니다.
+ * <p>
+ * 게시글 목록 조회, 등록, 수정, 삭제, 상세 보기, 댓글 관리, 좋아요/스크랩 기능,
+ * 그리고 게시글 신고 등 게시판 운영에 필요한 다양한 기능을 제공합니다.
+ * </p>
+ */
 public interface QnABoardService {
 
     /**
@@ -129,9 +136,9 @@ public interface QnABoardService {
     /**
      * Q&A 게시글 카테고리 목록을 조회합니다.
      *
-     * @return 카테고리 목록 (일반적으로 {@code List<CategoryDTO>} 형태)
+     * @return 카테고리 목록 {@code List<QnABoardDTO>}
      */
-	Object getCategoryList();
+	List<QnABoardDTO> getCategoryList();
     
  
 }

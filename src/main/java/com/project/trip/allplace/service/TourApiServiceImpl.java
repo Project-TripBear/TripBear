@@ -21,6 +21,13 @@ import com.project.trip.allplace.model.TourItemVO;
 
 import lombok.extern.log4j.Log4j;
 
+/**
+ * {@link TourApiService} 인터페이스의 구현 클래스입니다.
+ * <p>
+ * 한국관광공사 Tour API와 연동하여 장소 정보를 조회하는 비즈니스 로직을 처리합니다.
+ * 키워드, 지역, 위치 기반 검색 및 장소의 상세 정보, 소개 정보 등을 조회하는 기능을 제공합니다.
+ * </p>
+ */
 @Service
 @Log4j
 public class TourApiServiceImpl implements TourApiService {
@@ -364,22 +371,6 @@ public class TourApiServiceImpl implements TourApiService {
         }
     }
 
-    /**
-     * Tour API의 '소개 정보 조회(detailIntro2)'를 사용하여 특정 축제/행사의 소개 정보를 조회합니다.
-     * (주로 축제/행사(contentTypeId=15)의 상세 소개 정보)
-     *
-     * @param contentId     조회할 콘텐츠 ID
-     * @param contentTypeId 콘텐츠 타입 ID
-     * @return 조회된 축제/행사의 소개 정보 {@link TourIntroEventVO}, 조회 실패 시 null
-     */
-    /**
-     * Tour API의 '소개 정보 조회(detailIntro2)'를 사용하여 특정 축제/행사의 소개 정보를 조회합니다.
-     * (주로 축제/행사(contentTypeId=15)의 상세 소개 정보)
-     *
-     * @param contentId     조회할 콘텐츠 ID
-     * @param contentTypeId 콘텐츠 타입 ID
-     * @return 조회된 축제/행사의 소개 정보 {@link TourIntroEventVO}, 조회 실패 시 null
-     */
     @Override
     public TourIntroEventVO getEventIntro(String contentId, String contentTypeId) {
         // (contentTypeId=15, 행사)
@@ -396,22 +387,6 @@ public class TourApiServiceImpl implements TourApiService {
         }
     }
 
-    /**
-     * Tour API의 '소개 정보 조회(detailIntro2)'를 사용하여 특정 음식점의 소개 정보를 조회합니다.
-     * (주로 음식점(contentTypeId=39)의 상세 소개 정보)
-     *
-     * @param contentId     조회할 콘텐츠 ID
-     * @param contentTypeId 콘텐츠 타입 ID
-     * @return 조회된 음식점의 소개 정보 {@link TourIntroRestaurantVO}, 조회 실패 시 null
-     */
-    /**
-     * Tour API의 '소개 정보 조회(detailIntro2)'를 사용하여 특정 음식점의 소개 정보를 조회합니다.
-     * (주로 음식점(contentTypeId=39)의 상세 소개 정보)
-     *
-     * @param contentId     조회할 콘텐츠 ID
-     * @param contentTypeId 콘텐츠 타입 ID
-     * @return 조회된 음식점의 소개 정보 {@link TourIntroRestaurantVO}, 조회 실패 시 null
-     */
     @Override
     public TourIntroRestaurantVO getRestaurantIntro(String contentId, String contentTypeId) {
         // (contentTypeId=39, 음식점)

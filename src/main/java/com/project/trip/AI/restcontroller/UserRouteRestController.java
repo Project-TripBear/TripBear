@@ -17,6 +17,13 @@ import com.project.trip.AI.service.UserRouteService;
 
 import lombok.RequiredArgsConstructor;
 
+/**
+ * 사용자가 저장한 여행 경로(내 여행)와 관련된 REST API 요청을 처리하는 컨트롤러입니다.
+ * <p>
+ * 사용자 경로 조회, 삭제, 경유지 순서 및 교통수단 변경, 일차 변경 등
+ * 사용자 정의 여행 경로 관리를 위한 기능을 제공합니다.
+ * </p>
+ */
 @RestController
 @RequestMapping("/api/user/route")
 @RequiredArgsConstructor
@@ -27,6 +34,12 @@ public class UserRouteRestController {
     // ==============================
     //  루트 조회
     // ==============================
+    /**
+     * 특정 사용자 여행 경로의 상세 정보를 조회합니다.
+     *
+     * @param id 조회할 사용자 여행 경로의 고유 ID
+     * @return 조회된 {@link UserRouteDTO} 객체 또는 404 Not Found 응답
+     */
     @GetMapping("/{id}")
     public ResponseEntity<UserRouteDTO> getUserRoute(@PathVariable Long id) {
         UserRouteDTO dto = userRouteService.getUserRouteWithStops(id);
@@ -38,6 +51,13 @@ public class UserRouteRestController {
     // ==============================
     //  루트 삭제
     // ==============================
+    /**
+     * 특정 사용자 여행 경로를 삭제합니다.
+     * 경로와 관련된 모든 경유지 정보도 함께 삭제됩니다.
+     *
+     * @param id 삭제할 사용자 여행 경로의 고유 ID
+     * @return 삭제 성공 여부를 나타내는 {@code ResponseEntity<String>}
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteUserRoute(@PathVariable Long id) {
         int deleted = userRouteService.deleteUserRouteCascade(id);
@@ -49,6 +69,13 @@ public class UserRouteRestController {
     // ==============================
     //  🔥 일차(day) 단독 수정
     // ==============================
+    /**
+     * 특정 경유지의 일차(day)를 업데이트합니다.
+     *
+     * @param stopId 업데이트할 경유지의 고유 ID
+     * @param day 새로운 일차 값
+     * @return 업데이트 성공 여부를 나타내는 {@code ResponseEntity<String>}
+     */
     @PatchMapping("/stop/{stopId}/day")
     public ResponseEntity<String> updateStopDay(
             @PathVariable Long stopId,
@@ -63,6 +90,13 @@ public class UserRouteRestController {
     // ==============================
     //  🔥 순서(order) 단독 수정
     // ==============================
+    /**
+     * 특정 경유지의 순서(order)를 업데이트합니다.
+     *
+     * @param stopId 업데이트할 경유지의 고유 ID
+     * @param order 새로운 순서 값
+     * @return 업데이트 성공 여부를 나타내는 {@code ResponseEntity<String>}
+     */
     @PatchMapping("/stop/{stopId}/order")
     public ResponseEntity<String> updateStopOrder(
             @PathVariable Long stopId,
@@ -77,6 +111,13 @@ public class UserRouteRestController {
     // ==============================
     //  이동수단 변경
     // ==============================
+    /**
+     * 특정 경유지까지의 이동 수단을 업데이트합니다.
+     *
+     * @param stopId 업데이트할 경유지의 고유 ID
+     * @param mode 새로운 이동 수단 (예: "CAR", "WALK")
+     * @return 업데이트 성공 여부를 나타내는 {@code ResponseEntity<String>}
+     */
     @PatchMapping("/stop/{stopId}/mode")
     public ResponseEntity<String> updateTransportMode(
             @PathVariable Long stopId,
@@ -91,6 +132,12 @@ public class UserRouteRestController {
     // ==============================
     //  🔥 Bulk 재정렬
     // ==============================
+    /**
+     * 특정 일차에 해당하는 경유지들의 순서를 일괄적으로 재정렬합니다.
+     *
+     * @param req 재정렬할 일차와 해당 일차의 경유지 목록을 담은 {@link ReorderRequest} 객체
+     * @return 성공 시 200 OK 응답
+     */
     @PostMapping("/stop/bulk/reorder")
     public ResponseEntity<?> reorderStops(@RequestBody ReorderRequest req) {
         userRouteService.updateStopOrders(req.getDay(), req.getStops());

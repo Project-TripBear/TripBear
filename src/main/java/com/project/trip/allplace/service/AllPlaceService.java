@@ -6,6 +6,13 @@ import com.project.trip.allplace.model.PlaceDTO;
 import com.project.trip.allplace.model.TourApiResponseVO;
 import com.project.trip.allplace.model.TourItemVO;
 
+/**
+ * 모든 장소(AllPlace)와 관련된 비즈니스 로직을 정의하는 서비스 인터페이스입니다.
+ * <p>
+ * Tour API 연동을 통한 장소 검색 및 상세 정보 조회, 데이터베이스 저장 및 관리,
+ * 해시태그 기능, 추천 장소 조회 등 다양한 장소 관련 기능을 제공합니다.
+ * </p>
+ */
 public interface AllPlaceService {
 
     /**

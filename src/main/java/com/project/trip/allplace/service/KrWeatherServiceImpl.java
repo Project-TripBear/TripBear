@@ -17,6 +17,13 @@ import com.project.trip.allplace.model.WeatherVO;
 
 import lombok.extern.log4j.Log4j;
 
+/**
+ * {@link KrWeatherService} 인터페이스의 구현 클래스입니다.
+ * <p>
+ * OpenWeatherMap API를 호출하여 특정 위도, 경도에 해당하는 현재 날씨 정보를 조회하고,
+ * 그 결과를 {@link WeatherVO} 객체로 가공하여 반환하는 비즈니스 로직을 처리합니다.
+ * </p>
+ */
 @Log4j
 @Service("krWeatherService") // Bean 이름("krWeatherService") 유지
 public class KrWeatherServiceImpl implements KrWeatherService { // 기존 인터페이스 구현

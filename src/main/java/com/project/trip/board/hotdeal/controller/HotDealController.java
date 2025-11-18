@@ -33,6 +33,14 @@ import com.project.trip.mypage.model.UserDTO;
 
 import lombok.RequiredArgsConstructor;
 
+/**
+ * 핫딜 게시판과 관련된 HTTP 요청을 처리하는 컨트롤러입니다.
+ * <p>
+ * 게시글 목록 조회, 상세 보기, 등록, 수정, 삭제 기능을 제공하며,
+ * 게시글에 대한 좋아요 및 스크랩 기능도 처리합니다.
+ * 파일 업로드 및 Spring Security를 활용한 사용자 인증을 포함합니다.
+ * </p>
+ */
 @Controller
 @RequiredArgsConstructor
 public class HotDealController {

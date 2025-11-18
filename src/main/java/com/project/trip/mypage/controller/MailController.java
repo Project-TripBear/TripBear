@@ -20,6 +20,10 @@ import com.project.trip.mypage.service.MailSender;
 
 import lombok.RequiredArgsConstructor; 
 
+/**
+ * 회원가입, 아이디/비밀번호 찾기 등 메일 인증과 관련된 HTTP 요청을 처리하는 컨트롤러입니다.
+ * 인증번호 발송 및 확인, 아이디/비밀번호 찾기 메일 발송 기능을 제공합니다.
+ */
 @Controller
 @RequestMapping("/member/mail") // JSP의 AJAX 경로와 일치
 @RequiredArgsConstructor
@@ -32,6 +36,14 @@ public class MailController {
     private final PasswordEncoder passwordEncoder;
 
 
+    /**
+     * 이메일 인증번호를 발송합니다.
+     * 5자리 난수를 생성하여 세션에 저장하고, 해당 번호를 포함한 메일을 발송합니다.
+     *
+     * @param email 인증번호를 받을 이메일 주소
+     * @param session HTTP 세션 객체
+     * @return 처리 결과 (1: 성공, 0: 실패)를 담은 {@code Map<String, Integer>}
+     */
     @PostMapping("/sendmail")
 	@ResponseBody
 	public Map<String, Integer> sendVerificationMail(@RequestParam("email") String email, HttpSession session) {
@@ -140,6 +152,15 @@ public class MailController {
 		return response;
 	}
 	
+	/**
+	 * 비밀번호 찾기 요청을 처리합니다.
+	 * 아이디와 이메일이 일치하는 사용자를 확인하고, 임시 비밀번호를 생성하여 메일로 발송합니다.
+	 * 임시 비밀번호는 암호화되어 데이터베이스에 업데이트됩니다.
+	 *
+	 * @param id 사용자의 아이디
+	 * @param email 사용자의 이메일 주소
+	 * @return 처리 결과 (1: 성공, 0: 실패)를 담은 {@code Map<String, Integer>}
+	 */
 	@PostMapping("/findpw")
 	@ResponseBody
 	public Map<String, Integer> findPw(@RequestParam("id") String id,

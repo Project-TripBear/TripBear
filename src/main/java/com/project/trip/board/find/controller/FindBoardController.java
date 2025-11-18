@@ -22,6 +22,14 @@ import com.project.trip.mypage.model.CustomUser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j; 
 
+/**
+ * 동행 찾기 게시판과 관련된 HTTP 요청을 처리하는 컨트롤러입니다.
+ * <p>
+ * 게시글 목록 조회, 등록, 수정, 삭제, 상세 보기, 좋아요, 스크랩, 신고 기능 및
+ * 댓글 등록, 수정, 삭제 기능을 제공합니다.
+ * Spring Security를 활용하여 사용자 인증 및 권한을 확인합니다.
+ * </p>
+ */
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/findboard")

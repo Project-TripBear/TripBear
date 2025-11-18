@@ -21,7 +21,13 @@ import com.project.trip.mypage.model.UserDTO;
 
 import lombok.RequiredArgsConstructor;
 
-
+/**
+ * 핫딜 게시글의 댓글과 관련된 RESTful API 요청을 처리하는 컨트롤러입니다.
+ * <p>
+ * 댓글 추가, 수정, 삭제 및 추가 댓글 목록 조회 기능을 제공합니다.
+ * Spring Security를 활용하여 사용자 인증 정보를 확인합니다.
+ * </p>
+ */
 @RestController
 @RequiredArgsConstructor
 public class HotDealCommentController {
