@@ -109,7 +109,7 @@
 .review-page #btn-like,
 .review-page #btn-scrap {
     padding: 8px 18px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--border, #e9ecef);
     border-radius: 25px;
     background-color: #fff;
     cursor: pointer;
@@ -118,16 +118,31 @@
     font-size: 0.95rem;
     font-weight: 600;
 }
-.review-page #btn-like.active,
-.review-page #btn-scrap.active {
-    background-color: #007BFF;
-    color: white;
-    border-color: #007BFF;
+
+.review-page #btn-like {
+    color: var(--like-color, #ff6b81);
+    border-color: var(--like-color, #ff6b81);
+    background-color: var(--like-soft, #ffe5ed);
 }
-.review-page #btn-like:hover,
+
+.review-page #btn-scrap {
+    color: #8c6400;
+    border-color: var(--scrap-color, #ffd166);
+    background-color: var(--scrap-soft, #fff5d6);
+}
+
+.review-page #btn-like.active,
+.review-page #btn-like:hover {
+    background-color: var(--like-color, #ff6b81);
+    color: #fff;
+    border-color: var(--like-color, #ff6b81);
+}
+
+.review-page #btn-scrap.active,
 .review-page #btn-scrap:hover {
-    border-color: #007BFF;
-    color: #007BFF;
+    background-color: var(--scrap-color, #ffd166);
+    color: #5e4700;
+    border-color: var(--scrap-color, #ffd166);
 }
 
 /* 목록/수정/삭제 */
