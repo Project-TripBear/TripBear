@@ -118,7 +118,7 @@
                 <a href="${pageContext.request.contextPath}/review/list">여행 후기</a>
                 <a href="${pageContext.request.contextPath}/qnaboard/list">Q&A</a>
                 <a href="${pageContext.request.contextPath}/findboard/list">동행 찾기</a>
-                <a href="${pageContext.request.contextPath}/board/list">여행 용품</a>
+                <a href="${pageContext.request.contextPath}/hotdeal/list">여행 용품</a>
             </div>
         </div>
 
