@@ -71,9 +71,9 @@
                     </c:if>
 
                     <c:if test="${dto.user_id != currentUserId && currentUserId != null}">
-                        <a href="<c:url value='/qnaboard/report?boardSeq=${dto.question_board_id}&reportedUserId=${dto.user_id}'"/>
-                           class="btn btn-danger" target="_blank">신고</a>
-                    </c:if>
+					    <a href="<c:url value='/qnaboard/report?boardSeq=${dto.question_board_id}&reportedUserId=${dto.user_id}'/>"
+					       class="btn btn-danger" target="_blank">신고</a>
+					</c:if>
                 </div>
             </div>
 

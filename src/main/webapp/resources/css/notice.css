@@ -348,6 +348,7 @@ main {
     font-size: 1rem;
     line-height: 1.8;
     color: var(--text);
+    white-space: pre-line;
 }
 
 /* c:out escapeXml=false 로 삽입된 HTML 태그 스타일링 */
