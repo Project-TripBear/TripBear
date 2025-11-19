@@ -1,269 +1,61 @@
+@charset "UTF-8";
+
 /* =========================================================== */
-/*                           list.jsp                          */
+/* Q&A board list (unified board layout)                      */
 /* =========================================================== */
 
-/* ---------------------- 전체 컨테이너 ---------------------- */
-.card-container {
-    width: 100%;
-    max-width: 70%;
-    margin: 0 auto;
-    padding: 20px;
-}
-
-@media screen and (max-width: 1000px) {
-    .card-container {
-        max-width: 95%;
-    }
-}
-
-/* ------------------------- 타이틀 ------------------------- */
-.content-header {
-    width: 70%;
-    margin: 0 auto;
-    padding: 30px 0 10px 0;
-    text-align: center;
-}
-
-/* ------------------------- 테이블 ------------------------- */
-.notice-table {
-    width: 100%;
-    border-collapse: collapse;
-    background: white;
-    border-radius: 10px;
-    overflow: hidden;
-}
-
-.notice-table thead {
-    background: #f5f7fa;
-}
-
-.notice-table th {
-    padding: 14px;
-    text-align: center;
-    font-weight: 600;
-    color: #333;
-    background: #f2f4f7;
-}
-
-.notice-table td {
-    padding: 14px;
-    text-align: center;
-    border-bottom: 1px solid #e6e6e6;
-    color: #333;
-}
-
-.notice-table td.title {
+/* list: align with hotdeal layout */
+.qna-board-page .board-title,
+.qna-board-page .board-subtitle {
     text-align: left;
-    padding-left: 20px;
 }
 
-.notice-table tbody tr:hover {
-    background: #f9f9f9;
-}
-
-/* 카테고리 태그 */
-.category-tag {
-    font-size: 13px;
-    color: #FF8C69;
-    font-weight: 600;
-    margin-right: 6px;
-}
-
-/* 댓글 개수 */
-.comment-count {
-    color: #FF8C69;
-    font-weight: bold;
-}
-
-/* ------------------------- 필터 영역 ------------------------- */
-.filter-wrapper {
-    width: 100%;
-    max-width: 70%;
-    margin: 20px auto 10px auto;
-    display: grid;
-    grid-template-columns: 1fr 2fr 1fr;
+.qna-board-page .board-table .title a {
+    display: inline-flex;
     align-items: center;
-    gap: 20px;
-}
-
-
-/* 왼쪽 카테고리 */
-.filter-left {
-    display: flex;
-    justify-content: flex-start;
-}
-
-.category-select {
-    width: 160px;
-    padding: 9px 12px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    font-size: 14px;
-}
-
-/* 가운데 검색 */
-.filter-center {
-    display: flex;
-    justify-content: center;
     gap: 10px;
+    width: 100%;
 }
 
-.search-select {
-    padding: 9px 12px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-}
-
-.filter-center input {
-    padding: 9px 12px;
-    width: 220px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-}
-
-.btn-search {
-    background-color: #6C9A8B;
-    color: white;
-    padding: 9px 20px;
-    border-radius: 8px;
-    border: none;
-    font-weight: 600;
-    cursor: pointer;
-}
-
-.btn-search:hover {
-    background-color: #5a8377;
-}
-
-/* 오른쪽 글쓰기 버튼 */
-.btn-write {
-    background-color: #FF8C69 !important;
-    color: white;
-    padding: 9px 26px;
-    border-radius: 8px;
-    border: none;
-    font-weight: 600;
-    cursor: pointer;
-    justify-self: end;
-}
-
-.btn-write:hover {
-    background-color: #ff7a52 !important;
-    transform: translateY(-2px);
-}
-
-/* ------------------------- 페이징 ------------------------- */
-.pagination {
-    display: flex;
-    justify-content: center;
+.qna-board-page .category-tag {
+    display: inline-flex;
     align-items: center;
-    margin: 5px 0;
-    gap: 8px;
-}
-
-.pagination a {
-    all: unset;
-    cursor: pointer;
-    padding: 2px 6px;
-    font-size: 16px;
-    color: #444;
-}
-
-.pagination a.active {
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: 999px;
+    background-color: rgba(255, 209, 102, 0.18);
+    color: #b45f00;
     font-weight: 700;
-    color: #FF8C69 !important; /* 주황색 강조 */
-    background: none !important;
-    border: none !important;
-    box-shadow: none !important;
+    font-size: 0.85rem;
 }
 
-.pagination a:hover {
-    color: #FF8C69 !important;
+.qna-board-page .comment-count {
+    color: var(--primary, #6C9A8B);
+    font-weight: 700;
+    font-size: 0.9rem;
 }
 
-
-/* ------------------- 공통: 데이터 없음 ------------------- */
-.no-data {
-    padding: 40px;
-    text-align: center;
-    color: #777;
-    font-size: 15px;
+.qna-board-page .board-actions {
+    align-items: center;
+    gap: 12px;
 }
 
-/* =========================================================== */
-/*                           view.jsp                          */
-/* =========================================================== */
+.qna-board-page .board-search {
+    gap: 10px;
+    flex: 1;
+    flex-wrap: wrap;
+}
 
+.qna-board-page .board-search select,
+.qna-board-page .board-search input[type="text"] {
+    min-width: 150px;
+}
 
-/* 좋아요/스크랩 기본 글자색 바꾸기 */
-    .btn-outline-danger, .btn-outline-primary {
-        color: var(--text-dark) !important;
-        border-color: var(--border);
-    }
+.qna-board-page .board-actions .board-button-group {
+    justify-content: flex-end;
+}
 
-    .btn-outline-danger:hover, .btn-outline-primary:hover {
-        color: white !important;
-        background: var(--primary);
-        border-color: var(--primary);
-    }
-
-    /* 댓글 수정/삭제 버튼 */
-    .comment-action-btn {
-        padding: 2px 6px;
-        border-radius: 6px;
-        margin-left: 5px;
-        cursor: pointer;
-        font-size: 0.85em;
-        color: var(--text-dark);
-    }
-
-    .comment-edit-btn:hover {
-        background: var(--primary-light);
-    }
-    .comment-delete-btn {
-        color: var(--danger);
-    }
-    .comment-delete-btn:hover {
-        background: #ffe2e2;
-    }
-    
-    /* ---- 댓글 수정 / 삭제 동그란 버튼 ---- */
-	.comment-round-btn {
-	    display: inline-block;
-	    padding: 6px 14px;
-	    font-size: 0.85em;
-	    font-weight: 600;
-	    border-radius: 20px;
-	    cursor: pointer;
-	    margin-left: 6px;
-	    transition: 0.2s ease;
-	
-	    border: none;              /* ← 기본 까만 테두리 제거 */
-	    outline: none;             /* ← 포커스 테두리 제거 */
-	    box-shadow: none;          /* ← 클릭 시 그림자 제거 */
-	}
-	
-	/* 수정 버튼 */
-	.comment-edit-round {
-	    background: #6C9A8B;  /* 누나 primary */
-	    color: white;
-	    border: none;         /* 안전하게 한번 더 */
-	}
-	.comment-edit-round:hover {
-	    background: #578476;
-	}
-	
-	/* 삭제 버튼 */
-	.comment-delete-round {
-	    background: #D9534F;
-	    color: white;
-	    border: none;
-	}
-	.comment-delete-round:hover {
-	    background: #c64542;
-	}
-	
-	.comment-round-btn:focus {
-    outline: none;
-    box-shadow: none;
-	}	
+.post-actions-helper {
+    color: var(--text-light, #6C757D);
+    font-weight: 600;
+}

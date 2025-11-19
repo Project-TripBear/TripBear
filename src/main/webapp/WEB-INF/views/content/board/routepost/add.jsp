@@ -11,7 +11,7 @@
 <body>
 
 <div class="routepost-page">
-<div class="container">   
+<div class="container board-form-card">
   <h2>여행 추천 루트 게시글 작성 ✈️</h2>
 
   <form method="post"

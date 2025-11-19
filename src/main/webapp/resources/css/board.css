@@ -3,6 +3,13 @@
    Shared by all discussion boards (list pages)
 ========================================================= */
 
+:root {
+    --like-color: #ff6b81;   /* 산뜻한 레드(핑크 톤) */
+    --like-soft: #ffe5ed;
+    --scrap-color: #ffd166;  /* 따뜻한 옐로우 */
+    --scrap-soft: #fff5d6;
+}
+
 .board-page {
     max-width: 1100px;
     margin: 40px auto;
