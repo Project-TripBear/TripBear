@@ -279,6 +279,10 @@ public class GeminiServiceImpl implements GeminiService {
         prompt.append("- 모든 장소와 식당은 반드시 '").append(city).append("' 안에 실제로 존재해야 합니다.\n");
         prompt.append("- '").append(city).append("' 외의 다른 시/도에 있는 장소/식당을 사용하는 순간, 그 답변은 잘못된 답변입니다.\n");
         prompt.append("- 실제 장소명만 사용하고, 가짜 상호명/키워드형 장소명은 절대 금지합니다.\n\n");
+<<<<<<< HEAD
+
+=======
+>>>>>>> feature/tourallplace
 
         prompt.append("- 각 필드의 규칙은 다음과 같습니다.\n");
         prompt.append("  1. aiRouteDay: 여행 며칠차인지 (1부터 시작하는 정수).\n");

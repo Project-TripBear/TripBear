@@ -21,10 +21,11 @@
         <property name="driverClassName" value="oracle.jdbc.OracleDriver"/>
         
 
-       <!-- 윈도우용 -->  
 
+        <!-- 윈도우용 -->  
 	<property name="jdbcUrl" 
-          value="jdbc:oracle:thin:@TripBearDB_high?tns_admin=C:/dev/Wallet_TripBearDB"/>
+          value="jdbc:oracle:thin:@TripBearDB_high?tns_admin=C:/dev/Wallet_TripBearDB"/> 
+
 
 
 	<!-- 맥북용 -->
