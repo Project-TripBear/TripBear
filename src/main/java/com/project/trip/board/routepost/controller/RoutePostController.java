@@ -50,10 +50,11 @@ public class RoutePostController {
     private MemberMapper membermapper;
 
     /**
-     * 목록
-     * - 기존 로직 유지
-     * - 페이지 파라미터만 받아서 start/end 계산 후 서비스 호출
-     * - 반환 뷰 이름도 기존("board.routepost.list") 그대로 유지 (Tiles/뷰 설정 건드리지 않음)
+     * 여행 경로 게시글 목록을 조회하고 뷰에 전달합니다.
+     *
+     * @param page  현재 페이지 번호 (기본값: 1)
+     * @param model 뷰에 데이터를 전달하기 위한 Model 객체
+     * @return "board.routepost.list" 게시글 목록 뷰 이름
      */
     @GetMapping("/list")
     public String list(@RequestParam(defaultValue = "1") int page, Model model) {
@@ -77,15 +78,15 @@ public class RoutePostController {
     }
 
     /**
-     * 상세보기
-     * ✅ 핵심 변경 포인트 (HotDeal 방식 적용)
-     * 1) 더 이상 CustomUser/CustomAdminUser 캐스팅하지 않습니다.
-     * 2) Authentication 이 있다면 auth.getName()으로 "로그인 아이디(username)"만 가져옵니다.
-     * 3) membermapper.get(username) 으로 DB에서 사용자 정보를 조회해 seq 등 필요한 값을 얻습니다.
-     * 4) 관리자/일반/비로그인 모두 안전하게 동작합니다. (ClassCastException 방지)
-     *
-     * URL: /routepost/view/{routepostId}
-     * - 형님 JSP에서 링크를 /routepost/view/${board.seq} 로 걸어두셨으니 PathVariable 유지합니다.
+     * 여행 경로 게시글의 상세 내용을 조회합니다.
+     * <p>
+     * HotDeal 방식 적용: auth.getName()으로 로그인 아이디 조회 후
+     * membermapper.get(username)을 통해 DB에서 사용자 정보를 안전하게 가져옵니다.
+     * </p>
+     * @param routepostId 조회할 게시글의 고유 번호
+     * @param model       뷰에 데이터를 전달하기 위한 Model 객체
+     * @param auth        Spring Security의 Authentication 객체
+     * @return "board.routepost.view" 게시글 상세 뷰 이름
      */
     @GetMapping("/view/{routepostId}")
     public String view(@PathVariable int routepostId,
@@ -136,8 +137,9 @@ public class RoutePostController {
     }
 
     /**
-     * 작성 폼
-     * - 뷰 이름 그대로 유지
+     * 게시글 작성 폼 페이지를 표시합니다.
+     *
+     * @return "board.routepost.add" 게시글 작성 폼 뷰 이름
      */
     @GetMapping("/add")
     public String addForm() {
@@ -145,11 +147,16 @@ public class RoutePostController {
     }
 
     /**
-     * 등록 처리 (파일 업로드 포함)
-     * ✅ 변경 포인트 (HotDeal 방식 적용)
-     * - 기존엔 CustomUser 로 캐스팅하여 seq를 꺼냈다면,
-     *   이제는 auth.getName() -> membermapper.get(username) 으로 seq 조회
-     * - 서비스/매퍼/JSP 건드릴 필요 없이 컨트롤러에서만 로그인 정보를 정리
+     * 게시글 등록 요청을 처리합니다 (파일 업로드 포함).
+     * <p>
+     * HotDeal 방식 적용: auth.getName() &rarr; membermapper.get(username) 으로 seq 조회.
+     * </p>
+     * @param dto    등록할 게시글 정보를 담은 {@link RoutePostDTO}
+     * @param images 업로드할 이미지 파일 배열
+     * @param req    HttpServletRequest 객체
+     * @param auth   Spring Security의 Authentication 객체
+     * @return "redirect:/routepost/list" 게시글 목록 페이지로 리다이렉트
+     * @throws Exception 파일 업로드 또는 데이터베이스 처리 중 오류 발생 시
      */
     @PostMapping(value = "/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public String add(@ModelAttribute RoutePostDTO dto,

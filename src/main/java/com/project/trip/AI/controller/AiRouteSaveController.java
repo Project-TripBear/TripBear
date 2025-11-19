@@ -28,7 +28,7 @@ public class AiRouteSaveController {
      * AI 경로를 사용자의 경로로 복사하는 서비스를 호출합니다.
      *
      * @param aiRouteId Long 저장할 AI 여행 경로의 ID
-     * @return Map<String, Object> 작업의 성공 여부(success),
+     * @return Map&lt;String, Object&gt; 작업의 성공 여부(success),
      *         성공 시 새로 생성된 사용자 경로 ID(newUserRouteId),
      *         실패 시 오류 메시지(message)를 담은 맵
      */

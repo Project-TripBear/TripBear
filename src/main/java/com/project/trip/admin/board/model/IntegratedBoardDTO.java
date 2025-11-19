@@ -9,7 +9,7 @@ import lombok.ToString;
 /**
  * 여러 종류의 게시판 글을 관리자 페이지에서 통합하여 표현하기 위한 데이터 전송 객체(DTO)입니다.
  * <p>
- * 각기 다른 게시판(예: Q&A, 여행 후기)의 글들을 공통된 형식으로 조회하고 관리하는 데 사용됩니다.
+ * 각기 다른 게시판(예: QnA, 여행 후기)의 글들을 공통된 형식으로 조회하고 관리하는 데 사용됩니다.
  * </p>
  */
 @Getter
@@ -21,7 +21,7 @@ public class IntegratedBoardDTO {
      */
     private int seq;
     /**
-     * 게시판의 종류 (예: "Q&A", "여행후기")
+     * 게시판의 종류 (예: "QnA", "여행후기")
      */
     private String boardType;
     /**

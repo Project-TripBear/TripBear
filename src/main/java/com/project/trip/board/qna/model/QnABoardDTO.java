@@ -7,7 +7,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * Q&A 게시판의 게시글 정보를 나타내는 데이터 전송 객체(DTO)입니다.
+ * QnA 게시판의 게시글 정보를 나타내는 데이터 전송 객체(DTO)입니다.
  * `tblQuestionBoard` 테이블과 매핑되며, 화면 표시를 위한 추가 정보도 포함합니다.
  */
 @Getter
@@ -81,12 +81,12 @@ public class QnABoardDTO {
     private String regDateFormatted;
 
     /**
-     * Q&A 카테고리 번호 (FK)
+     * QnA 카테고리 번호 (FK)
      */
     private int question_category_id;
 
     /**
-     * Q&A 카테고리 이름 (화면 표시용)
+     * QnA 카테고리 이름 (화면 표시용)
      */
     private String question_category_name;
     

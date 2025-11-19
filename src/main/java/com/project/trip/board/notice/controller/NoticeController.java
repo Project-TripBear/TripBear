@@ -28,8 +28,11 @@ public class NoticeController {
 	private final NoticeService noticeService;
 	
     /**
-     * 공지사항 목록 조회 (일반 회원/비회원 접근 가능)
-     * URL: /notice/list
+     * 공지사항 목록을 조회합니다.
+     * 일반 회원 및 비회원 모두 접근 가능합니다.
+     *
+     * @param model 뷰에 데이터를 전달하기 위한 Model 객체
+     * @return "notice.list" 공지사항 목록 뷰 이름
      */
 	@GetMapping("/list")
 	public String list(Model model) {
@@ -43,8 +46,12 @@ public class NoticeController {
 	}
 	
     /**
-     * 공지사항 상세 보기 (일반 회원/비회원 접근 가능)
-     * URL: /notice/view?id=...
+     * 공지사항 상세 내용을 조회합니다.
+     * 일반 회원 및 비회원 모두 접근 가능합니다.
+     *
+     * @param noticePostId 조회할 공지사항 게시글의 ID
+     * @param model        뷰에 데이터를 전달하기 위한 Model 객체
+     * @return "notice.view" 공지사항 상세 뷰 이름
      */
 	@GetMapping("/view")
 	public String view(@RequestParam("id") Long noticePostId, Model model) {

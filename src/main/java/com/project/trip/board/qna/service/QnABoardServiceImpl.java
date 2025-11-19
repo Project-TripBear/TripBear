@@ -23,7 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * {@link QnABoardService} 인터페이스의 구현 클래스입니다.
  * <p>
- * Q&A 게시판과 관련된 비즈니스 로직을 처리합니다.
+ * Q&amp;A 게시판과 관련된 비즈니스 로직을 처리합니다.
  * 게시글 목록 조회, 등록, 수정, 삭제, 상세 보기, 댓글 관리, 좋아요/스크랩 기능,
  * 그리고 게시글 신고 등 게시판 운영에 필요한 다양한 기능을 제공합니다.
  * </p>
@@ -36,7 +36,7 @@ public class QnABoardServiceImpl implements QnABoardService {
     private final QnABoardMapper mapper;
 
     /**
-     * Q&A 게시글 목록을 조회하는 메인 로직을 구현합니다.
+     * Q&amp;A 게시글 목록을 조회하는 메인 로직을 구현합니다.
      * <p>
      * 페이징 계산, 검색 조건 및 카테고리 필터링 처리를 포함하며,
      * 각 게시글의 작성일로부터 경과 시간을 계산하여 {@link QnABoardDTO}에 설정합니다.
@@ -115,7 +115,7 @@ public class QnABoardServiceImpl implements QnABoardService {
     // ---------------- 아래 기존 기능 그대로 유지 ---------------- //
 
     /**
-     * 새로운 Q&A 게시글을 데이터베이스에 등록합니다.
+     * 새로운 Q&amp;A 게시글을 데이터베이스에 등록합니다.
      *
      * @param dto 등록할 게시글 정보를 담은 {@link QnABoardDTO} 객체
      */
@@ -125,7 +125,7 @@ public class QnABoardServiceImpl implements QnABoardService {
     }
     
     /**
-     * 기존 Q&A 게시글 정보를 데이터베이스에서 업데이트합니다.
+     * 기존 Q&amp;A 게시글 정보를 데이터베이스에서 업데이트합니다.
      *
      * @param dto 업데이트할 게시글 정보를 담은 {@link QnABoardDTO} 객체
      */
@@ -135,7 +135,7 @@ public class QnABoardServiceImpl implements QnABoardService {
     }
 
     /**
-     * 특정 Q&A 게시글을 데이터베이스에서 삭제합니다.
+     * 특정 Q&amp;A 게시글을 데이터베이스에서 삭제합니다.
      *
      * @param boardSeq 삭제할 게시글의 고유 번호
      */
@@ -146,7 +146,7 @@ public class QnABoardServiceImpl implements QnABoardService {
     }
 
     /**
-     * 특정 Q&A 게시글의 상세 정보를 조회합니다.
+     * 특정 Q&amp;A 게시글의 상세 정보를 조회합니다.
      * <p>
      * 게시글의 조회수를 증가시키고, 현재 로그인한 사용자의 좋아요 및 스크랩 여부를 확인하여
      * {@link QnABoardDTO} 객체에 담아 반환합니다.
@@ -170,7 +170,7 @@ public class QnABoardServiceImpl implements QnABoardService {
     }
     
     /**
-     * 특정 Q&A 게시글의 기본 정보를 게시글 ID로 조회합니다.
+     * 특정 Q&amp;A 게시글의 기본 정보를 게시글 ID로 조회합니다.
      * (주로 수정 페이지 로딩 등 순수하게 게시물 정보만 가져올 때 사용)
      *
      * @param boardSeq 조회할 게시글의 고유 번호
@@ -182,10 +182,10 @@ public class QnABoardServiceImpl implements QnABoardService {
     }
 
     /**
-     * 특정 Q&A 게시글에 달린 댓글 목록을 조회합니다.
+     * 특정 Q&amp;A 게시글에 달린 댓글 목록을 조회합니다.
      *
      * @param boardSeq 댓글을 조회할 게시글의 고유 번호
-     * @return 해당 게시글의 댓글 목록 {@link List<QnACommentDTO>}
+     * @return 해당 게시글의 댓글 목록
      */
     @Override
     public List<QnACommentDTO> getCommentList(int boardSeq) {
@@ -297,9 +297,9 @@ public class QnABoardServiceImpl implements QnABoardService {
     }
     
     /**
-     * Q&A 게시판의 카테고리 목록을 조회합니다.
+     * Q&amp;A 게시판의 카테고리 목록을 조회합니다.
      *
-     * @return 카테고리 목록 {@link List<QnABoardDTO>}
+     * @return 카테고리 목록 {@link List} of {@link QnABoardDTO}
      */
     @Override
     public List<QnABoardDTO> getCategoryList() {

@@ -8,7 +8,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * Q&A 게시판의 댓글 정보를 나타내는 데이터 전송 객체(DTO)입니다.
+ * QnA 게시판의 댓글 정보를 나타내는 데이터 전송 객체(DTO)입니다.
  * `tblQuestionAnswer` 테이블과 매핑되며, 화면 표시를 위한 추가 정보도 포함합니다.
  */
 @Getter

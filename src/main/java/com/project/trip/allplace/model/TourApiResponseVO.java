@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * 한국관광공사 Tour API의 응답을 매핑하기 위한 최상위 값 객체(Value Object)입니다.
- * API 응답의 중첩된 JSON 구조(response > body > items > item)를 표현합니다.
+ * API 응답의 중첩된 JSON 구조(response &gt; body &gt; items &gt; item)를 표현합니다.
  */
 @Data
 @NoArgsConstructor

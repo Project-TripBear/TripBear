@@ -48,7 +48,7 @@ public class AllPlaceRestController {
      *
      * @param lat 조회할 위치의 위도
      * @param lon 조회할 위치의 경도
-     * @return ResponseEntity<WeatherVO> 날씨 정보를 담은 {@link WeatherVO} 객체와 HTTP 상태 코드를 포함하는 응답.
+     * @return ResponseEntity&lt;WeatherVO&gt; 날씨 정보를 담은 {@link WeatherVO} 객체와 HTTP 상태 코드를 포함하는 응답.
      *         성공 시 날씨 정보와 OK(200), 실패 시 INTERNAL_SERVER_ERROR(500).
      */
     @GetMapping("/weatherok")
@@ -81,7 +81,7 @@ public class AllPlaceRestController {
      * @param radius        검색 반경 (미터 단위, 기본값: 20000m)
      * @param contentTypeId 조회할 콘텐츠 타입 ID (기본값: "12,39" - 관광지, 음식점)
      * @param keyword       선택적인 검색 키워드
-     * @return ResponseEntity<List<PlaceDTO>> 장소 목록({@link PlaceDTO})과 HTTP 상태 코드를 포함하는 응답.
+     * @return ResponseEntity&lt;List&lt;PlaceDTO&gt; &gt; 장소 목록({@link PlaceDTO})과 HTTP 상태 코드를 포함하는 응답.
      *         결과가 있으면 목록과 OK(200), 없으면 NO_CONTENT(204).
      */
     @GetMapping("/mapok")
@@ -153,7 +153,7 @@ public class AllPlaceRestController {
      * 키워드를 사용하여 장소를 검색하고, 결과 목록을 JSON으로 반환하는 REST API입니다.
      *
      * @param keyword 검색할 키워드
-     * @return ResponseEntity<List<PlaceDTO>> 검색된 장소의 기본 정보 목록({@link PlaceDTO})과 HTTP 상태 코드를 포함하는 응답.
+     * @return ResponseEntity&lt;List&lt;PlaceDTO&gt;&gt; 검색된 장소의 기본 정보 목록({@link PlaceDTO})과 HTTP 상태 코드를 포함하는 응답.
      *         결과가 있으면 목록과 OK(200), 없으면 NO_CONTENT(204).
      */
     @GetMapping("/searchLocation")
