@@ -10,7 +10,8 @@
 
 <body>
 
-<div class="container">
+<div class="review-page">
+<div class="container board-form-card">
   <h2>여행 후기 작성 ✈️</h2>
 
   <form method="post"
@@ -34,6 +35,7 @@
     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
     
   </form>
+</div>
 </div>
 
 </body>

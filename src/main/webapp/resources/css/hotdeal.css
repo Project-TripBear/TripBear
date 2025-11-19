@@ -368,16 +368,36 @@
     background-color: var(--bg);
     color: var(--text);
     transition: all 0.2s;
-    white-space: nowrap; 
+    white-space: nowrap;
 }
 .post-actions .btn:hover {
     background-color: #E9ECEF;
 }
-/* 좋아요/스크랩 활성화 상태 */
-.post-actions button.active {
-    background-color: var(--primary-light);
-    color: var(--primary-dark);
-    border-color: var(--primary);
+/* 좋아요/스크랩 컬러 통일 */
+.post-actions .btn.like {
+    border-color: var(--like-color, #ff6b81);
+    color: var(--like-color, #ff6b81);
+    background-color: var(--like-soft, #ffe5ed);
+}
+
+.post-actions .btn.scrap {
+    border-color: var(--scrap-color, #ffd166);
+    color: #8c6400;
+    background-color: var(--scrap-soft, #fff5d6);
+}
+
+.post-actions .btn.like:hover,
+.post-actions .btn.like.active {
+    background-color: var(--like-color, #ff6b81);
+    color: #fff;
+    border-color: var(--like-color, #ff6b81);
+}
+
+.post-actions .btn.scrap:hover,
+.post-actions .btn.scrap.active {
+    background-color: var(--scrap-color, #ffd166);
+    color: #5e4700;
+    border-color: var(--scrap-color, #ffd166);
 }
 
 

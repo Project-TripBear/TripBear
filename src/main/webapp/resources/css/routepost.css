@@ -1,311 +1,181 @@
-/* ========== VIEW / ADD / EDIT: 기존 스타일 복구 ========== */
-
-.routepost-page * {
-    font-family: 'Noto Sans KR', sans-serif;
-}
-
-/* 컨테이너 */
-.routepost-page .container {
-    width: 1100px;
-    margin: 0 auto;
-    padding: 20px;
-}
-
-/* 링크 */
-.routepost-page a {
-    text-decoration: none;
-    color: inherit;
-}
-
-/* 본문 정보 */
-.routepost-page .post-info {
-    color: #777;
-    font-size: 0.9rem;
-    margin-bottom: 20px;
-}
-
-/* 콘텐츠 영역 */
-.routepost-page .content-area {
-    line-height: 1.8;
-    padding: 20px 0;
-    border-top: 2px solid #333;
-    border-bottom: 1px solid #ddd;
-    margin-bottom: 20px;
-}
-
-/* 이미지 영역 */
-.routepost-page .image-area img {
-    max-width: 250px;
-    height: auto;
-    border-radius: 5px;
-    margin: 10px;
-}
-
-/* 추천/스크랩 버튼 */
-.routepost-page #btn-like,
-.routepost-page #btn-scrap {
-    padding: 8px 18px;
-    border: 1px solid #ddd;
-    border-radius: 25px;
-    background-color: #fff;
-    cursor: pointer;
-    margin: 5px 8px;
-    transition: 0.2s;
-    font-size: 0.95rem;
-    font-weight: 600;
-}
-
-.routepost-page #btn-like.active,
-.routepost-page #btn-scrap.active {
-    background-color: #007BFF;
-    color: white;
-    border-color: #007BFF;
-}
-
-/* 버튼 영역 */
-.routepost-page .btn-area {
-    display: flex;
-    justify-content: flex-end;
-    gap: 8px;
-    margin: 15px 0 35px 0;
-}
-
-.routepost-page .btn-area a {
-    padding: 7px 15px;
-    border-radius: 5px;
-    font-size: 0.9rem;
-    font-weight: 600;
-}
-
-/* 폼 */
-.routepost-page form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.routepost-page form input[type=text],
-.routepost-page form input[type=number],
-.routepost-page form select,
-.routepost-page form textarea,
-.routepost-page form input[type=file] {
-    padding: 12px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 1rem;
-    width: 100%;
-}
-
-/* 댓글 */
-.routepost-page .comment-section {
-    border-top: 2px solid #333;
-    padding-top: 30px;
-    margin-top: 50px;
-}
-
-.routepost-page .comment-item {
-    border-bottom: 1px solid #eee;
-    padding: 15px 0;
-}
-
-.routepost-page .comment-input textarea {
-    width: 100%;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    resize: none;
-}
-
-/* 이미지 미리보기 */
-.routepost-page .image-preview img {
-    width: 180px;
-    height: 180px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    object-fit: cover;
-}
-
-/* 이미지 갤러리 (view.jsp) */
-.routepost-page .image-area {
-    display: flex;
-    gap: 15px;
-    overflow-x: auto;
-    padding: 10px 0;
-    margin: 25px 0;
-}
-
-.routepost-page .image-area img {
-    width: 220px;
-    height: 150px;
-    border-radius: 8px;
-    object-fit: cover;
-}
-
-
+@charset "UTF-8";
 
 /* =========================================================
-   아래쪽 routepost 확장 스타일도 동일하게 네임스페이스 적용
+   Routepost board view tweaks (unified with hotdeal styling)
+   - uses shared board-view layout; keeps only gallery helpers
 ========================================================= */
 
-
-
-
-/* =========================================================
-   RoutePost List 페이지 전체 래퍼
-   (핫딜 16번 board-list 스타일을 그대로 복제)
-========================================================= */
-
-.routepost-list-page {
-    max-width: 1100px;
-    margin: 40px auto !important;
-    padding: 0 30px;
-}
-
-/* 내부 콘텐츠 정렬 (핫딜과 동일) */
-.routepost-list-page .inner {
-    max-width: 1000px;
-    margin: 0 auto;
-}
-
-/* ★ 제목 영역 - 핫딜 h1 동일 */
-.routepost-list-page .board-title {
-    font-size: 2.5rem;
-    font-weight: 700;
-    color: var(--primary-dark);
-    margin-bottom: 25px;
-    padding-bottom: 10px;
-    border-bottom: 2px solid var(--primary-light);
-    text-align: left;
-}
-
-/* ★ 테이블 스타일 - 핫딜 .board-data-table 동일 */
-.routepost-list-page table.routepost-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-    background-color: var(--surface);
-    border-radius: 8px;
-    box-shadow: var(--shadow-soft);
-    overflow: hidden;
-}
-
-/* 테이블 헤더 */
-.routepost-table th {
-    padding: 15px 20px;
-    text-align: center;
-    font-weight: 600;
-    color: var(--text-light);
-    background-color: var(--bg);
-    border-bottom: 2px solid var(--border);
-}
-
-/* 테이블 데이터 */
-.routepost-table td {
-    padding: 12px 20px;
-    text-align: center;
-    font-size: 0.95rem;
-    border-bottom: 1px solid var(--border);
-    color: var(--text);
-}
-
-/* 제목 왼쪽 정렬 */
-.routepost-table td.title {
-    text-align: left;
-}
-
-/* 행 hover 효과 */
-.routepost-table tr:hover {
-    background-color: #f1f7ff;
-    cursor: pointer;
-    transition: background 0.2s ease;
-}
-
-/* 빈 데이터 문구 */
-.routepost-table td[colspan] {
-    text-align: center;
-    padding: 30px;
-    color: var(--text-light);
-}
-
-/* =========================================================
-   ★ 검색 + 페이징 영역 (핫딜 footer 완전 동일)
-========================================================= */
-
-.routepost-list-footer {
+/* 공통 갤러리 레이아웃 (review/routepost 공유) */
+.routepost-gallery,
+.review-gallery {
+    position: relative;
     display: flex;
-    flex-wrap: wrap;
-    margin-top: 40px;
-    width: 100%;
-    max-width: 1000px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-/* 검색폼 */
-.routepost-search-form {
-    display: flex;
-    gap: 8px;
     align-items: center;
-    order: 1;
+    gap: 12px;
+    padding: 12px 18px;
+    margin: 24px 0 10px;
+    background-color: var(--bg, #F8F9FA);
+    border: 1px solid var(--border, #E9ECEF);
+    border-radius: 14px;
+    box-shadow: var(--shadow-soft, 0 8px 30px rgba(0,0,0,0.06));
 }
 
-.routepost-search-form input {
-    padding: 10px 15px;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    width: 200px;
+.routepost-gallery .image-area,
+.review-gallery .image-area {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    width: 100%;
+    padding: 6px 4px;
 }
 
-.routepost-search-form button {
-    padding: 10px 20px;
-    background-color: var(--primary);
-    color: white;
-    border: none;
-    border-radius: 8px;
+.routepost-gallery .image-area::-webkit-scrollbar,
+.review-gallery .image-area::-webkit-scrollbar {
+    height: 8px;
+}
+.routepost-gallery .image-area::-webkit-scrollbar-thumb,
+.review-gallery .image-area::-webkit-scrollbar-thumb {
+    background: var(--border, #E9ECEF);
+    border-radius: 20px;
+}
+
+.routepost-gallery img,
+.review-gallery img {
+    width: 230px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 12px;
+    border: 1px solid var(--border, #E9ECEF);
+    background-color: #fff;
+}
+
+.image-nav-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 36px;
+    height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: 1px solid var(--border, #E9ECEF);
+    background-color: var(--surface, #fff);
+    color: var(--primary-dark, #517D6F);
     cursor: pointer;
-}
-
-/* 글쓰기 버튼 */
-.routepost-write-btn {
-    margin-left: auto;
-    order: 2;
-}
-
-.routepost-write-btn button {
-    padding: 10px 18px;
-    background-color: var(--primary);
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-}
-
-/* 페이지바 */
-.routepost-pagebar {
-    order: 3;
-    width: 100%; 
-    text-align: center;
-    margin-top: 20px;
-}
-
-.routepost-pagebar a,
-.routepost-pagebar strong {
-    padding: 8px 14px;
-    margin: 0 5px;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    font-size: 0.95rem;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
     transition: all 0.2s ease;
 }
 
-.routepost-pagebar a:hover {
-    background-color: var(--primary);
-    color: white;
-    border-color: var(--primary);
+.image-nav-arrow:hover {
+    background-color: var(--primary, #6C9A8B);
+    color: #fff;
+    border-color: var(--primary, #6C9A8B);
 }
 
-.routepost-pagebar strong {
-    background-color: var(--primary);
-    color: white; r
-    border-color: var(--primary);
+.image-nav-arrow.left { left: 10px; }
+.image-nav-arrow.right { right: 10px; }
+
+/* 작성/수정 폼 - 통일된 카드 레이아웃 */
+.board-form-card {
+    max-width: 820px;
+    margin: 40px auto;
+    padding: 32px 28px;
+    background-color: var(--surface, #fff);
+    border: 1px solid var(--border, #E9ECEF);
+    border-radius: 16px;
+    box-shadow: var(--shadow-soft, 0 12px 38px rgba(0,0,0,0.06));
+}
+
+.board-form-card h2 {
+    margin: 0 0 20px;
+    font-size: 1.8rem;
+    color: var(--primary-dark, #517D6F);
+}
+
+.board-form-card form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.board-form-card label {
+    font-weight: 700;
+    color: var(--text, #212529);
+}
+
+.board-form-card input[type="text"],
+.board-form-card input[type="number"],
+.board-form-card input[type="file"],
+.board-form-card textarea,
+.board-form-card select {
+    padding: 12px 14px;
+    border: 1px solid var(--border, #E9ECEF);
+    border-radius: 10px;
+    font-size: 1rem;
+    background-color: var(--bg, #F8F9FA);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.board-form-card input:focus,
+.board-form-card textarea:focus,
+.board-form-card select:focus {
+    outline: none;
+    border-color: var(--primary, #6C9A8B);
+    box-shadow: 0 0 0 3px rgba(108, 154, 139, 0.12);
+    background-color: #fff;
+}
+
+.board-form-card textarea { min-height: 240px; resize: vertical; }
+
+.board-form-card .btn-area {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 6px;
+}
+
+.board-form-card .btn {
+    padding: 10px 18px;
+    border-radius: 10px;
+    font-weight: 700;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.board-form-card .btn-submit {
+    background-color: var(--primary, #6C9A8B);
+    color: #fff;
+    border-color: var(--primary, #6C9A8B);
+}
+
+.board-form-card .btn-cancel {
+    background-color: var(--bg, #F8F9FA);
+    color: var(--text, #212529);
+    border-color: var(--border, #E9ECEF);
+}
+
+.board-form-card .btn-submit:hover {
+    box-shadow: 0 8px 18px rgba(108, 154, 139, 0.22);
+    transform: translateY(-1px);
+}
+
+.board-form-card .btn-cancel:hover {
+    background-color: #eef1f3;
+}
+
+.board-form-card .image-preview {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.board-form-card .image-preview img {
+    width: 130px;
+    height: 130px;
+    object-fit: cover;
+    border-radius: 12px;
+    border: 1px solid var(--border, #E9ECEF);
 }
