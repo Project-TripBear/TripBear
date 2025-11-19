@@ -12,7 +12,7 @@
 <body>
 
 <div class="routepost-page">
-<div class="container">   
+<div class="container board-form-card">
   <h2>게시글 수정 ✏️</h2>
 
   <form method="post"

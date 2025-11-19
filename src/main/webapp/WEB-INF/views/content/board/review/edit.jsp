@@ -11,7 +11,8 @@
 
 <body>
 
-<div class="container">
+<div class="review-page">
+<div class="container board-form-card">
   <h2>게시글 수정 ✏️</h2>
 
   <form method="post"
@@ -46,6 +47,7 @@
       </button>
     </div>
   </form>
+</div>
 </div>
 
 </body>

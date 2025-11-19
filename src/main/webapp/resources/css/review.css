@@ -1,263 +1,191 @@
+@charset "UTF-8";
+
+/* =========================================================
+   Review board view tweaks (unified with hotdeal styling)
+   - relies on shared board.css & board-view.css for layout
+   - only keeps gallery helpers and minor spacing rules
+========================================================= */
+
 .review-page {
     font-family: 'Noto Sans KR', sans-serif;
 }
 
-/* 기본 */
-.review-page body {
-    margin: 0;
-    color: #333;
-    background-color: #fff;
+/* 공통 갤러리 레이아웃 (review/routepost 공유) */
+.review-gallery,
+.routepost-gallery {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 18px;
+    margin: 24px 0 10px;
+    background-color: var(--bg, #F8F9FA);
+    border: 1px solid var(--border, #E9ECEF);
+    border-radius: 14px;
+    box-shadow: var(--shadow-soft, 0 8px 30px rgba(0,0,0,0.06));
 }
 
-.review-page a {
-    text-decoration: none;
-    color: inherit;
-}
-
-.review-page .container {
-    width: 1100px;
-    margin: 0 auto;
-    padding: 20px;
-}
-
-/* ================== TABLE (LIST) ================== */
-.review-page .board-list table {
+.review-gallery .image-area,
+.routepost-gallery .image-area {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
     width: 100%;
-    border-collapse: collapse;
-    margin-top: 30px;
-}
-.review-page .board-list th {
-    border-top: 2px solid #333;
-    border-bottom: 1px solid #ddd;
-    padding: 15px 0;
-    font-weight: 600;
-    background-color: #f9f9f9;
-}
-.review-page .board-list td {
-    padding: 15px 10px;
-    text-align: center;
-    border-bottom: 1px solid #eee;
-}
-.review-page .board-list tr:hover {
-    background-color: #f8f8f8;
-    cursor: pointer;
-}
-.review-page .board-list .title {
-    text-align: left;
+    padding: 6px 4px;
 }
 
-/* ================== SEARCH + PAGING ================== */
-.review-page .board-bottom {
-    margin-top: 30px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 20px;
+.review-gallery .image-area::-webkit-scrollbar,
+.routepost-gallery .image-area::-webkit-scrollbar {
+    height: 8px;
 }
-.review-page .search-box input {
-    padding: 8px 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-.review-page .search-box button {
-    padding: 8px 12px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: #f0f0f0;
-}
-.review-page .paging {
-    font-size: 0.95rem;
-}
-.review-page .write-btn button {
-    background-color: #007BFF;
-    color: #fff;
-    padding: 10px 20px;
-    border-radius: 5px;
-    border: none;
-    cursor: pointer;
-}
-.review-page .write-btn button:hover {
-    background-color: #0069d9;
+.review-gallery .image-area::-webkit-scrollbar-thumb,
+.routepost-gallery .image-area::-webkit-scrollbar-thumb {
+    background: var(--border, #E9ECEF);
+    border-radius: 20px;
 }
 
-/* ================== POST VIEW ================== */
-.review-page .post-info {
-    color: #777;
-    font-size: 0.9rem;
-    margin-bottom: 20px;
-}
-.review-page .content-area {
-    line-height: 1.8;
-    padding: 20px 0;
-    border-top: 2px solid #333;
-    border-bottom: 1px solid #ddd;
-    margin-bottom: 20px;
-}
-.review-page .image-area img {
-    max-width: 250px;
-    height: auto;
-    border-radius: 5px;
-    margin: 10px;
-}
-
-/* ================== 버튼 ================== */
-.review-page .btn-action-area {
-    text-align: center;
-    margin: 20px 0 10px 0;
-}
-.review-page #btn-like,
-.review-page #btn-scrap {
-    padding: 8px 18px;
-    border: 1px solid var(--border, #e9ecef);
-    border-radius: 25px;
+.review-gallery img,
+.routepost-gallery img {
+    width: 230px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 12px;
+    border: 1px solid var(--border, #E9ECEF);
     background-color: #fff;
-    cursor: pointer;
-    margin: 5px 8px;
-    transition: 0.2s;
-    font-size: 0.95rem;
-    font-weight: 600;
 }
 
-.review-page #btn-like {
-    color: var(--like-color, #ff6b81);
-    border-color: var(--like-color, #ff6b81);
-    background-color: var(--like-soft, #ffe5ed);
-}
-
-.review-page #btn-scrap {
-    color: #8c6400;
-    border-color: var(--scrap-color, #ffd166);
-    background-color: var(--scrap-soft, #fff5d6);
-}
-
-.review-page #btn-like.active,
-.review-page #btn-like:hover {
-    background-color: var(--like-color, #ff6b81);
-    color: #fff;
-    border-color: var(--like-color, #ff6b81);
-}
-
-.review-page #btn-scrap.active,
-.review-page #btn-scrap:hover {
-    background-color: var(--scrap-color, #ffd166);
-    color: #5e4700;
-    border-color: var(--scrap-color, #ffd166);
-}
-
-/* 목록/수정/삭제 */
-.review-page .btn-area {
-    display: flex;
-    justify-content: flex-end;
+.image-nav-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 36px;
+    height: 36px;
+    display: inline-flex;
     align-items: center;
-    gap: 8px;
-    margin: 15px 0 35px 0;
+    justify-content: center;
+    border-radius: 50%;
+    border: 1px solid var(--border, #E9ECEF);
+    background-color: var(--surface, #fff);
+    color: var(--primary-dark, #517D6F);
+    cursor: pointer;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    transition: all 0.2s ease;
 }
 
-.review-page .btn-area a {
-    display: inline-block;
-    padding: 7px 15px;
-    border-radius: 5px;
-    font-size: 0.9rem;
-    font-weight: 600;
-    transition: 0.2s;
+.image-nav-arrow:hover {
+    background-color: var(--primary, #6C9A8B);
+    color: #fff;
+    border-color: var(--primary, #6C9A8B);
 }
 
-.review-page .btn-list {
-    background-color: #f8f9fa;
-    border: 1px solid #ccc;
-}
-.review-page .btn-edit {
-    background-color: #007BFF;
-    color: white;
-}
-.review-page .btn-delete {
-    background-color: #dc3545;
-    color: white;
+.image-nav-arrow.left { left: 10px; }
+.image-nav-arrow.right { right: 10px; }
+
+/* 댓글 입력 영역 여백 정리 */
+.review-page .comment-add-form {
+    margin-top: 10px;
 }
 
-.review-page .btn-list:hover { background-color: #e9ecef; }
-.review-page .btn-edit:hover { background-color: #0069d9; }
-.review-page .btn-delete:hover { background-color: #c82333; }
+/* 작성/수정 폼 - 모든 게시판과 동일한 카드 레이아웃 */
+.board-form-card {
+    max-width: 820px;
+    margin: 40px auto;
+    padding: 32px 28px;
+    background-color: var(--surface, #fff);
+    border: 1px solid var(--border, #E9ECEF);
+    border-radius: 16px;
+    box-shadow: var(--shadow-soft, 0 12px 38px rgba(0,0,0,0.06));
+}
 
-/* ================== FORM ================== */
-.review-page form {
+.board-form-card h2 {
+    margin: 0 0 20px;
+    font-size: 1.8rem;
+    color: var(--primary-dark, #517D6F);
+}
+
+.board-form-card form {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 16px;
 }
-.review-page form label {
-    font-weight: bold;
-    font-size: 1.05rem;
+
+.board-form-card label {
+    font-weight: 700;
+    color: var(--text, #212529);
 }
-.review-page form input[type=text],
-.review-page form input[type=number],
-.review-page form select,
-.review-page form textarea,
-.review-page form input[type=file] {
-    padding: 12px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-family: inherit;
+
+.board-form-card input[type="text"],
+.board-form-card input[type="number"],
+.board-form-card input[type="file"],
+.board-form-card textarea,
+.board-form-card select {
+    padding: 12px 14px;
+    border: 1px solid var(--border, #E9ECEF);
+    border-radius: 10px;
     font-size: 1rem;
-    width: 100%;
+    background-color: var(--bg, #F8F9FA);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
-.review-page form textarea {
-    height: 300px;
-    resize: vertical;
+
+.board-form-card input:focus,
+.board-form-card textarea:focus,
+.board-form-card select:focus {
+    outline: none;
+    border-color: var(--primary, #6C9A8B);
+    box-shadow: 0 0 0 3px rgba(108, 154, 139, 0.12);
+    background-color: #fff;
 }
-.review-page .btn-submit {
-    background-color: #007BFF;
+
+.board-form-card textarea { min-height: 240px; resize: vertical; }
+
+.board-form-card .btn-area {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 6px;
+}
+
+.board-form-card .btn {
+    padding: 10px 18px;
+    border-radius: 10px;
+    font-weight: 700;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.board-form-card .btn-submit {
+    background-color: var(--primary, #6C9A8B);
     color: #fff;
-}
-.review-page .btn-cancel {
-    background-color: #f8f9fa;
-    border: 1px solid #ccc;
+    border-color: var(--primary, #6C9A8B);
 }
 
-/* ================== COMMENTS ================== */
-.review-page .comment-section {
-    border-top: 2px solid #333;
-    padding-top: 30px;
-    margin-top: 50px;
-    display: block;
-}
-.review-page .comment-section h3 {
-    font-size: 1.3rem;
-    margin-bottom: 15px;
-}
-.review-page .comment-list-table td {
-    padding: 10px;
-}
-.review-page .comment-item {
-    border-bottom: 1px solid #eee;
-    padding: 15px 0;
-}
-.review-page .comment-content {
-    margin-top: 5px;
-}
-.review-page .comment-add-form textarea {
-    width: 100%;
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
+.board-form-card .btn-cancel {
+    background-color: var(--bg, #F8F9FA);
+    color: var(--text, #212529);
+    border-color: var(--border, #E9ECEF);
 }
 
-/* ================== 이미지 갤러리 전부 ================== */
-.review-page .post-images,
-.review-page .image-area,
-.review-page .image-area img,
-.review-page .image-nav-arrow,
-.review-page .image-modal,
-.review-page .modal-arrow,
-.review-page .modal-close,
-.review-page .modal-counter {
-    /* 이미지 관련 스타일 전부 해당 페이지에서만 적용 */
+.board-form-card .btn-submit:hover {
+    box-shadow: 0 8px 18px rgba(108, 154, 139, 0.22);
+    transform: translateY(-1px);
 }
 
-/* 반응형 */
-@media (max-width: 768px) {
-    .review-page .container { width: 95%; }
-    .review-page .board-bottom { flex-direction: column; align-items: flex-start; }
-    .review-page form textarea { height: 200px; }
+.board-form-card .btn-cancel:hover {
+    background-color: #eef1f3;
+}
+
+.board-form-card .image-preview {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.board-form-card .image-preview img {
+    width: 130px;
+    height: 130px;
+    object-fit: cover;
+    border-radius: 12px;
+    border: 1px solid var(--border, #E9ECEF);
 }

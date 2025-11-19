@@ -35,11 +35,11 @@
             <div class="post-actions action-buttons-group">
                 <sec:authorize access="hasAuthority('ACTIVE')">
                     <a href="<c:url value="/findboard/like?seq=${dto.find_board_id}"/>"
-                       class="btn ${dto.liked ? 'active' : ''}">
+                       class="btn like ${dto.liked ? 'active' : ''}">
                         <i class="fa-solid ${dto.liked ? 'fa-heart' : 'fa-regular fa-heart'}"></i> 좋아요 (${dto.likeCount})
                     </a>
                     <a href="<c:url value="/findboard/scrap?seq=${dto.find_board_id}"/>"
-                       class="btn ${dto.scrapped ? 'active' : ''}">
+                       class="btn scrap ${dto.scrapped ? 'active' : ''}">
                         <i class="fa-solid ${dto.scrapped ? 'fa-bookmark' : 'fa-regular fa-bookmark'}"></i> 스크랩 (${dto.scrapCount})
                     </a>
                 </sec:authorize>
