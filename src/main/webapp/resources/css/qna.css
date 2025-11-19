@@ -59,3 +59,19 @@
     color: var(--text-light, #6C757D);
     font-weight: 600;
 }
+
+/* detail view alignment to match hotdeal layout */
+.page-board-view-container .bottom-buttons {
+    gap: 14px;
+}
+
+.page-board-view-container .bottom-buttons .left-align,
+.page-board-view-container .bottom-buttons .right-align {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.page-board-view-container .bottom-buttons .right-align form {
+    margin: 0;
+}

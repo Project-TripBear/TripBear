@@ -22,6 +22,8 @@
                 </div>
             </div>
 
+            <hr class="post-divider">
+
             <div class="post-content">
                 <c:out value="${dto.question_board_content}" escapeXml="false" />
             </div>
@@ -46,15 +48,17 @@
                 </sec:authorize>
             </div>
 
+            <c:set var="currentUserId" value="0"/>
+            <sec:authorize access="isAuthenticated()">
+                <sec:authentication property="principal.udto.seq" var="currentUserId" />
+            </sec:authorize>
+
             <div class="bottom-buttons action-buttons-group">
-                <a href="<c:url value='/qnaboard/list'/>" class="btn btn-secondary">목록</a>
+                <div class="left-align">
+                    <a href="<c:url value='/qnaboard/list'/>" class="btn btn-secondary">목록</a>
+                </div>
 
-                <c:set var="currentUserId" value="0"/>
-                <sec:authorize access="isAuthenticated()">
-                    <sec:authentication property="principal.udto.seq" var="currentUserId" />
-                </sec:authorize>
-
-                <div class="action-buttons-group">
+                <div class="right-align action-buttons-group">
                     <c:if test="${dto.user_id == currentUserId}">
                         <a href="<c:url value='/qnaboard/edit?seq=${dto.question_board_id}'/>" class="btn btn-primary">수정</a>
 
@@ -67,7 +71,7 @@
                     </c:if>
 
                     <c:if test="${dto.user_id != currentUserId && currentUserId != null}">
-                        <a href="<c:url value='/qnaboard/report?boardSeq=${dto.question_board_id}&reportedUserId=${dto.user_id}'/>"
+                        <a href="<c:url value='/qnaboard/report?boardSeq=${dto.question_board_id}&reportedUserId=${dto.user_id}'"/>
                            class="btn btn-danger" target="_blank">신고</a>
                     </c:if>
                 </div>

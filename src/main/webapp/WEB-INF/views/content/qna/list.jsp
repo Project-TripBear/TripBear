@@ -3,6 +3,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/board.css">
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/qna.css">
 
 <div class="board-page qna-board-page">
