@@ -109,7 +109,7 @@ function buildCommentRow(c) {
         <tr class="comment-row" id="comment-row-${c.routepostCommentId}">
             <td class="commentContent">
                 <div>${c.routepostContent}</div>
-                <div>${c.routepostCommentRegdate}</div>
+                <div>${c.routepostRegdate}</div>
             </td>
             <td class="commentInfo">
                 <div>
@@ -122,6 +122,7 @@ function buildCommentRow(c) {
 
 function loadComments() {
     $.getJSON(contextPath + "/api/routepost/comment/list/" + routepostId, function(list) {
+    	console.log(list);
         const $tbody = $commentBody();
         $tbody.empty();
         $('.commentEditRow').remove();
