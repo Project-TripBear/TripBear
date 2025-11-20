@@ -22,6 +22,14 @@ import com.project.trip.mypage.model.CustomUser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j; 
 
+/**
+ * 동행 찾기 게시판과 관련된 HTTP 요청을 처리하는 컨트롤러입니다.
+ * <p>
+ * 게시글 목록 조회, 등록, 수정, 삭제, 상세 보기, 좋아요, 스크랩, 신고 기능 및
+ * 댓글 등록, 수정, 삭제 기능을 제공합니다.
+ * Spring Security를 활용하여 사용자 인증 및 권한을 확인합니다.
+ * </p>
+ */
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/findboard")
@@ -30,7 +38,15 @@ public class FindBoardController {
 
     private final FindBoardService findBoardService;
 
-    // ★★★ [ClassCastException 최종 수정] 관리자/일반/비로그인 모두 안전하게 처리 ★★★
+    /**
+     * Spring Security의 {@link Authentication} 객체로부터 현재 로그인한 사용자의 ID를 추출하는 헬퍼 함수입니다.
+     * <p>
+     * 일반 사용자({@link CustomUser})와 관리자({@link User})의 경우를 모두 처리하며,
+     * 로그인 정보가 없거나 ID를 파싱할 수 없는 경우 null을 반환합니다.
+     * </p>
+     * @param authentication Spring Security의 Authentication 객체
+     * @return 로그인한 사용자의 ID (Integer), 로그인 정보가 없거나 파싱 실패 시 null
+     */
     private Integer getLoggedInUserId(Authentication authentication) {
         if (authentication == null || authentication.getPrincipal() == null) {
             return null; // 비로그인 시
@@ -67,7 +83,16 @@ public class FindBoardController {
         }
     }
     
-    // --- 1. 목록 조회 ---
+    /**
+     * 게시글 목록을 조회하여 뷰에 전달합니다.
+     * 페이지네이션, 검색 타입 및 키워드를 지원합니다.
+     *
+     * @param model         뷰에 데이터를 전달하기 위한 Model 객체
+     * @param currentPage   현재 페이지 번호 (기본값: 1)
+     * @param searchType    검색 타입 (예: "title", "content", "writer")
+     * @param searchKeyword 검색 키워드
+     * @return "find.list" 게시글 목록 뷰 이름
+     */
     @GetMapping("/list")
     public String getFindBoardList(
             Model model,
@@ -85,13 +110,25 @@ public class FindBoardController {
         return "find.list"; 
     }
     
-    // --- 2-1. 게시글 등록 GET ---
+    /**
+     * 게시글 등록 폼 페이지를 표시합니다.
+     *
+     * @return "find.add" 게시글 등록 폼 뷰 이름
+     */
     @GetMapping("/add")
     public String addFindBoardForm() {
         return "find.add";
     }
 
-    // --- 2-2. 게시글 등록 POST ---
+    /**
+     * 게시글 등록 요청을 처리합니다.
+     * 로그인한 사용자만 게시글을 등록할 수 있으며, 등록 후 목록 페이지로 리다이렉트합니다.
+     *
+     * @param dto            등록할 게시글 정보를 담은 {@link findboardDTO}
+     * @param authentication Spring Security의 Authentication 객체
+     * @param rttr           리다이렉트 시 메시지를 전달하기 위한 {@link RedirectAttributes}
+     * @return "redirect:/findboard/list" 게시글 목록 페이지로 리다이렉트, 로그인 정보가 유효하지 않으면 "/login"으로 리다이렉트
+     */
     @PostMapping("/add")
     public String addFindBoardProcess(
             findboardDTO dto, 
@@ -112,7 +149,14 @@ public class FindBoardController {
         return "redirect:/findboard/list";
     }
 
-    // --- 3. 상세 조회 ---
+    /**
+     * 특정 게시글의 상세 내용을 조회하고, 해당 게시글의 댓글 목록과 함께 뷰에 전달합니다.
+     *
+     * @param boardSeq       조회할 게시글의 고유 번호
+     * @param model          뷰에 데이터를 전달하기 위한 Model 객체
+     * @param authentication Spring Security의 Authentication 객체
+     * @return "find.view" 게시글 상세 뷰 이름
+     */
     @GetMapping("/view")
     public String viewFindBoard(@RequestParam("seq") int boardSeq, Model model, Authentication authentication) {
         
@@ -127,6 +171,16 @@ public class FindBoardController {
         return "find.view";
     }
 
+    /**
+     * 게시글 수정 폼 페이지를 표시합니다.
+     * 로그인 여부 및 수정 권한을 확인하여, 권한이 없는 경우 상세 페이지로 리다이렉트합니다.
+     *
+     * @param boardSeq       수정할 게시글의 고유 번호
+     * @param model          뷰에 데이터를 전달하기 위한 Model 객체
+     * @param authentication Spring Security의 Authentication 객체
+     * @param rttr           리다이렉트 시 메시지를 전달하기 위한 {@link RedirectAttributes}
+     * @return "find.edit" 게시글 수정 폼 뷰 이름, 또는 권한이 없는 경우 상세 페이지로 리다이렉트
+     */
     @GetMapping("/edit")
     public String editFindBoardForm(@RequestParam("seq") int boardSeq, 
                                     Model model, 
@@ -156,7 +210,15 @@ public class FindBoardController {
         return "find.edit";
     }
     
-    // --- 4-2. 게시글 수정 POST ---
+    /**
+     * 게시글 수정 요청을 처리합니다.
+     * 로그인 여부 및 수정 권한을 확인하여, 권한이 없는 경우 상세 페이지로 리다이렉트합니다.
+     *
+     * @param dto            수정할 게시글 정보를 담은 {@link findboardDTO}
+     * @param authentication Spring Security의 Authentication 객체
+     * @param rttr           리다이렉트 시 메시지를 전달하기 위한 {@link RedirectAttributes}
+     * @return "redirect:/findboard/view?seq={boardSeq}" 게시글 상세 페이지로 리다이렉트
+     */
     @PostMapping("/edit")
     public String editFindBoardProcess(
             findboardDTO dto, 
@@ -180,7 +242,15 @@ public class FindBoardController {
         return "redirect:/findboard/view?seq=" + dto.getFind_board_id(); 
     }
     
-    // --- 5. 게시글 삭제 ---
+    /**
+     * 게시글 삭제 요청을 처리합니다.
+     * 로그인 여부 및 삭제 권한을 확인하여, 권한이 없는 경우 상세 페이지로 리다이렉트합니다.
+     *
+     * @param boardSeq       삭제할 게시글의 고유 번호
+     * @param authentication Spring Security의 Authentication 객체
+     * @param rttr           리다이렉트 시 메시지를 전달하기 위한 {@link RedirectAttributes}
+     * @return "redirect:/findboard/list" 게시글 목록 페이지로 리다이렉트
+     */
     @GetMapping("/delete")
     public String deleteFindBoard(@RequestParam("seq") int boardSeq, Authentication authentication, RedirectAttributes rttr) {
 
@@ -203,7 +273,15 @@ public class FindBoardController {
         return "redirect:/findboard/list";
     }
 
-    // --- 6. 좋아요 토글 ---
+    /**
+     * 게시글에 대한 좋아요 상태를 토글합니다.
+     * 로그인한 사용자만 좋아요를 누를 수 있으며, 처리 후 게시글 상세 페이지로 리다이렉트합니다.
+     *
+     * @param boardSeq       좋아요를 토글할 게시글의 고유 번호
+     * @param authentication Spring Security의 Authentication 객체
+     * @param rttr           리다이렉트 시 메시지를 전달하기 위한 {@link RedirectAttributes}
+     * @return "redirect:/findboard/view?seq={boardSeq}" 게시글 상세 페이지로 리다이렉트
+     */
     @GetMapping("/like")
     public String toggleLike(@RequestParam("seq") int boardSeq, Authentication authentication, RedirectAttributes rttr) {
 
@@ -218,7 +296,15 @@ public class FindBoardController {
         return "redirect:/findboard/view?seq=" + boardSeq;
     }
 
-    // --- 7. 스크랩 토글 ---
+    /**
+     * 게시글에 대한 스크랩 상태를 토글합니다.
+     * 로그인한 사용자만 스크랩할 수 있으며, 처리 후 게시글 상세 페이지로 리다이렉트합니다.
+     *
+     * @param boardSeq       스크랩을 토글할 게시글의 고유 번호
+     * @param authentication Spring Security의 Authentication 객체
+     * @param rttr           리다이렉트 시 메시지를 전달하기 위한 {@link RedirectAttributes}
+     * @return "redirect:/findboard/view?seq={boardSeq}" 게시글 상세 페이지로 리다이렉트
+     */
     @GetMapping("/scrap")
     public String toggleScrap(@RequestParam("seq") int boardSeq, Authentication authentication, RedirectAttributes rttr) {
 
@@ -233,7 +319,15 @@ public class FindBoardController {
         return "redirect:/findboard/view?seq=" + boardSeq;
     }
     
-    // --- 8. 신고 폼 GET ---
+    /**
+     * 게시글 신고 폼 페이지를 표시합니다.
+     * 신고할 게시글 ID와 신고 대상 사용자 ID를 뷰에 전달합니다.
+     *
+     * @param boardSeq       신고할 게시글의 고유 번호
+     * @param reportedUserId 신고 대상 사용자의 ID
+     * @param model          뷰에 데이터를 전달하기 위한 Model 객체
+     * @return "find.report" 신고 폼 뷰 이름
+     */
     @GetMapping("/report") 
     public String reportForm(@RequestParam("boardSeq") int boardSeq, @RequestParam("reportedUserId") int reportedUserId, Model model) {
         model.addAttribute("boardSeq", boardSeq);
@@ -241,7 +335,17 @@ public class FindBoardController {
         return "find.report"; 
     }
 
-    // --- 8-2. 신고 POST ---
+    /**
+     * 게시글 신고 요청을 처리합니다.
+     * 로그인한 사용자만 신고할 수 있으며, 신고 처리 후 성공 또는 실패 알림 페이지로 포워드합니다.
+     *
+     * @param boardSeq       신고할 게시글의 고유 번호
+     * @param reportedUserId 신고 대상 사용자의 ID
+     * @param reason         신고 사유
+     * @param authentication Spring Security의 Authentication 객체
+     * @return "forward:/WEB-INF/views/inc/report_success_alert.jsp" 신고 성공 시,
+     *         "forward:/WEB-INF/views/inc/report_failure_alert.jsp" 신고 실패 시
+     */
     @PostMapping("/report")
     public String reportProcess(@RequestParam int boardSeq, 
                                 @RequestParam int reportedUserId, 
@@ -263,7 +367,14 @@ public class FindBoardController {
         }
     }
 
-    // --- 9. 댓글 등록 ---
+    /**
+     * 게시글에 댓글을 등록하는 요청을 처리합니다.
+     * 로그인한 사용자만 댓글을 등록할 수 있으며, 등록 후 게시글 상세 페이지로 리다이렉트합니다.
+     *
+     * @param dto            등록할 댓글 정보를 담은 {@link findcommentDTO}
+     * @param authentication Spring Security의 Authentication 객체
+     * @return "redirect:/findboard/view?seq={boardSeq}" 게시글 상세 페이지로 리다이렉트
+     */
     @PostMapping("/addcomment")
     public String addCommentProcess(findcommentDTO dto, Authentication authentication) {
 
@@ -279,7 +390,16 @@ public class FindBoardController {
         return "redirect:/findboard/view?seq=" + dto.getFind_board_id();
     }
     
-    // --- 10. 댓글 수정 POST ---
+    /**
+     * 댓글 수정 요청을 처리합니다.
+     * 로그인 여부 및 수정 권한을 확인하여, 권한이 없는 경우 메시지와 함께 게시글 상세 페이지로 리다이렉트합니다.
+     *
+     * @param dto            수정할 댓글 정보를 담은 {@link findcommentDTO}
+     * @param boardSeq       댓글이 속한 게시글의 고유 번호
+     * @param authentication Spring Security의 Authentication 객체
+     * @param rttr           리다이렉트 시 메시지를 전달하기 위한 {@link RedirectAttributes}
+     * @return "redirect:/findboard/view?seq={boardSeq}" 게시글 상세 페이지로 리다이렉트
+     */
     @PostMapping("/editcomment")
     public String editCommentProcess(findcommentDTO dto, @RequestParam("boardSeq") int boardSeq, Authentication authentication, RedirectAttributes rttr) {
 
@@ -301,7 +421,16 @@ public class FindBoardController {
         return "redirect:/findboard/view?seq=" + boardSeq;
     }
 
-    // --- 11. 댓글 삭제 GET ---
+    /**
+     * 댓글 삭제 요청을 처리합니다.
+     * 로그인 여부 및 삭제 권한을 확인하여, 권한이 없는 경우 메시지와 함께 게시글 상세 페이지로 리다이렉트합니다.
+     *
+     * @param commentId      삭제할 댓글의 고유 번호
+     * @param boardSeq       댓글이 속한 게시글의 고유 번호
+     * @param authentication Spring Security의 Authentication 객체
+     * @param rttr           리다이렉트 시 메시지를 전달하기 위한 {@link RedirectAttributes}
+     * @return "redirect:/findboard/view?seq={boardSeq}" 게시글 상세 페이지로 리다이렉트
+     */
     @GetMapping("/deletecomment")
     public String deleteCommentProcess(@RequestParam int commentId, @RequestParam int boardSeq, Authentication authentication, RedirectAttributes rttr) {
         

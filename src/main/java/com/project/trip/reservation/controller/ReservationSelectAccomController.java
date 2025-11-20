@@ -15,6 +15,13 @@ import com.project.trip.reservation.service.ReservationService;
 
 import lombok.RequiredArgsConstructor;
 
+/**
+ * 숙소 선택 페이지와 관련된 HTTP 요청을 처리하는 컨트롤러입니다.
+ * <p>
+ * 사용자가 선택한 지역 및 날짜를 기반으로 이용 가능한 숙소 목록을 조회하고,
+ * 숙소 선택 페이지로 전달하는 기능을 제공합니다.
+ * </p>
+ */
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/reservation")

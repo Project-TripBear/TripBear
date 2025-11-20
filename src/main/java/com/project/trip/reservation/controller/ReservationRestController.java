@@ -13,6 +13,13 @@ import com.project.trip.reservation.service.ReservationService;
 
 import lombok.RequiredArgsConstructor;
 
+/**
+ * 예약과 관련된 RESTful API 요청을 처리하는 컨트롤러입니다.
+ * <p>
+ * 통합 예약 생성 및 조회 기능을 제공하여 클라이언트 측에서 비동기적으로 예약 데이터를
+ * 처리할 수 있도록 합니다.
+ * </p>
+ */
 @RestController
 @RequestMapping("/api/reservation")
 @RequiredArgsConstructor

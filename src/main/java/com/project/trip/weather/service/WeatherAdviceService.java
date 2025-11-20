@@ -12,6 +12,13 @@ import com.project.trip.weather.model.WeatherAdviceDTO;
 import com.project.trip.weather.model.WeatherDTO;
 import com.project.trip.weather.model.WeatherDataDTO;
 
+/**
+ * 날씨 정보를 기반으로 여행 조언을 제공하고 이를 저장하는 서비스 클래스입니다.
+ * <p>
+ * 단기 예보(5일 이내)와 계절별 날씨 특성을 고려하여 여행 추천 타입을 결정하고,
+ * 관련 메시지를 생성하여 반환합니다.
+ * </p>
+ */
 @Service
 public class WeatherAdviceService {
 
@@ -22,8 +29,14 @@ public class WeatherAdviceService {
     private WeatherMapper weatherMapper;
 
     /**
-     * @param city 도시 이름 (예: "Seoul")
-     * @param date "yyyy-MM-dd" 형식 문자열
+     * 특정 도시와 날짜에 대한 날씨 조언을 생성하고 데이터베이스에 저장합니다.
+     * <p>
+     * 현재 날짜로부터 5일 이내의 날짜는 단기 예보를 기반으로 조언을 생성하고,
+     * 그 외의 날짜는 계절별 특성을 고려한 조언을 생성합니다.
+     * </p>
+     * @param city 날씨 조언을 생성할 도시 이름 (예: "Seoul")
+     * @param date 날씨 조언을 생성할 날짜 (yyyy-MM-dd 형식 문자열)
+     * @return 생성된 날씨 조언 정보를 담은 {@link WeatherAdviceDTO} 객체
      */
     public WeatherAdviceDTO getAdviceAndSave(String city, String date) {
 
@@ -65,7 +78,15 @@ public class WeatherAdviceService {
     }
     
    
-    //단기 모드(오늘 ~ 5일이내)
+    /**
+     * 단기 예보(오늘부터 5일 이내)를 기반으로 날씨 조언을 생성합니다.
+     * <p>
+     * 실제 날씨 데이터를 조회하여 비, 눈, 단풍 시즌 등을 고려한 추천 타입과 메시지를 반환합니다.
+     * </p>
+     * @param city 날씨 조언을 생성할 도시 이름
+     * @param date 날씨 조언을 생성할 날짜 (yyyy-MM-dd 형식 문자열)
+     * @return 단기 날씨 조언 정보를 담은 {@link WeatherAdviceDTO} 객체
+     */
     private WeatherAdviceDTO buildShortTermAdvice(String city, String date) {
         
         WeatherDTO weather = weatherService.getWeather(city, date);
@@ -129,6 +150,16 @@ public class WeatherAdviceService {
         
     }
 
+    /**
+     * 계절별 특성을 기반으로 날씨 조언을 생성합니다.
+     * <p>
+     * 단기 예보 기간을 벗어나는 날짜에 대해 계절(단풍 시즌, 장마철, 한겨울 등)에 따른
+     * 일반적인 여행 추천 타입과 메시지를 반환합니다.
+     * </p>
+     * @param city 날씨 조언을 생성할 도시 이름 (현재는 사용되지 않음)
+     * @param date 날씨 조언을 생성할 날짜 (yyyy-MM-dd 형식 문자열)
+     * @return 계절별 날씨 조언 정보를 담은 {@link WeatherAdviceDTO} 객체
+     */
     private WeatherAdviceDTO buildSeasonalAdvice(String city, String date) {
         
         WeatherAdviceDTO advice = new WeatherAdviceDTO();

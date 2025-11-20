@@ -10,20 +10,29 @@ import com.project.trip.mypage.mapper.MemberMapper;
 import com.project.trip.mypage.model.CustomUser;
 import com.project.trip.mypage.model.UserDTO;
 
-//User > CustomUser 사용
+/**
+ * Spring Security의 UserDetailsService를 구현한 사용자 정의 서비스 클래스입니다.
+ * <p>
+ * 사용자가 로그인을 시도할 때, 입력된 사용자 이름(ID)을 기반으로 데이터베이스에서 사용자 정보를 조회하고,
+ * Spring Security가 인증을 처리할 수 있도록 {@link UserDetails} 객체를 생성하여 반환합니다.
+ * </p>
+ */
 public class CustomUserDetailsService implements UserDetailsService {
 
-	// DB > select > User
-	
-	//1. /customlogin.do > 아이디(hong), 암호(1111) 입력
-	//2. POST +/login > 인증처리
-	//2.5 2번과 더불어 loadUserByUsername() 호출
-	
-	@Autowired  //필드주입과 클래스에 다는 어노테이션 차이점 확인하기!!!
+	@Autowired
 	private MemberMapper mapper;
 	
-	
-	//로그인 발생 시 같이 호출
+	/**
+	 * 사용자 이름(ID)을 사용하여 사용자 정보를 로드합니다.
+	 * <p>
+	 * Spring Security가 인증 과정에서 이 메소드를 호출합니다.
+	 * 데이터베이스에서 사용자 정보를 조회한 후, {@link CustomUser} 객체로 변환하여 반환합니다.
+	 * </p>
+	 * @param username 사용자가 로그인 시 입력한 아이디
+	 * @return 인증에 사용할 사용자 상세 정보가 담긴 {@link UserDetails} 객체
+	 * @throws UsernameNotFoundException 해당 아이디의 사용자를 찾을 수 없을 경우 발생
+	 * @throws DisabledException 사용자가 탈퇴했거나 관리자에 의해 차단된 경우 발생
+	 */
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		

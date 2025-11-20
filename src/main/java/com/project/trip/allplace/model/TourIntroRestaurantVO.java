@@ -7,17 +7,16 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * TourAPI '소개정보(detailIntro2)' 중 
- * '음식점(contentTypeId=39)'의 응답을 받는 DTO
+ * TourAPI '소개 정보 조회(detailIntro)' 중 음식점(contentTypeId=39) 타입의
+ * 응답을 매핑하기 위한 데이터 객체입니다.
  */
 @Data
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TourIntroRestaurantVO {
 
-    // (json 래퍼 구조)
     private Response response;
-    
+
     @Data @NoArgsConstructor @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Response { private Body body; }
 
@@ -25,42 +24,72 @@ public class TourIntroRestaurantVO {
     public static class Body { private Items items; }
 
     @Data @NoArgsConstructor @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class Items { private List<Item> item; } 
+    public static class Items { private List<Item> item; }
 
     /**
-     * API의 음식점 상세 필드
+     * 음식점 소개 정보의 상세 내용을 담는 객체입니다.
      */
     @Data @NoArgsConstructor @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Item {
-        
+
+        /**
+         * 콘텐츠 ID
+         */
         @JsonProperty("contentid")
         private String contentId;
-        
+
+        /**
+         * 콘텐츠 타입 ID (39)
+         */
         @JsonProperty("contenttypeid")
         private String contentTypeId;
-        
+
+        /**
+         * 대표 메뉴
+         */
         @JsonProperty("firstmenu")
-        private String firstMenu; // (대표 메뉴)
+        private String firstMenu;
 
+        /**
+         * 취급 메뉴
+         */
         @JsonProperty("treatmenu")
-        private String treatMenu; // (취급 메뉴)
+        private String treatMenu;
 
+        /**
+         * 영업 시간
+         */
         @JsonProperty("opentimefood")
-        private String openingHours; // (영업 시간)
+        private String openingHours;
 
+        /**
+         * 쉬는 날
+         */
         @JsonProperty("restdatefood")
-        private String restDay; // (쉬는 날)
+        private String restDay;
 
+        /**
+         * 문의 및 안내 전화번호
+         */
         @JsonProperty("infocenterfood")
-        private String contactInfo; // (전화번호)
-        
+        private String contactInfo;
+
+        /**
+         * 주차 시설 정보
+         */
         @JsonProperty("parkingfood")
-        private String parkingInfo; // (주차)
-        
+        private String parkingInfo;
+
+        /**
+         * 금연/흡연 가능 정보
+         */
         @JsonProperty("smoking")
-        private String smoking; // (금연/흡연)
-        
+        private String smoking;
+
+        /**
+         * 어린이 놀이방 여부
+         */
         @JsonProperty("kidsfacility")
-        private String kidsFacility; // (놀이방)
+        private String kidsFacility;
     }
 }

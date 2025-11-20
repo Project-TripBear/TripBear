@@ -10,8 +10,20 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 
-// 로그인 실패 시 /admin/login으로 메시지와 함께 리다이렉트
+/**
+ * 관리자 로그인 실패를 처리하는 핸들러입니다.
+ * 로그인 실패 시 에러 메시지와 함께 `/admin/login` 페이지로 리다이렉트합니다.
+ */
 public class CustomAdminLoginFailureHandler implements AuthenticationFailureHandler {
+    /**
+     * 인증 실패 시 호출되는 메서드입니다.
+     * 에러 메시지를 인코딩하여 `/admin/login` 페이지로 리다이렉트합니다.
+     *
+     * @param request HTTP 요청 객체
+     * @param response HTTP 응답 객체
+     * @param exception 발생한 인증 예외
+     * @throws IOException 리다이렉트 중 발생할 수 있는 입출력 예외
+     */
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
             AuthenticationException exception) throws IOException {
