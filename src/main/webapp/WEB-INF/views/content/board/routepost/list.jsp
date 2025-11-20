@@ -15,8 +15,6 @@
                     <th>제목</th>
                     <th>글쓴이</th>
                     <th>작성일</th>
-                    <th>댓글</th>
-                    <th>좋아요</th>
                     <th>조회수</th>
                 </tr>
             </thead>
@@ -30,11 +28,12 @@
                                     <a href="${pageContext.request.contextPath}/routepost/view/${dto.routepostId}">
                                         ${dto.routepostTitle}
                                     </a>
+                                    <c:if test="${dto.commentCount > 0}">
+                                        <span class="comment-count">[${dto.commentCount}]</span>
+                                    </c:if>
                                 </td>
                                 <td>${dto.nickname}</td>
                                 <td>${dto.routepostRegdate}</td>
-                                <td class="numeric">${dto.commentCount}</td>
-                                <td class="numeric">${dto.likeCount}</td>
                                 <td class="numeric">${dto.routepostViewCount}</td>
                             </tr>
                         </c:forEach>

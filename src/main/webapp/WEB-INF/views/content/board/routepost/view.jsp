@@ -96,33 +96,34 @@ function renderEmptyRow() {
 }
 
 function buildCommentRow(c) {
+
     let actions = '';
     if (String(userId) === String(c.userId) && userId) {
         actions = `
             <div class="comment-actions">
-                <span class="comment-edit" data-id="${c.routepostCommentId}">수정</span>
-                <span class="comment-delete" data-id="${c.routepostCommentId}">삭제</span>
+                <span class="comment-edit" data-id="${'${'}c.routepostCommentId}">수정</span>
+                <span class="comment-delete" data-id="${'${'}c.routepostCommentId}">삭제</span>
             </div>`;
     }
 
     return `
-        <tr class="comment-row" id="comment-row-${c.routepostCommentId}">
+        <tr class="comment-row" id="comment-row-${'${'}c.routepostCommentId}">
             <td class="commentContent">
-                <div>${c.routepostContent}</div>
-                <div>${c.routepostRegdate}</div>
+                <div>${'${'}c.routepostContent}</div>
+                <div>${'${'}c.routepostRegdate}</div>
             </td>
             <td class="commentInfo">
                 <div>
-                    <div>${c.nickname}</div>
-                    ${actions}
+                    <div>${'${'}c.nickname}</div>
+                    ${'${'}actions}
                 </div>
             </td>
         </tr>`;
 }
 
+
 function loadComments() {
     $.getJSON(contextPath + "/api/routepost/comment/list/" + routepostId, function(list) {
-    	console.log(list);
         const $tbody = $commentBody();
         $tbody.empty();
         $('.commentEditRow').remove();
