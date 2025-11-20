@@ -23,11 +23,11 @@
 
     <!-- 게시글 목록 조회 -->
     <select id="list" parameterType="map" resultType="com.project.trip.board.hotdeal.model.HotDealDTO">
-        SELECT b.* 
+        SELECT b.*
 FROM (
-    SELECT a.*, ROWNUM AS rnum 
+    SELECT a.*, ROWNUM AS rnum
     FROM (
-        SELECT 
+        SELECT
             p.hotdeal_id AS seq,
             p.hotdeal_title AS subject,
             p.user_id AS id,
@@ -35,13 +35,25 @@ FROM (
             TO_CHAR(p.hotdeal_regdate, 'YYYY-MM-DD HH24:MI:SS') AS regdate,
             u.nickname AS name,
             s.hotdeal_status AS status,
-            (SELECT MIN(hotdeal_image_url) 
-             FROM tblHotDealImage 
-             WHERE hotdeal_id = p.hotdeal_id 
+            NVL(c.comment_count, 0) AS commentCount,
+            NVL(l.like_count, 0)    AS likeCount,
+            (SELECT MIN(hotdeal_image_url)
+             FROM tblHotDealImage
+             WHERE hotdeal_id = p.hotdeal_id
              AND ROWNUM = 1) AS img
         FROM tblHotDealPost p
         LEFT JOIN tblUser u ON p.user_id = u.user_id
         LEFT JOIN tblHotDealStatus s ON p.hotdeal_status_id = s.hotdeal_status_id
+        LEFT JOIN (
+            SELECT hotdeal_id, COUNT(*) AS comment_count
+            FROM tblHotDealComment
+            GROUP BY hotdeal_id
+        ) c ON p.hotdeal_id = c.hotdeal_id
+        LEFT JOIN (
+            SELECT hotdeal_id, COUNT(*) AS like_count
+            FROM tblHotDealLikes
+            GROUP BY hotdeal_id
+        ) l ON p.hotdeal_id = l.hotdeal_id
         <if test='search == "y"'>
             WHERE ${column} LIKE '%' || #{word} || '%'
         </if>

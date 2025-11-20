@@ -183,7 +183,7 @@
 /*     margin-top: -65px; 페이지바 위로 겹치도록 조정 (선택 사항)
  */   /*  margin-bottom: 20px;
  margin-left: 20px; */
-/*  margin-left: auto; */
+ margin-left: auto; 
  order: 2;
 }
 
@@ -243,6 +243,437 @@
     font-size: 0.95rem;
     font-weight: 700;                 /* 굵은 글씨 */
 }
+
+/* ------------------------------------------------------------ */
+
+/* 핫딜게시판 보기 (17번) */
+/* =========================================================
+ 🔑 BOARD VIEW PAGE STYLES - FINAL VERSION (전체)
+ * 수정 행 정렬 및 디자인 FIX *
+ ========================================================= */
+
+/* 페이지 컨테이너 및 중앙 정렬 */
+.page-board-view-container {
+    max-width: 1000px;
+    margin: 40px auto !important; 
+    padding: 0 30px;
+}
+.page-board-view-container #main {
+    max-width: 800px; 
+    margin: 0 auto;
+    padding: 0;
+}
+
+/* --- 1. 게시글 컨테이너 (메인 카드) --- */
+.post-container {
+    background-color: var(--surface);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-soft);
+    border: 1px solid var(--border);
+    padding: 40px;
+    margin-bottom: 40px;
+}
+/* 헤더 및 메타 정보 */
+.post-header {
+    padding-bottom: 15px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid var(--border);
+}
+.post-header .category {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--primary);
+    display: block;
+    margin-bottom: 5px;
+}
+.post-header .subject {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text);
+    margin: 0;
+    padding: 0;
+}
+.post-meta {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    margin-top: 10px;
+}
+.post-meta strong {
+    color: var(--primary-dark);
+    font-weight: 600;
+}
+.post-divider {
+    border: 0;
+    border-top: 1px solid var(--border);
+    margin: 20px 0;
+}
+
+
+/* 이미지 갤러리 */
+.post-images {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin: 20px 0;
+    justify-content: center;
+}
+.post-images .post-image-thumb {
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+}
+
+/* 게시글 내용 */
+.post-content {
+    min-height: 150px;
+    padding: 20px 0;
+    line-height: 1.8;
+    color: var(--text);
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 20px;
+}
+
+/* 핫딜 정보 카드 */
+.hotdeal-info.info-card {
+    background-color: #F8F9FA;
+    border: 1px solid var(--primary-light);
+    border-radius: 12px;
+    padding: 15px 25px;
+    margin-bottom: 30px;
+}
+.hotdeal-info.info-card p {
+    margin: 5px 0;
+    font-size: 1rem;
+}
+
+
+/* --- 2. 액션 버튼 (좋아요, 스크랩, 신고) --- */
+.post-actions.action-buttons-group {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    padding: 20px 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 30px;
+}
+.post-actions .btn { /* 버튼 공통 스타일 */
+    padding: 10px 20px;
+    border-radius: 30px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background-color: var(--bg);
+    color: var(--text);
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+.post-actions .btn:hover {
+    background-color: #E9ECEF;
+}
+/* 좋아요/스크랩 컬러 통일 */
+.post-actions .btn.like {
+    border-color: var(--like-color, #ff6b81);
+    color: var(--like-color, #ff6b81);
+    background-color: var(--like-soft, #ffe5ed);
+}
+
+.post-actions .btn.scrap {
+    border-color: var(--scrap-color, #ffd166);
+    color: #8c6400;
+    background-color: var(--scrap-soft, #fff5d6);
+}
+
+.post-actions .btn.like:hover,
+.post-actions .btn.like.active {
+    background-color: var(--like-color, #ff6b81);
+    color: #fff;
+    border-color: var(--like-color, #ff6b81);
+}
+
+.post-actions .btn.scrap:hover,
+.post-actions .btn.scrap.active {
+    background-color: var(--scrap-color, #ffd166);
+    color: #5e4700;
+    border-color: var(--scrap-color, #ffd166);
+}
+
+
+/* --- 3. 댓글 섹션 --- */
+.comment-section {
+    padding-bottom: 20px;
+}
+.comment-section h3 {
+    font-size: 1.5rem;
+    color: var(--primary-dark);
+    margin-bottom: 15px;
+    border-bottom: 2px solid var(--border);
+    padding-bottom: 5px;
+}
+
+.comment-list-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 15px;
+}
+.comment-list-table tr.comment-row {
+    border-bottom: 1px solid var(--border);
+    cursor: pointer; 
+    transition: background-color 0.3s;
+}
+
+.comment-list-table tr.comment-row:hover {
+    background-color: #F8F9FA;
+}
+
+.comment-list-table td {
+    padding: 10px 0;
+    vertical-align: top;
+}
+.comment-list-table .commentContent {
+    width: 80%;
+    text-align: left;
+    line-height: 1.4;
+    font-size: 1rem;
+}
+.comment-list-table .commentContent div:last-child { 
+    font-size: 0.85rem;
+    color: var(--text-light);
+    margin-top: 5px;
+}
+.comment-list-table .commentInfo {
+    width: 20%;
+    text-align: right;
+}
+.comment-list-table .commentInfo > div {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+.comment-list-table .commentInfo div:first-child { /* 작성자 이름 */
+    font-weight: 600;
+    color: var(--primary-dark);
+    margin-bottom: 5px;
+}
+/* 수정/삭제 버튼 그룹 정렬 */
+.comment-list-table .commentInfo .comment-actions {
+    display: flex; 
+    gap: 5px;
+    margin-top: 5px;
+}
+
+/* 💡 수정/삭제 텍스트 색상 통일 */
+.comment-list-table .commentInfo .comment-actions span {
+    font-size: 1rem; 
+    cursor: pointer;
+    /* 💡 색상을 작성자 이름과 유사한 Primary-dark로 통일 */
+    color: var(--primary-dark) !important; 
+    transition: color 0.2s;
+}
+.comment-list-table .commentInfo .comment-actions span:hover {
+    color: var(--primary) !important;
+}
+
+
+/* =========================================================
+ 🔑 댓글 수정 행 (Dynamic Edit Row) 스타일 - 최종 FIX
+ ========================================================= */
+
+.comment-list-table tr.commentEditRow {
+    border-bottom: 2px solid var(--primary-light); 
+    background-color: var(--surface);
+    vertical-align: middle; 
+}
+
+/* 💡 Colspan=2가 적용된 <td>에만 스타일 적용 */
+.comment-list-table tr.commentEditRow td {
+    padding: 15px 20px !important; 
+    text-align: left; 
+    position: relative; /* 내부 요소 위치 지정을 위한 기준점 설정 */
+}
+
+
+/* 1. 버튼 그룹 컨테이너 (오른쪽 정렬 및 Float 강제) */
+.comment-list-table tr.commentEditRow td > div:last-child {
+    /* 💡 Float를 사용하여 이 요소 자체를 오른쪽 끝으로 밀어냅니다. */
+    float: right !important; 
+    margin-top: 0 !important; /* JS의 마진 무시 */
+    text-align: right; 
+    /* float를 사용했으므로 인라인 style="text-align: right;"가 작동합니다. */
+}
+
+/* 2. 입력 필드 컨테이너 (첫 번째 Div - 남은 공간 채우기) */
+.comment-list-table tr.commentEditRow td > div:first-child {
+    margin-bottom: 0; /* 불필요한 마진 제거 */
+    overflow: hidden; /* Float된 요소를 제외하고 남은 공간을 확보 */
+    padding-right: 15px; /* 버튼과의 간격 확보 */
+}
+
+/* 입력 필드 자체 */
+.comment-list-table tr.commentEditRow td input[type="text"]#txtComment {
+    width: 100%; /* 💡 남은 공간을 채우도록 100% 유지 */
+    padding: 8px 10px;
+    border: 1px solid var(--primary);
+    border-radius: 6px;
+    box-sizing: border-box;
+    font-size: 1rem;
+    background-color: var(--bg);
+}
+
+
+/* 💡 동적으로 삽입된 '확인/닫기' 버튼 스타일 */
+.comment-list-table tr.commentEditRow td button {
+    padding: 8px 15px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+    margin-left: 8px; 
+    white-space: nowrap;
+}
+
+/* 확인 버튼 (Primary 스타일) */
+.comment-list-table tr.commentEditRow td button:first-child {
+    background-color: var(--primary);
+    color: white;
+}
+.comment-list-table tr.commentEditRow td button:last-child {
+    background-color: #E9ECEF;
+    color: var(--text-light);
+}
+
+
+/* 댓글 로딩, 더보기 버튼 */
+.loading-spinner {
+    text-align: center;
+    display: none; 
+    padding: 20px 0;
+}
+.comment-more-container {
+    text-align: center;
+    margin-top: 15px;
+    display: flex;
+    justify-content: center;
+}
+.comment-more-container .btn-secondary {
+    width: 100%;
+    max-width: 200px;
+    padding: 10px;
+    background-color: var(--surface);
+    color: var(--text-light);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.comment-more-container .btn-secondary:hover {
+    background-color: #E9ECEF;
+    color: var(--text);
+}
+
+
+/* 댓글 쓰기 폼 */
+.comment-add-form {
+    margin-top: 30px;
+    border-top: 1px solid var(--border);
+    padding-top: 20px;
+}
+.comment-add-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.comment-add-table td:first-child {
+    width: 85%;
+    padding-right: 10px;
+}
+.comment-add-table td:last-child {
+    width: 15%;
+}
+.comment-add-table input.form-control {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background-color: var(--bg);
+    color: var(--text);
+}
+.comment-add-table .btn-primary {
+    padding: 10px 20px;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 8px;
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.2s;
+}
+.comment-add-table .btn-primary:hover {
+    background-color: var(--primary-dark);
+}
+
+
+/* --- 4. 하단 목록보기/수정/삭제 버튼 --- */
+.bottom-buttons.action-buttons-group {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+}
+.bottom-buttons .right-align { 
+    display: flex;
+    gap: 10px;
+}
+.bottom-buttons .btn {
+    padding: 10px 20px;
+    font-weight: 600;
+    border-radius: 30px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+.bottom-buttons .btn-secondary { 
+    background-color: #E9ECEF;
+    color: var(--text-light);
+    border-color: #E9ECEF;
+}
+.bottom-buttons .btn-secondary:hover {
+    background-color: #DDE2E6;
+    color: var(--text);
+}
+.bottom-buttons .btn-danger { 
+    background-color: var(--accent);
+    color: white;
+    border-color: var(--accent);
+}
+.bottom-buttons .btn-danger:hover {
+    background-color: #D32F2F;
+}
+.bottom-buttons .btn-primary { 
+    background-color: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+.bottom-buttons .btn-primary:hover {
+    background-color: var(--primary-dark);
+}
+.comment-actions,
+.comment-action-buttons {
+  display: flex;
+  gap: 8px; /* 👈 이 값이 '수정'과 '삭제' 사이의 간격입니다. (원하는 대로 조절하세요) */
+}
+
+
+
+
 /* ------------------------------------------------------------ */
 
 /* 핫딜게시판 쓰기 (18번) */

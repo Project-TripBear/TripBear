@@ -21,6 +21,12 @@ import com.project.trip.AI.service.AiService;
 import com.project.trip.mypage.model.CustomUser;
 import com.project.trip.mypage.model.UserDTO; 
 
+/**
+ * AI 기반 여행 경로 생성과 관련된 REST API 요청을 처리하는 컨트롤러입니다.
+ * <p>
+ * 사용자 선호도를 기반으로 AI 여행 경로를 생성하고 저장하는 기능을 제공합니다.
+ * </p>
+ */
 @RestController
 @RequestMapping("/ai")
 public class AiRestController {
@@ -28,6 +34,14 @@ public class AiRestController {
     @Autowired
     private AiService aiService;
 
+    /**
+     * 사용자 선호도를 기반으로 AI 여행 경로를 생성하고 데이터베이스에 저장합니다.
+     * <p>
+     * 로그인된 사용자만 경로를 생성할 수 있으며, 생성된 경로의 ID를 반환합니다.
+     * </p>
+     * @param preferences 사용자의 여행 선호도를 담은 {@link AiRouteRequestDTO} 객체
+     * @return 생성된 경로 ID와 성공 여부를 담은 {@code ResponseEntity<Map<String, Object>>}
+     */
     @PostMapping(
     		value = "/generate",
     		consumes = "application/json",

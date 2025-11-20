@@ -19,6 +19,13 @@ public class CustomAdminUser extends User {
 
     private final AdminDTO adto;   // 관리자 정보 DTO
 
+    /**
+     * {@link AdminDTO} 객체와 권한 목록을 받아 {@link User} 객체를 생성하는 생성자입니다.
+     * {@link AdminDTO}의 관리자 ID, 비밀번호를 사용하여 Spring Security의 User 객체를 초기화합니다.
+     *
+     * @param adto 관리자 정보를 담은 {@link AdminDTO} 객체
+     * @param authorities 관리자의 권한 목록
+     */
     public CustomAdminUser(AdminDTO adto, Collection<? extends GrantedAuthority> authorities) {
         super(adto.getAdminId(), adto.getAdminPw(), authorities);
         this.adto = adto;

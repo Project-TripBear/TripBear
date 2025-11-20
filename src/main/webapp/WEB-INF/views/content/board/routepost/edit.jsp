@@ -11,7 +11,8 @@
 
 <body>
 
-<div class="container">
+<div class="routepost-page">
+<div class="container board-form-card">
   <h2>게시글 수정 ✏️</h2>
 
   <form method="post"
@@ -88,7 +89,7 @@ ${dto.routepostContent}</textarea>
 
   </form>
 </div>
-
+</div>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script>
 // 이미지 삭제(X 버튼)

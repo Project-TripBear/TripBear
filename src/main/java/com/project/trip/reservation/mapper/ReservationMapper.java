@@ -11,6 +11,14 @@ import com.project.trip.reservation.model.CarReservationDTO;
 import com.project.trip.reservation.model.RentalCarCardDTO;
 import com.project.trip.reservation.model.ReservationDTO;
 
+/**
+ * 예약과 관련된 데이터베이스 연동을 위한 매퍼 인터페이스입니다.
+ * <p>
+ * 통합 예약, 숙소 예약, 렌터카 예약 정보의 삽입 및 조회,
+ * 숙소 및 렌터카 목록 조회, 가격 정보 조회 등 예약 관리에 필요한
+ * 다양한 데이터베이스 작업을 정의합니다.
+ * </p>
+ */
 @Mapper
 public interface ReservationMapper {
 	

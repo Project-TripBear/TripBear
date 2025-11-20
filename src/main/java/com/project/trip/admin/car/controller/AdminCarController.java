@@ -23,6 +23,12 @@ import com.project.trip.admin.car.service.AdminCarService;
 
 import lombok.RequiredArgsConstructor;
 
+/**
+ * 관리자 페이지의 렌터카 관리와 관련된 HTTP 요청을 처리하는 컨트롤러입니다.
+ * <p>
+ * 렌터카 목록 조회, 신규 등록, 상세 정보 조회, 정보 수정, 삭제 등의 기능을 제공합니다.
+ * </p>
+ */
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/admin/car")
@@ -30,7 +36,19 @@ public class AdminCarController {
 
     private final AdminCarService carService;
 
-    // 렌터카 목록 조회 및 필터링
+    /**
+     * 렌터카 목록 페이지를 반환합니다.
+     * <p>
+     * 연료 유형, 가격 범위, 정렬 순서 등 다양한 필터링 조건을 받아
+     * 조건에 맞는 렌터카 목록을 조회하고 뷰에 전달합니다.
+     * </p>
+     * @param model 뷰에 데이터를 전달하기 위한 Model 객체
+     * @param fuelTypes 필터링할 연료 유형 배열
+     * @param minPriceParam 최소 가격 파라미터
+     * @param maxPriceParam 최대 가격 파라미터
+     * @param sortOrder 정렬 순서
+     * @return 렌터카 목록 페이지의 뷰 이름
+     */
     @GetMapping("/list")
     public String getCarList(
             Model model,
@@ -56,7 +74,11 @@ public class AdminCarController {
         return "admin/carlist"; 
     }
 
-    // 렌터카 등록 폼 페이지로 이동
+    /**
+     * 신규 렌터카 등록 폼 페이지를 반환합니다.
+     * @param model 뷰에 지역 목록 데이터를 전달하기 위한 Model 객체
+     * @return 신규 렌터카 등록 페이지의 뷰 이름
+     */
     @GetMapping("/add")
     public String addCarForm(Model model) {
     	
@@ -66,7 +88,18 @@ public class AdminCarController {
         
         return "admin/addcar"; 
     }
-    // ✅ 렌터카 등록 처리 (파일 업로드 포함)
+
+    /**
+     * 신규 렌터카를 등록 처리합니다.
+     * <p>
+     * 렌터카 정보와 함께 이미지를 업로드하고 데이터베이스에 저장합니다.
+     * </p>
+     * @param dto 렌터카 정보를 담은 DTO
+     * @param imgFile 차량 이미지 파일
+     * @param request HTTP 요청 객체
+     * @param rttr 리다이렉트 시 메시지를 전달하기 위한 RedirectAttributes 객체
+     * @return 성공 시 렌터카 목록 페이지로, 실패 시 등록 폼 페이지로 리다이렉트
+     */
     @PostMapping("/add")
     public String addCarProcess(
             carDTO dto,
@@ -113,7 +146,13 @@ public class AdminCarController {
             return "redirect:/admin/car/add";
         }
     }
-    // 렌터카 삭제 처리
+
+    /**
+     * 렌터카 정보를 삭제 처리합니다.
+     * @param carId 삭제할 렌터카의 고유 ID
+     * @param rttr 리다이렉트 시 메시지를 전달하기 위한 RedirectAttributes 객체
+     * @return 렌터카 목록 페이지로 리다이렉트
+     */
     @PostMapping("/delete")
     public String deleteCarProcess(@RequestParam("carId") int carId, RedirectAttributes rttr) {
         try {
@@ -126,7 +165,12 @@ public class AdminCarController {
         return "redirect:/admin/car/list";
     }
 
-    // 렌터카 수정 폼 페이지로 이동
+    /**
+     * 렌터카 정보 수정 폼 페이지를 반환합니다.
+     * @param carId 수정할 렌터카의 고유 ID
+     * @param model 뷰에 차량 상세 정보와 지역 목록을 전달하기 위한 Model 객체
+     * @return 렌터카 정보 수정 페이지의 뷰 이름
+     */
     @GetMapping("/edit")
     public String editCarForm(@RequestParam("carId") int carId, Model model) {
         
@@ -148,6 +192,19 @@ public class AdminCarController {
         return "admin/editcar"; 
     }
 
+    /**
+     * 렌터카 정보를 수정 처리합니다.
+     * <p>
+     * 수정된 렌터카 정보와 함께 새로운 이미지가 업로드된 경우 이를 반영하여
+     * 데이터베이스를 업데이트합니다.
+     * </p>
+     * @param dto 수정된 렌터카 정보를 담은 DTO
+     * @param imgFile 새로 업로드된 차량 이미지 파일
+     * @param originImage 기존 차량 이미지 파일명
+     * @param request HTTP 요청 객체
+     * @param rttr 리다이렉트 시 메시지를 전달하기 위한 RedirectAttributes 객체
+     * @return 성공 시 렌터카 목록 페이지로, 실패 시 수정 폼 페이지로 리다이렉트
+     */
     @PostMapping("/edit")
     public String editCarProcess(
             carDTO dto,
@@ -196,6 +253,12 @@ public class AdminCarController {
         }
     }
     
+    /**
+     * 렌터카 상세 정보 페이지를 반환합니다.
+     * @param carId 조회할 렌터카의 고유 ID
+     * @param model 뷰에 데이터를 전달하기 위한 Model 객체
+     * @return 렌터카 상세 정보 페이지의 뷰 이름
+     */
     @GetMapping("/view")
     public String viewCarDetail(@RequestParam("carId") int carId, Model model) {
         

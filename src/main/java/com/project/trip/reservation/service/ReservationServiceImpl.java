@@ -19,6 +19,14 @@ import com.project.trip.reservation.model.ReservationDTO;
 
 import lombok.RequiredArgsConstructor;
 
+/**
+ * {@link ReservationService} 인터페이스의 구현 클래스입니다.
+ * <p>
+ * 예약과 관련된 비즈니스 로직을 처리합니다.
+ * 통합 예약 생성 및 조회, 숙소 및 렌터카 목록 조회, 가격 계산, 필터링 옵션 제공 등
+ * 예약 시스템 운영에 필요한 다양한 기능을 제공합니다.
+ * </p>
+ */
 @Service
 @RequiredArgsConstructor
 public class ReservationServiceImpl implements ReservationService {

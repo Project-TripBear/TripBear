@@ -8,7 +8,7 @@
 
 <%-- 1. 공통 CSS 파일 --%>
 <%-- admin_asset.jsp의 CSS 로드 코드가 이 형식인지 확인 --%>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/admin2.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/admin.css">
 <%-- 2. jQuery 라이브러리 (AJAX 등 편리한 기능 사용을 위해) --%>
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 

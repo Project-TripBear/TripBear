@@ -2,6 +2,12 @@ package com.project.trip.allplace.service;
 
 import com.project.trip.allplace.model.WeatherVO;
 
+/**
+ * 기상청 단기예보 API를 활용하여 날씨 정보를 제공하는 서비스 인터페이스입니다.
+ * <p>
+ * 특정 위도, 경도에 해당하는 현재 날씨 정보를 조회하는 기능을 정의합니다.
+ * </p>
+ */
 public interface KrWeatherService {
 
     /**

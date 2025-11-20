@@ -3,8 +3,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>  
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/main.css">
-
 
 <header id="main-header">
     <div class="header-inner">
@@ -25,8 +23,8 @@
                 <div class="sub-menu">
                     <a href="${pageContext.request.contextPath}/allplace/map">관광지 지도</a>
                     <a href="${pageContext.request.contextPath}/allplace/trend">여행트렌드</a>
-                    <a href="${pageContext.request.contextPath}/allplace/news">여행지 뉴스</a>
-                    <a href="${pageContext.request.contextPath}/allplace/weather">날씨/공기질</a>
+                    <%-- <a href="${pageContext.request.contextPath}/allplace/news">여행지 뉴스</a> --%>
+                    <%-- <a href="${pageContext.request.contextPath}/allplace/weather">날씨/공기질</a> --%>
                     <a href="${pageContext.request.contextPath}/allplace/festival">시기별 축제/행사</a>
                 </div>
 
@@ -41,7 +39,7 @@
                 <div class="sub-menu">
                     <a href="${pageContext.request.contextPath}/routepost/list">여행 루트 추천 게시판</a>
                     <a href="${pageContext.request.contextPath}/review/list">여행 후기 게시판</a>
-                    <a href="${pageContext.request.contextPath}/qna/list">Q&A</a>
+                    <a href="${pageContext.request.contextPath}/qnaboard/list">Q&A</a>
                     <a href="${pageContext.request.contextPath}/findboard/list">동행 찾기 게시판</a>
                     <a href="${pageContext.request.contextPath}/hotdeal/list">여행 용품 게시판</a>
                 </div>
@@ -101,8 +99,8 @@
             <a href="#" class="dropdown-toggle">여행정보 <i class="fa-solid fa-chevron-down dropdown-arrow"></i></a>
             <div class="mobile-sub-menu">
                 <a href="${pageContext.request.contextPath}/allplace/map">관광지 지도</a>
-                <a href="${pageContext.request.contextPath}/allplace/trend">여행트렌드</a>
-                <a href="${pageContext.request.contextPath}/allplace/news">여행지 뉴스</a>
+                <%-- <a href="${pageContext.request.contextPath}/allplace/trend">여행트렌드</a>
+                <a href="${pageContext.request.contextPath}/allplace/news">여행지 뉴스</a> --%>
                 <a href="${pageContext.request.contextPath}/allplace/weather">날씨/공기질</a>
                 <a href="${pageContext.request.contextPath}/allplace/searchFestival">시기별 축제/행사</a>
 
@@ -118,9 +116,9 @@
             <div class="mobile-sub-menu">
                 <a href="${pageContext.request.contextPath}/routepost/list">여행 루트 추천</a>
                 <a href="${pageContext.request.contextPath}/review/list">여행 후기</a>
-                <a href="${pageContext.request.contextPath}/qna/list">Q&A</a>
+                <a href="${pageContext.request.contextPath}/qnaboard/list">Q&A</a>
                 <a href="${pageContext.request.contextPath}/findboard/list">동행 찾기</a>
-                <a href="${pageContext.request.contextPath}/board/list">여행 용품</a>
+                <a href="${pageContext.request.contextPath}/hotdeal/list">여행 용품</a>
             </div>
         </div>
 
