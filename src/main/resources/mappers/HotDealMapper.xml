@@ -110,7 +110,7 @@ WHERE hotdeal_id = #{seq}
         SELECT seq_comment.nextval FROM DUAL
     </selectKey>
     INSERT INTO tblHotDealComment (hotdeal_comment_id, hotdeal_id, user_id, hotdeal_comment_content, hotdeal_comment_regdate,hotdeal_comment_status) 
-    VALUES (#{seq}, #{bseq}, #{useq}, #{content}, SYSDATE, 'A')
+    VALUES (#{seq}, #{bseq}, #{useq}, #{content}, SYSTIMESTAMP AT TIME ZONE 'Asia/Seoul', 'A')
 </insert>
 
 <update id="editComment" parameterType="com.project.trip.board.hotdeal.model.HotDealCommentDTO">
@@ -160,7 +160,7 @@ WHERE hotdeal_id = #{seq}
 <insert id="insertBoard" parameterType="com.project.trip.board.hotdeal.model.HotDealDTO" useGeneratedKeys="true" keyProperty="seq">
         insert into tblHotDealPost 
         (hotdeal_id, user_id, hotdeal_category_id, hotdeal_status_id, hotdeal_title, hotdeal_content, hotdeal_name, hotdeal_price, hotdeal_url, hotdeal_view_count, hotdeal_report_count, hotdeal_report_status, hotdeal_regdate) 
-        values (seqHotDealPost.nextVal,#{useq} ,#{category}, #{status}, #{subject}, #{content}, #{itemName},#{price} ,#{url} ,0, 0, 'N', sysdate)
+        values (seqHotDealPost.nextVal,#{useq} ,#{category}, #{status}, #{subject}, #{content}, #{itemName},#{price} ,#{url} ,0, 0, 'N', SYSTIMESTAMP AT TIME ZONE 'Asia/Seoul')
         
 
     </insert>

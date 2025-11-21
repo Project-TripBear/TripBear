@@ -38,7 +38,7 @@
             #{userId},
             #{routepostId},
             #{routepostContent},
-            SYSDATE,
+            SYSTIMESTAMP AT TIME ZONE 'Asia/Seoul',
             0,
             'A'
         )

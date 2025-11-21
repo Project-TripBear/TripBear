@@ -166,7 +166,7 @@
             SELECT SEQKEYWORD.NEXTVAL FROM DUAL
         </selectKey>
         INSERT INTO tblKeyword (keyword_id, keyword_name, keyword_regdate)
-        VALUES (#{keywordId}, #{keywordName}, SYSDATE)
+        VALUES (#{keywordId}, #{keywordName}, SYSTIMESTAMP AT TIME ZONE 'Asia/Seoul')
     </insert>
     
     <insert id="insertKeywordLink" parameterType="keywordLinkDTO">

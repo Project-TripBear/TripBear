@@ -54,7 +54,7 @@
 			#{noticeHeader, jdbcType=VARCHAR}, 
 			#{noticeContent, jdbcType=VARCHAR}, 
 			0 ,
-			sysdate)
+			SYSTIMESTAMP AT TIME ZONE 'Asia/Seoul')
 	</insert>
 	
 	<update id="update" parameterType="NoticeDTO">

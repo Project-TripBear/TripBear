@@ -37,7 +37,7 @@ WHERE
 		
 		
 		insert into tblUser (user_id, user_status_id, real_name, ssn, phone_number, username, password, email, nickname, address, regdate, deleted_at, gender, height, weight, health_goals) 
-		values (seqUser.nextVal, 1, #{name}, #{ssn}, #{phoneNumber}, #{id}, #{pw}, #{email}, #{nickName}, #{address}, sysdate, null, #{gender}, #{height}, #{weight}, #{healthGoals})
+		values (seqUser.nextVal, 1, #{name}, #{ssn}, #{phoneNumber}, #{id}, #{pw}, #{email}, #{nickName}, #{address}, SYSTIMESTAMP AT TIME ZONE 'Asia/Seoul', null, #{gender}, #{height}, #{weight}, #{healthGoals})
 	</insert>
 	
 	<select id="idCheck" parameterType="String" resultType="int">
