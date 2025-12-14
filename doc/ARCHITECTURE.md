@@ -4,6 +4,9 @@
 
 ![TripBear Architecture](architecture.svg)
 
+## 동적 요청 흐름
+사용자 요청이 어떻게 보안 필터, 모듈별 컨트롤러, 서비스, 매퍼, DB, 외부 API, WebSocket 구독을 거쳐 처리되는지 시각화한 흐름도는 `doc/dynamic-flow.svg`에서 확인할 수 있습니다. 단계별 상호작용을 통해 인증/인가, 비즈니스 로직, 데이터 액세스, 실시간 알림 순으로 반환되는 전체 경로를 표현합니다.
+
 ## 구성 요약
 - **프런트엔드 & 진입점**: Tiles 기반 JSP 뷰와 정적 리소스가 브라우저에서 렌더링되며, REST 호출로 백엔드와 통신합니다.
 - **보안 계층**: `CustomUserDetailsService`, `SessionUrlSavingFilter` 등 Spring Security 필터체인이 세션 관리와 접근 제어를 담당합니다.

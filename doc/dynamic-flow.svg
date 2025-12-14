@@ -1,0 +1,125 @@
+<svg width="960" height="600" viewBox="0 0 960 600" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">TripBear Dynamic Request Flow</title>
+  <desc id="desc">Sequence of TripBear runtime interactions across client, security, controllers, services, data, external APIs, and real-time messaging.</desc>
+  <style>
+    .box { fill: #f9fbff; stroke: #2459a6; stroke-width: 2; rx: 8; ry: 8; }
+    .actor { fill: #eef3ff; stroke: #5a6ea6; stroke-width: 2; rx: 8; ry: 8; }
+    .db { fill: #fef6e7; stroke: #c77b00; stroke-width: 2; rx: 12; ry: 12; }
+    .api { fill: #f5f7ff; stroke: #6d71c6; stroke-width: 2; rx: 10; ry: 10; }
+    .arrow { stroke: #333; stroke-width: 2; marker-end: url(#arrowhead); }
+    text { font-family: "Inter", "Noto Sans", Arial, sans-serif; font-size: 14px; }
+    .label { font-weight: 600; }
+    .note { font-size: 12px; fill: #333; }
+  </style>
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="8" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#333" />
+    </marker>
+  </defs>
+
+  <!-- Swimlanes -->
+  <rect x="40" y="40" width="180" height="520" fill="#f4f6f8" stroke="#d5dde5" stroke-dasharray="6 6" />
+  <rect x="240" y="40" width="180" height="520" fill="#f4f6f8" stroke="#d5dde5" stroke-dasharray="6 6" />
+  <rect x="440" y="40" width="180" height="520" fill="#f4f6f8" stroke="#d5dde5" stroke-dasharray="6 6" />
+  <rect x="640" y="40" width="280" height="520" fill="#f4f6f8" stroke="#d5dde5" stroke-dasharray="6 6" />
+
+  <text x="130" y="60" text-anchor="middle" class="label">Client</text>
+  <text x="330" y="60" text-anchor="middle" class="label">Security & Controllers</text>
+  <text x="530" y="60" text-anchor="middle" class="label">Services</text>
+  <text x="780" y="60" text-anchor="middle" class="label">Data / External</text>
+
+  <!-- Client request -->
+  <rect class="actor" x="80" y="90" width="120" height="60" />
+  <text x="140" y="125" text-anchor="middle">Browser / App</text>
+  <text x="140" y="145" text-anchor="middle" class="note">Tiles JSP, REST/WS</text>
+
+  <!-- Security filter chain -->
+  <rect class="box" x="270" y="100" width="120" height="80" />
+  <text x="330" y="130" text-anchor="middle">Spring Security</text>
+  <text x="330" y="150" text-anchor="middle" class="note">Session & URL saving</text>
+
+  <!-- Controllers -->
+  <rect class="box" x="270" y="210" width="120" height="100" />
+  <text x="330" y="240" text-anchor="middle">Controllers</text>
+  <text x="330" y="260" text-anchor="middle" class="note">AI / Reservation / Board / Admin</text>
+
+  <!-- Services -->
+  <rect class="box" x="470" y="190" width="120" height="80" />
+  <text x="530" y="220" text-anchor="middle">Service Layer</text>
+  <text x="530" y="240" text-anchor="middle" class="note">Business rules</text>
+
+  <rect class="box" x="470" y="300" width="120" height="80" />
+  <text x="530" y="330" text-anchor="middle">AI & Weather</text>
+  <text x="530" y="350" text-anchor="middle" class="note">Gemini + OpenWeather</text>
+
+  <rect class="box" x="470" y="410" width="120" height="80" />
+  <text x="530" y="440" text-anchor="middle">Notification</text>
+  <text x="530" y="460" text-anchor="middle" class="note">WebSocket/STOMP</text>
+
+  <!-- Data -->
+  <rect class="db" x="700" y="190" width="160" height="90" />
+  <text x="780" y="225" text-anchor="middle">MyBatis Mappers</text>
+  <text x="780" y="245" text-anchor="middle" class="note">Reservation / Review / Route</text>
+
+  <rect class="db" x="700" y="310" width="160" height="80" />
+  <text x="780" y="345" text-anchor="middle">Oracle DB</text>
+  <text x="780" y="365" text-anchor="middle" class="note">Persistent data</text>
+
+  <!-- External APIs -->
+  <rect class="api" x="700" y="430" width="160" height="70" />
+  <text x="780" y="460" text-anchor="middle">External APIs</text>
+  <text x="780" y="480" text-anchor="middle" class="note">Gemini / OpenWeatherMap</text>
+
+  <!-- Arrows -->
+  <line class="arrow" x1="200" y1="120" x2="270" y2="130" />
+  <text x="235" y="110" class="note">1. 요청</text>
+
+  <line class="arrow" x1="330" y1="180" x2="330" y2="210" />
+  <text x="350" y="195" class="note">2. 인증/인가 후 디스패치</text>
+
+  <line class="arrow" x1="390" y1="230" x2="470" y2="230" />
+  <text x="430" y="215" class="note">3. 비즈니스 로직</text>
+
+  <line class="arrow" x1="390" y1="250" x2="470" y2="320" />
+  <text x="430" y="280" class="note">AI/날씨 조회 필요 시</text>
+
+  <line class="arrow" x1="590" y1="225" x2="700" y2="235" />
+  <text x="645" y="215" class="note">4. 매퍼 호출</text>
+
+  <line class="arrow" x1="780" y1="280" x2="780" y2="310" />
+  <text x="800" y="295" class="note">5. DB 질의</text>
+
+  <line class="arrow" x1="590" y1="340" x2="700" y2="365" />
+  <text x="645" y="350" class="note">6. AI/날씨 캐시 저장</text>
+
+  <line class="arrow" x1="590" y1="350" x2="700" y2="460" />
+  <text x="645" y="410" class="note">7. 외부 API 호출</text>
+
+  <line class="arrow" x1="200" y1="260" x2="270" y2="250" />
+  <text x="210" y="250" class="note">동적 요청</text>
+
+  <line class="arrow" x1="330" y1="310" x2="330" y2="410" />
+  <text x="350" y="365" class="note">8. 알림 필요 시</text>
+
+  <line class="arrow" x1="390" y1="450" x2="470" y2="450" />
+  <text x="430" y="440" class="note">9. 메시지 생성</text>
+
+  <line class="arrow" x1="590" y1="450" x2="700" y2="470" />
+  <text x="645" y="435" class="note">10. 브로커로 전달</text>
+
+  <line class="arrow" x1="330" y1="470" x2="200" y2="470" />
+  <text x="250" y="455" class="note">11. 클라이언트 구독</text>
+
+  <line class="arrow" x1="330" y1="140" x2="200" y2="140" />
+  <text x="265" y="165" class="note">12. 응답 반환</text>
+
+  <!-- Legend -->
+  <rect class="box" x="80" y="520" width="20" height="14" />
+  <text x="110" y="532" class="note">서비스/컨트롤러</text>
+  <rect class="db" x="200" y="520" width="20" height="14" />
+  <text x="230" y="532" class="note">데이터 계층</text>
+  <rect class="api" x="320" y="520" width="20" height="14" />
+  <text x="350" y="532" class="note">외부 API</text>
+  <rect class="actor" x="440" y="520" width="20" height="14" />
+  <text x="470" y="532" class="note">클라이언트/액터</text>
+</svg>
