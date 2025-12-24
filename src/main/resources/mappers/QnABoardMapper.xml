@@ -71,14 +71,16 @@
 	    question_board_title, 
 	    question_board_content, 
 	    question_board_status,
-	    question_category_id
+	    question_category_id,
+	    question_board_regdate
 	) VALUES (
 	    seq_question_board.NEXTVAL, 
 	    #{user_id}, 
 	    #{question_board_title}, 
 	    #{question_board_content}, 
 	    'y',
-	    #{question_category_id}
+	    #{question_category_id},
+	    SYSTIMESTAMP AT TIME ZONE 'Asia/Seoul'
 	)
   </insert>
   
@@ -86,8 +88,9 @@
     UPDATE tblQuestionBoard SET 
 	    question_board_title = #{question_board_title}, 
 	    question_board_content = #{question_board_content}, 
-	    question_board_update = SYSDATE,
-	    question_category_id = #{question_category_id}
+	    question_board_update = SYSTIMESTAMP AT TIME ZONE 'Asia/Seoul',
+	    question_category_id = #{question_category_id},
+	    question_board_regdate = SYSTIMESTAMP AT TIME ZONE 'Asia/Seoul'
 	WHERE question_board_id = #{question_board_id}
 </update>
 
@@ -207,7 +210,7 @@
     INSERT INTO tblQuestionAnswer 
         (question_answer_id, question_board_id, user_id, question_answer_content, question_answer_regdate)
     VALUES 
-        (seq_question_answer.NEXTVAL, #{question_board_id}, #{user_id}, #{question_answer_content}, SYSDATE)
+        (seq_question_answer.NEXTVAL, #{question_board_id}, #{user_id}, #{question_answer_content}, SYSTIMESTAMP AT TIME ZONE 'Asia/Seoul')
 </insert>
 
 <update id="updateComment" parameterType="QnACommentDTO">

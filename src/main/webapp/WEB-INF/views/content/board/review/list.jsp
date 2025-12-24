@@ -1,5 +1,8 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
+<jsp:useBean id="now" class="java.util.Date" />
 
 <div class="board-page">
     <div class="board-header">
@@ -15,8 +18,6 @@
                     <th>제목</th>
                     <th>글쓴이</th>
                     <th>작성일</th>
-                    <th>댓글</th>
-                    <th>좋아요</th>
                     <th>조회수</th>
                 </tr>
             </thead>
@@ -30,11 +31,49 @@
                                     <a href="${pageContext.request.contextPath}/review/view/${dto.reviewPostId}">
                                         ${dto.reviewBoardTitle}
                                     </a>
+                                    <c:if test="${dto.commentCount > 0}">
+                                        <span class="comment-count">[${dto.commentCount}]</span>
+                                    </c:if>
                                 </td>
                                 <td>${dto.nickname}</td>
-                                <td>${dto.reviewBoardRegdate}</td>
-                                <td class="numeric">${dto.commentCount}</td>
-                                <td class="numeric">${dto.likeCount}</td>
+                                <td>
+                                    <%-- String → Date 변환 (형식에 맞게 pattern 수정 필수) --%>
+                                    <fmt:parseDate value="${dto.reviewBoardRegdate}"
+                                                   pattern="yyyy-MM-dd HH:mm:ss"
+                                                   var="regDate" />
+
+                                    <c:set var="diffSeconds" value="${(now.time - regDate.time) / 1000}" />
+                                    <c:set var="diffMinutes" value="${diffSeconds / 60}" />
+                                    <c:set var="diffHours" value="${diffSeconds / 3600}" />
+                                    <c:set var="diffDays" value="${diffSeconds / 86400}" />
+
+                                    <c:choose>
+                                        <%-- 0: 1분 미만 --%>
+                                        <c:when test="${diffMinutes < 1}">
+                                            방금 전
+                                        </c:when>
+
+                                        <%-- 1: 1시간 미만 --%>
+                                        <c:when test="${diffMinutes < 60}">
+                                            <fmt:formatNumber value="${diffMinutes}" maxFractionDigits="0" />분 전
+                                        </c:when>
+
+                                        <%-- 2: 1일 미만 --%>
+                                        <c:when test="${diffHours < 24}">
+                                            <fmt:formatNumber value="${diffHours}" maxFractionDigits="0" />시간 전
+                                        </c:when>
+
+                                        <%-- 3: 3일 이하 --%>
+                                        <c:when test="${diffDays <= 3}">
+                                            <fmt:formatNumber value="${diffDays}" maxFractionDigits="0" />일 전
+                                        </c:when>
+
+                                        <%-- 4: 3일 초과 → 날짜만 --%>
+                                        <c:otherwise>
+                                            <fmt:formatDate value="${regDate}" pattern="yyyy-MM-dd" />
+                                        </c:otherwise>
+                                    </c:choose>
+                                </td>
                                 <td class="numeric">${dto.reviewBoardCount}</td>
                             </tr>
                         </c:forEach>

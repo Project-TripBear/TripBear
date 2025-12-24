@@ -47,16 +47,16 @@
     
 <insert id="addPost" parameterType="findboardDTO">
     INSERT INTO tblFindBoard (
-        find_board_id, user_id, find_board_title, find_board_content, find_board_report_status
+        find_board_id, user_id, find_board_title, find_board_content, find_board_report_status, find_board_regdate
         ) VALUES (
-        seq_find_board.NEXTVAL, #{user_id}, #{find_board_title}, #{find_board_content}, 'N'
+        seq_find_board.NEXTVAL, #{user_id}, #{find_board_title}, #{find_board_content}, 'N', SYSTIMESTAMP AT TIME ZONE 'Asia/Seoul'
         )
 </insert>
 <update id="updatePost" parameterType="findboardDTO">
     UPDATE tblFindBoard SET 
         find_board_title = #{find_board_title}, 
         find_board_content = #{find_board_content}, 
-        find_board_update = SYSDATE
+        find_board_update = SYSTIMESTAMP AT TIME ZONE 'Asia/Seoul'
         WHERE find_board_id = #{find_board_id}
 </update>
     <delete id="deletePost" parameterType="int">

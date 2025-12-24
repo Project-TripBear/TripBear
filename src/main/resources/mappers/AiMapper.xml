@@ -49,7 +49,7 @@
         #{userId},
         #{aiRouteTitle},
         #{aiRouteDays},
-        sysdate,
+        SYSTIMESTAMP AT TIME ZONE 'Asia/Seoul',
         #{aiRouteRegion},
         TO_DATE(#{aiRouteStartDate}, 'YYYY-MM-DD'),
         TO_DATE(#{aiRouteEndDate}, 'YYYY-MM-DD'),

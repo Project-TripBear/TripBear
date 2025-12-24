@@ -27,7 +27,7 @@
             ai_route_region,
             ai_route_startdate,
             ai_route_enddate,
-            SYSDATE
+            SYSTIMESTAMP AT TIME ZONE 'Asia/Seoul'
         FROM tblAiRoute
         WHERE ai_route_id = #{aiRouteId}
     </insert>

@@ -81,8 +81,8 @@
         #{userId}, 
         #{adminId}, 
         #{reason, jdbcType=VARCHAR}, 
-        SYSDATE, 
-        SYSDATE + #{duration}
+        SYSTIMESTAMP AT TIME ZONE 'Asia/Seoul', 
+        SYSTIMESTAMP AT TIME ZONE 'Asia/Seoul' + #{duration}
     )
 </insert>
     

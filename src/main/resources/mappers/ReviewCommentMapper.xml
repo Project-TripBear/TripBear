@@ -34,7 +34,7 @@
             seqReviewComment.NEXTVAL, #{userId},
             #{reviewPostId},
             #{reviewCommentContent},
-            SYSDATE,
+            SYSTIMESTAMP AT TIME ZONE 'Asia/Seoul',
             0,
             'A'
         )

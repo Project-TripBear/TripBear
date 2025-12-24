@@ -5,6 +5,8 @@
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %> 
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
+<jsp:useBean id="now" class="java.util.Date" />
+
 <div class="board-page">
     <div class="board-header">
         <h1 class="board-title">동행 찾기 게시판</h1>
@@ -19,8 +21,6 @@
                     <th>제목</th>
                     <th>글쓴이</th>
                     <th>작성일</th>
-                    <th>댓글</th>
-                    <th>좋아요</th>
                     <th>조회수</th>
                 </tr>
             </thead>
@@ -34,11 +34,51 @@
                                     <a href="${pageContext.request.contextPath}/findboard/view?seq=${dto.find_board_id}">
                                         ${dto.find_board_title}
                                     </a>
+                                    <c:if test="${dto.commentCount > 0}">
+                                        <span class="comment-count">[${dto.commentCount}]</span>
+                                    </c:if>
                                 </td>
                                 <td>${dto.nickname}</td>
-                                <td>${dto.find_board_regdate}</td>
-                                <td class="numeric">${dto.commentCount}</td>
-                                <td class="numeric">${dto.likeCount}</td>
+                                <td>
+								    <%-- 1. String -> Date 변환 (패턴은 실제 문자열 형식에 맞게 수정 필요) --%>
+								    <fmt:parseDate value="${dto.find_board_regdate}" 
+								                   pattern="yyyy-MM-dd HH:mm:ss" 
+								                   var="regDate" />
+								
+								    <%-- 2. now, regDate 둘 다 Date 이므로 .time 사용 가능 --%>
+								    <c:set var="diffSeconds" value="${(now.time - regDate.time) / 1000}" />
+								    <c:set var="diffMinutes" value="${diffSeconds / 60}" />
+								    <c:set var="diffHours" value="${diffSeconds / 3600}" />
+								    <c:set var="diffDays" value="${diffSeconds / 86400}" />
+								
+								    <c:choose>
+								        <%-- 규칙 0: 1분 미만 --%>
+								        <c:when test="${diffMinutes < 1}">
+								            방금 전
+								        </c:when>
+								
+								        <%-- 규칙 1: 1시간 미만 (1분 ~ 59분 전) --%>
+								        <c:when test="${diffMinutes < 60}">
+								            <fmt:formatNumber value="${diffMinutes}" maxFractionDigits="0" />분 전
+								        </c:when>
+								
+								        <%-- 규칙 2: 1일 미만 (1시간 ~ 23시간 전) --%>
+								        <c:when test="${diffHours < 24}">
+								            <fmt:formatNumber value="${diffHours}" maxFractionDigits="0" />시간 전
+								        </c:when>
+								
+								        <%-- 규칙 3: 3일 이하 (1일 ~ 3일 전) --%>
+								        <c:when test="${diffDays <= 3}">
+								            <fmt:formatNumber value="${diffDays}" maxFractionDigits="0" />일 전
+								        </c:when>
+								
+								        <%-- 규칙 4: 3일 초과 시 날짜만 표기 --%>
+								        <c:otherwise>
+								            <fmt:formatDate value="${regDate}" pattern="yyyy-MM-dd" />
+								        </c:otherwise>
+								    </c:choose>
+								</td>
+
                                 <td class="numeric">${dto.find_board_view_count}</td>
                             </tr>
                         </c:forEach>

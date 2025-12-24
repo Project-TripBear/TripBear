@@ -154,8 +154,8 @@
             0,
             0,
             'y',
-            SYSDATE,
-            SYSDATE
+            SYSTIMESTAMP AT TIME ZONE 'Asia/Seoul',
+            SYSTIMESTAMP AT TIME ZONE 'Asia/Seoul'
         )
     </insert>
 
